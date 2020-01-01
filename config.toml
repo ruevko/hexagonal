@@ -1,0 +1,112 @@
+
+ignoreFiles = ["\\.bib$", "\\.RDS$", "\\.Rmd$", "_files$", "_cache$"]
+
+publishDir = "docs"
+title = "La Galería Hexagonal"
+baseURL = "https://ruevko.github.io/hexagonal"
+theme = "hugo-tranquilpeak-theme"
+defaultContentLanguage = "es-es"
+languageCode = "es-es"
+canonifyurls = true
+enableEmoji = true
+paginate = 5
+
+[permalinks]
+  post = "/post/:year/:month/:slug/"
+
+[taxonomies]
+  tag = "tags"
+  category = "categories"
+  archive = "archives"
+
+[author]
+  name = "La Galería Hexagonal"
+  bio = "Este blog llega a ustedes cortesía de Rafael Castro, saludos :kissing_heart:"
+  job = "Geógrafo"
+  location = "Ecuador"
+  picture = "logo.png"
+
+[[menu.main]]
+  weight = 1
+  identifier = "home"
+  name = "Home"
+  pre = "<i class=\"sidebar-button-icon fa fa-lg fa-globe-americas\"></i>"
+  url = "/"
+[[menu.main]]
+  weight = 2
+  identifier = "categories"
+  name = "Categories"
+  pre = "<i class=\"sidebar-button-icon fa fa-lg fa-map-marked-alt\"></i>"
+  url = "/categories"
+[[menu.main]]
+  weight = 3
+  identifier = "tags"
+  name = "Tags"
+  pre = "<i class=\"sidebar-button-icon fa fa-lg fa-map-marker-alt\"></i>"
+  url = "/tags"
+[[menu.main]]
+  weight = 4
+  identifier = "archives"
+  name = "Archives"
+  pre = "<i class=\"sidebar-button-icon fa fa-lg fa-search-location\"></i>"
+  url = "/archives"
+
+#[[menu.links]]
+  #weight = 1
+  #identifier = "researchgate"
+  #name = "RGate"
+  #pre = "<i class=\"sidebar-button-icon fab fa-lg fa-researchgate\"></i>"
+  #url = "https://www.researchgate.net/profile/Roger_Rafael_Castro_Zambrano"
+#[[menu.links]]
+  #weight = 2
+  #identifier = "github"
+  #name = "GitHub"
+  #pre = "<i class=\"sidebar-button-icon fab fa-lg fa-github-square\"></i>"
+  #url = "https://github.com/ruevko"
+#[[menu.links]]
+  #weight = 3
+  #identifier = "linkedin"
+  #name = "LinkedIn"
+  #pre = "<i class=\"sidebar-button-icon fab fa-lg fa-linkedin\"></i>"
+  #url = "https://www.linkedin.com/in/roger-rafael-castro-zambrano-143738188"
+#[[menu.links]]
+  #weight = 4
+  #identifier = "instagram"
+  #name = "Instagram"
+  #pre = "<i class=\"sidebar-button-icon fab fa-lg fa-instagram\"></i>"
+  #url = "https://instagram.com/ruevko"
+
+[[menu.main]]
+  weight = 5
+  identifier = "credit"
+  name = "Créditos"
+  pre = "<i class=\"sidebar-button-icon fa fa-lg fa-compass\"></i>" #fa-map-signs
+  url = "/page"
+
+[params]
+
+  keywords = ["mapas", "datos", "análisis", "maps", "data", "analysis"]
+  description = "La Galería Hexagonal es el blog de Rafael Castro, orientado a cartografía y análisis de datos."
+  dateFormat = "2 de January de 2006"
+  coverImage = "https://res.cloudinary.com/dodnzqhiz/image/upload/v1577918037/crv.png"
+  favicon = "favicon.ico"
+  thumbnailImagePosition = "right"
+  thumbnailImage = true
+  autoThumbnailImage = true
+  hierarchicalCategories = false
+  clearReading = true
+  imageGallery = true
+  sidebarBehavior = 1
+
+  [[params.sharingOptions]]
+    name = "Twitter"
+    icon = "fa-twitter"
+    url = "https://twitter.com/intent/tweet?text=%s"
+
+  [[params.sharingOptions]]
+    name = "Facebook"
+    icon = "fa-facebook-f"
+    url = "https://www.facebook.com/sharer/sharer.php?u=%s"
+
+[params.footer]
+  copyright = "<a href=\"https://github.com/ruevko\">ruevko</a>"
