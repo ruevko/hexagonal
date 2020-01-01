@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  
+  <url>
+    <loc>https://ruevko.github.io/hexagonal/page/</loc>
+    <lastmod>2018-11-22T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://ruevko.github.io/hexagonal/</loc>
+    <lastmod>2018-11-22T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://ruevko.github.io/hexagonal/archives/</loc>
+  </url>
+  
+  <url>
+    <loc>https://ruevko.github.io/hexagonal/categories/</loc>
+  </url>
+  
+  <url>
+    <loc>https://ruevko.github.io/hexagonal/tags/</loc>
+  </url>
+  
+</urlset>

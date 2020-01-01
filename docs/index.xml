@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>La Galería Hexagonal</title>
+    <link>https://ruevko.github.io/hexagonal/</link>
+    <description>Recent content on La Galería Hexagonal</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>es-es</language>
+    <lastBuildDate>Thu, 22 Nov 2018 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://ruevko.github.io/hexagonal/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title></title>
+      <link>https://ruevko.github.io/hexagonal/page/</link>
+      <pubDate>Thu, 22 Nov 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://ruevko.github.io/hexagonal/page/</guid>
+      <description>“El universo (que otros llaman la Biblioteca) se compone de un número indefinido, y tal vez infinito, de galerías hexagonales, con vastos pozos de ventilación en el medio, cercados por barandas bajísimas. Desde cualquier hexágono se ven los pisos inferiores y superiores: interminablemente.”
+Jorge Luis Borges (El jardín de senderos que se bifurcan, 1941)
+CréditosLouis Barranqueiro. Tranquilpeak: tema web Hexo; Thibaud Leprêtre lo adaptó a Hugo.</description>
+    </item>
+    
+  </channel>
+</rss>
