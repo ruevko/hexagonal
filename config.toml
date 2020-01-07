@@ -7,7 +7,8 @@ baseURL = "https://ruevko.github.io/hexagonal/"
 theme = "hugo-tranquilpeak-theme"
 defaultContentLanguage = "es-es"
 languageCode = "es-es"
-canonifyurls = false
+relativeURLs = true
+canonifyurls = true
 enableEmoji = true
 paginate = 5
 
