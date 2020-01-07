@@ -3,3 +3,5 @@
 .Ruserdata
 .Rprofile
 .Rproj.user
+static/post
+content/post/**/*.html

@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="es-es">
+  <head>
+    
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="generator" content="Hugo 0.59.1 with theme Tranquilpeak 0.4.7-BETA">
+<meta name="author" content="La Galería Hexagonal">
+<meta name="keywords" content="nodes, choropleths, web scraping, mapas, datos, análisis, maps, data, analysis">
+<meta name="description" content="Se presenta una metodología basada en web scraping para generar un mapa coroplético del número de nodos acumulados en cada país.">
+
+
+<meta property="og:description" content="Se presenta una metodología basada en web scraping para generar un mapa coroplético del número de nodos acumulados en cada país.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Estimando nodos OpenStreetMap por país">
+<meta name="twitter:title" content="Estimando nodos OpenStreetMap por país">
+<meta property="og:url" content="https://ruevko.github.io/hexagonal/post/2020/01/07-estimando-nodos-openstreetmap-pais/">
+<meta property="twitter:url" content="https://ruevko.github.io/hexagonal/post/2020/01/07-estimando-nodos-openstreetmap-pais/">
+<meta property="og:site_name" content="La Galería Hexagonal">
+<meta property="og:description" content="Se presenta una metodología basada en web scraping para generar un mapa coroplético del número de nodos acumulados en cada país.">
+<meta name="twitter:description" content="Se presenta una metodología basada en web scraping para generar un mapa coroplético del número de nodos acumulados en cada país.">
+<meta property="og:locale" content="es-es">
+
+  
+    <meta property="article:published_time" content="2020-01-07T00:00:00">
+  
+  
+    <meta property="article:modified_time" content="2020-01-07T00:00:00">
+  
+  
+  
+    
+      <meta property="article:section" content="OpenStreetMap">
+    
+  
+  
+    
+      <meta property="article:tag" content="nodos">
+    
+      <meta property="article:tag" content="coropletas">
+    
+      <meta property="article:tag" content="web scraping">
+    
+  
+
+
+<meta name="twitter:card" content="summary">
+
+
+
+
+
+
+
+  <meta property="og:image" content="https://ruevko.github.io/hexagonal/post/2020/01/07-estimando-nodos-openstreetmap-pais_files/figure-html/map-1.svg">
+  <meta property="twitter:image" content="https://ruevko.github.io/hexagonal/post/2020/01/07-estimando-nodos-openstreetmap-pais_files/figure-html/map-1.svg">
+
+
+
+
+
+  <meta property="og:image" content="https://ruevko.github.io/hexagonal/logo.png">
+  <meta property="twitter:image" content="https://ruevko.github.io/hexagonal/logo.png">
+
+
+    <title>Estimando nodos OpenStreetMap por país</title>
+
+    <link rel="icon" href="favicon.ico">
+    
+
+    
+
+    <link rel="canonical" href="https://ruevko.github.io/hexagonal/post/2020/01/07-estimando-nodos-openstreetmap-pais/">
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" integrity="sha256-+N4/V/SbAFiW1MPBCXnfnP9QSN3+Keu+NlB+0ev/YKQ=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/jquery.fancybox.min.css" integrity="sha256-vuXZ9LGmmwtjqFX1F+EKin1ThZMub58gKULUyf0qECk=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/helpers/jquery.fancybox-thumbs.min.css" integrity="sha256-SEa4XYAHihTcEP1f5gARTB2K26Uk8PsndQYHQC1f4jU=" crossorigin="anonymous" />
+    
+    
+    <link rel="stylesheet" href="https://ruevko.github.io/hexagonal/css/style-twzjdbqhmnnacqs0pwwdzcdbt8yhv8giawvjqjmyfoqnvazl0dalmnhdkvp7.min.css" />
+    
+    
+
+    
+      
+    
+    
+  </head>
+
+  <body>
+    <div id="blog">
+      <header id="header" data-behavior="4">
+  <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+  <div class="header-title">
+    <a class="header-title-link" href="https://ruevko.github.io/hexagonal/">La Galería Hexagonal</a>
+  </div>
+  
+</header>
+
+      <nav id="sidebar" data-behavior="4">
+  <div class="sidebar-container">
+    
+      <div class="sidebar-profile">
+        <a href="https://ruevko.github.io/hexagonal/#about">
+          <img class="sidebar-profile-picture" src="https://ruevko.github.io/hexagonal/logo.png" alt="Foto de autor" />
+        </a>
+        <h4 class="sidebar-profile-name">La Galería Hexagonal</h4>
+
+      </div>
+    
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://ruevko.github.io/hexagonal/">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-globe-americas"></i>
+      
+      <span class="sidebar-button-desc">Inicio</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://ruevko.github.io/hexagonal/categories">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-map-marked-alt"></i>
+      
+      <span class="sidebar-button-desc">Categorías</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://ruevko.github.io/hexagonal/tags">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-map-marker-alt"></i>
+      
+      <span class="sidebar-button-desc">Etiquetas</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://ruevko.github.io/hexagonal/archives">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-search-location"></i>
+      
+      <span class="sidebar-button-desc">Archivos</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://ruevko.github.io/hexagonal/page">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-compass"></i>
+      
+      <span class="sidebar-button-desc">Créditos</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+
+    </ul>
+  </div>
+</nav>
+
+      
+
+
+      
+
+      <div id="main" data-behavior="4"
+        class="
+               hasCoverMetaIn
+               ">
+        <article class="post" itemscope itemType="http://schema.org/BlogPosting">
+          
+          
+            <div class="post-header main-content-wrap text-left">
+  
+    <h1 class="post-title" itemprop="headline">
+      Estimando nodos OpenStreetMap por país
+    </h1>
+  
+  
+  <div class="postShorten-meta post-meta">
+    
+      <time itemprop="datePublished" datetime="2020-01-07T00:00:00Z">
+        
+  
+  
+  
+  
+    7 de Enero de 2020
+  
+
+      </time>
+    
+    
+  
+  
+    <span>en</span>
+    
+      <a class="category-link" href="https://ruevko.github.io/hexagonal/categories/openstreetmap">OpenStreetMap</a>
+    
+  
+
+  </div>
+
+</div>
+          
+          <div class="post-content markdown" itemprop="articleBody">
+            <div class="main-content-wrap">
+              
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    background-color: #ffffff;
+    color: #a0a0a0;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #a0a0a0;  padding-left: 4px; }
+div.sourceCode
+  { color: #1f1c1b; background-color: #ffffff; }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span. { color: #1f1c1b; } /* Normal */
+code span.al { color: #bf0303; background-color: #f7e6e6; font-weight: bold; } /* Alert */
+code span.an { color: #ca60ca; } /* Annotation */
+code span.at { color: #0057ae; } /* Attribute */
+code span.bn { color: #b08000; } /* BaseN */
+code span.bu { color: #644a9b; font-weight: bold; } /* BuiltIn */
+code span.cf { color: #1f1c1b; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #924c9d; } /* Char */
+code span.cn { color: #aa5500; } /* Constant */
+code span.co { color: #898887; } /* Comment */
+code span.cv { color: #0095ff; } /* CommentVar */
+code span.do { color: #607880; } /* Documentation */
+code span.dt { color: #0057ae; } /* DataType */
+code span.dv { color: #b08000; } /* DecVal */
+code span.er { color: #bf0303; text-decoration: underline; } /* Error */
+code span.ex { color: #0095ff; font-weight: bold; } /* Extension */
+code span.fl { color: #b08000; } /* Float */
+code span.fu { color: #644a9b; } /* Function */
+code span.im { color: #ff5500; } /* Import */
+code span.in { color: #b08000; } /* Information */
+code span.kw { color: #1f1c1b; font-weight: bold; } /* Keyword */
+code span.op { color: #1f1c1b; } /* Operator */
+code span.ot { color: #006e28; } /* Other */
+code span.pp { color: #006e28; } /* Preprocessor */
+code span.re { color: #0057ae; background-color: #e0e9f8; } /* RegionMarker */
+code span.sc { color: #3daee9; } /* SpecialChar */
+code span.ss { color: #ff5500; } /* SpecialString */
+code span.st { color: #bf0303; } /* String */
+code span.va { color: #0057ae; } /* Variable */
+code span.vs { color: #bf0303; } /* VerbatimString */
+code span.wa { color: #bf0303; } /* Warning */
+</style>
+
+
+<p><a href="https://www.openstreetmap.org/">OpenStreetMap</a> es un proyecto remarcable. Antes de su existencia, la producción de geoinformación era una actividad exclusiva de instituciones gubernamentales o agencias comerciales, de manera que los usuarios enfrentaban limitaciones en forma de licencias o costos. Desde 2004, en cambio, existe una plataforma que -apoyada en las tecnologías que volvieron posible compartir datos libremente por internet- recibe y entrega geoinformación de manera gratuita y ubicua.</p>
+<p>Desafortunadamente, la utilización de OpenStreetMap implica ciertos inconvenientes derivados de la naturaleza de su funcionamiento. Un inconveniente es conocer su estado actual: como la base de datos cambia constantemente -con adiciones y modificaciones de usuarios en todo el mundo- es complicado conocer, por ejemplo, cuántas calles existen hoy en toda el mapa. Con todo, <a href="https://wiki.openstreetmap.org/wiki/Stats">OpenStreetMap Wiki Stats</a> presenta diversos recursos -muchos actualizados diariamente- que permiten tener una idea del estado actual del proyecto.</p>
+<p>Mientras realizaba mi tesis de grado, en determinado momento necesité un recurso muy específico: un mapa coroplético de elementos en OpenStreetMap por país. Es decir, un mapa donde cada país está coloreado de acuerdo a cuántos elementos contiene. Para hacerse una idea, comparto un mapa genial de una de mis fuentes <span class="citation">(Jokar Arsanjani et al. <a href="#ref-introsm" role="doc-biblioref">2015</a>)</span>:</p>
+<div class="figure">
+<img src="https://www.researchgate.net/profile/Jamal_Jokar_Arsanjani/publication/301977390/figure/fig6/AS:668313206136842@1536349693729/A-world-map-of-the-total-created-nodes-in-October-2014.png" alt="Nodos OpenStreetMap creados por país en octubre de 2014 - © 2015 Springer International Publishing" />
+<p class="caption">Nodos OpenStreetMap creados por país en octubre de 2014 - © 2015 Springer International Publishing</p>
+</div>
+<p>A pesar de considerar únicamente los nodos acumulados en un mes, este mapa demuestra correctamente el panorama global de las contribuciones a OpenStreetMap: los países europeos poseen las comunidades más activas; Canadá, Estados Unidos, Brasil, Rusia y Australia reciben gran cantidad de contribuciones, acorde a sus extensos territorios; y los niveles de contribución varían considerablemente en Latinoamérica, África y Asia.</p>
+<p>Es importante tener presente que en OpenStreetMap existen tres elementos básicos: <em>nodes</em>, <em>ways</em>, <em>relations</em>. Pero tanto vías como relaciones se componen, en última instancia, de nodos; por eso un mapa que contabilice los nodos acumulados en toda la historia de OpenStreetMap debería ofrecer una buena imagen de cómo se encuentran distribuidas las contribuciones. Una manera de obtener tal mapa es descargar todos los países -de <a href="http://download.geofabrik.de/">Geofabrik</a> por ejemplo- y contar los nodos en cada archivo, pero eso resultaría extenuante. Esa es la motivación detrás de la siguiente metodología para estimar el número de nodos por país aplicando <em>web scraping</em>, una técnica de minería de datos que consiste en utilizar software para extraer el contenido de páginas web.</p>
+<p>La fuente de datos es el sitio <a href="http://osmstats.neis-one.org/">OSMstats</a> desarrollado por Pascal Neis, cuyo trabajo fue clave en mi tesis <span class="citation">(Neis and Zipf <a href="#ref-neis12" role="doc-biblioref">2012</a>)</span> igualmente. Este sitio ofrece estadísticas sobre varios aspectos de OpenStreetMap, con periodicidad diaria desde el 1 de noviembre de 2011; la pestaña <em>Countries</em> presenta los miembros activos y los nodos creados/modificados/eliminados en cada país, cada día. Para comenzar, se diseña una función de extracción, con ayuda de los paquetes <code>httr</code>, <code>xml2</code> y <code>purrr</code>:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw">library</span>(purrr)</a>
+<a class="sourceLine" id="cb1-2" title="2"></a>
+<a class="sourceLine" id="cb1-3" title="3">get_day =<span class="st"> </span><span class="kw">possibly</span>(<span class="cf">function</span>(day, url){</a>
+<a class="sourceLine" id="cb1-4" title="4">   </a>
+<a class="sourceLine" id="cb1-5" title="5">   <span class="kw">message</span>(<span class="st">&quot;Day: &quot;</span>, day)</a>
+<a class="sourceLine" id="cb1-6" title="6">   </a>
+<a class="sourceLine" id="cb1-7" title="7">   df =<span class="st"> </span><span class="kw">paste0</span>(url, day) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb1-8" title="8"><span class="st">      </span>httr<span class="op">::</span><span class="kw">GET</span>() <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb1-9" title="9"><span class="st">      </span>httr<span class="op">::</span><span class="kw">content</span>(<span class="dt">encoding =</span> <span class="st">&quot;UTF-8&quot;</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb1-10" title="10"><span class="st">      </span>xml2<span class="op">::</span><span class="kw">as_list</span>() <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb1-11" title="11"><span class="st">      </span><span class="kw">plucking</span>() <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb1-12" title="12"><span class="st">      </span><span class="kw">map</span>(framing) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb1-13" title="13"><span class="st">      </span><span class="kw">reduce</span>(rbind)</a>
+<a class="sourceLine" id="cb1-14" title="14">   </a>
+<a class="sourceLine" id="cb1-15" title="15">   df<span class="op">$</span>date =<span class="st"> </span>day</a>
+<a class="sourceLine" id="cb1-16" title="16">   </a>
+<a class="sourceLine" id="cb1-17" title="17">   <span class="kw">return</span>(df)}, <span class="ot">NULL</span>)</a></code></pre></div>
+<p>Notar que <code>plucking()</code> y <code>framing()</code> son funciones declaradas previamente con el propósito de abstraer dos pasos: recortar y tabular los datos; los pasos cruciales se hallan entre <code>GET()</code> y <code>as_list()</code> pues es en ellos donde se obtiene y se transforma el contenido <em>XML</em> de una página. Además, la función de extracción fue insertada en <code>possibly()</code> con el propósito de evitar, al ser iterada, que la ejecución se detenga si una iteración falla. Lo siguiente sería una prueba:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1">neis =<span class="st"> &quot;https://osmstats.neis-one.org/?item=countries&amp;date=&quot;</span></a>
+<a class="sourceLine" id="cb2-2" title="2"></a>
+<a class="sourceLine" id="cb2-3" title="3">test =<span class="st"> </span><span class="kw">get_day</span>(<span class="st">&quot;2019-12-31&quot;</span>, <span class="dt">url =</span> neis)</a>
+<a class="sourceLine" id="cb2-4" title="4"></a>
+<a class="sourceLine" id="cb2-5" title="5">test[<span class="kw">as.integer</span>(test<span class="op">$</span>members) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">sort.list</span>(<span class="dt">decreasing =</span> <span class="ot">TRUE</span>), ] <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">head</span>(<span class="dv">10</span>)</a></code></pre></div>
+<pre><code>##            country members created deleted       date
+## 236  United States     592  328726   23184 2019-12-31
+## 82         Germany     503   50952    5790 2019-12-31
+## 74          France     245   46599   12200 2019-12-31
+## 235 United Kingdom     211   34925    2246 2019-12-31
+## 103      Indonesia     158   57315    3578 2019-12-31
+## 30          Brazil     149  134148    1067 2019-12-31
+## 108          Italy     130   25751    2480 2019-12-31
+## 181         Poland     130   31152    2998 2019-12-31
+## 187         Russia     126   53118    5292 2019-12-31
+## 204          Spain      98   54702     887 2019-12-31</code></pre>
+<p>Se trata de los diez países que tuvieron más miembros activos el último día de 2019, tal y como lo presenta <a href="http://osmstats.neis-one.org/?item=countries&amp;date=2019-12-31">esta</a> página específica. Ahora, la verdadera utilidad de la función aparecerá al iterarla en muchas fechas. Considerando que los datos empiezan el 1 de noviembre de 2011, se decidió iterar por 2923 días, hasta el 1 de noviembre de 2019; es decir, se va a contabilizar el crecimiento de OpenStreetMap en ocho años.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" title="1">days =<span class="st"> </span><span class="kw">as.Date</span>(<span class="st">&quot;2011-11-1&quot;</span>) <span class="op">+</span><span class="st"> </span><span class="dv">0</span><span class="op">:</span><span class="dv">2922</span></a>
+<a class="sourceLine" id="cb4-2" title="2"></a>
+<a class="sourceLine" id="cb4-3" title="3">countries =<span class="st"> </span><span class="kw">map</span>(days, get_day, <span class="dt">url =</span> neis) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">reduce</span>(rbind)</a></code></pre></div>
+<p>Los datos consisten en 738001 observaciones, correspondientes a 253 países en 2917 días. Seis días en 2018 carecen de datos: 27 de julio, 3 y 24 de agosto, 10 y 29 de septiembre, y 22 de octubre; este hecho, cuya causa resulta desconocida, es comprobable en el sitio web. El siguiente paso consiste en sumar los nodos creados -restando al mismo tiempo los eliminados- en cada país; esto es posible implementando <code>dplyr</code>.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1"><span class="kw">library</span>(dplyr)</a>
+<a class="sourceLine" id="cb5-2" title="2"></a>
+<a class="sourceLine" id="cb5-3" title="3">countries =<span class="st"> </span><span class="kw">group_by</span>(countries, country) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb5-4" title="4"><span class="st">   </span><span class="kw">mutate_at</span>(<span class="kw">c</span>(<span class="st">&quot;created&quot;</span>, <span class="st">&quot;deleted&quot;</span>), as.double) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb5-5" title="5"><span class="st">   </span><span class="kw">summarise</span>(<span class="dt">nodes =</span> <span class="kw">sum</span>(created <span class="op">-</span><span class="st"> </span>deleted), <span class="dt">dates =</span> <span class="kw">n_distinct</span>(date))</a>
+<a class="sourceLine" id="cb5-6" title="6"></a>
+<a class="sourceLine" id="cb5-7" title="7"><span class="kw">summary</span>(countries)</a></code></pre></div>
+<pre><code>##    country              nodes               dates     
+##  Length:253         Min.   :       -2   Min.   :2917  
+##  Class :character   1st Qu.:   259873   1st Qu.:2917  
+##  Mode  :character   Median :  2756173   Median :2917  
+##                     Mean   : 16590188   Mean   :2917  
+##                     3rd Qu.: 13561870   3rd Qu.:2917  
+##                     Max.   :388753376   Max.   :2917</code></pre>
+<p>Finalmente, para generar el mapa, basta con unir los datos calculados en el paso anterior, a polígonos que representen los países. En este caso se han utilizado los polígonos disponibles en <code>tmap</code>; tratándose de un objeto de clase <code>sf</code>, el paquete homónimo debe ser incluido para garantizar una unión correcta. El mapa es generado vía <code>ggplot2</code>.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1"><span class="kw">library</span>(sf)</a>
+<a class="sourceLine" id="cb7-2" title="2"><span class="kw">library</span>(ggplot2)</a>
+<a class="sourceLine" id="cb7-3" title="3"></a>
+<a class="sourceLine" id="cb7-4" title="4"><span class="kw">data</span>(<span class="st">&quot;World&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;tmap&quot;</span>)</a>
+<a class="sourceLine" id="cb7-5" title="5"></a>
+<a class="sourceLine" id="cb7-6" title="6"><span class="kw">left_join</span>(World, countries, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;name&quot;</span> =<span class="st"> &quot;country&quot;</span>)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb7-7" title="7"><span class="st">   </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">fill =</span> nodes)) <span class="op">+</span><span class="st"> </span><span class="kw">geom_sf</span>(<span class="dt">color =</span> <span class="ot">NA</span>) <span class="op">+</span><span class="st"> </span><span class="kw">theme_minimal</span>()</a></code></pre></div>
+<div class="figure"><span id="fig:map"></span>
+<img src="https://ruevko.github.io/hexagonal/hexagonalpost/2020/01/07-estimando-nodos-openstreetmap-pais_files/figure-html/map-1.svg" alt="Primer intento de generar nuestro mapa" width="100%" />
+<p class="caption">
+Figure 1: Primer intento de generar nuestro mapa
+</p>
+</div>
+<p>El mapa se encuentra casi listo; el inconveniente restante es que algunos países aparecen sin datos, como las dos Koreas y los dos Congos. El problema se desprende de los diferentes nombres con que estos países figuran en los datos y en los polígonos; es necesesario averiguar cuáles son estos nombres: <code>setdiff(World$name, countries$country)</code></p>
+<pre><code>##  [1] &quot;Fr. S. Antarctic Lands&quot; &quot;Bahamas&quot;               
+##  [3] &quot;Bosnia and Herz.&quot;       &quot;Central African Rep.&quot;  
+##  [5] &quot;Cote d&#39;Ivoire&quot;          &quot;Dem. Rep. Congo&quot;       
+##  [7] &quot;Congo&quot;                  &quot;N. Cyprus&quot;             
+##  [9] &quot;Czech Rep.&quot;             &quot;Dominican Rep.&quot;        
+## [11] &quot;Falkland Is.&quot;           &quot;Gambia&quot;                
+## [13] &quot;Eq. Guinea&quot;             &quot;Korea&quot;                 
+## [15] &quot;Kosovo&quot;                 &quot;Lao PDR&quot;               
+## [17] &quot;Myanmar&quot;                &quot;Dem. Rep. Korea&quot;       
+## [19] &quot;Palestine&quot;              &quot;W. Sahara&quot;             
+## [21] &quot;S. Sudan&quot;               &quot;Solomon Is.&quot;           
+## [23] &quot;Somaliland&quot;             &quot;Timor-Leste&quot;           
+## [25] &quot;Tanzania&quot;</code></pre>
+<p>Entonces los nombres en los datos deben ser modificados para coincidir con estos nombres.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1">countries<span class="op">$</span>country =<span class="st"> </span><span class="kw">case_when</span>(</a>
+<a class="sourceLine" id="cb9-2" title="2">   countries<span class="op">$</span>country <span class="op">==</span><span class="st"> &quot;French Southern and Antarctic Lands&quot;</span> <span class="op">~</span><span class="st"> &quot;Fr. S. Antarctic Lands&quot;</span>,</a>
+<a class="sourceLine" id="cb9-3" title="3">   countries<span class="op">$</span>country <span class="op">==</span><span class="st"> &quot;Falkland Islands (Islas Malvinas)&quot;</span> <span class="op">~</span><span class="st"> &quot;Falkland Is.&quot;</span>,</a>
+<a class="sourceLine" id="cb9-4" title="4">   countries<span class="op">$</span>country <span class="op">==</span><span class="st"> &quot;Central African Republic&quot;</span> <span class="op">~</span><span class="st"> &quot;Central African Rep.&quot;</span>,</a>
+<a class="sourceLine" id="cb9-5" title="5">   countries<span class="op">$</span>country <span class="op">==</span><span class="st"> &quot;Bosnia and Herzegovina&quot;</span> <span class="op">~</span><span class="st"> &quot;Bosnia and Herz.&quot;</span>,</a>
+<a class="sourceLine" id="cb9-6" title="6">   countries<span class="op">$</span>country <span class="op">==</span><span class="st"> &quot;United Republic of Tanzania&quot;</span> <span class="op">~</span><span class="st"> &quot;Tanzania&quot;</span>,</a>
+<a class="sourceLine" id="cb9-7" title="7">   countries<span class="op">$</span>country <span class="op">==</span><span class="st"> &quot;Dominican Republic&quot;</span> <span class="op">~</span><span class="st"> &quot;Dominican Rep.&quot;</span>,</a>
+<a class="sourceLine" id="cb9-8" title="8">   countries<span class="op">$</span>country <span class="op">==</span><span class="st"> &quot;Congo-Kinshasa&quot;</span> <span class="op">~</span><span class="st"> &quot;Dem. Rep. Congo&quot;</span>,</a>
+<a class="sourceLine" id="cb9-9" title="9">   countries<span class="op">$</span>country <span class="op">==</span><span class="st"> &quot;Equatorial Guinea&quot;</span> <span class="op">~</span><span class="st"> &quot;Eq. Guinea&quot;</span>,</a>
+<a class="sourceLine" id="cb9-10" title="10">   countries<span class="op">$</span>country <span class="op">==</span><span class="st"> &quot;Solomon Islands&quot;</span> <span class="op">~</span><span class="st"> &quot;Solomon Is.&quot;</span>,</a>
+<a class="sourceLine" id="cb9-11" title="11">   countries<span class="op">$</span>country <span class="op">==</span><span class="st"> &quot;North Korea&quot;</span> <span class="op">~</span><span class="st"> &quot;Dem. Rep. Korea&quot;</span>,</a>
+<a class="sourceLine" id="cb9-12" title="12">   countries<span class="op">$</span>country <span class="op">==</span><span class="st"> &quot;Republic of Kosovo&quot;</span> <span class="op">~</span><span class="st"> &quot;Kosovo&quot;</span>,</a>
+<a class="sourceLine" id="cb9-13" title="13">   countries<span class="op">$</span>country <span class="op">==</span><span class="st"> &quot;Czech Republic&quot;</span> <span class="op">~</span><span class="st"> &quot;Czech Rep.&quot;</span>,</a>
+<a class="sourceLine" id="cb9-14" title="14">   countries<span class="op">$</span>country <span class="op">==</span><span class="st"> &quot;Ivory Coast&quot;</span> <span class="op">~</span><span class="st"> &quot;Cote d&#39;Ivoire&quot;</span>,</a>
+<a class="sourceLine" id="cb9-15" title="15">   countries<span class="op">$</span>country <span class="op">==</span><span class="st"> &quot;Western Sahara&quot;</span> <span class="op">~</span><span class="st"> &quot;W. Sahara&quot;</span>,</a>
+<a class="sourceLine" id="cb9-16" title="16">   countries<span class="op">$</span>country <span class="op">==</span><span class="st"> &quot;Congo-Brazzaville&quot;</span> <span class="op">~</span><span class="st"> &quot;Congo&quot;</span>,</a>
+<a class="sourceLine" id="cb9-17" title="17">   countries<span class="op">$</span>country <span class="op">==</span><span class="st"> &quot;Myanmar (Burma)&quot;</span> <span class="op">~</span><span class="st"> &quot;Myanmar&quot;</span>,</a>
+<a class="sourceLine" id="cb9-18" title="18">   countries<span class="op">$</span>country <span class="op">==</span><span class="st"> &quot;South Sudan&quot;</span> <span class="op">~</span><span class="st"> &quot;S. Sudan&quot;</span>,</a>
+<a class="sourceLine" id="cb9-19" title="19">   countries<span class="op">$</span>country <span class="op">==</span><span class="st"> &quot;The Bahamas&quot;</span> <span class="op">~</span><span class="st"> &quot;Bahamas&quot;</span>,</a>
+<a class="sourceLine" id="cb9-20" title="20">   countries<span class="op">$</span>country <span class="op">==</span><span class="st"> &quot;South Korea&quot;</span> <span class="op">~</span><span class="st"> &quot;Korea&quot;</span>,</a>
+<a class="sourceLine" id="cb9-21" title="21">   countries<span class="op">$</span>country <span class="op">==</span><span class="st"> &quot;The Gambia&quot;</span> <span class="op">~</span><span class="st"> &quot;Gambia&quot;</span>,</a>
+<a class="sourceLine" id="cb9-22" title="22">   countries<span class="op">$</span>country <span class="op">==</span><span class="st"> &quot;Laos&quot;</span> <span class="op">~</span><span class="st"> &quot;Lao PDR&quot;</span>,</a>
+<a class="sourceLine" id="cb9-23" title="23">   <span class="ot">TRUE</span> <span class="op">~</span><span class="st"> </span>countries<span class="op">$</span>country)</a>
+<a class="sourceLine" id="cb9-24" title="24"></a>
+<a class="sourceLine" id="cb9-25" title="25"><span class="kw">setdiff</span>(World<span class="op">$</span>name, countries<span class="op">$</span>country)</a></code></pre></div>
+<pre><code>## [1] &quot;N. Cyprus&quot;   &quot;Palestine&quot;   &quot;Somaliland&quot;  &quot;Timor-Leste&quot;</code></pre>
+<p>Chipre del Norte, Palestina, Somalilandia y Timor Oriental son países -¿con reconocimiento limitado?- que no figuran en la fuente de datos, y por ende persistirán vacíos en el mapa. Por otra parte un total de 80 países o territorios están en la fuente, pero son demasiado pequeños para aparecer en el mapa: Andorra, Singapur y las Antillas Menores, por citar ejemplos. Efectivamente, del total de 4197.32 millones de nodos, en el mapa se encuentran 4180.61 millones; esto es el 99.6 %. Con estas aclaraciones, solo falta unir los datos nuevamente y generar el mapa con un par de mejoras.</p>
+<div class="figure"><span id="fig:finalmap"></span>
+<img src="https://ruevko.github.io/hexagonal/hexagonalpost/2020/01/07-estimando-nodos-openstreetmap-pais_files/figure-html/finalmap-1.svg" alt="Segundo intento de generar nuestro mapa 🎉" width="100%" />
+<p class="caption">
+Figure 2: Segundo intento de generar nuestro mapa 🎉
+</p>
+</div>
+<p>Recordando que OpenStreetMap inició en 2004, se sigue que este mapa presenta estimaciones del número de nodos (y posiblemente del número de elementos) en cada país. ¿Cuántos nodos faltan? El propio sitio OSMstats reporta que, el 1 de noviembre de 2019, existían 5559.60 millones de nodos en la base de datos; quiere decir que esta metodología logró recopilar el 75.49% de los nodos. De la misma manera, OSMstats reporta 1248.29 millones de nodos el 1 de noviembre de 2011 (22.45% del valor de 2019). Sumando ambos porcentajes alcanzamos el 97.94%; así de cerca nos hallamos de explicar la presencia de todos los nodos OpenStreetMap. Para concluir, estos son los diez países con más nodos:</p>
+<pre><code>##             name     nodes dates
+## 1  United States 388753376  2917
+## 2         Russia 294001095  2917
+## 3         Canada 231464569  2917
+## 4         France 230694245  2917
+## 5        Germany 220406582  2917
+## 6      Indonesia 154173689  2917
+## 7          Italy 143362158  2917
+## 8         Poland 120794989  2917
+## 9         Brazil 112646013  2917
+## 10         Japan  98296294  2917</code></pre>
+<div id="referencias" class="section level1 unnumbered">
+<h1>Referencias</h1>
+<div id="refs" class="references">
+<div id="ref-introsm">
+<p>Jokar Arsanjani, Jamal, Alexander Zipf, Peter Mooney, and Marco Helbich. 2015. “An Introduction to Openstreetmap in Geographic Information Science: Experiences, Research, and Applications.” In <em>Lecture Notes in Geoinformation and Cartography</em>, 1–15. <a href="https://doi.org/10.1007/978-3-319-14280-7_1">https://doi.org/10.1007/978-3-319-14280-7_1</a>.</p>
+</div>
+<div id="ref-neis12">
+<p>Neis, Pascal, and Alexander Zipf. 2012. “Analyzing the Contributor Activity of a Volunteered Geographic Information Project — the Case of Openstreetmap.” <em>ISPRS International Journal of Geo-Information</em> 1 (December): 146–65. <a href="https://doi.org/10.3390/ijgi1020146">https://doi.org/10.3390/ijgi1020146</a>.</p>
+</div>
+</div>
+</div>
+
+              
+            </div>
+          </div>
+          <div id="post-footer" class="post-footer main-content-wrap">
+            
+              
+                
+                
+                  <div class="post-footer-tags">
+                    <span class="text-color-light text-small">Etiquetado en</span><br/>
+                    
+  <a class="tag tag--primary tag--small" href="https://ruevko.github.io/hexagonal/tags/nodos/">nodos</a>
+
+  <a class="tag tag--primary tag--small" href="https://ruevko.github.io/hexagonal/tags/coropletas/">coropletas</a>
+
+  <a class="tag tag--primary tag--small" href="https://ruevko.github.io/hexagonal/tags/web-scraping/">web scraping</a>
+
+                  </div>
+                
+              
+            
+            <div class="post-actions-wrap">
+  
+      <nav >
+        <ul class="post-actions post-action-nav">
+          
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--disabled">
+              
+                  <i class="fa fa-angle-left"></i>
+                  <span class="hide-xs hide-sm text-small icon-ml">Siguiente</span>
+                </a>
+            </li>
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--disabled">
+              
+                  <span class="hide-xs hide-sm text-small icon-mr">Anterior</span>
+                  <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+          
+        </ul>
+      </nav>
+    <ul class="post-actions post-action-share" >
+      
+        <li class="post-action hide-lg hide-md hide-sm">
+          <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions">
+            <i class="fa fa-share-alt"></i>
+          </a>
+        </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://ruevko.github.io/hexagonal/post/2020/01/07-estimando-nodos-openstreetmap-pais/">
+              <i class="fab fa-twitter"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://ruevko.github.io/hexagonal/post/2020/01/07-estimando-nodos-openstreetmap-pais/">
+              <i class="fab fa-facebook-f"></i>
+            </a>
+          </li>
+        
+      
+      
+      <li class="post-action">
+        
+          <a class="post-action-btn btn btn--default" href="#">
+        
+          <i class="fa fa-angle-double-up"></i>
+        </a>
+      </li>
+    </ul>
+  
+</div>
+
+            
+              
+            
+          </div>
+        </article>
+        <footer id="footer" class="main-content-wrap">
+  <span class="copyrights">
+    &copy; 2020 <a href="https://github.com/ruevko">ruevko</a>. Todos los derechos reservados
+  </span>
+</footer>
+
+      </div>
+      <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+        <div class="post-actions-wrap">
+  
+      <nav >
+        <ul class="post-actions post-action-nav">
+          
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--disabled">
+              
+                  <i class="fa fa-angle-left"></i>
+                  <span class="hide-xs hide-sm text-small icon-ml">Siguiente</span>
+                </a>
+            </li>
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--disabled">
+              
+                  <span class="hide-xs hide-sm text-small icon-mr">Anterior</span>
+                  <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+          
+        </ul>
+      </nav>
+    <ul class="post-actions post-action-share" >
+      
+        <li class="post-action hide-lg hide-md hide-sm">
+          <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions">
+            <i class="fa fa-share-alt"></i>
+          </a>
+        </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://ruevko.github.io/hexagonal/post/2020/01/07-estimando-nodos-openstreetmap-pais/">
+              <i class="fab fa-twitter"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://ruevko.github.io/hexagonal/post/2020/01/07-estimando-nodos-openstreetmap-pais/">
+              <i class="fab fa-facebook-f"></i>
+            </a>
+          </li>
+        
+      
+      
+      <li class="post-action">
+        
+          <a class="post-action-btn btn btn--default" href="#">
+        
+          <i class="fa fa-angle-double-up"></i>
+        </a>
+      </li>
+    </ul>
+  
+</div>
+
+      </div>
+      <div id="share-options-bar" class="share-options-bar" data-behavior="4">
+  <i id="btn-close-shareoptions" class="fa fa-close"></i>
+  <ul class="share-options">
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=https%3A%2F%2Fruevko.github.io%2Fhexagonal%2Fpost%2F2020%2F01%2F07-estimando-nodos-openstreetmap-pais%2F">
+          <i class="fab fa-twitter"></i><span>Compartir en Twitter</span>
+        </a>
+      </li>
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fruevko.github.io%2Fhexagonal%2Fpost%2F2020%2F01%2F07-estimando-nodos-openstreetmap-pais%2F">
+          <i class="fab fa-facebook-f"></i><span>Compartir en Facebook</span>
+        </a>
+      </li>
+    
+  </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+
+    </div>
+    
+    <div id="about">
+  <div id="about-card">
+    <div id="about-btn-close">
+      <i class="fas fa-times"></i>
+    </div>
+    
+      <img id="about-card-picture" src="https://ruevko.github.io/hexagonal/logo.png" alt="Foto de autor" />
+    
+    <h4 id="about-card-name">La Galería Hexagonal</h4>
+    
+      <div id="about-card-bio">Este blog llega a ustedes cortesía de Rafael Castro, saludos :kissing_heart:</div>
+    
+    
+      <div id="about-card-job">
+        <i class="fas fa-graduation-cap"></i>
+        <br/>
+        Geógrafo
+      </div>
+    
+    
+      <div id="about-card-location">
+        <i class="fas fa-home"></i>
+        <br/>
+        Ecuador
+      </div>
+    
+  </div>
+</div>
+
+    
+
+    
+  
+    <div id="cover" style="background-image:url('https://res.cloudinary.com/dodnzqhiz/image/upload/v1577918037/crv.png');"></div>
+  
+
+
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.7/js/jquery.fancybox.min.js" integrity="sha256-GEAnjcTqVP+vBp3SSc8bEDQqvWAZMiHyUSIorrWwH50=" crossorigin="anonymous"></script>
+
+
+<script src="https://ruevko.github.io/hexagonal/js/script-pcw6v3xilnxydl1vddzazdverrnn9ctynvnxgwho987mfyqkuylcb1nlt.min.js"></script>
+
+
+<script lang="javascript">
+window.onload = updateMinWidth;
+window.onresize = updateMinWidth;
+document.getElementById("sidebar").addEventListener("transitionend", updateMinWidth);
+function updateMinWidth() {
+  var sidebar = document.getElementById("sidebar");
+  var main = document.getElementById("main");
+  main.style.minWidth = "";
+  var w1 = getComputedStyle(main).getPropertyValue("min-width");
+  var w2 = getComputedStyle(sidebar).getPropertyValue("width");
+  var w3 = getComputedStyle(sidebar).getPropertyValue("left");
+  main.style.minWidth = `calc(${w1} - ${w2} - ${w3})`;
+}
+</script>
+
+
+  
+    
+  
+
+
+
+
+    
+  </body>
+</html>
+

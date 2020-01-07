@@ -3,25 +3,57 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://ruevko.github.io/hexagonal/categories/</loc>
+    <lastmod>2020-01-07T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://ruevko.github.io/hexagonal/tags/coropletas/</loc>
+    <lastmod>2020-01-07T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://ruevko.github.io/hexagonal/post/2020/01/07-estimando-nodos-openstreetmap-pais/</loc>
+    <lastmod>2020-01-07T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://ruevko.github.io/hexagonal/</loc>
+    <lastmod>2020-01-07T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://ruevko.github.io/hexagonal/tags/nodos/</loc>
+    <lastmod>2020-01-07T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://ruevko.github.io/hexagonal/categories/openstreetmap/</loc>
+    <lastmod>2020-01-07T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://ruevko.github.io/hexagonal/post/</loc>
+    <lastmod>2020-01-07T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://ruevko.github.io/hexagonal/tags/</loc>
+    <lastmod>2020-01-07T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://ruevko.github.io/hexagonal/tags/web-scraping/</loc>
+    <lastmod>2020-01-07T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://ruevko.github.io/hexagonal/page/</loc>
     <lastmod>2018-11-22T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://ruevko.github.io/hexagonal/</loc>
-    <lastmod>2018-11-22T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
     <loc>https://ruevko.github.io/hexagonal/archives/</loc>
-  </url>
-  
-  <url>
-    <loc>https://ruevko.github.io/hexagonal/categories/</loc>
-  </url>
-  
-  <url>
-    <loc>https://ruevko.github.io/hexagonal/tags/</loc>
   </url>
   
 </urlset>
