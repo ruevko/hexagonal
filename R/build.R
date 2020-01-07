@@ -8,4 +8,4 @@ file.remove(x[grep("\\.tex$", x)])
 s = "static/docpres"
 blogdown::build_dir(s)
 s = paste(s, dir(s), sep = "/")
-#(s[grep("_files$", s)])
+#file.remove(s[grep("_files$", s)])

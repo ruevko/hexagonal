@@ -3,16 +3,16 @@ ignoreFiles = ["\\.bib$", "\\.RDS$", "\\.Rmd$", "_files$", "_cache$"]
 
 publishDir = "docs"
 title = "La Galería Hexagonal"
-baseURL = "https://ruevko.github.io/hexagonal"
+baseURL = "https://ruevko.github.io/hexagonal/"
 theme = "hugo-tranquilpeak-theme"
 defaultContentLanguage = "es-es"
 languageCode = "es-es"
-canonifyurls = true
+canonifyurls = false
 enableEmoji = true
 paginate = 5
 
 [permalinks]
-  post = "post/:year/:month/:slug/"
+  post = "/post/:year/:month/:slug/"
 
 [taxonomies]
   tag = "tags"
@@ -24,7 +24,7 @@ paginate = 5
   bio = "Este blog llega a ustedes cortesía de Rafael Castro, saludos :kissing_heart:"
   job = "Geógrafo"
   location = "Ecuador"
-  picture = "logo.png"
+  picture = "/logo.png"
 
 [[menu.main]]
   weight = 1
@@ -89,7 +89,7 @@ paginate = 5
   description = "La Galería Hexagonal es el blog de Rafael Castro, orientado a cartografía y análisis de datos."
   dateFormat = "2 de January de 2006"
   coverImage = "https://res.cloudinary.com/dodnzqhiz/image/upload/v1577918037/crv.png"
-  favicon = "favicon.ico"
+  favicon = "/favicon.ico"
   thumbnailImagePosition = "right"
   thumbnailImage = true
   autoThumbnailImage = true
