@@ -16,7 +16,7 @@ keywords:
 
 bibliography: '../../babel.bib'
 link-citations: true
-thumbnailImage: '/post/2020/01/07-estimando-nodos-openstreetmap-pais_files/figure-html/map-1.svg'
+thumbnailImage: '/hexagonal/post/2020/01/07-estimando-nodos-openstreetmap-pais_files/figure-html/map-1.svg'
 summary: Se presenta una metodología basada en *web scraping* para generar un mapa coroplético del número de nodos acumulados en cada país.
 ---
 

@@ -21,10 +21,10 @@ hex$y[4:7] = 5/6*hex$y[4:7]; hex$x[1:7] = hex$x[1:7] - mean(hex$x[1:2])
 way = c(1, 7, 6, 4, 5, 3, 10, 12, 22, 20, 18, 16, 14, 8, 9, 13, 14, 13, 15, 16,
         15, 17, 18, 17, 19, 20, 19, 21, 22, 21, 11, 12, 11, 9, 10, 9, 8, 1, 2, 3)
 
-hex[c(way[1:16], 15, 17, 19, 21, 11, 9, 8), ] %>%
-   ggplot(aes(x, y)) + coord_fixed(1) + geom_polygon()
-
-ggsave("static/favicon.png", bg = NA, width = 8/15, height = 8/15)
+# hex[c(way[1:16], 15, 17, 19, 21, 11, 9, 8), ] %>%
+#    ggplot(aes(x, y)) + coord_fixed(1) + geom_polygon()
+#
+# ggsave("static/favicon.png", bg = NA, width = 8/15, height = 8/15)
 
 
 let = c("a", "í", "r", "e", "l", "a", ".", "La", ".",
@@ -50,6 +50,7 @@ ggplot(mapping = aes(x, y)) + coord_fixed(1) +
    geom_polygon(data = hex[c(17, 18, 20, 19), ], fill = "grey40") +
    geom_polygon(data = hex[c(15, 16, 18 ,17), ], fill = "grey35") +
    geom_polygon(data = hex[c(13, 14, 16, 15), ], fill = "grey30") +
-   geom_text(aes(label = i), let, col = "white", family = "mono")
+   geom_text(aes(label = i), let, col = "white", family = "mono") #, size = 1
 
-ggsave("static/logo.png", bg = NA, width = 2, height = 2, dpi = "retina")
+ggsave("static/sticker.png", bg = NA, width = sqrt(3), height = 2)
+# ggsave("static/logo.png", type = "cairo-png", bg = NA, width = .35*sqrt(3), height = .7)

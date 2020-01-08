@@ -1,7 +1,6 @@
 ---
-#title: page
 author: Rafael Castro
-date: '2018-11-22'
+date: '2020-01-01'
 slug: page
 comments: no
 showMeta: no
@@ -10,9 +9,15 @@ showActions: no
 
 > "El universo (que otros llaman la Biblioteca) se compone de un número indefinido, y tal vez infinito, de galerías hexagonales, con vastos pozos de ventilación en el medio, cercados por barandas bajísimas. Desde cualquier hexágono se ven los pisos inferiores y superiores: interminablemente."
 >
-> **Jorge Luis Borges (El jardín de senderos que se bifurcan, 1941)**
+> **Jorge Luis Borges (1941)**
 
-# Créditos
+### Acerca de
+
+Hay dos razones detrás del nombre de este blog. La primera es un tributo a la maestría de Borges al vislumbrar -en [uno](https://es.wikipedia.org/wiki/La_biblioteca_de_Babel) de sus cuentos- que el conocimiento es finito, pero exorbitantemente grande a la vez. Una biblioteca que contenga todo el conocimiento es posible, con ayuda de muchas personas, y se rganizaría en galerías semejantes. Este blog puede ser una de esas galerías.
+
+La segunda razón se desprende de [cierta](http://hexb.in/) costumbre entre programadores, de diseñar logos hexagonales para sus paquetes, aplicaciones, proyectos, etc. En lenguaje R esta costumbre es bien recibida. Y dado que aquí las publicaciones, los análisis y el blog mismo se construyen en R, se la recibe igualmente. Con más razón, considerando lo bien que resuenan esos logos y las galerías de la biblioteca total.
+
+### Créditos
 
 - Louis Barranqueiro. [Tranquilpeak](https://louisbarranqueiro.github.io/hexo-theme-tranquilpeak/): tema web Hexo; Thibaud Leprêtre lo adaptó a Hugo.
 - Bjørn Erik Pedersen, Steve Francia, et al. [Hugo](https://gohugo.io/): generador de sitios web estáticos.
