@@ -4,4 +4,4 @@
 .Rprofile
 .Rproj.user
 static/post
-content/**/*.html
+content/post/**/*.html
