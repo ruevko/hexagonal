@@ -6,10 +6,28 @@
     <description>Recent content in Tags on La Galería Hexagonal</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>es-es</language>
-    <lastBuildDate>Tue, 07 Jan 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 23 Jan 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://ruevko.github.io/hexagonal/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>hashtags</title>
+      <link>https://ruevko.github.io/hexagonal/tags/hashtags/</link>
+      <pubDate>Thu, 23 Jan 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://ruevko.github.io/hexagonal/tags/hashtags/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>paro nacional</title>
+      <link>https://ruevko.github.io/hexagonal/tags/paro-nacional/</link>
+      <pubDate>Thu, 23 Jan 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://ruevko.github.io/hexagonal/tags/paro-nacional/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>coropletas</title>

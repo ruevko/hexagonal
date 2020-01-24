@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Posts on La Galería Hexagonal</title>
-    <link>https://ruevko.github.io/hexagonal/post/</link>
-    <description>Recent content in Posts on La Galería Hexagonal</description>
+    <title>hashtags on La Galería Hexagonal</title>
+    <link>https://ruevko.github.io/hexagonal/tags/hashtags/</link>
+    <description>Recent content in hashtags on La Galería Hexagonal</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>es-es</language>
     <lastBuildDate>Thu, 23 Jan 2020 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="https://ruevko.github.io/hexagonal/post/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://ruevko.github.io/hexagonal/tags/hashtags/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
@@ -18,15 +18,6 @@
       
       <guid>https://ruevko.github.io/hexagonal/post/2020/01/23-sobre-tweets-paro-nacional/</guid>
       <description>Una discusión de &lt;em&gt;tweets&lt;/em&gt; publicados con tres &lt;em&gt;hashtags&lt;/em&gt; populares durante el paro de octubre en Ecuador, y del inconveniente para recuperar esos datos hoy en día.</description>
-    </item>
-    
-    <item>
-      <title>Estimando nodos OpenStreetMap por país</title>
-      <link>https://ruevko.github.io/hexagonal/post/2020/01/07-estimando-nodos-openstreetmap-pais/</link>
-      <pubDate>Tue, 07 Jan 2020 00:00:00 +0000</pubDate>
-      
-      <guid>https://ruevko.github.io/hexagonal/post/2020/01/07-estimando-nodos-openstreetmap-pais/</guid>
-      <description>Se presenta una metodología basada en &lt;em&gt;web scraping&lt;/em&gt; para generar un mapa coroplético del número de nodos acumulados en cada país.</description>
     </item>
     
   </channel>

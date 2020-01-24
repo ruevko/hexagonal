@@ -1,5 +1,5 @@
 
-ignoreFiles = ["\\.bib$", "\\.RDS$", "\\.Rmd$", "_files$", "_cache$"]
+ignoreFiles = ["\\.bib$", "\\.csv$", "\\.RDS$", "\\.Rmd$", "_files$", "_cache$"]
 
 publishDir = "docs"
 title = "La Galería Hexagonal"
@@ -90,7 +90,7 @@ paginate = 5
   description = "La Galería Hexagonal es el blog de Rafael Castro, orientado a cartografía y análisis de datos."
   dateFormat = "2 de January de 2006"
   coverImage = "https://res.cloudinary.com/dodnzqhiz/image/upload/v1577918037/crv.png"
-  favicon = "/hexagonal/favicon.ico"
+  favicon = "/favicon.ico"
   thumbnailImagePosition = "right"
   thumbnailImage = true
   autoThumbnailImage = true

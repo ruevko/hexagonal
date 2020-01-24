@@ -1,0 +1,119 @@
+---
+title: Sobre los Tweets en el Paro Nacional
+author: Rafael Castro
+date: '2020-01-23'
+slug: 23-sobre-tweets-paro-nacional
+categories:
+  - Twitter
+tags:
+  - hashtags
+  - paro nacional
+keywords:
+  - hashtags
+  - national strike
+
+summary: Una discusión de *tweets* publicados con tres *hashtags* populares durante el paro de octubre en Ecuador, y del inconveniente para recuperar esos datos hoy en día.
+---
+
+`r knitr::opts_chunk$set(message = FALSE, warning = FALSE)`
+
+Los últimos meses del año pasado presenciaron movilizaciones en algunos países del mundo, respondiendo a acciones gubernamentales de diversas índoles. En Ecuador, las protestas de octubre fueron detonadas por las medidas económicas anunciadas por la presidencia, con el propósito de cumplir una agenda acordada con el Fondo Monetario Internacional. El principal cambio consistía en terminar el subsidio de combustibles; como suele suceder con las medidas inmediatas, que no contemplan un cambio progresivo ni el desarrollo equitativo para todos, ciertos sectores -estudiantes, transportistas, agricultores, indígenas- hubiesen sido los más afectados. Tras un paro nacional que se extendió del 3 al 13 de octubre, las medidas económicas fueron retiradas. Para mayor información sobre las medidas, las acciones de los sectores vulnerados y las represalias del gobierno, se sugiere consultar las siguientes fuentes: [Wambra](https://wambra.ec/la-protesta-indigena-y-popular-que-levanto-a-ecuador/), [Pichincha Comunicaciones](http://www.pichinchacomunicaciones.com.ec/)^[A la fecha de publicación, el sitio web se encuentra suspendido debido a denuncias de la presidencia. De cualquier forma Pichincha Comunicaciones, al igual que las otras fuentes sugeridas, presenta en su Twitter la cobertura que realizó durante el paro.], [Crisis](https://www.revistacrisis.com/coyuntura/apuntes-sobre-el-triunfo-popular-de-octubre/) y [CONAIE](https://conaie.org/2019/10/09/septimo-dia-de-movilizacion-nacional-del-movimiento-indigena/).
+
+El propósito de este post es demostrar cómo ejecuté un análisis con los *tweets* generados entre el 1 y el 10 de octubre, considerando tres *hashtags* populares durante el paro nacional en Ecuador. La premisa es que la elección de un *hashtag* expone la intención del usuario, de reportar los hechos acontecidos durante el paro o de desaprobar al mismo. Originalmente trabajé con el paquete `twitteR` el cual permite obtener *tweets* a través de la API gratuita de Twitter; no obstante, es necesario ejecutar previamente una función de autenticación^[La autenticación consiste en suministrar unas claves personales de consumidor y de acceso; para obtener esas claves uno debe poseer primero una cuenta de desarrollador.].
+
+```{r auth, eval=FALSE}
+library(twitteR)
+
+setup_twitter_oauth("tus", "claves", "de", "consumidor")
+
+wambra = userTimeline("wambraEc", 100, sinceID = 1212053690737135616,
+                      excludeReplies = FALSE, includeRts = TRUE)
+```
+
+En este ejemplo se han solicitado cien publicaciones de la cuenta del blog Wambra, incluyendo *replies* y *retweets*. Efectivamente el resultado es una lista de *tweets* con sus respectivos metadatos ocultos: `tail(wambra, 3)`
+
+```{r tail, echo=FALSE}
+wambra = readRDS("wambra.RDS"); tail(wambra, 3)
+```
+
+Si bien el paquete implementado ya posee una función que tabula los metadatos, preferí escribir mi propia función ajustada al análisis:
+
+```{r fun1}
+library(dplyr)
+library(purrr)
+
+user2na = function(user) ifelse(length(user) == 0, NA_character_, paste0("@", user))
+
+coor2na = function(coor) ifelse(length(coor) == 0, NA_real_, as.double(coor))
+
+list2tbl = function(twts_list, time_zone = "UCT") tibble(
+   isrt = map_lgl(twts_list, ~.$isRetweet),
+   rts  = map_dbl(twts_list, ~.$retweetCount),
+   favs = map_dbl(twts_list, ~.$favoriteCount),
+   time = map_dbl(twts_list, ~.$created) %>%
+      as.POSIXct(tz = time_zone, origin = "1970-01-01"),
+   user = map_chr(twts_list, ~user2na(.$screenName)),
+   rpto = map_chr(twts_list, ~user2na(.$replyToSN)),
+   text = map_chr(twts_list, ~.$text),
+   lon  = map_dbl(twts_list, ~coor2na(.$longitude)),
+   lat  = map_dbl(twts_list, ~coor2na(.$latitude)))
+
+list2tbl(wambra, "EST") %>% tail(3)
+```
+
+Entre las publicaciones de dicho blog, llamo la atención a un artículo sobre las personas que lamentablemente fallecieron participando en las manifestaciones, o de manera paralela a las mismas.
+
+`r blogdown::shortcode("twitter", "1215110345108467712")`
+
+Una vez tabulados los metadatos, existe una variedad de aspectos que pueden ser analizados. La siguiente tabla presenta el conteo de *tweets* que contienen uno de tres *hashtags*, así como el porcentaje de los mismos que he considerado únicos (esto es, no son *replies* ni su texto se encuentra repetido), el conteo de usuarios y la razón promedio de *tweets* por usuario.
+
+hashtag                                                                                                                 tweets (1)  tweets únicos (2)    porcentaje (2÷1)  usuarios (3)    razón (1÷3)
+---------------------------------------------------------------------------------------------------------------------- ----------- ------------------ ------------------- ------------- --------------
+[#ParoNacionalEcuador ](https://twitter.com/search?q=%23ParoNacionalEcuador%20until%3A2019-10-10%20since%3A2019-10-01)       13770              11471              0.8330          5297         2.5996
+[#EcuadorPaisDePaz](https://twitter.com/search?q=%23EcuadorPaisDePaz%20until%3A2019-10-10%20since%3A2019-10-01)              19754              13356              0.6761          5412         3.6500
+[#ElParoSigue](https://twitter.com/search?q=%23ElParoSigue%20until%3A2019-10-10%20since%3A2019-10-01)                        13083              10223              0.7814          3892         3.3615
+
+Un par de ideas se derivan de este conteo. La inclusión de #EcuadorPaisDePaz se relaciona con un desprecio por las protestas, pero también se relaciona con el porcentaje más bajo de *tweets* únicos y la razón más alta de *tweets* por cuenta. Aunque los números no son atípicos, estas son las características del *spam*. En contraposición, el uso de #ParoNacionalEcuador demuestra el porcentaje más alto de publicaciones útiles, y la tasa más baja de contribución por usuario; este *hashtag* fue comúnmente utilizado para reportar con fotos y videos las situaciones violentas y la represión ejecutada por los aparatos del estado.
+
+Además, al contar el uso por cuenta, se halló que solo tres cuentas superaron en 85 el uso de #ParoNacionalEcuador; una de ellas fue la de Pichincha Comunicaciones. Por el contrario, fueron catorce las cuentas que usaron #EcuadorPaisDePaz más de 85 veces, entre ellas: los ministerios de transporte y obras públicas, de desarrollo urbano y vivienda, y de salud pública; las secretarias técnica, del deporte, y de comunicación de la presidencia; el servicio de rentas internas y varias cuentas zonales del ministerio de inclusión económica y social. Este hecho confirma que se trata de propaganda mediática por parte de las instituciones públicas, para desmerecer las demandas de los sectores movilizados.
+
+Los datos que alimentaron la tabla de conteo fueron obtenidos con tres ejecuciones de la siguiente función, variando cada vez el *hashtag* de interés. Notar el uso de un filtro que excluye los *retweets*, pues de otra manera los datos devueltos excederían el límite impuesto de veinte mil.
+
+```{r fail, eval=FALSE}
+searchTwitter("#ParoNacionalEcuador -filter:retweets", 2e4,
+              since = "2019-10-01", until = "2019-10-10")
+```
+
+Desafortunadamente volver a ejecutar esta función no devolverá un solo *tweet*. Desconocía que la versión gratuita de la API solo recupera datos con una semana^[El ejemplo con *tweets* de Wambra sí funciona porque utiliza una API diferente; una que accede a cualquier época, pero en una única cuenta. La búsqueda por *hashtag* o texto sí está restringida a una semana.] de antigüedad como máximo, a diferencia del sitio web que puede acceder a cualquier época. Es una lástima, pues no conservé los datos cuando ejecuté el análisis en octubre. Con todo existe [una](https://github.com/Jefferson-Henrique/GetOldTweets-java) alternativa; básicamente, es un programa en java que simula la navegación en el sitio web de Twitter y recupera los datos conforme son presentados. Los siguientes comandos representan la obtención de *tweets* que contienen #ParoNacionalEcuador a través de la *command line*.
+
+```{bash java, eval=FALSE}
+PS C:\> git clone https://github.com/Jefferson-Henrique/GetOldTweets-java.git
+PS C:\> cd GetOldTweets-java-master
+PS C:\GetOldTweets-java-master> java -jar got.jar querysearch="#ParoNacionalEC" since=2019-10-01 until=2019-10-15
+```
+
+Los resultados son escritos en un archivo de valores separados por comas -punto y coma en realidad- para el cual escribí otra función, observando también que ocurría un uso inadecuado de las comillas:
+
+```{r fun2}
+read.twts = function(csv){
+   
+   lines = gsub("\";", "';", gsub(";\"", ";'", readLines(csv)))
+   
+   cols = c(username = "NULL", date = "POSIXct", text = "character", geo = "NULL")
+   
+   df = read.csv2(text = lines, colClasses = cols, na.strings = "", quote = "'")
+   
+   df$user = gsub("^https://twitter.com/(\\w+)/status/\\d+$", "@\\1", df$permalink)
+   
+   df$id = as.numeric(df$id)
+   
+   tibble::as_tibble(df)}
+```
+
+Finalmente para leer los *tweets* recuperados: `read.twts("output_got.csv")`
+
+```{r read, echo=FALSE}
+read.twts("output_got.csv")
+```
+
+En este caso se han recuperado solamente 244 de los 11471 *tweets* que originalmente se obtuvieron vía API. Es una cantidad mínima, pero es la alternativa a contratar un producto comercial de Twitter; a continuación, el desafío es averiguar hasta que nivel el análisis es replicable con esta cantidad reducida de datos.
