@@ -22,7 +22,7 @@ paginate = 5
 
 [author]
   name = "La Galería Hexagonal"
-  bio = "Este blog llega a ustedes cortesía de Rafael Castro, saludos :kissing_heart:"
+  bio = "Este es el blog de [Rafael Castro](https://instagram.com/ruevko), orientado a Cartografía y Data Analytics."
   job = "Geógrafo"
   location = "Ecuador"
   picture = "/hexagonal/logo.png"
@@ -90,7 +90,7 @@ paginate = 5
   description = "La Galería Hexagonal es el blog de Rafael Castro, orientado a cartografía y análisis de datos."
   dateFormat = "2 de January de 2006"
   coverImage = "https://res.cloudinary.com/dodnzqhiz/image/upload/v1577918037/crv.png"
-  favicon = "/favicon.ico"
+  favicon = "/favicon.png"
   thumbnailImagePosition = "right"
   thumbnailImage = true
   autoThumbnailImage = true

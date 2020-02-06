@@ -1,6 +1,7 @@
 library(dplyr); library(ggplot2)
 
 ########
+
 def = ggplot(mapping = aes(x, y, label = i)) + coord_fixed(expand = FALSE) + theme_void()
 
 hex = tibble(r = rep(c(1, 6/7), 6), t = rep(pi*(0:5/3 - 1/6), each = 2)) %>%
@@ -29,11 +30,12 @@ let = c("a","í","r","e","l","a",".","La",".","e","x","a","g","o","n","a","l") %
 
 def + #geom_polygon(data = hexo, fill = "grey95") +
    #geom_text(data = let, family = "mono", col = "grey") +
-   geom_polygon(data = hex[h[1:17], ], fill = "grey") + #geom_path(data = hex[h, ]) +
+   geom_polygon(data = hex[h[1:17], ], fill = "grey90") + #geom_path(data = hex[h, ]) +
    geom_polygon(data = hex[g, ], fill = "grey40") #+ geom_path(data = hex[g, ])
 
 #ggsave("static/sticker.svg", width = sqrt(3), height = 2)
-ggsave("static/favicon.png", bg = NA, height = 1, width = 1)
+ggsave("static/favicon.png", bg = NA, width = 4/15, height = 4/15)
+
 # claro ####
 
 def + geom_polygon(data = hexo, fill = NA) +
@@ -51,7 +53,7 @@ def + geom_polygon(data = hexo, fill = NA) +
    geom_text(data = let, col = "grey85", family = "mono") +
    geom_path(data = hex[h, ]) + geom_path(data = hex[g, ])
 
-ggsave("static/logo.png", bg = NA, height = 2, width = 2) #sqrt(3)
+ggsave("static/logo.png", bg = NA, width = 26/15, height = 2)
 
 # scuro ####
 
@@ -71,4 +73,4 @@ def + geom_polygon(data = hexo, fill = NA) +
    geom_path(data = hex[h, ], col = "grey5") +
    geom_path(data = hex[g, ], col = "grey5")
 
-#ggsave("static/logo2.png", type = "cairo-png", bg = NA, height = .7, width = .35*sqrt(3))
+#ggsave("static/logo2.png", type = "cairo-png", bg = NA, width = .35*sqrt(3), height = .7)

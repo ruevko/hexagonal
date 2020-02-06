@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="generator" content="Hugo 0.59.1 with theme Tranquilpeak 0.4.7-BETA">
+<meta name="generator" content="Hugo 0.63.2 with theme Tranquilpeak 0.4.7-BETA">
 <meta name="author" content="La Galería Hexagonal">
 <meta name="keywords" content="nodes, choropleths, web scraping, mapas, datos, análisis, maps, data, analysis">
 <meta name="description" content="Se presenta una metodología basada en web scraping para generar un mapa coroplético del número de nodos acumulados en cada país.">
@@ -66,7 +66,7 @@
 
     <title>Estimando nodos OpenStreetMap por país</title>
 
-    <link rel="icon" href="../../../../favicon.ico">
+    <link rel="icon" href="../../../../favicon.png">
     
 
     
@@ -369,18 +369,14 @@ Figure 1: Primer intento de generar nuestro mapa
 </p>
 </div>
 <p>El mapa se encuentra casi listo; el inconveniente restante es que algunos países aparecen sin datos, como las dos Koreas y los dos Congos. El problema se desprende de los diferentes nombres con que estos países figuran en los datos y en los polígonos; es necesesario averiguar cuáles son estos nombres: <code>setdiff(World$name, countries$country)</code></p>
-<pre><code>##  [1] &quot;Fr. S. Antarctic Lands&quot; &quot;Bahamas&quot;               
-##  [3] &quot;Bosnia and Herz.&quot;       &quot;Central African Rep.&quot;  
-##  [5] &quot;Cote d&#39;Ivoire&quot;          &quot;Dem. Rep. Congo&quot;       
-##  [7] &quot;Congo&quot;                  &quot;N. Cyprus&quot;             
-##  [9] &quot;Czech Rep.&quot;             &quot;Dominican Rep.&quot;        
-## [11] &quot;Falkland Is.&quot;           &quot;Gambia&quot;                
-## [13] &quot;Eq. Guinea&quot;             &quot;Korea&quot;                 
-## [15] &quot;Kosovo&quot;                 &quot;Lao PDR&quot;               
-## [17] &quot;Myanmar&quot;                &quot;Dem. Rep. Korea&quot;       
-## [19] &quot;Palestine&quot;              &quot;W. Sahara&quot;             
-## [21] &quot;S. Sudan&quot;               &quot;Solomon Is.&quot;           
-## [23] &quot;Somaliland&quot;             &quot;Timor-Leste&quot;           
+<pre><code>##  [1] &quot;Fr. S. Antarctic Lands&quot; &quot;Bahamas&quot;                &quot;Bosnia and Herz.&quot;      
+##  [4] &quot;Central African Rep.&quot;   &quot;Cote d&#39;Ivoire&quot;          &quot;Dem. Rep. Congo&quot;       
+##  [7] &quot;Congo&quot;                  &quot;N. Cyprus&quot;              &quot;Czech Rep.&quot;            
+## [10] &quot;Dominican Rep.&quot;         &quot;Falkland Is.&quot;           &quot;Gambia&quot;                
+## [13] &quot;Eq. Guinea&quot;             &quot;Korea&quot;                  &quot;Kosovo&quot;                
+## [16] &quot;Lao PDR&quot;                &quot;Myanmar&quot;                &quot;Dem. Rep. Korea&quot;       
+## [19] &quot;Palestine&quot;              &quot;W. Sahara&quot;              &quot;S. Sudan&quot;              
+## [22] &quot;Solomon Is.&quot;            &quot;Somaliland&quot;             &quot;Timor-Leste&quot;           
 ## [25] &quot;Tanzania&quot;</code></pre>
 <p>Entonces los nombres en los datos deben ser modificados para coincidir con estos nombres.</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1">countries<span class="op">$</span>country =<span class="st"> </span><span class="kw">case_when</span>(</a>
@@ -621,7 +617,7 @@ Figure 2: Segundo intento de generar nuestro mapa 🎉
     
     <h4 id="about-card-name">La Galería Hexagonal</h4>
     
-      <div id="about-card-bio">Este blog llega a ustedes cortesía de Rafael Castro, saludos :kissing_heart:</div>
+      <div id="about-card-bio">Este es el blog de <a href="https://instagram.com/ruevko">Rafael Castro</a>, orientado a Cartografía y Data Analytics.</div>
     
     
       <div id="about-card-job">
