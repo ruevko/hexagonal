@@ -1,7 +1,8 @@
 .RData
 .Rhistory
-.Ruserdata
 .Rprofile
+.Ruserdata
 .Rproj.user
 static/post
 content/post/**/*.html
+docs/page/index.html

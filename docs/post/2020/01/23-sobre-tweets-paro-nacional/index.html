@@ -378,39 +378,43 @@ code span.wa { color: #bf0303; } /* Warning */
 <p>Los datos que alimentaron la tabla de conteo fueron obtenidos con tres ejecuciones de la siguiente función, variando cada vez el <em>hashtag</em> de interés. Notar el uso de un filtro que excluye los <em>retweets</em>, pues de otra manera los datos devueltos excederían el límite impuesto de veinte mil.</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1"><span class="kw">searchTwitter</span>(<span class="st">&quot;#ParoNacionalEcuador -filter:retweets&quot;</span>, <span class="fl">2e4</span>,</a>
 <a class="sourceLine" id="cb5-2" title="2">              <span class="dt">since =</span> <span class="st">&quot;2019-10-01&quot;</span>, <span class="dt">until =</span> <span class="st">&quot;2019-10-10&quot;</span>)</a></code></pre></div>
-<p>Desafortunadamente volver a ejecutar esta función no devolverá un solo <em>tweet</em>. Desconocía que la versión gratuita de la API solo recupera datos con una semana<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a> de antigüedad como máximo, a diferencia del sitio web que puede acceder a cualquier época. Es una lástima, pues no conservé los datos cuando ejecuté el análisis en octubre. Con todo existe <a href="https://github.com/Jefferson-Henrique/GetOldTweets-java">una</a> alternativa; básicamente, es un programa en java que simula la navegación en el sitio web de Twitter y recupera los datos conforme son presentados. Los siguientes comandos representan la obtención de <em>tweets</em> que contienen #ParoNacionalEcuador a través de la <em>command line</em>.</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb6-1" title="1"><span class="ex">PS</span> C:<span class="dt">\&gt;</span> git clone https://github.com/Jefferson-Henrique/GetOldTweets-java.git</a>
-<a class="sourceLine" id="cb6-2" title="2"><span class="ex">PS</span> C:<span class="dt">\&gt;</span> cd GetOldTweets-java-master</a>
-<a class="sourceLine" id="cb6-3" title="3"><span class="ex">PS</span> C:\GetOldTweets-java-master<span class="op">&gt;</span> java -jar got.jar querysearch=<span class="st">&quot;#ParoNacionalEC&quot;</span> since=2019-10-01 until=2019-10-15</a></code></pre></div>
+<p>Desafortunadamente volver a ejecutar esta función no devolverá un solo <em>tweet</em>. Desconocía que la versión gratuita de la API solo recupera datos con una semana<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a> de antigüedad como máximo, a diferencia del sitio web que puede acceder a cualquier época. Es una lástima, pues no conservé los datos cuando ejecuté el análisis en octubre. Con todo existe <a href="https://github.com/Jefferson-Henrique/GetOldTweets-java">una</a> alternativa; básicamente, es un programa en <em>java</em> que simula la navegación en el sitio web de Twitter y recupera los datos conforme son presentados. Los siguientes comandos ilustran la obtención de <em>tweets</em> que contienen #ParoNacionalEcuador a través de la <em>command line</em>.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb6-1" title="1"><span class="fu">git</span> clone https://github.com/Jefferson-Henrique/GetOldTweets-java</a>
+<a class="sourceLine" id="cb6-2" title="2"><span class="bu">cd</span> GetOldTweets-java</a>
+<a class="sourceLine" id="cb6-3" title="3"><span class="ex">java</span> -jar got.jar querysearch=<span class="st">&quot;#ParoNacionalEcuador&quot;</span> since=2019-10-01 until=2019-10-15</a>
+<a class="sourceLine" id="cb6-4" title="4"><span class="ex">ren</span> <span class="st">&quot;output_got.csv&quot;</span> <span class="st">&quot;output_ParoNacionalEcuador.csv&quot;</span></a></code></pre></div>
 <p>Los resultados son escritos en un archivo de valores separados por comas -punto y coma en realidad- para el cual escribí otra función, observando también que ocurría un uso inadecuado de las comillas:</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1">read.twts =<span class="st"> </span><span class="cf">function</span>(csv){</a>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1">readHashTag =<span class="st"> </span><span class="cf">function</span>(hashtag){</a>
 <a class="sourceLine" id="cb7-2" title="2">   </a>
-<a class="sourceLine" id="cb7-3" title="3">   lines =<span class="st"> </span><span class="kw">gsub</span>(<span class="st">&quot;</span><span class="ch">\&quot;</span><span class="st">;&quot;</span>, <span class="st">&quot;&#39;;&quot;</span>, <span class="kw">gsub</span>(<span class="st">&quot;;</span><span class="ch">\&quot;</span><span class="st">&quot;</span>, <span class="st">&quot;;&#39;&quot;</span>, <span class="kw">readLines</span>(csv)))</a>
+<a class="sourceLine" id="cb7-3" title="3">   txt =<span class="st"> </span><span class="kw">readLines</span>(<span class="kw">paste0</span>(<span class="st">&quot;output_&quot;</span>, hashtag, <span class="st">&quot;.csv&quot;</span>))</a>
 <a class="sourceLine" id="cb7-4" title="4">   </a>
-<a class="sourceLine" id="cb7-5" title="5">   cols =<span class="st"> </span><span class="kw">c</span>(<span class="dt">username =</span> <span class="st">&quot;NULL&quot;</span>, <span class="dt">date =</span> <span class="st">&quot;POSIXct&quot;</span>, <span class="dt">text =</span> <span class="st">&quot;character&quot;</span>, <span class="dt">geo =</span> <span class="st">&quot;NULL&quot;</span>)</a>
+<a class="sourceLine" id="cb7-5" title="5">   txt =<span class="st"> </span><span class="kw">gsub</span>(<span class="st">&quot;</span><span class="ch">\&quot;</span><span class="st">;&quot;</span>, <span class="st">&quot;&#39;;&quot;</span>, <span class="kw">gsub</span>(<span class="st">&quot;;</span><span class="ch">\&quot;</span><span class="st">&quot;</span>, <span class="st">&quot;;&#39;&quot;</span>, txt))</a>
 <a class="sourceLine" id="cb7-6" title="6">   </a>
-<a class="sourceLine" id="cb7-7" title="7">   df =<span class="st"> </span><span class="kw">read.csv2</span>(<span class="dt">text =</span> lines, <span class="dt">colClasses =</span> cols, <span class="dt">na.strings =</span> <span class="st">&quot;&quot;</span>, <span class="dt">quote =</span> <span class="st">&quot;&#39;&quot;</span>)</a>
+<a class="sourceLine" id="cb7-7" title="7">   clc =<span class="st"> </span><span class="kw">c</span>(<span class="dt">date =</span> <span class="st">&quot;POSIXct&quot;</span>, <span class="dt">mentions =</span> <span class="st">&quot;NULL&quot;</span>, <span class="dt">hashtags =</span> <span class="st">&quot;NULL&quot;</span>, <span class="dt">id =</span> <span class="st">&quot;character&quot;</span>)</a>
 <a class="sourceLine" id="cb7-8" title="8">   </a>
-<a class="sourceLine" id="cb7-9" title="9">   df<span class="op">$</span>user =<span class="st"> </span><span class="kw">gsub</span>(<span class="st">&quot;^https://twitter.com/(</span><span class="ch">\\</span><span class="st">w+)/status/</span><span class="ch">\\</span><span class="st">d+$&quot;</span>, <span class="st">&quot;@</span><span class="ch">\\</span><span class="st">1&quot;</span>, df<span class="op">$</span>permalink)</a>
-<a class="sourceLine" id="cb7-10" title="10">   </a>
-<a class="sourceLine" id="cb7-11" title="11">   df<span class="op">$</span>id =<span class="st"> </span><span class="kw">as.numeric</span>(df<span class="op">$</span>id)</a>
-<a class="sourceLine" id="cb7-12" title="12">   </a>
-<a class="sourceLine" id="cb7-13" title="13">   tibble<span class="op">::</span><span class="kw">as_tibble</span>(df)}</a></code></pre></div>
-<p>Finalmente para leer los <em>tweets</em> recuperados: <code>read.twts("output_got.csv")</code></p>
-<pre><code>## # A tibble: 244 x 9
-##    date                retweets favorites text  mentions hashtags      id
-##    &lt;dttm&gt;                 &lt;int&gt;     &lt;int&gt; &lt;chr&gt; &lt;chr&gt;    &lt;chr&gt;      &lt;dbl&gt;
-##  1 2019-10-14 14:15:00      183       109 &quot;La ~ &lt;NA&gt;     #prensa~ 1.18e18
-##  2 2019-10-13 21:43:00       84       133 &quot;#AT~ &lt;NA&gt;     #ATENCI~ 1.18e18
-##  3 2019-10-13 20:11:00       47       111 &quot;Aqu~ &lt;NA&gt;     #SomosC~ 1.18e18
-##  4 2019-10-13 17:30:00       66        66 &quot;#Lo~ &lt;NA&gt;     #LoQueN~ 1.18e18
-##  5 2019-10-13 17:25:00      207       176 &quot;#Ur~ &lt;NA&gt;     #Urgent~ 1.18e18
-##  6 2019-10-13 17:19:00       73        49 &quot;#UL~ @AnonsW~ #ULTIMO~ 1.18e18
-##  7 2019-10-13 17:15:00      106        96 &quot;#Ah~ &lt;NA&gt;     #Ahora ~ 1.18e18
-##  8 2019-10-13 17:14:00      228       238 &quot;Pes~ &lt;NA&gt;     #ParoNa~ 1.18e18
-##  9 2019-10-13 16:57:00      312       242 &quot;Anu~ &lt;NA&gt;     #ParoNa~ 1.18e18
-## 10 2019-10-13 16:17:00       65        62 &quot;Asi~ &lt;NA&gt;     #ParoNa~ 1.18e18
-## # ... with 234 more rows, and 2 more variables: permalink &lt;chr&gt;, user &lt;chr&gt;</code></pre>
+<a class="sourceLine" id="cb7-9" title="9">   df =<span class="st"> </span><span class="kw">read.csv2</span>(<span class="dt">text =</span> txt, <span class="dt">colClasses =</span> clc, <span class="dt">quote =</span> <span class="st">&quot;&#39;&quot;</span>, <span class="dt">na.strings =</span> <span class="st">&quot;&quot;</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb7-10" title="10"><span class="st">      </span><span class="kw">mutate</span>(<span class="dt">user =</span> <span class="kw">gsub</span>(<span class="st">&quot;^https://twitter.com/(</span><span class="ch">\\</span><span class="st">w+)/status/</span><span class="ch">\\</span><span class="st">d+$&quot;</span>, <span class="st">&quot;@</span><span class="ch">\\</span><span class="st">1&quot;</span>, permalink),</a>
+<a class="sourceLine" id="cb7-11" title="11">             <span class="dt">text =</span> <span class="kw">gsub</span>(<span class="st">&quot;https://twitter.com/.+$&quot;</span>, <span class="st">&quot;&quot;</span>, text),</a>
+<a class="sourceLine" id="cb7-12" title="12">             <span class="dt">text =</span> <span class="kw">gsub</span>(<span class="st">&quot;pic.twitter.com/.+$&quot;</span>, <span class="st">&quot;&quot;</span>, text),</a>
+<a class="sourceLine" id="cb7-13" title="13">             <span class="dt">ht =</span> <span class="kw">paste0</span>(<span class="st">&quot;#&quot;</span>, hashtag)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb7-14" title="14"><span class="st">      </span><span class="kw">select</span>(ht, id, <span class="dt">time =</span> date, text, user, retweets, favorites)</a>
+<a class="sourceLine" id="cb7-15" title="15">   </a>
+<a class="sourceLine" id="cb7-16" title="16">   <span class="kw">as_tibble</span>(df)}</a></code></pre></div>
+<p>Finalmente para leer los <em>tweets</em> recuperados: <code>readHashTag("ParoNacionalEcuador")</code></p>
+<pre><code>## # A tibble: 244 x 7
+##    ht       id      time                text           user   retweets favorites
+##    &lt;chr&gt;    &lt;chr&gt;   &lt;dttm&gt;              &lt;chr&gt;          &lt;chr&gt;     &lt;int&gt;     &lt;int&gt;
+##  1 #ParoNa~ 118382~ 2019-10-14 14:15:00 &quot;La #prensa f~ @FUND~      183       109
+##  2 #ParoNa~ 118357~ 2019-10-13 21:43:00 &quot;#ATENCIÓN ES~ @kole~       84       133
+##  3 #ParoNa~ 118355~ 2019-10-13 20:11:00 &quot;Aquellos que~ @Kati~       47       111
+##  4 #ParoNa~ 118351~ 2019-10-13 17:30:00 &quot;#LoQueNoVera~ @Isma~       66        66
+##  5 #ParoNa~ 118350~ 2019-10-13 17:25:00 &quot;#Urgente #AT~ @ecua~      207       176
+##  6 #ParoNa~ 118350~ 2019-10-13 17:19:00 &quot;#ULTIMOMOMEN~ @Chal~       73        49
+##  7 #ParoNa~ 118350~ 2019-10-13 17:15:00 &quot;#Ahora | Cac~ @xime~      106        96
+##  8 #ParoNa~ 118350~ 2019-10-13 17:14:00 &quot;Pese al Esta~ @reli~      228       238
+##  9 #ParoNa~ 118350~ 2019-10-13 16:57:00 &quot;Anunciamos a~ @radi~      312       242
+## 10 #ParoNa~ 118349~ 2019-10-13 16:17:00 &quot;Asi luce la ~ @reli~       65        62
+## # ... with 234 more rows</code></pre>
 <p>En este caso se han recuperado solamente 244 de los 11471 <em>tweets</em> que originalmente se obtuvieron vía API. Es una cantidad mínima, pero es la alternativa a contratar un producto comercial de Twitter; a continuación, el desafío es averiguar hasta que nivel el análisis es replicable con esta cantidad reducida de datos.</p>
 <div class="footnotes">
 <hr />
@@ -447,7 +451,7 @@ code span.wa { color: #bf0303; } /* Warning */
           
             <li class="post-action">
               
-                <a class="post-action-btn btn btn--disabled">
+                <a class="post-action-btn btn btn--default tooltip--top" href="../../../../post/2020/02/19-sobre-tweets-paro-nacional-parte/" data-tooltip="Sobre los Tweets en el Paro Nacional, segunda parte">
               
                   <i class="fa fa-angle-left"></i>
                   <span class="hide-xs hide-sm text-small icon-ml">Siguiente</span>
@@ -517,7 +521,7 @@ code span.wa { color: #bf0303; } /* Warning */
           
             <li class="post-action">
               
-                <a class="post-action-btn btn btn--disabled">
+                <a class="post-action-btn btn btn--default tooltip--top" href="../../../../post/2020/02/19-sobre-tweets-paro-nacional-parte/" data-tooltip="Sobre los Tweets en el Paro Nacional, segunda parte">
               
                   <i class="fa fa-angle-left"></i>
                   <span class="hide-xs hide-sm text-small icon-ml">Siguiente</span>

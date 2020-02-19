@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="es-es">
+  <head>
+    
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="generator" content="Hugo 0.63.2 with theme Tranquilpeak 0.4.7-BETA">
+<meta name="author" content="La Galería Hexagonal">
+<meta name="keywords" content="hashtags, national strike, mapas, datos, análisis, maps, data, analysis">
+<meta name="description" content="Continúa la discusión de tweets publicados durante el paro de octubre, considerando ahora seis hashtags populares.">
+
+
+<meta property="og:description" content="Continúa la discusión de tweets publicados durante el paro de octubre, considerando ahora seis hashtags populares.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Sobre los Tweets en el Paro Nacional, segunda parte">
+<meta name="twitter:title" content="Sobre los Tweets en el Paro Nacional, segunda parte">
+<meta property="og:url" content="https://ruevko.github.io/hexagonal/post/2020/02/19-sobre-tweets-paro-nacional-parte/">
+<meta property="twitter:url" content="https://ruevko.github.io/hexagonal/post/2020/02/19-sobre-tweets-paro-nacional-parte/">
+<meta property="og:site_name" content="La Galería Hexagonal">
+<meta property="og:description" content="Continúa la discusión de tweets publicados durante el paro de octubre, considerando ahora seis hashtags populares.">
+<meta name="twitter:description" content="Continúa la discusión de tweets publicados durante el paro de octubre, considerando ahora seis hashtags populares.">
+<meta property="og:locale" content="es-es">
+
+  
+    <meta property="article:published_time" content="2020-02-19T00:00:00">
+  
+  
+    <meta property="article:modified_time" content="2020-02-19T00:00:00">
+  
+  
+  
+    
+      <meta property="article:section" content="Twitter">
+    
+  
+  
+    
+      <meta property="article:tag" content="hashtags">
+    
+      <meta property="article:tag" content="paro nacional">
+    
+  
+
+
+<meta name="twitter:card" content="summary">
+
+
+
+
+
+
+
+  <meta property="og:image" content="https://ruevko.github.io/hexagonal/post/2020/02/19-sobre-tweets-paro-nacional-parte_files/figure-html/plot1-1.svg">
+  <meta property="twitter:image" content="https://ruevko.github.io/hexagonal/post/2020/02/19-sobre-tweets-paro-nacional-parte_files/figure-html/plot1-1.svg">
+
+
+
+
+
+  <meta property="og:image" content="https://ruevko.github.io/hexagonal/logo.png">
+  <meta property="twitter:image" content="https://ruevko.github.io/hexagonal/logo.png">
+
+
+    <title>Sobre los Tweets en el Paro Nacional, segunda parte</title>
+
+    <link rel="icon" href="../../../../favicon.png">
+    
+
+    
+
+    <link rel="canonical" href="https://ruevko.github.io/hexagonal/post/2020/02/19-sobre-tweets-paro-nacional-parte/">
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" integrity="sha256-+N4/V/SbAFiW1MPBCXnfnP9QSN3+Keu+NlB+0ev/YKQ=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/jquery.fancybox.min.css" integrity="sha256-vuXZ9LGmmwtjqFX1F+EKin1ThZMub58gKULUyf0qECk=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/helpers/jquery.fancybox-thumbs.min.css" integrity="sha256-SEa4XYAHihTcEP1f5gARTB2K26Uk8PsndQYHQC1f4jU=" crossorigin="anonymous" />
+    
+    
+    <link rel="stylesheet" href="../../../../css/style-twzjdbqhmnnacqs0pwwdzcdbt8yhv8giawvjqjmyfoqnvazl0dalmnhdkvp7.min.css" />
+    
+    
+
+    
+      
+    
+    
+  </head>
+
+  <body>
+    <div id="blog">
+      <header id="header" data-behavior="4">
+  <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+  <div class="header-title">
+    <a class="header-title-link" href="../../../../">La Galería Hexagonal</a>
+  </div>
+  
+</header>
+
+      <nav id="sidebar" data-behavior="4">
+  <div class="sidebar-container">
+    
+      <div class="sidebar-profile">
+        <a href="../../../../#about">
+          <img class="sidebar-profile-picture" src="https://ruevko.github.io/hexagonal/logo.png" alt="Foto de autor" />
+        </a>
+        <h4 class="sidebar-profile-name">La Galería Hexagonal</h4>
+
+      </div>
+    
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="../../../../">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-globe-americas"></i>
+      
+      <span class="sidebar-button-desc">Inicio</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="../../../../categories">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-map-marked-alt"></i>
+      
+      <span class="sidebar-button-desc">Categorías</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="../../../../tags">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-map-marker-alt"></i>
+      
+      <span class="sidebar-button-desc">Etiquetas</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="../../../../archives">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-search-location"></i>
+      
+      <span class="sidebar-button-desc">Archivos</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="../../../../page">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-compass"></i>
+      
+      <span class="sidebar-button-desc">Créditos</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+
+    </ul>
+  </div>
+</nav>
+
+      
+
+
+      
+
+      <div id="main" data-behavior="4"
+        class="
+               hasCoverMetaIn
+               ">
+        <article class="post" itemscope itemType="http://schema.org/BlogPosting">
+          
+          
+            <div class="post-header main-content-wrap text-left">
+  
+    <h1 class="post-title" itemprop="headline">
+      Sobre los Tweets en el Paro Nacional, segunda parte
+    </h1>
+  
+  
+  <div class="postShorten-meta post-meta">
+    
+      <time itemprop="datePublished" datetime="2020-02-19T00:00:00Z">
+        
+  
+  
+  
+  
+    19 de Febrero de 2020
+  
+
+      </time>
+    
+    
+  
+  
+    <span>en</span>
+    
+      <a class="category-link" href="../../../../categories/twitter">Twitter</a>
+    
+  
+
+  </div>
+
+</div>
+          
+          <div class="post-content markdown" itemprop="articleBody">
+            <div class="main-content-wrap">
+              
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    background-color: #ffffff;
+    color: #a0a0a0;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #a0a0a0;  padding-left: 4px; }
+div.sourceCode
+  { color: #1f1c1b; background-color: #ffffff; }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span. { color: #1f1c1b; } /* Normal */
+code span.al { color: #bf0303; background-color: #f7e6e6; font-weight: bold; } /* Alert */
+code span.an { color: #ca60ca; } /* Annotation */
+code span.at { color: #0057ae; } /* Attribute */
+code span.bn { color: #b08000; } /* BaseN */
+code span.bu { color: #644a9b; font-weight: bold; } /* BuiltIn */
+code span.cf { color: #1f1c1b; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #924c9d; } /* Char */
+code span.cn { color: #aa5500; } /* Constant */
+code span.co { color: #898887; } /* Comment */
+code span.cv { color: #0095ff; } /* CommentVar */
+code span.do { color: #607880; } /* Documentation */
+code span.dt { color: #0057ae; } /* DataType */
+code span.dv { color: #b08000; } /* DecVal */
+code span.er { color: #bf0303; text-decoration: underline; } /* Error */
+code span.ex { color: #0095ff; font-weight: bold; } /* Extension */
+code span.fl { color: #b08000; } /* Float */
+code span.fu { color: #644a9b; } /* Function */
+code span.im { color: #ff5500; } /* Import */
+code span.in { color: #b08000; } /* Information */
+code span.kw { color: #1f1c1b; font-weight: bold; } /* Keyword */
+code span.op { color: #1f1c1b; } /* Operator */
+code span.ot { color: #006e28; } /* Other */
+code span.pp { color: #006e28; } /* Preprocessor */
+code span.re { color: #0057ae; background-color: #e0e9f8; } /* RegionMarker */
+code span.sc { color: #3daee9; } /* SpecialChar */
+code span.ss { color: #ff5500; } /* SpecialString */
+code span.st { color: #bf0303; } /* String */
+code span.va { color: #0057ae; } /* Variable */
+code span.vs { color: #bf0303; } /* VerbatimString */
+code span.wa { color: #bf0303; } /* Warning */
+</style>
+
+
+<p>Continuando con la discusión del post anterior, el análisis ha sido ampliado para incluir otros tres -para un total de seis- <em>hashtags</em> populares durante el paro nacional de octubre pasado en Ecuador. Los <em>tweets</em> fueron obtenidos aplicando un programa en <em>java</em> que posee menos capacidad que la API oficial, pero que permite acceder a cualquier época.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw">library</span>(dplyr)</a>
+<a class="sourceLine" id="cb1-2" title="2"></a>
+<a class="sourceLine" id="cb1-3" title="3">HashTags =<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;DialogoPorLaPaz&quot;</span>, <span class="st">&quot;EcuadorPaisDePaz&quot;</span>, <span class="st">&quot;ElParoNoPara&quot;</span>,</a>
+<a class="sourceLine" id="cb1-4" title="4">             <span class="st">&quot;ElParoSigue&quot;</span>, <span class="st">&quot;ParoNacionalEC&quot;</span>, <span class="st">&quot;ParoNacionalEcuador&quot;</span>)</a>
+<a class="sourceLine" id="cb1-5" title="5"></a>
+<a class="sourceLine" id="cb1-6" title="6">df_all =<span class="st"> </span>purrr<span class="op">::</span><span class="kw">map</span>(HashTags, readHashTag) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># de la primera parte del post</span></a>
+<a class="sourceLine" id="cb1-7" title="7"><span class="st">   </span>purrr<span class="op">::</span><span class="kw">reduce</span>(bind_rows) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb1-8" title="8"><span class="st">   </span><span class="kw">mutate_at</span>(<span class="st">&quot;ht&quot;</span>, forcats<span class="op">::</span>fct_infreq)</a></code></pre></div>
+<p>Se iteró la función de lectura en cada uno de los archivos generados por el programa; observando que, cada vez que se genera un archivo, este debe ser renombrado o de lo contrario sería reescrito. En total se obtuvieron 1399 <em>tweets</em> de 618 usuarios diferentes; visualicemos las veces que se utilizó cada <em>hashtag</em> en ellos:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1"><span class="kw">library</span>(ggplot2); <span class="kw">theme_set</span>(<span class="kw">theme_minimal</span>())</a>
+<a class="sourceLine" id="cb2-2" title="2"></a>
+<a class="sourceLine" id="cb2-3" title="3">gg =<span class="st"> </span><span class="kw">ggplot</span>() <span class="op">+</span><span class="st"> </span><span class="kw">coord_flip</span>() <span class="op">+</span><span class="st"> </span><span class="kw">theme</span>(<span class="dt">axis.title=</span><span class="kw">element_blank</span>(), <span class="dt">legend.position=</span><span class="st">&quot;none&quot;</span>)</a>
+<a class="sourceLine" id="cb2-4" title="4"></a>
+<a class="sourceLine" id="cb2-5" title="5">gg <span class="op">+</span><span class="st"> </span><span class="kw">geom_bar</span>(<span class="kw">aes</span>(ht, <span class="dt">fill=</span>ht), df_all)</a></code></pre></div>
+<div class="figure"><span id="fig:plot1"></span>
+<img src="../../../../post/2020/02/19-sobre-tweets-paro-nacional-parte_files/figure-html/plot1-1.svg" alt="Frecuencia de tweets por hashtag" width="100%" />
+<p class="caption">
+Figure 1: Frecuencia de tweets por hashtag
+</p>
+</div>
+<p>Evidentemente, #EcuadorPaisDePaz se utilizó con mayor frecuencia comparado a otros <em>hashtags</em> que, en cambio, denotaban el apoyo al paro. No obstante, ¿cuáles <em>hashtags</em> fueron más populares? Además de la frecuencia de uso, es posible evaluar los favoritos y <em>retweets</em> (RTs) que recibieron las publicaciones, como medidas de popularidad; en este caso, se ha transformado los datos vía <code>tidyr</code> y se ha presentado en <em>boxplots</em> dicha evaluación.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1"><span class="kw">library</span>(tidyr)</a>
+<a class="sourceLine" id="cb3-2" title="2"></a>
+<a class="sourceLine" id="cb3-3" title="3">df_long =<span class="st"> </span><span class="kw">pivot_longer</span>(df_all, <span class="kw">c</span>(<span class="st">&quot;favorites&quot;</span>, <span class="st">&quot;retweets&quot;</span>))</a>
+<a class="sourceLine" id="cb3-4" title="4"></a>
+<a class="sourceLine" id="cb3-5" title="5">gg <span class="op">+</span><span class="st"> </span><span class="kw">geom_boxplot</span>(<span class="kw">aes</span>(ht, value, <span class="dt">fill=</span>ht), df_long) <span class="op">+</span><span class="st"> </span><span class="kw">facet_wrap</span>(<span class="op">~</span>name) <span class="op">+</span><span class="st"> </span><span class="kw">scale_y_log10</span>()</a></code></pre></div>
+<div class="figure"><span id="fig:plot2"></span>
+<img src="../../../../post/2020/02/19-sobre-tweets-paro-nacional-parte_files/figure-html/plot2-1.svg" alt="Boxplots de favorites y retweets por hashtag" width="100%" />
+<p class="caption">
+Figure 2: Boxplots de favorites y retweets por hashtag
+</p>
+</div>
+<p>A pesar de que #ParoNacionalEC apareció en más publicaciones, #EcuadorPaisDePaz fue el <em>hashtag</em> más popular en cuanto a favoritos y RTs, con varios valores atípicos. Es un hecho lamentable, pues refleja cierta simpatía -al menos en Twitter- que la ciudadanía tuvo hacia el discurso del estado. La popularidad de #ElParoNoPara o #ElParoSigue poseyó valores más regulares. Para observar los datos de una manera distinta, la siguiente tabla resume los niveles de RTs y las razones de contribución (<em>tweets</em> promedio por usuario).</p>
+<table>
+<caption><span id="tab:table">Table 1: </span>Resumen de todos los tweets y retweets</caption>
+<thead>
+<tr class="header">
+<th align="left">Hashtag</th>
+<th align="right">Tweets</th>
+<th align="right">Usuarios</th>
+<th align="right">Razón</th>
+<th align="right">RTsMedio</th>
+<th align="right">RTsMáximo</th>
+<th align="right">RTsTotal</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">#ParoNacionalEC</td>
+<td align="right">429</td>
+<td align="right">223</td>
+<td align="right">1.92</td>
+<td align="right">306.00</td>
+<td align="right">3627</td>
+<td align="right">131275</td>
+</tr>
+<tr class="even">
+<td align="left">#EcuadorPaisDePaz</td>
+<td align="right">367</td>
+<td align="right">158</td>
+<td align="right">2.32</td>
+<td align="right">259.21</td>
+<td align="right">8592</td>
+<td align="right">95129</td>
+</tr>
+<tr class="odd">
+<td align="left">#ParoNacionalEcuador</td>
+<td align="right">244</td>
+<td align="right">149</td>
+<td align="right">1.64</td>
+<td align="right">283.54</td>
+<td align="right">5426</td>
+<td align="right">69183</td>
+</tr>
+<tr class="even">
+<td align="left">#ElParoSigue</td>
+<td align="right">186</td>
+<td align="right">106</td>
+<td align="right">1.75</td>
+<td align="right">278.66</td>
+<td align="right">2133</td>
+<td align="right">51830</td>
+</tr>
+<tr class="odd">
+<td align="left">#ElParoNoPara</td>
+<td align="right">132</td>
+<td align="right">91</td>
+<td align="right">1.45</td>
+<td align="right">263.20</td>
+<td align="right">2473</td>
+<td align="right">34743</td>
+</tr>
+<tr class="even">
+<td align="left">#DialogoPorLaPaz</td>
+<td align="right">86</td>
+<td align="right">61</td>
+<td align="right">1.41</td>
+<td align="right">102.88</td>
+<td align="right">627</td>
+<td align="right">8848</td>
+</tr>
+</tbody>
+</table>
+<p>Confirmando lo expuesto en la primera parte de este post, el uso de #EcuadorPaisDePaz se aproximó al <em>spam</em>, con más publicaciones y menos usuarios. Al contrario, #DialogoPorLaPaz tiene la razón más baja y resulta ambiguo discernir si su uso se relacionó mayoritariamente con el estado o la oposición, principalmente por la baja cantidad de <em>tweets</em>. Por otra parte, si observamos el promedio y el total de RTs, es claro que #ParoNacionalEC tuvo mayor alcance. Se observó que las publicaciones con este <em>hashtag</em> reportaban las acciones de y contra los sectores movilizados; así, el <em>tweet</em> con #ParoNacionalEC que recibió más RTs fue: <blockquote class="twitter-tweet"><p lang="es" dir="ltr">Lenin decreta toque de queda pero al pueblo ecuatoriano nadie lo calla! Cacerolazo en protesta de la represión policial, el toque de queda y por aquellos que luchan en contra de un gobierno asesino que fomenta la desigualdad social. <a href="https://twitter.com/hashtag/ToqueDeQueda?src=hash&amp;ref_src=twsrc%5Etfw">#ToqueDeQueda</a> <a href="https://twitter.com/hashtag/ParoNacionalEC?src=hash&amp;ref_src=twsrc%5Etfw">#ParoNacionalEC</a> <a href="https://twitter.com/hashtag/Cacerolazo?src=hash&amp;ref_src=twsrc%5Etfw">#Cacerolazo</a> <a href="https://t.co/ViQgOMTOZJ">pic.twitter.com/ViQgOMTOZJ</a></p>&mdash; Ani Aguirre (@AniAguirre10) <a href="https://twitter.com/AniAguirre10/status/1183225522651832320?ref_src=twsrc%5Etfw">October 13, 2019</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</p>
+<p>Mientras que el discurso malintencionado del estado -en la forma de #EcuadorPaísDePaz y #DecididosACrecer- recibió más RTs en este <em>tweet</em> de la cuenta presidencial: <blockquote class="twitter-tweet"><p lang="es" dir="ltr">El saqueo y vandalismo no son manifestaciones ciudadanas.<br>Demuestran la intención política de Correa, Maduro y de los corruptos que deben responder a la  justicia y al país por desestabilizar este Gobierno democrático. <a href="https://twitter.com/hashtag/EcuadorPa%C3%ADsDePaz?src=hash&amp;ref_src=twsrc%5Etfw">#EcuadorPaísDePaz</a> <a href="https://twitter.com/hashtag/DecididosACrecer?src=hash&amp;ref_src=twsrc%5Etfw">#DecididosACrecer</a> <a href="https://t.co/esyJv9RK5n">pic.twitter.com/esyJv9RK5n</a></p>&mdash; Lenín Moreno (@Lenin) <a href="https://twitter.com/Lenin/status/1181413499555192833?ref_src=twsrc%5Etfw">October 8, 2019</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</p>
+<p>Un detalle que no se debe pasar por alto es el hecho de que, unas pocas veces, los <em>hashtags</em> estudiados fueron utilizados en combinación. Esto ocurrió solamente en 44 <em>tweets</em>, lo cual no arroja luz adicional para discernir la intención del usuario; con todo, la combinación de #ParoNacionalEcuador y #ElParoSigue fue la más frecuente. La manera de averiguar esto es “ensanchar” los datos, nuevamente vía <code>tidyr</code>:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" title="1">df_wide =<span class="st"> </span><span class="kw">transmute</span>(df_all, <span class="dt">id =</span> id, <span class="dt">us =</span> user, <span class="dt">name =</span> ht, <span class="dt">value =</span> <span class="st">&quot;\U2713&quot;</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb4-2" title="2"><span class="st">   </span><span class="kw">pivot_wider</span>(<span class="dt">values_fill =</span> <span class="kw">list</span>(<span class="dt">value =</span> <span class="st">&quot; &quot;</span>)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb4-3" title="3"><span class="st">   </span><span class="kw">group_by_at</span>(<span class="kw">vars</span>(<span class="op">-</span>id, <span class="op">-</span>us)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb4-4" title="4"><span class="st">   </span><span class="kw">summarise</span>(<span class="dt">Tweets =</span> <span class="kw">n_distinct</span>(id), <span class="dt">Usuarios =</span> <span class="kw">n_distinct</span>(us)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb4-5" title="5"><span class="st">   </span><span class="kw">rename_at</span>(<span class="kw">vars</span>(<span class="op">-</span>Tweets, <span class="op">-</span>Usuarios), <span class="op">~</span><span class="kw">gsub</span>(<span class="st">&quot;[[:lower:]]&quot;</span>, <span class="st">&quot;&quot;</span>, .))</a></code></pre></div>
+<p>La siguiente tabla presenta las combinaciones de <em>hashtags</em> -mostrando solo iniciales- que aparecieron.</p>
+<table>
+<caption><span id="tab:help1">Table 2: </span>Resumen de los tweets con hashtags combinados</caption>
+<thead>
+<tr class="header">
+<th align="center">#DPLP</th>
+<th align="center">#EPDP</th>
+<th align="center">#EPNP</th>
+<th align="center">#EPS</th>
+<th align="center">#PNEC</th>
+<th align="center">#PNE</th>
+<th align="right">Tweets</th>
+<th align="right">Usuarios</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center">✓</td>
+<td align="center">✓</td>
+<td align="right">6</td>
+<td align="right">6</td>
+</tr>
+<tr class="even">
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center">✓</td>
+<td align="center"></td>
+<td align="center">✓</td>
+<td align="right">14</td>
+<td align="right">11</td>
+</tr>
+<tr class="odd">
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center">✓</td>
+<td align="center">✓</td>
+<td align="center"></td>
+<td align="right">4</td>
+<td align="right">4</td>
+</tr>
+<tr class="even">
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center">✓</td>
+<td align="center">✓</td>
+<td align="center">✓</td>
+<td align="right">1</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="center"></td>
+<td align="center"></td>
+<td align="center">✓</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center">✓</td>
+<td align="right">6</td>
+<td align="right">6</td>
+</tr>
+<tr class="even">
+<td align="center"></td>
+<td align="center"></td>
+<td align="center">✓</td>
+<td align="center"></td>
+<td align="center">✓</td>
+<td align="center"></td>
+<td align="right">6</td>
+<td align="right">6</td>
+</tr>
+<tr class="odd">
+<td align="center"></td>
+<td align="center"></td>
+<td align="center">✓</td>
+<td align="center">✓</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="right">4</td>
+<td align="right">2</td>
+</tr>
+<tr class="even">
+<td align="center"></td>
+<td align="center">✓</td>
+<td align="center">✓</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="right">1</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="center">✓</td>
+<td align="center">✓</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="right">2</td>
+<td align="right">1</td>
+</tr>
+</tbody>
+</table>
+<p>Habiendo analizado todo esto, ¿quiénes utilizaron en mayor cantidad cada <em>hashtag</em>? Este gráfico -que conserva la legenda de color del gráfico <a href="#fig:plot1">1</a>- recoge solamente los usuarios con diez o más publicaciones. Se demuestra cómo en las cuentas de ejército, policía y presidente -los responsables de la violencia que sufrieron los manifestantes- abundaron los mensajes de paz, alcanzando una cantidad ridícula con la secretaría general de comunicación de la presidencia. Mientras tanto se evidenciaron los mensajes de respaldo al paro desde el KolectiVOZ y la CONAIE, y de reportaje en Pichincha Comunicaciones y Wambra.</p>
+<div class="figure"><span id="fig:plot3"></span>
+<img src="../../../../post/2020/02/19-sobre-tweets-paro-nacional-parte_files/figure-html/plot3-1.svg" alt="Usuarios que publicaron diez o más tweets por hashtag" width="100%" />
+<p class="caption">
+Figure 3: Usuarios que publicaron diez o más tweets por hashtag
+</p>
+</div>
+<p>Para cerrar este análisis se presenta un histograma sobre el tiempo de publicación de los <em>tweets</em>; cada columna encierra seis horas. Los tiempos son congruentes con la propaganda del #EcuadorPaísDePaz, posterior al inicio del paro, y la expectativa del #DialogoPorLaPaz, refiriéndose a la reunión del 13 de octubre donde se derogaron las medidas económicas, poniendo efectivamente fin al paro.</p>
+<div class="figure"><span id="fig:plot4"></span>
+<img src="../../../../post/2020/02/19-sobre-tweets-paro-nacional-parte_files/figure-html/plot4-1.svg" alt="Tiempo de publicación de los tweets por hashtag" width="100%" />
+<p class="caption">
+Figure 4: Tiempo de publicación de los tweets por hashtag
+</p>
+</div>
+
+              
+            </div>
+          </div>
+          <div id="post-footer" class="post-footer main-content-wrap">
+            
+              
+                
+                
+                  <div class="post-footer-tags">
+                    <span class="text-color-light text-small">Etiquetado en</span><br/>
+                    
+  <a class="tag tag--primary tag--small" href="../../../../tags/hashtags/">hashtags</a>
+
+  <a class="tag tag--primary tag--small" href="../../../../tags/paro-nacional/">paro nacional</a>
+
+                  </div>
+                
+              
+            
+            <div class="post-actions-wrap">
+  
+      <nav >
+        <ul class="post-actions post-action-nav">
+          
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--disabled">
+              
+                  <i class="fa fa-angle-left"></i>
+                  <span class="hide-xs hide-sm text-small icon-ml">Siguiente</span>
+                </a>
+            </li>
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="../../../../post/2020/01/23-sobre-tweets-paro-nacional/" data-tooltip="Sobre los Tweets en el Paro Nacional">
+              
+                  <span class="hide-xs hide-sm text-small icon-mr">Anterior</span>
+                  <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+          
+        </ul>
+      </nav>
+    <ul class="post-actions post-action-share" >
+      
+        <li class="post-action hide-lg hide-md hide-sm">
+          <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions">
+            <i class="fa fa-share-alt"></i>
+          </a>
+        </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://ruevko.github.io/hexagonal/post/2020/02/19-sobre-tweets-paro-nacional-parte/">
+              <i class="fab fa-twitter"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://ruevko.github.io/hexagonal/post/2020/02/19-sobre-tweets-paro-nacional-parte/">
+              <i class="fab fa-facebook-f"></i>
+            </a>
+          </li>
+        
+      
+      
+      <li class="post-action">
+        
+          <a class="post-action-btn btn btn--default" href="#">
+        
+          <i class="fa fa-angle-double-up"></i>
+        </a>
+      </li>
+    </ul>
+  
+</div>
+
+            
+              
+            
+          </div>
+        </article>
+        <footer id="footer" class="main-content-wrap">
+  <span class="copyrights">
+    &copy; 2020 <a href="https://github.com/ruevko">ruevko</a>. Todos los derechos reservados
+  </span>
+</footer>
+
+      </div>
+      <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+        <div class="post-actions-wrap">
+  
+      <nav >
+        <ul class="post-actions post-action-nav">
+          
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--disabled">
+              
+                  <i class="fa fa-angle-left"></i>
+                  <span class="hide-xs hide-sm text-small icon-ml">Siguiente</span>
+                </a>
+            </li>
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="../../../../post/2020/01/23-sobre-tweets-paro-nacional/" data-tooltip="Sobre los Tweets en el Paro Nacional">
+              
+                  <span class="hide-xs hide-sm text-small icon-mr">Anterior</span>
+                  <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+          
+        </ul>
+      </nav>
+    <ul class="post-actions post-action-share" >
+      
+        <li class="post-action hide-lg hide-md hide-sm">
+          <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions">
+            <i class="fa fa-share-alt"></i>
+          </a>
+        </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://ruevko.github.io/hexagonal/post/2020/02/19-sobre-tweets-paro-nacional-parte/">
+              <i class="fab fa-twitter"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://ruevko.github.io/hexagonal/post/2020/02/19-sobre-tweets-paro-nacional-parte/">
+              <i class="fab fa-facebook-f"></i>
+            </a>
+          </li>
+        
+      
+      
+      <li class="post-action">
+        
+          <a class="post-action-btn btn btn--default" href="#">
+        
+          <i class="fa fa-angle-double-up"></i>
+        </a>
+      </li>
+    </ul>
+  
+</div>
+
+      </div>
+      <div id="share-options-bar" class="share-options-bar" data-behavior="4">
+  <i id="btn-close-shareoptions" class="fa fa-close"></i>
+  <ul class="share-options">
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=https%3A%2F%2Fruevko.github.io%2Fhexagonal%2Fpost%2F2020%2F02%2F19-sobre-tweets-paro-nacional-parte%2F">
+          <i class="fab fa-twitter"></i><span>Compartir en Twitter</span>
+        </a>
+      </li>
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fruevko.github.io%2Fhexagonal%2Fpost%2F2020%2F02%2F19-sobre-tweets-paro-nacional-parte%2F">
+          <i class="fab fa-facebook-f"></i><span>Compartir en Facebook</span>
+        </a>
+      </li>
+    
+  </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+
+    </div>
+    
+    <div id="about">
+  <div id="about-card">
+    <div id="about-btn-close">
+      <i class="fas fa-times"></i>
+    </div>
+    
+      <img id="about-card-picture" src="https://ruevko.github.io/hexagonal/logo.png" alt="Foto de autor" />
+    
+    <h4 id="about-card-name">La Galería Hexagonal</h4>
+    
+      <div id="about-card-bio">Este es el blog de <a href="https://instagram.com/ruevko">Rafael Castro</a>, orientado a Cartografía y Data Analytics.</div>
+    
+    
+      <div id="about-card-job">
+        <i class="fas fa-graduation-cap"></i>
+        <br/>
+        Geógrafo
+      </div>
+    
+    
+      <div id="about-card-location">
+        <i class="fas fa-home"></i>
+        <br/>
+        Ecuador
+      </div>
+    
+  </div>
+</div>
+
+    
+
+    
+  
+    <div id="cover" style="background-image:url('https://res.cloudinary.com/dodnzqhiz/image/upload/v1577918037/crv.png');"></div>
+  
+
+
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.7/js/jquery.fancybox.min.js" integrity="sha256-GEAnjcTqVP+vBp3SSc8bEDQqvWAZMiHyUSIorrWwH50=" crossorigin="anonymous"></script>
+
+
+<script src="../../../../js/script-pcw6v3xilnxydl1vddzazdverrnn9ctynvnxgwho987mfyqkuylcb1nlt.min.js"></script>
+
+
+<script lang="javascript">
+window.onload = updateMinWidth;
+window.onresize = updateMinWidth;
+document.getElementById("sidebar").addEventListener("transitionend", updateMinWidth);
+function updateMinWidth() {
+  var sidebar = document.getElementById("sidebar");
+  var main = document.getElementById("main");
+  main.style.minWidth = "";
+  var w1 = getComputedStyle(main).getPropertyValue("min-width");
+  var w2 = getComputedStyle(sidebar).getPropertyValue("width");
+  var w3 = getComputedStyle(sidebar).getPropertyValue("left");
+  main.style.minWidth = `calc(${w1} - ${w2} - ${w3})`;
+}
+</script>
+
+
+  
+    
+  
+
+
+
+
+    
+  </body>
+</html>
+

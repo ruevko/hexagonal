@@ -1,11 +1,5 @@
-# for pdf docs
-x = "static/doctex"
-blogdown::build_dir(x)
-x = paste(x, dir(x), sep = "/")
-file.remove(x[grep("\\.tex$", x)])
+message('\n\n  " Que cada hombre construya su propia catedral.\n',
+        '    Para que vivir de obras de arte ajenas y antiguas?',
+        ' "\n\n\t\t\t\t\t\t(Borges)\n\n')
 
-# for html slides
-s = "static/docpres"
-blogdown::build_dir(s)
-s = paste(s, dir(s), sep = "/")
-#file.remove(s[grep("_files$", s)])
+stopifnot(!is.null(getOption("blogdown.author")))

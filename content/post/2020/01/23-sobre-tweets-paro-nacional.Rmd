@@ -84,36 +84,40 @@ searchTwitter("#ParoNacionalEcuador -filter:retweets", 2e4,
               since = "2019-10-01", until = "2019-10-10")
 ```
 
-Desafortunadamente volver a ejecutar esta función no devolverá un solo *tweet*. Desconocía que la versión gratuita de la API solo recupera datos con una semana^[El ejemplo con *tweets* de Wambra sí funciona porque utiliza una API diferente; una que accede a cualquier época, pero en una única cuenta. La búsqueda por *hashtag* o texto sí está restringida a una semana.] de antigüedad como máximo, a diferencia del sitio web que puede acceder a cualquier época. Es una lástima, pues no conservé los datos cuando ejecuté el análisis en octubre. Con todo existe [una](https://github.com/Jefferson-Henrique/GetOldTweets-java) alternativa; básicamente, es un programa en java que simula la navegación en el sitio web de Twitter y recupera los datos conforme son presentados. Los siguientes comandos representan la obtención de *tweets* que contienen #ParoNacionalEcuador a través de la *command line*.
+Desafortunadamente volver a ejecutar esta función no devolverá un solo *tweet*. Desconocía que la versión gratuita de la API solo recupera datos con una semana^[El ejemplo con *tweets* de Wambra sí funciona porque utiliza una API diferente; una que accede a cualquier época, pero en una única cuenta. La búsqueda por *hashtag* o texto sí está restringida a una semana.] de antigüedad como máximo, a diferencia del sitio web que puede acceder a cualquier época. Es una lástima, pues no conservé los datos cuando ejecuté el análisis en octubre. Con todo existe [una](https://github.com/Jefferson-Henrique/GetOldTweets-java) alternativa; básicamente, es un programa en *java* que simula la navegación en el sitio web de Twitter y recupera los datos conforme son presentados. Los siguientes comandos ilustran la obtención de *tweets* que contienen #ParoNacionalEcuador a través de la *command line*.
 
 ```{bash java, eval=FALSE}
-PS C:\> git clone https://github.com/Jefferson-Henrique/GetOldTweets-java.git
-PS C:\> cd GetOldTweets-java-master
-PS C:\GetOldTweets-java-master> java -jar got.jar querysearch="#ParoNacionalEC" since=2019-10-01 until=2019-10-15
+git clone https://github.com/Jefferson-Henrique/GetOldTweets-java
+cd GetOldTweets-java
+java -jar got.jar querysearch="#ParoNacionalEcuador" since=2019-10-01 until=2019-10-15
+ren "output_got.csv" "output_ParoNacionalEcuador.csv"
 ```
 
 Los resultados son escritos en un archivo de valores separados por comas -punto y coma en realidad- para el cual escribí otra función, observando también que ocurría un uso inadecuado de las comillas:
 
 ```{r fun2}
-read.twts = function(csv){
+readHashTag = function(hashtag){
    
-   lines = gsub("\";", "';", gsub(";\"", ";'", readLines(csv)))
+   txt = readLines(paste0("output_", hashtag, ".csv"))
    
-   cols = c(username = "NULL", date = "POSIXct", text = "character", geo = "NULL")
+   txt = gsub("\";", "';", gsub(";\"", ";'", txt))
    
-   df = read.csv2(text = lines, colClasses = cols, na.strings = "", quote = "'")
+   clc = c(date = "POSIXct", mentions = "NULL", hashtags = "NULL", id = "character")
    
-   df$user = gsub("^https://twitter.com/(\\w+)/status/\\d+$", "@\\1", df$permalink)
+   df = read.csv2(text = txt, colClasses = clc, quote = "'", na.strings = "") %>%
+      mutate(user = gsub("^https://twitter.com/(\\w+)/status/\\d+$", "@\\1", permalink),
+             text = gsub("https://twitter.com/.+$", "", text),
+             text = gsub("pic.twitter.com/.+$", "", text),
+             ht = paste0("#", hashtag)) %>%
+      select(ht, id, time = date, text, user, retweets, favorites)
    
-   df$id = as.numeric(df$id)
-   
-   tibble::as_tibble(df)}
+   as_tibble(df)}
 ```
 
-Finalmente para leer los *tweets* recuperados: `read.twts("output_got.csv")`
+Finalmente para leer los *tweets* recuperados: `readHashTag("ParoNacionalEcuador")`
 
 ```{r read, echo=FALSE}
-read.twts("output_got.csv")
+readHashTag("ParoNacionalEcuador")
 ```
 
 En este caso se han recuperado solamente 244 de los 11471 *tweets* que originalmente se obtuvieron vía API. Es una cantidad mínima, pero es la alternativa a contratar un producto comercial de Twitter; a continuación, el desafío es averiguar hasta que nivel el análisis es replicable con esta cantidad reducida de datos.
