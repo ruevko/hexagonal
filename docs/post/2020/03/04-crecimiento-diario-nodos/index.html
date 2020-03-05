@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="es-es">
+  <head>
+    
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="generator" content="Hugo 0.65.3 with theme Tranquilpeak 0.4.7-BETA">
+<meta name="author" content="La Galería Hexagonal">
+<meta name="keywords" content="nodes, choropleths, linear regression, mapas, datos, análisis, maps, data, analysis">
+<meta name="description" content="Se ajustó un modelo lineal por cada país, para conocer el crecimiento de nodos OpenStreetMap a través del tiempo.">
+
+
+<meta property="og:description" content="Se ajustó un modelo lineal por cada país, para conocer el crecimiento de nodos OpenStreetMap a través del tiempo.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="El crecimiento diario de los nodos">
+<meta name="twitter:title" content="El crecimiento diario de los nodos">
+<meta property="og:url" content="https://ruevko.github.io/hexagonal/post/2020/03/04-crecimiento-diario-nodos/">
+<meta property="twitter:url" content="https://ruevko.github.io/hexagonal/post/2020/03/04-crecimiento-diario-nodos/">
+<meta property="og:site_name" content="La Galería Hexagonal">
+<meta property="og:description" content="Se ajustó un modelo lineal por cada país, para conocer el crecimiento de nodos OpenStreetMap a través del tiempo.">
+<meta name="twitter:description" content="Se ajustó un modelo lineal por cada país, para conocer el crecimiento de nodos OpenStreetMap a través del tiempo.">
+<meta property="og:locale" content="es-es">
+
+  
+    <meta property="article:published_time" content="2020-03-04T00:00:00">
+  
+  
+    <meta property="article:modified_time" content="2020-03-04T00:00:00">
+  
+  
+  
+    
+      <meta property="article:section" content="OpenStreetMap">
+    
+  
+  
+    
+      <meta property="article:tag" content="nodos">
+    
+      <meta property="article:tag" content="coropletas">
+    
+      <meta property="article:tag" content="regresión lineal">
+    
+  
+
+
+<meta name="twitter:card" content="summary">
+
+
+
+
+
+
+
+  <meta property="og:image" content="https://ruevko.github.io/hexagonal/post/2020/03/04-crecimiento-diario-nodos_files/figure-html/model3-1.svg">
+  <meta property="twitter:image" content="https://ruevko.github.io/hexagonal/post/2020/03/04-crecimiento-diario-nodos_files/figure-html/model3-1.svg">
+
+
+
+
+
+  <meta property="og:image" content="https://ruevko.github.io/hexagonal/logo.png">
+  <meta property="twitter:image" content="https://ruevko.github.io/hexagonal/logo.png">
+
+
+    <title>El crecimiento diario de los nodos</title>
+
+    <link rel="icon" href="../../../../favicon.png">
+    
+
+    
+
+    <link rel="canonical" href="https://ruevko.github.io/hexagonal/post/2020/03/04-crecimiento-diario-nodos/">
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" integrity="sha256-+N4/V/SbAFiW1MPBCXnfnP9QSN3+Keu+NlB+0ev/YKQ=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/jquery.fancybox.min.css" integrity="sha256-vuXZ9LGmmwtjqFX1F+EKin1ThZMub58gKULUyf0qECk=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/helpers/jquery.fancybox-thumbs.min.css" integrity="sha256-SEa4XYAHihTcEP1f5gARTB2K26Uk8PsndQYHQC1f4jU=" crossorigin="anonymous" />
+    
+    
+    <link rel="stylesheet" href="../../../../css/style-twzjdbqhmnnacqs0pwwdzcdbt8yhv8giawvjqjmyfoqnvazl0dalmnhdkvp7.min.css" />
+    
+    
+
+    
+      
+    
+    
+  </head>
+
+  <body>
+    <div id="blog">
+      <header id="header" data-behavior="4">
+  <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+  <div class="header-title">
+    <a class="header-title-link" href="../../../../">La Galería Hexagonal</a>
+  </div>
+  
+</header>
+
+      <nav id="sidebar" data-behavior="4">
+  <div class="sidebar-container">
+    
+      <div class="sidebar-profile">
+        <a href="../../../../#about">
+          <img class="sidebar-profile-picture" src="https://ruevko.github.io/hexagonal/logo.png" alt="Foto de autor" />
+        </a>
+        <h4 class="sidebar-profile-name">La Galería Hexagonal</h4>
+
+      </div>
+    
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="../../../../">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-globe-americas"></i>
+      
+      <span class="sidebar-button-desc">Inicio</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="../../../../categories">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-map-marked-alt"></i>
+      
+      <span class="sidebar-button-desc">Categorías</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="../../../../tags">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-map-marker-alt"></i>
+      
+      <span class="sidebar-button-desc">Etiquetas</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="../../../../archives">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-search-location"></i>
+      
+      <span class="sidebar-button-desc">Archivos</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="../../../../page">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-compass"></i>
+      
+      <span class="sidebar-button-desc">Créditos</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+
+    </ul>
+  </div>
+</nav>
+
+      
+
+
+      
+
+      <div id="main" data-behavior="4"
+        class="
+               hasCoverMetaIn
+               ">
+        <article class="post" itemscope itemType="http://schema.org/BlogPosting">
+          
+          
+            <div class="post-header main-content-wrap text-left">
+  
+    <h1 class="post-title" itemprop="headline">
+      El crecimiento diario de los nodos
+    </h1>
+  
+  
+  <div class="postShorten-meta post-meta">
+    
+      <time itemprop="datePublished" datetime="2020-03-04T00:00:00Z">
+        
+  
+  
+  
+  
+    4 de Marzo de 2020
+  
+
+      </time>
+    
+    
+  
+  
+    <span>en</span>
+    
+      <a class="category-link" href="../../../../categories/openstreetmap">OpenStreetMap</a>
+    
+  
+
+  </div>
+
+</div>
+          
+          <div class="post-content markdown" itemprop="articleBody">
+            <div class="main-content-wrap">
+              
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    background-color: #ffffff;
+    color: #a0a0a0;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #a0a0a0;  padding-left: 4px; }
+div.sourceCode
+  { color: #1f1c1b; background-color: #ffffff; }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span. { color: #1f1c1b; } /* Normal */
+code span.al { color: #bf0303; background-color: #f7e6e6; font-weight: bold; } /* Alert */
+code span.an { color: #ca60ca; } /* Annotation */
+code span.at { color: #0057ae; } /* Attribute */
+code span.bn { color: #b08000; } /* BaseN */
+code span.bu { color: #644a9b; font-weight: bold; } /* BuiltIn */
+code span.cf { color: #1f1c1b; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #924c9d; } /* Char */
+code span.cn { color: #aa5500; } /* Constant */
+code span.co { color: #898887; } /* Comment */
+code span.cv { color: #0095ff; } /* CommentVar */
+code span.do { color: #607880; } /* Documentation */
+code span.dt { color: #0057ae; } /* DataType */
+code span.dv { color: #b08000; } /* DecVal */
+code span.er { color: #bf0303; text-decoration: underline; } /* Error */
+code span.ex { color: #0095ff; font-weight: bold; } /* Extension */
+code span.fl { color: #b08000; } /* Float */
+code span.fu { color: #644a9b; } /* Function */
+code span.im { color: #ff5500; } /* Import */
+code span.in { color: #b08000; } /* Information */
+code span.kw { color: #1f1c1b; font-weight: bold; } /* Keyword */
+code span.op { color: #1f1c1b; } /* Operator */
+code span.ot { color: #006e28; } /* Other */
+code span.pp { color: #006e28; } /* Preprocessor */
+code span.re { color: #0057ae; background-color: #e0e9f8; } /* RegionMarker */
+code span.sc { color: #3daee9; } /* SpecialChar */
+code span.ss { color: #ff5500; } /* SpecialString */
+code span.st { color: #bf0303; } /* String */
+code span.va { color: #0057ae; } /* Variable */
+code span.vs { color: #bf0303; } /* VerbatimString */
+code span.wa { color: #bf0303; } /* Warning */
+</style>
+
+
+<p>En el primer post de este blog presenté una metodología para generar un mapa coroplético de las contribuciones a OpenStreetMap. Esta alternativa recupera el 75 % de todos los nodos en la base de datos, así que constituye una buena estimación inicial. Con todo, sumar los nodos en cada país no es aprovechar completamente esos datos; después de todo estamos hablando de 738 mil observaciones. Por eso, el objetivo de este post será averiguar la tasa de crecimiento de los nodos en cada país; para comenzar, se utilizará <code>tidyverse</code> para cargar simultáneamente varios paquetes necesarios.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw">library</span>(sf)</a>
+<a class="sourceLine" id="cb1-2" title="2"><span class="kw">library</span>(tidyverse) <span class="co"># contiene dplyr, ggplot2, purrr y tidyr!</span></a>
+<a class="sourceLine" id="cb1-3" title="3"></a>
+<a class="sourceLine" id="cb1-4" title="4"><span class="kw">data</span>(<span class="st">&quot;World&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;tmap&quot;</span>); World =<span class="st"> </span><span class="kw">select</span>(World, name, continent)</a>
+<a class="sourceLine" id="cb1-5" title="5"></a>
+<a class="sourceLine" id="cb1-6" title="6">countries =<span class="st"> </span><span class="kw">left_join</span>(countries, World, <span class="kw">c</span>(<span class="st">&quot;country&quot;</span> =<span class="st"> &quot;name&quot;</span>)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb1-7" title="7"><span class="st">   </span><span class="kw">filter</span>(<span class="op">!</span><span class="kw">is.na</span>(continent), date <span class="op">!=</span><span class="st"> </span><span class="kw">as.Date</span>(<span class="st">&quot;2019-11-01&quot;</span>)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb1-8" title="8"><span class="st">   </span><span class="kw">select</span>(<span class="op">-</span>geometry) <span class="co"># &quot;countries&quot; viene del primer post</span></a></code></pre></div>
+<p>En el primer paso se descartó los territorios que no podrán ser representados en el mapa (reduciendo así los datos de 253 a 173 países) y se asignó el continente al que pertenece cada uno. Considerando que las observaciones son diarias, es preferible agregar los datos para reducir su número; en este caso se calcularon la suma<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> y la suma acumulativa mensuales.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1">countries_month =<span class="st"> </span><span class="kw">mutate_at</span>(countries, <span class="st">&quot;date&quot;</span>, lubridate<span class="op">::</span>ceiling_date, <span class="st">&quot;month&quot;</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb2-2" title="2"><span class="st">   </span><span class="kw">group_by</span>(continent, country, date) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb2-3" title="3"><span class="st">   </span><span class="kw">summarise</span>(<span class="dt">SumNodes =</span> <span class="kw">sum</span>(created)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb2-4" title="4"><span class="st">   </span><span class="kw">mutate</span>(<span class="dt">CumNodes =</span> <span class="kw">cumsum</span>(SumNodes), <span class="dt">date =</span> date <span class="op">-</span><span class="st"> </span><span class="dv">1</span>) <span class="co"># es el último día de cada mes</span></a>
+<a class="sourceLine" id="cb2-5" title="5"></a>
+<a class="sourceLine" id="cb2-6" title="6"><span class="kw">head</span>(countries_month)</a></code></pre></div>
+<pre><code>## # A tibble: 6 x 5
+## # Groups:   continent, country [1]
+##   continent country date       SumNodes CumNodes
+##   &lt;fct&gt;     &lt;chr&gt;   &lt;date&gt;        &lt;dbl&gt;    &lt;dbl&gt;
+## 1 Africa    Algeria 2011-11-30    45598    45598
+## 2 Africa    Algeria 2011-12-31    60887   106485
+## 3 Africa    Algeria 2012-01-31    46259   152744
+## 4 Africa    Algeria 2012-02-29    33228   185972
+## 5 Africa    Algeria 2012-03-31    24461   210433
+## 6 Africa    Algeria 2012-04-30    15374   225807</code></pre>
+<p>Incluso agregando los datos, existen 96 observaciones mensuales por cada uno de los 173 países. Para el siguiente gráfico se agregó aún más los datos: se agrupó los países de acuerdo al continente (exceptuando Antártida) y se promedió la suma de nodos creados.</p>
+<div class="figure"><span id="fig:mean"></span>
+<img src="../../../../post/2020/03/04-crecimiento-diario-nodos_files/figure-html/mean-1.svg" alt="Promedio de nodos creados mensualmente en cada continente" width="100%" />
+<p class="caption">
+Figure 1: Promedio de nodos creados mensualmente en cada continente
+</p>
+</div>
+<p>Visualizar el promedio a través de los meses confirma el hecho de que los países europeos y norteamericanos poseen las contribuciones más elevadas. En África, Asia y Sudamérica las contribuciones son significativamente menores, pero han incrementado a través de los años. Es evidente que demostrar la evolución de cada país generaría un gráfico saturado de líneas; por esta razón se seleccionó, de cada continente, los dos países con más nodos en total. Estos países, ordenados de más a menos nodos, son:</p>
+<ol style="list-style-type: decimal">
+<li>Estados Unidos</li>
+<li>Rusia</li>
+<li>Canadá</li>
+<li>Francia</li>
+<li>Indonesia</li>
+<li>Japón</li>
+<li>Brasil</li>
+<li>Tanzania</li>
+<li>Australia</li>
+<li>Nigeria</li>
+<li>Nueva Zelanda</li>
+<li>Argentina</li>
+</ol>
+<div class="figure"><span id="fig:cumsum"></span>
+<img src="../../../../post/2020/03/04-crecimiento-diario-nodos_files/figure-html/cumsum-1.svg" alt="Suma 👆 y suma acumulativa 👇 de nodos creados mensualmente en países seleccionados" width="100%" />
+<p class="caption">
+Figure 2: Suma 👆 y suma acumulativa 👇 de nodos creados mensualmente en países seleccionados
+</p>
+</div>
+<p>Como era de esperar, en EU, Rusia, Canadá y Francia se crean la mayor cantidad de nodos cada mes, superados de vez en cuando por países africanos, asiáticos y sudamericanos. No obstante, es imposible caracterizar las contribuciones a través de la suma mensual de nodos; la suma acumulativa, en cambio, presenta una evolución casi lineal. Argüiblemente, es de esperar que los aspectos de un proyecto colaborativo -tales como cantidad de miembros o de aportes- tengan un comportamiento lineal o exponencial, dependiendo de las características del proyecto.</p>
+<p>En OpenStreetMap se ha observado un comportamiento lineal antes, por ejemplo, en <span class="citation">Neis, Zielstra, and Zipf (<a href="#ref-neis13" role="doc-biblioref">2013</a>)</span>. Al comparar las contribuciones en doce grandes urbes alrededor del mundo, observaron un incremento lineal en los miembros contribuidores -normalizados respecto a población y área de la urbe- en el periodo de enero de 2007 a septiembre de 2012. Las urbes, ordenadas de mayor a menor tasa de incremento de contribuidores, fueron:</p>
+<ol style="list-style-type: decimal">
+<li>Berlín</li>
+<li>París</li>
+<li>Moscú</li>
+<li>Londres</li>
+<li>Los Ángeles</li>
+<li>Sídney</li>
+<li>Johannesburgo</li>
+<li>Buenos Aires</li>
+<li>Osaka</li>
+<li>Estambul</li>
+<li>Seúl</li>
+<li>El Cairo</li>
+</ol>
+<p>Nuevamente, las ciudades europeas se encuentran en los primeros lugares, seguidas inmediatamente por una ciudad estadounidense. Un orden similar aparece en el siguiente gráfico <span class="citation">(Neis, Zielstra, and Zipf <a href="#ref-neis13" role="doc-biblioref">2013</a>)</span> que demuestra la cantidad de objetos -normalizados respecto al área- en las mismas urbes.</p>
+<div class="figure">
+<img src="https://www.mdpi.com/futureinternet/futureinternet-05-00282/article_deploy/html/images/futureinternet-05-00282-g005.png" alt="Densidad de objetos OSM por Km2 hasta octubre de 2012; © 2014 Pascal Neis, Dennis Zielstra, Alexander Zipf" />
+<p class="caption">Densidad de objetos OSM por Km<sup>2</sup> hasta octubre de 2012; © 2014 Pascal Neis, Dennis Zielstra, Alexander Zipf</p>
+</div>
+<p>Con estos antecedentes se decidió calcular una regresión lineal<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a> para cada país, modelando la suma acumulativa de nodos con respecto al tiempo, en los ocho años -del 1 de noviembre de 2011 al 31 de octubre de 2019- que abarcan los datos. Un acercamiento organizado para esta tarea es utilizar <code>nest</code>, para “anidar” las observaciones por país, y luego ejecutar <code>lm</code> en las observaciones anidadas.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" title="1">countries_model =<span class="st"> </span><span class="kw">nest</span>(countries_month) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb4-2" title="2"><span class="st">   </span><span class="kw">mutate</span>(<span class="dt">model =</span> <span class="kw">map</span>(data, <span class="op">~</span><span class="kw">lm</span>(CumNodes <span class="op">~</span><span class="st"> </span>date, <span class="dt">data =</span> .)),</a>
+<a class="sourceLine" id="cb4-3" title="3">          <span class="dt">value =</span> <span class="kw">map</span>(model, <span class="op">~</span><span class="kw">c</span>(<span class="kw">coef</span>(.), <span class="kw">summary</span>(.)<span class="op">$</span>adj.r.squared))) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb4-4" title="4"><span class="st">   </span><span class="kw">unnest</span>(<span class="dt">cols =</span> <span class="kw">c</span>(value)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb4-5" title="5"><span class="st">   </span><span class="kw">mutate</span>(<span class="dt">name =</span> <span class="kw">c</span>(<span class="st">&quot;b&quot;</span>, <span class="st">&quot;m&quot;</span>, <span class="st">&quot;r&quot;</span>)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb4-6" title="6"><span class="st">   </span><span class="kw">pivot_wider</span>() <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb4-7" title="7"><span class="st">   </span><span class="kw">ungroup</span>()</a>
+<a class="sourceLine" id="cb4-8" title="8"></a>
+<a class="sourceLine" id="cb4-9" title="9"><span class="kw">head</span>(countries_model)</a></code></pre></div>
+<pre><code>## # A tibble: 6 x 7
+##   continent country      data              model           b     m     r
+##   &lt;fct&gt;     &lt;chr&gt;        &lt;list&gt;            &lt;list&gt;      &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1 Africa    Algeria      &lt;tibble [96 x 3]&gt; &lt;lm&gt;   -65540524. 4211. 0.982
+## 2 Africa    Angola       &lt;tibble [96 x 3]&gt; &lt;lm&gt;   -38861484. 2443. 0.738
+## 3 Africa    Benin        &lt;tibble [96 x 3]&gt; &lt;lm&gt;   -28410417. 1791. 0.908
+## 4 Africa    Botswana     &lt;tibble [96 x 3]&gt; &lt;lm&gt;   -56111053. 3536. 0.897
+## 5 Africa    Burkina Faso &lt;tibble [96 x 3]&gt; &lt;lm&gt;   -46220666. 2921. 0.926
+## 6 Africa    Burundi      &lt;tibble [96 x 3]&gt; &lt;lm&gt;   -13142257.  843. 0.856</code></pre>
+<p>Para ilustrar los resultados se presentan las regresiones de los países seleccionados:</p>
+<div class="figure"><span id="fig:model2"></span>
+<img src="../../../../post/2020/03/04-crecimiento-diario-nodos_files/figure-html/model2-1.svg" alt="Regresiones lineales 📈 ajustadas en países seleccionados" width="100%" />
+<p class="caption">
+Figure 3: Regresiones lineales 📈 ajustadas en países seleccionados
+</p>
+</div>
+<p>Se obtuvo un buen ajuste en la mayoría de casos, en función del coeficiente de determinación (el “r” cuadrado) <a href="https://en.wikipedia.org/wiki/Coefficient_of_determination#Adjusted_R2">ajustado</a>. Solamente nueve países obtuvieron un coeficiente menor a 0.70 debido probablemente a que las contribuciones aparecieron de una manera atípica.</p>
+<div class="figure"><span id="fig:model3"></span>
+<img src="../../../../post/2020/03/04-crecimiento-diario-nodos_files/figure-html/model3-1.svg" alt="Regresiones lineales ajustadas con coeficiente de determinación menor a 0.70" width="100%" />
+<p class="caption">
+Figure 4: Regresiones lineales ajustadas con coeficiente de determinación menor a 0.70
+</p>
+</div>
+<p>En las regresiones que tuvieron buen ajuste, la característica que permite caracterizar las contribuciones en el tiempo es la pendiente, pues representa la tasa estimada de nodos creados al día<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a> en un determinado país. El promedio se situó en 9275 y el máximo en 159555 nodos diarios; es el caso de Estados Unidos, que constituye verdaderamente un valor atípico.</p>
+<p>¿De qué manera podemos verificar estas estimaciones? <span class="citation">Neis and Zipf (<a href="#ref-neis12" role="doc-biblioref">2012</a>)</span> revelan que, en enero de 2012, la tasa mundial de contribuciones fue aproximadamente 1.2 millones de nodos, 130 mil vías y 1500 relaciones creados a diario, en promedio. Sumando las pendientes de las regresiones ajustadas se obtiene el promedio diario de 1.6 millones de nodos creados en todo el mundo: un valor mayor al observado en 2012 y consistente con el periodo posterior al que pertenecen nuestros datos.</p>
+<p>Para cerrar este post se presentan los mapas coropléticos con las pendientes -las tasas diarias de creación de nodos- y los coeficientes de determinación ajustados de las regresiones calculadas en cada país.</p>
+<div class="figure"><span id="fig:map-slope"></span>
+<img src="../../../../post/2020/03/04-crecimiento-diario-nodos_files/figure-html/map-slope-1.svg" alt="Tasa diaria estimada de nodos creados por país" width="100%" />
+<p class="caption">
+Figure 5: Tasa diaria estimada de nodos creados por país
+</p>
+</div>
+<div class="figure"><span id="fig:map-coeff"></span>
+<img src="../../../../post/2020/03/04-crecimiento-diario-nodos_files/figure-html/map-coeff-1.svg" alt="Coeficiente de determinación del ajuste lineal por país" width="100%" />
+<p class="caption">
+Figure 6: Coeficiente de determinación del ajuste lineal por país
+</p>
+</div>
+<div id="referencias" class="section level1 unnumbered">
+<h1>Referencias</h1>
+<div id="refs" class="references">
+<div id="ref-neis13">
+<p>Neis, Pascal, Dennis Zielstra, and Alexander Zipf. 2013. “Comparison of Volunteered Geographic Information Data Contributions and Community Development for Selected World Regions.” <em>Future Internet</em> 5 (June): 282–300. <a href="https://doi.org/10.3390/fi5020282">https://doi.org/10.3390/fi5020282</a>.</p>
+</div>
+<div id="ref-neis12">
+<p>Neis, Pascal, and Alexander Zipf. 2012. “Analyzing the Contributor Activity of a Volunteered Geographic Information Project — the Case of Openstreetmap.” <em>ISPRS International Journal of Geo-Information</em> 1 (December): 146–65. <a href="https://doi.org/10.3390/ijgi1020146">https://doi.org/10.3390/ijgi1020146</a>.</p>
+</div>
+</div>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>Simplemente se sumaron los nodos creados, sin restar los eliminados. En consecuencia, las tasas de crecimiento obtenidas al final de este post no permiten calcular el número final de nodos en un país.<a href="#fnref1" class="footnote-back">↩</a></p></li>
+<li id="fn2"><p>Se puede argumentar que una regresión al origen (donde la intercepción es siempre cero) generará un mejor ajuste. Este modelo también fue evaluado y en ningún caso obtuvo un mejor ajuste, comparado con el modelo lineal típico.<a href="#fnref2" class="footnote-back">↩</a></p></li>
+<li id="fn3"><p>A pesar de que los datos fueron agregados mensualmente, las tasas estimadas son diarias pues la función de regresión considera que la fecha es un número entero, donde el incremento de uno representa un día.<a href="#fnref3" class="footnote-back">↩</a></p></li>
+</ol>
+</div>
+
+              
+            </div>
+          </div>
+          <div id="post-footer" class="post-footer main-content-wrap">
+            
+              
+                
+                
+                  <div class="post-footer-tags">
+                    <span class="text-color-light text-small">Etiquetado en</span><br/>
+                    
+  <a class="tag tag--primary tag--small" href="../../../../tags/nodos/">nodos</a>
+
+  <a class="tag tag--primary tag--small" href="../../../../tags/coropletas/">coropletas</a>
+
+  <a class="tag tag--primary tag--small" href="../../../../tags/regresi%C3%B3n-lineal/">regresión lineal</a>
+
+                  </div>
+                
+              
+            
+            <div class="post-actions-wrap">
+  
+      <nav >
+        <ul class="post-actions post-action-nav">
+          
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--disabled">
+              
+                  <i class="fa fa-angle-left"></i>
+                  <span class="hide-xs hide-sm text-small icon-ml">Siguiente</span>
+                </a>
+            </li>
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="../../../../post/2020/02/19-sobre-tweets-paro-nacional-parte/" data-tooltip="Sobre los Tweets en el Paro Nacional, segunda parte">
+              
+                  <span class="hide-xs hide-sm text-small icon-mr">Anterior</span>
+                  <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+          
+        </ul>
+      </nav>
+    <ul class="post-actions post-action-share" >
+      
+        <li class="post-action hide-lg hide-md hide-sm">
+          <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions">
+            <i class="fa fa-share-alt"></i>
+          </a>
+        </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://ruevko.github.io/hexagonal/post/2020/03/04-crecimiento-diario-nodos/">
+              <i class="fab fa-twitter"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://ruevko.github.io/hexagonal/post/2020/03/04-crecimiento-diario-nodos/">
+              <i class="fab fa-facebook-f"></i>
+            </a>
+          </li>
+        
+      
+      
+      <li class="post-action">
+        
+          <a class="post-action-btn btn btn--default" href="#">
+        
+          <i class="fa fa-angle-double-up"></i>
+        </a>
+      </li>
+    </ul>
+  
+</div>
+
+            
+              
+            
+          </div>
+        </article>
+        <footer id="footer" class="main-content-wrap">
+  <span class="copyrights">
+    &copy; 2020 <a href="https://github.com/ruevko">ruevko</a>. Todos los derechos reservados
+  </span>
+</footer>
+
+      </div>
+      <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+        <div class="post-actions-wrap">
+  
+      <nav >
+        <ul class="post-actions post-action-nav">
+          
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--disabled">
+              
+                  <i class="fa fa-angle-left"></i>
+                  <span class="hide-xs hide-sm text-small icon-ml">Siguiente</span>
+                </a>
+            </li>
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="../../../../post/2020/02/19-sobre-tweets-paro-nacional-parte/" data-tooltip="Sobre los Tweets en el Paro Nacional, segunda parte">
+              
+                  <span class="hide-xs hide-sm text-small icon-mr">Anterior</span>
+                  <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+          
+        </ul>
+      </nav>
+    <ul class="post-actions post-action-share" >
+      
+        <li class="post-action hide-lg hide-md hide-sm">
+          <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions">
+            <i class="fa fa-share-alt"></i>
+          </a>
+        </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://ruevko.github.io/hexagonal/post/2020/03/04-crecimiento-diario-nodos/">
+              <i class="fab fa-twitter"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://ruevko.github.io/hexagonal/post/2020/03/04-crecimiento-diario-nodos/">
+              <i class="fab fa-facebook-f"></i>
+            </a>
+          </li>
+        
+      
+      
+      <li class="post-action">
+        
+          <a class="post-action-btn btn btn--default" href="#">
+        
+          <i class="fa fa-angle-double-up"></i>
+        </a>
+      </li>
+    </ul>
+  
+</div>
+
+      </div>
+      <div id="share-options-bar" class="share-options-bar" data-behavior="4">
+  <i id="btn-close-shareoptions" class="fa fa-close"></i>
+  <ul class="share-options">
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=https%3A%2F%2Fruevko.github.io%2Fhexagonal%2Fpost%2F2020%2F03%2F04-crecimiento-diario-nodos%2F">
+          <i class="fab fa-twitter"></i><span>Compartir en Twitter</span>
+        </a>
+      </li>
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fruevko.github.io%2Fhexagonal%2Fpost%2F2020%2F03%2F04-crecimiento-diario-nodos%2F">
+          <i class="fab fa-facebook-f"></i><span>Compartir en Facebook</span>
+        </a>
+      </li>
+    
+  </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+
+    </div>
+    
+    <div id="about">
+  <div id="about-card">
+    <div id="about-btn-close">
+      <i class="fas fa-times"></i>
+    </div>
+    
+      <img id="about-card-picture" src="https://ruevko.github.io/hexagonal/logo.png" alt="Foto de autor" />
+    
+    <h4 id="about-card-name">La Galería Hexagonal</h4>
+    
+      <div id="about-card-bio">Este es el blog de <a href="https://instagram.com/ruevko">Rafael Castro</a>, orientado a Cartografía y Data Analytics.</div>
+    
+    
+      <div id="about-card-job">
+        <i class="fas fa-graduation-cap"></i>
+        <br/>
+        Geógrafo
+      </div>
+    
+    
+      <div id="about-card-location">
+        <i class="fas fa-home"></i>
+        <br/>
+        Ecuador
+      </div>
+    
+  </div>
+</div>
+
+    
+
+    
+  
+    <div id="cover" style="background-image:url('https://res.cloudinary.com/dodnzqhiz/image/upload/v1577918037/crv.png');"></div>
+  
+
+
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.7/js/jquery.fancybox.min.js" integrity="sha256-GEAnjcTqVP+vBp3SSc8bEDQqvWAZMiHyUSIorrWwH50=" crossorigin="anonymous"></script>
+
+
+<script src="../../../../js/script-pcw6v3xilnxydl1vddzazdverrnn9ctynvnxgwho987mfyqkuylcb1nlt.min.js"></script>
+
+
+<script lang="javascript">
+window.onload = updateMinWidth;
+window.onresize = updateMinWidth;
+document.getElementById("sidebar").addEventListener("transitionend", updateMinWidth);
+function updateMinWidth() {
+  var sidebar = document.getElementById("sidebar");
+  var main = document.getElementById("main");
+  main.style.minWidth = "";
+  var w1 = getComputedStyle(main).getPropertyValue("min-width");
+  var w2 = getComputedStyle(sidebar).getPropertyValue("width");
+  var w3 = getComputedStyle(sidebar).getPropertyValue("left");
+  main.style.minWidth = `calc(${w1} - ${w2} - ${w3})`;
+}
+</script>
+
+
+  
+    
+  
+
+
+
+
+    
+  </body>
+</html>
+

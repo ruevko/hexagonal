@@ -16,7 +16,7 @@ summary: Continúa la discusión de *tweets* publicados durante el paro de octub
 thumbnailImage: '/hexagonal/post/2020/02/19-sobre-tweets-paro-nacional-parte_files/figure-html/plot1-1.svg'
 ---
 
-`r knitr::opts_chunk$set(fig.height=3.5, out.width="100%"); library(dplyr); df_all=readRDS("PNE2019.RDS")`
+`r library(dplyr); df_all=readRDS("PNE2019.RDS")`
 
 Continuando con la discusión del post anterior, el análisis ha sido ampliado para incluir otros tres -para un total de seis- *hashtags* populares durante el paro nacional de octubre pasado en Ecuador. Los *tweets* fueron obtenidos aplicando un programa en *java* que posee menos capacidad que la API oficial, pero que permite acceder a cualquier época.
 
@@ -43,7 +43,7 @@ gg + geom_bar(aes(ht, fill=ht), df_all)
 
 Evidentemente, #EcuadorPaisDePaz se utilizó con mayor frecuencia comparado a otros *hashtags* que, en cambio, denotaban el apoyo al paro. No obstante, ¿cuáles *hashtags* fueron más populares? Además de la frecuencia de uso, es posible evaluar los favoritos y *retweets* (RTs) que recibieron las publicaciones, como medidas de popularidad; en este caso, se ha transformado los datos vía `tidyr` y se ha presentado en *boxplots* dicha evaluación.
 
-```{r plot2, warning=FALSE, fig.cap="Boxplots de favorites y retweets por hashtag"}
+```{r plot2, fig.height=3.5, fig.cap="Boxplots de favorites y retweets por hashtag"}
 library(tidyr)
 
 df_long = pivot_longer(df_all, c("favorites", "retweets"))
@@ -74,7 +74,7 @@ df_wide = transmute(df_all, id = id, us = user, name = ht, value = "\U2713") %>%
    rename_at(vars(-Tweets, -Usuarios), ~gsub("[[:lower:]]", "", .))
 ```
 
-La siguiente tabla presenta las combinaciones de *hashtags* -mostrando solo iniciales- que aparecieron. `r knitr::kable(df_wide[rowSums(df_wide[grep("#", names(df_wide))] == "\U2713") > 1, ], align = "ccccccrr", caption = "Resumen de los tweets con hashtags combinados")`
+La siguiente tabla presenta las combinaciones de *hashtags* -mostrando solo iniciales- que aparecieron.
 
 ```{r help2, echo=FALSE}
 df_all = mutate_at(df_all, "ht", ~case_when(
@@ -84,11 +84,14 @@ df_all = mutate_at(df_all, "ht", ~case_when(
    . == "#ElParoSigue"         ~ scale_fill_hue()$palette(6)[4],
    . == "#ParoNacionalEC"      ~ scale_fill_hue()$palette(6)[1],
    . == "#ParoNacionalEcuador" ~ scale_fill_hue()$palette(6)[3]))
+
+df_wide[rowSums(df_wide[grep("#", names(df_wide))] == "\U2713") > 1, ] %>%
+   knitr::kable(align = "ccccccrr", caption = "Resumen de los tweets con hashtags combinados")
 ```
 
 Habiendo analizado todo esto, ¿quiénes utilizaron en mayor cantidad cada *hashtag*? Este gráfico -que conserva la legenda de color del gráfico \@ref(fig:plot1)- recoge solamente los usuarios con diez o más publicaciones. Se demuestra cómo en las cuentas de ejército, policía y presidente -los responsables de la violencia que sufrieron los manifestantes- abundaron los mensajes de paz, alcanzando una cantidad ridícula con la secretaría general de comunicación de la presidencia. Mientras tanto se evidenciaron los mensajes de respaldo al paro desde el KolectiVOZ y la CONAIE, y de reportaje en Pichincha Comunicaciones y Wambra.
 
-```{r plot3, echo=FALSE, fig.cap="Usuarios que publicaron diez o más tweets por hashtag"}
+```{r plot3, echo=FALSE, fig.height=3.5, fig.cap="Usuarios que publicaron diez o más tweets por hashtag"}
 df_top = group_by(df_all, ht, user) %>% tally() %>% filter(n >= 10)
 
 gg + geom_col(aes(user, n, fill=ht), df_top) + scale_fill_identity()
@@ -96,7 +99,7 @@ gg + geom_col(aes(user, n, fill=ht), df_top) + scale_fill_identity()
 
 Para cerrar este análisis se presenta un histograma sobre el tiempo de publicación de los *tweets*; cada columna encierra seis horas. Los tiempos son congruentes con la propaganda del #EcuadorPaísDePaz, posterior al inicio del paro, y la expectativa del #DialogoPorLaPaz, refiriéndose a la reunión del 13 de octubre donde se derogaron las medidas económicas, poniendo efectivamente fin al paro.
 
-```{r plot4, echo=FALSE, message=FALSE, fig.cap="Tiempo de publicación de los tweets por hashtag"}
+```{r plot4, echo=FALSE, fig.height=3.5, fig.cap="Tiempo de publicación de los tweets por hashtag"}
 df_time = mutate(df_all, time = lubridate::round_date(time, "6 hours"))
 
 gg + geom_bar(aes(time, fill=ht), df_time) + coord_cartesian() + scale_y_continuous(breaks=20*0:5) + scale_fill_identity()

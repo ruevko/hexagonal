@@ -15,9 +15,9 @@ keywords:
 summary: Una discusión de *tweets* publicados con tres *hashtags* populares durante el paro de octubre en Ecuador, y del inconveniente para recuperar esos datos hoy en día.
 ---
 
-`r knitr::opts_chunk$set(message = FALSE, warning = FALSE)`
+Los últimos meses del año pasado presenciaron movilizaciones en algunos países del mundo, respondiendo a acciones gubernamentales de diversas índoles. En Ecuador, las protestas de octubre fueron detonadas por las medidas económicas anunciadas por la presidencia, con el propósito de cumplir una agenda acordada con el Fondo Monetario Internacional.
 
-Los últimos meses del año pasado presenciaron movilizaciones en algunos países del mundo, respondiendo a acciones gubernamentales de diversas índoles. En Ecuador, las protestas de octubre fueron detonadas por las medidas económicas anunciadas por la presidencia, con el propósito de cumplir una agenda acordada con el Fondo Monetario Internacional. El principal cambio consistía en terminar el subsidio de combustibles; como suele suceder con las medidas inmediatas, que no contemplan un cambio progresivo ni el desarrollo equitativo para todos, ciertos sectores -estudiantes, transportistas, agricultores, indígenas- hubiesen sido los más afectados. Tras un paro nacional que se extendió del 3 al 13 de octubre, las medidas económicas fueron retiradas. Para mayor información sobre las medidas, las acciones de los sectores vulnerados y las represalias del gobierno, se sugiere consultar las siguientes fuentes: [Wambra](https://wambra.ec/la-protesta-indigena-y-popular-que-levanto-a-ecuador/), [Pichincha Comunicaciones](http://www.pichinchacomunicaciones.com.ec/)^[A la fecha de publicación, el sitio web se encuentra suspendido debido a denuncias de la presidencia. De cualquier forma Pichincha Comunicaciones, al igual que las otras fuentes sugeridas, presenta en su Twitter la cobertura que realizó durante el paro.], [Crisis](https://www.revistacrisis.com/coyuntura/apuntes-sobre-el-triunfo-popular-de-octubre/) y [CONAIE](https://conaie.org/2019/10/09/septimo-dia-de-movilizacion-nacional-del-movimiento-indigena/).
+El principal cambio consistía en terminar el subsidio de combustibles; como suele suceder con las medidas inmediatas, que no contemplan un cambio progresivo ni un desarrollo equitativo, ciertos sectores -estudiantes, transportistas, agricultores, indígenas- hubiesen sido los más afectados. Tras un paro nacional que se extendió del 3 al 13 de octubre, las medidas económicas fueron retiradas. Para mayor información sobre las medidas, las acciones de los sectores vulnerados y las represalias del gobierno, se sugiere consultar las siguientes fuentes: [Wambra](https://wambra.ec/la-protesta-indigena-y-popular-que-levanto-a-ecuador/), [Pichincha Comunicaciones](http://www.pichinchacomunicaciones.com.ec/)^[A la fecha de publicación, el sitio web se encuentra suspendido debido a denuncias de la presidencia. De cualquier forma Pichincha Comunicaciones, al igual que las otras fuentes sugeridas, presenta en su Twitter la cobertura que realizó durante el paro.], [Crisis](https://www.revistacrisis.com/coyuntura/apuntes-sobre-el-triunfo-popular-de-octubre/) y [CONAIE](https://conaie.org/2019/10/09/septimo-dia-de-movilizacion-nacional-del-movimiento-indigena/).
 
 El propósito de este post es demostrar cómo ejecuté un análisis con los *tweets* generados entre el 1 y el 10 de octubre, considerando tres *hashtags* populares durante el paro nacional en Ecuador. La premisa es que la elección de un *hashtag* expone la intención del usuario, de reportar los hechos acontecidos durante el paro o de desaprobar al mismo. Originalmente trabajé con el paquete `twitteR` el cual permite obtener *tweets* a través de la API gratuita de Twitter; no obstante, es necesario ejecutar previamente una función de autenticación^[La autenticación consiste en suministrar unas claves personales de consumidor y de acceso; para obtener esas claves uno debe poseer primero una cuenta de desarrollador.].
 
@@ -26,8 +26,7 @@ library(twitteR)
 
 setup_twitter_oauth("tus", "claves", "de", "consumidor")
 
-wambra = userTimeline("wambraEc", 100, sinceID = 1212053690737135616,
-                      excludeReplies = FALSE, includeRts = TRUE)
+wambra = userTimeline("wambraEc", 100, excludeReplies = FALSE, includeRts = TRUE)
 ```
 
 En este ejemplo se han solicitado cien publicaciones de la cuenta del blog Wambra, incluyendo *replies* y *retweets*. Efectivamente el resultado es una lista de *tweets* con sus respectivos metadatos ocultos: `tail(wambra, 3)`
@@ -80,8 +79,8 @@ Además, al contar el uso por cuenta, se halló que solo tres cuentas superaron 
 Los datos que alimentaron la tabla de conteo fueron obtenidos con tres ejecuciones de la siguiente función, variando cada vez el *hashtag* de interés. Notar el uso de un filtro que excluye los *retweets*, pues de otra manera los datos devueltos excederían el límite impuesto de veinte mil.
 
 ```{r fail, eval=FALSE}
-searchTwitter("#ParoNacionalEcuador -filter:retweets", 2e4,
-              since = "2019-10-01", until = "2019-10-10")
+"#ParoNacionalEcuador -filter:retweets" %>%
+   searchTwitter(2e4, since = "2019-10-01", until = "2019-10-10")
 ```
 
 Desafortunadamente volver a ejecutar esta función no devolverá un solo *tweet*. Desconocía que la versión gratuita de la API solo recupera datos con una semana^[El ejemplo con *tweets* de Wambra sí funciona porque utiliza una API diferente; una que accede a cualquier época, pero en una única cuenta. La búsqueda por *hashtag* o texto sí está restringida a una semana.] de antigüedad como máximo, a diferencia del sitio web que puede acceder a cualquier época. Es una lástima, pues no conservé los datos cuando ejecuté el análisis en octubre. Con todo existe [una](https://github.com/Jefferson-Henrique/GetOldTweets-java) alternativa; básicamente, es un programa en *java* que simula la navegación en el sitio web de Twitter y recupera los datos conforme son presentados. Los siguientes comandos ilustran la obtención de *tweets* que contienen #ParoNacionalEcuador a través de la *command line*.

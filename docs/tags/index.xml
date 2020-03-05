@@ -6,10 +6,37 @@
     <description>Recent content in Tags on La Galería Hexagonal</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>es-es</language>
-    <lastBuildDate>Wed, 19 Feb 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 04 Mar 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://ruevko.github.io/hexagonal/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>coropletas</title>
+      <link>https://ruevko.github.io/hexagonal/tags/coropletas/</link>
+      <pubDate>Wed, 04 Mar 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://ruevko.github.io/hexagonal/tags/coropletas/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>nodos</title>
+      <link>https://ruevko.github.io/hexagonal/tags/nodos/</link>
+      <pubDate>Wed, 04 Mar 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://ruevko.github.io/hexagonal/tags/nodos/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>regresión lineal</title>
+      <link>https://ruevko.github.io/hexagonal/tags/regresi%C3%B3n-lineal/</link>
+      <pubDate>Wed, 04 Mar 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://ruevko.github.io/hexagonal/tags/regresi%C3%B3n-lineal/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>hashtags</title>
@@ -26,24 +53,6 @@
       <pubDate>Wed, 19 Feb 2020 00:00:00 +0000</pubDate>
       
       <guid>https://ruevko.github.io/hexagonal/tags/paro-nacional/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>coropletas</title>
-      <link>https://ruevko.github.io/hexagonal/tags/coropletas/</link>
-      <pubDate>Tue, 07 Jan 2020 00:00:00 +0000</pubDate>
-      
-      <guid>https://ruevko.github.io/hexagonal/tags/coropletas/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>nodos</title>
-      <link>https://ruevko.github.io/hexagonal/tags/nodos/</link>
-      <pubDate>Tue, 07 Jan 2020 00:00:00 +0000</pubDate>
-      
-      <guid>https://ruevko.github.io/hexagonal/tags/nodos/</guid>
       <description></description>
     </item>
     
