@@ -152,7 +152,7 @@ head(countries_model)
 
 Para ilustrar los resultados se presentan las regresiones de los países seleccionados:
 
-```{r model2, fig.asp=1.2, fig.cap="Regresiones lineales :chart_with_upwards_trend: ajustadas en países seleccionados"}
+```{r model2, fig.asp=1.2, fig.cap="Regresiones lineales ajustadas en países seleccionados"}
 # my_test = nest(countries_month) %>% mutate(
 #    data = map(data, ~mutate(., month = 1:96)),
 #    lm0 = map(data, ~lm(CumNodes ~ 0 + month, data = .)),
@@ -166,7 +166,7 @@ select(countries_model, continent:data) %>%
    filter(country %in% my_top) %>%
    unnest(data) %>% my_plot() +
    facet_wrap(~country, ncol = 3, scales = "free_y") +
-   geom_point(aes(y = CumNodes), size = .6, show.legend = FALSE) +
+   geom_point(aes(y = CumNodes), size = .5, show.legend = FALSE) +
    geom_abline(aes(intercept = b, slope = m), countries_model2)
 ```
 
@@ -189,7 +189,7 @@ select(my_model, continent:data) %>%
    filter(country %in% filter(countries_model, r < .7)$country) %>%
    unnest(data) %>% my_plot() + scale_color_identity() +
    facet_wrap(~country, ncol = 3, scales = "free_y") +
-   geom_point(aes(y = CumNodes), size = 1, show.legend = FALSE) +
+   geom_point(aes(y = CumNodes), size = .5, show.legend = FALSE) +
    geom_abline(aes(intercept = b, slope = m), my_model2)
 ```
 
@@ -204,7 +204,7 @@ rm(countries, my_model, my_model2)
 
 World = select(countries_model, country, m, r) %>%
    mutate_at("m", cut, c(0, 1, 2, 5, 10, 20, 50, 200)*1e3, labels =
-                c("(50, 1e3]", "(1e3, 2e3]", "(2e3, 5e5]", "(5e3, 10e3]",
+                c("(50, 1e3]", "(1e3, 2e3]", "(2e3, 5e3]", "(5e3, 10e3]",
                   "(10e3, 20e3]", "(20e3, 50e3]", "> 50e3")) %>%
    mutate_at("r", cut, c(.7, .8, .9, .96, .98, 1)) %>%
    right_join(World, c("country" = "name")) %>% st_as_sf()
@@ -212,14 +212,14 @@ World = select(countries_model, country, m, r) %>%
 my_plot(World) +
    scale_fill_viridis_d(na.value = "grey") +
    geom_sf(aes(fill = m), color = NA, inherit.aes = FALSE) +
-   theme(legend.key.width = unit(.03, "npc"), legend.key.height = unit(.045, "npc"))
+   theme(legend.key.width = unit(.025, "npc"), legend.key.height = unit(.045, "npc"))
 ```
 
 ```{r map-coeff, fig.asp=.605, fig.cap="Coeficiente de determinación del ajuste lineal por país"}
 my_plot(World) +
    scale_fill_viridis_d(na.value = "grey", option = "B", begin = .25) +
    geom_sf(aes(fill = r), color = NA, inherit.aes = FALSE) +
-   theme(legend.key.width = unit(.03, "npc"), legend.key.height = unit(.045, "npc"))
+   theme(legend.key.width = unit(.025, "npc"), legend.key.height = unit(.045, "npc"))
 ```
 
 # Referencias

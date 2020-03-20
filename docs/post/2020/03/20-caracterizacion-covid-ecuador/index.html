@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="es-es">
+  <head>
+    
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="generator" content="Hugo 0.66.0 with theme Tranquilpeak 0.4.7-BETA">
+<meta name="author" content="La Galería Hexagonal">
+<meta name="keywords" content="coronavirus, logarithmic regression, mapas, datos, análisis, maps, data, analysis">
+<meta name="description" content="Utilizando paquetes desarrollados por el R Epidemics Consortium, se estima el ritmo reproductivo básico y se proyectan tres escenarios futuros para los casos positivos acumulados diariamente.">
+
+
+<meta property="og:description" content="Utilizando paquetes desarrollados por el R Epidemics Consortium, se estima el ritmo reproductivo básico y se proyectan tres escenarios futuros para los casos positivos acumulados diariamente.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Caracterización del COVID-19 en Ecuador">
+<meta name="twitter:title" content="Caracterización del COVID-19 en Ecuador">
+<meta property="og:url" content="https://ruevko.github.io/hexagonal/post/2020/03/20-caracterizacion-covid-ecuador/">
+<meta property="twitter:url" content="https://ruevko.github.io/hexagonal/post/2020/03/20-caracterizacion-covid-ecuador/">
+<meta property="og:site_name" content="La Galería Hexagonal">
+<meta property="og:description" content="Utilizando paquetes desarrollados por el R Epidemics Consortium, se estima el ritmo reproductivo básico y se proyectan tres escenarios futuros para los casos positivos acumulados diariamente.">
+<meta name="twitter:description" content="Utilizando paquetes desarrollados por el R Epidemics Consortium, se estima el ritmo reproductivo básico y se proyectan tres escenarios futuros para los casos positivos acumulados diariamente.">
+<meta property="og:locale" content="es-es">
+
+  
+    <meta property="article:published_time" content="2020-03-20T00:00:00">
+  
+  
+    <meta property="article:modified_time" content="2020-03-20T00:00:00">
+  
+  
+  
+    
+      <meta property="article:section" content="Reporte">
+    
+  
+  
+    
+      <meta property="article:tag" content="coronavirus">
+    
+      <meta property="article:tag" content="regresión logarítmica">
+    
+  
+
+
+<meta name="twitter:card" content="summary">
+
+
+
+
+
+
+
+
+  <meta property="og:image" content="https://github.com/ruevko/hexagonal/raw/master/content/post/2020/03/covid.png">
+  <meta property="twitter:image" content="https://github.com/ruevko/hexagonal/raw/master/content/post/2020/03/covid.png">
+
+
+
+
+  <meta property="og:image" content="https://ruevko.github.io/hexagonal/logo.png">
+  <meta property="twitter:image" content="https://ruevko.github.io/hexagonal/logo.png">
+
+
+    <title>Caracterización del COVID-19 en Ecuador</title>
+
+    <link rel="icon" href="../../../../favicon.png">
+    
+
+    
+
+    <link rel="canonical" href="https://ruevko.github.io/hexagonal/post/2020/03/20-caracterizacion-covid-ecuador/">
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" integrity="sha256-+N4/V/SbAFiW1MPBCXnfnP9QSN3+Keu+NlB+0ev/YKQ=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/jquery.fancybox.min.css" integrity="sha256-vuXZ9LGmmwtjqFX1F+EKin1ThZMub58gKULUyf0qECk=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/helpers/jquery.fancybox-thumbs.min.css" integrity="sha256-SEa4XYAHihTcEP1f5gARTB2K26Uk8PsndQYHQC1f4jU=" crossorigin="anonymous" />
+    
+    
+    <link rel="stylesheet" href="../../../../css/style-twzjdbqhmnnacqs0pwwdzcdbt8yhv8giawvjqjmyfoqnvazl0dalmnhdkvp7.min.css" />
+    
+    
+
+    
+      
+    
+    
+  </head>
+
+  <body>
+    <div id="blog">
+      <header id="header" data-behavior="4">
+  <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+  <div class="header-title">
+    <a class="header-title-link" href="../../../../">La Galería Hexagonal</a>
+  </div>
+  
+</header>
+
+      <nav id="sidebar" data-behavior="4">
+  <div class="sidebar-container">
+    
+      <div class="sidebar-profile">
+        <a href="../../../../#about">
+          <img class="sidebar-profile-picture" src="https://ruevko.github.io/hexagonal/logo.png" alt="Foto de autor" />
+        </a>
+        <h4 class="sidebar-profile-name">La Galería Hexagonal</h4>
+
+      </div>
+    
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="../../../../">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-globe-americas"></i>
+      
+      <span class="sidebar-button-desc">Inicio</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="../../../../categories">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-map-marked-alt"></i>
+      
+      <span class="sidebar-button-desc">Categorías</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="../../../../tags">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-map-marker-alt"></i>
+      
+      <span class="sidebar-button-desc">Etiquetas</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="../../../../archives">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-search-location"></i>
+      
+      <span class="sidebar-button-desc">Archivos</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="../../../../page">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-compass"></i>
+      
+      <span class="sidebar-button-desc">Créditos</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+
+    </ul>
+  </div>
+</nav>
+
+      
+  <div class="post-header-cover
+              text-left
+              "
+       style="background-image:url('https://github.com/ruevko/hexagonal/raw/master/content/post/2020/03/covid.png')"
+       data-behavior="4">
+    
+      <div class="post-header main-content-wrap text-left">
+  
+    <h1 class="post-title" itemprop="headline">
+      Caracterización del COVID-19 en Ecuador
+    </h1>
+  
+  
+  <div class="postShorten-meta post-meta">
+    
+      <time itemprop="datePublished" datetime="2020-03-20T00:00:00Z">
+        
+  
+  
+  
+  
+    20 de Marzo de 2020
+  
+
+      </time>
+    
+    
+  
+  
+    <span>en</span>
+    
+      <a class="category-link" href="../../../../categories/reporte">Reporte</a>
+    
+  
+
+  </div>
+
+</div>
+    
+  </div>
+
+
+
+      
+
+      <div id="main" data-behavior="4"
+        class="hasCover
+               hasCoverMetaIn
+               ">
+        <article class="post" itemscope itemType="http://schema.org/BlogPosting">
+          
+          
+          <div class="post-content markdown" itemprop="articleBody">
+            <div class="main-content-wrap">
+              
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    background-color: #ffffff;
+    color: #a0a0a0;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #a0a0a0;  padding-left: 4px; }
+div.sourceCode
+  { color: #1f1c1b; background-color: #ffffff; }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span. { color: #1f1c1b; } /* Normal */
+code span.al { color: #bf0303; background-color: #f7e6e6; font-weight: bold; } /* Alert */
+code span.an { color: #ca60ca; } /* Annotation */
+code span.at { color: #0057ae; } /* Attribute */
+code span.bn { color: #b08000; } /* BaseN */
+code span.bu { color: #644a9b; font-weight: bold; } /* BuiltIn */
+code span.cf { color: #1f1c1b; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #924c9d; } /* Char */
+code span.cn { color: #aa5500; } /* Constant */
+code span.co { color: #898887; } /* Comment */
+code span.cv { color: #0095ff; } /* CommentVar */
+code span.do { color: #607880; } /* Documentation */
+code span.dt { color: #0057ae; } /* DataType */
+code span.dv { color: #b08000; } /* DecVal */
+code span.er { color: #bf0303; text-decoration: underline; } /* Error */
+code span.ex { color: #0095ff; font-weight: bold; } /* Extension */
+code span.fl { color: #b08000; } /* Float */
+code span.fu { color: #644a9b; } /* Function */
+code span.im { color: #ff5500; } /* Import */
+code span.in { color: #b08000; } /* Information */
+code span.kw { color: #1f1c1b; font-weight: bold; } /* Keyword */
+code span.op { color: #1f1c1b; } /* Operator */
+code span.ot { color: #006e28; } /* Other */
+code span.pp { color: #006e28; } /* Preprocessor */
+code span.re { color: #0057ae; background-color: #e0e9f8; } /* RegionMarker */
+code span.sc { color: #3daee9; } /* SpecialChar */
+code span.ss { color: #ff5500; } /* SpecialString */
+code span.st { color: #bf0303; } /* String */
+code span.va { color: #0057ae; } /* Variable */
+code span.vs { color: #bf0303; } /* VerbatimString */
+code span.wa { color: #bf0303; } /* Warning */
+</style>
+
+
+<p>En vista de la emergencia en curso causada por el SARS-CoV-2 se presenta una caracterización de la epidemia en Ecuador. Se ha aplicado una metodología sugerida por el R Epidemics Consortium <a href="https://www.repidemicsconsortium.org/">RECON</a> que permite estimar tempranamente el ritmo reproductivo del virus; esta metodología requiere poseer información sobre la transmisión, y datos de la incidencia. La información requerida contempla los siguientes conceptos:</p>
+<ul>
+<li><p>El ritmo reproductivo básico (<em>Basic Reproduction Number</em>, R<sub>0</sub>) es el número esperado de casos nuevos, generados directamente por un determinado caso en una población completamente susceptible; es crucial entender que R<sub>0</sub> no es una constante biológica de un patógeno, pues es afectado por factores ambientales y conductuales.</p></li>
+<li><p>El intervalo serial (<em>Serial Interval</em>, SI) es el tiempo transcurrido entre casos sucesivos en una misma cadena de transmisión; es posible caracterizar al SI con una distribución <em>Gamma</em>, conociendo su media y desviación estándar en días; no confundir el SI con:</p>
+<ul>
+<li><p>El periodo de incubación, entre una infección y la aparición de sus síntomas.</p></li>
+<li><p>El periodo latente, entre una infección y el comienzo del periodo infeccioso.</p></li>
+<li><p>En el periodo infeccioso, una persona infectada puede causar nuevas infecciones.</p></li>
+</ul></li>
+</ul>
+<p>Si las infecciones ocurren aleatoriamente, se espera que el SI promedio sea igual a la suma del periodo latente promedio y la mitad del periodo infeccioso promedio. Por otra parte, el periodo latente no necesariamente es mayor al de incubación: dependiendo del virus, una persona puede volverse infecciosa antes de presentar síntomas. En el caso del SARS-CoV-2, se halló que su periodo de incubación posee una mediana de siete días <span class="citation">(Jiang et al. <a href="#ref-covid" role="doc-biblioref">2020</a>)</span>, pero el periodo infeccioso puede comenzar un día antes.</p>
+<p>Con respecto a los datos, se ha recopilado los reportes publicados por el Servicio Nacional de Gestión de Riesgos <a href="https://twitter.com/Riesgos_Ec">SNGRE</a>; casos anteriores al primer reporte corresponden a comunicados del Ministerio de Salud Pública <a href="https://twitter.com/Salud_Ec">MSP</a>.</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Fuente</th>
+<th align="left">Fecha de corte</th>
+<th align="right">Casos positivos</th>
+<th align="right">Personas fallecidas</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Salud_Ec</td>
+<td align="left">feb. 29, 10 AM</td>
+<td align="right">1</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">Salud_Ec</td>
+<td align="left">mar. 1, 11 PM</td>
+<td align="right">6</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">Salud_Ec</td>
+<td align="left">mar. 2, 10 PM</td>
+<td align="right">7</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">Salud_Ec</td>
+<td align="left">mar. 4, 10 AM</td>
+<td align="right">10</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">Salud_Ec</td>
+<td align="left">mar. 5, 9 AM</td>
+<td align="right">13</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">Salud_Ec</td>
+<td align="left">mar. 6, 8 PM</td>
+<td align="right">14</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">Salud_Ec</td>
+<td align="left">mar. 8, 9 PM</td>
+<td align="right">15</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">Salud_Ec</td>
+<td align="left">mar. 10, 4 PM</td>
+<td align="right">17</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">Salud_Ec</td>
+<td align="left">mar. 12, 6 PM</td>
+<td align="right">19</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">Riesgos_Ec</td>
+<td align="left">mar. 13, 3 PM</td>
+<td align="right">23</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Riesgos_Ec</td>
+<td align="left">mar. 14, 3 PM</td>
+<td align="right">28</td>
+<td align="right">2</td>
+</tr>
+<tr class="even">
+<td align="left">Riesgos_Ec</td>
+<td align="left">mar. 15, 9 AM</td>
+<td align="right">37</td>
+<td align="right">2</td>
+</tr>
+<tr class="odd">
+<td align="left">Riesgos_Ec</td>
+<td align="left">mar. 16, 9 AM</td>
+<td align="right">58</td>
+<td align="right">2</td>
+</tr>
+<tr class="even">
+<td align="left">Riesgos_Ec</td>
+<td align="left">mar. 17, 8 AM</td>
+<td align="right">111</td>
+<td align="right">2</td>
+</tr>
+<tr class="odd">
+<td align="left">Riesgos_Ec</td>
+<td align="left">mar. 18, 5 AM</td>
+<td align="right">155</td>
+<td align="right">2</td>
+</tr>
+<tr class="even">
+<td align="left">Riesgos_Ec</td>
+<td align="left">mar. 19, 8 AM</td>
+<td align="right">199</td>
+<td align="right">3</td>
+</tr>
+<tr class="odd">
+<td align="left">Riesgos_Ec</td>
+<td align="left">mar. 20, 10 AM</td>
+<td align="right">367</td>
+<td align="right">5</td>
+</tr>
+</tbody>
+</table>
+<p>Los datos completos, incluyendo los casos descartados y algunos reportes omitidos (en los días con dos reportes se escogió el matutino), se encuentran <a href="https://github.com/ruevko/hexagonal/blob/master/content/post/2020/03/EC_COVID19.csv">aquí</a>. El primer paso para estimar R<sub>0</sub> consiste en transformar los casos positivos acumulados en incidencia diaria:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1">EC_COVID19<span class="op">$</span>corte =<span class="st"> </span><span class="kw">as.Date</span>(EC_COVID19<span class="op">$</span>corte)</a>
+<a class="sourceLine" id="cb1-2" title="2"></a>
+<a class="sourceLine" id="cb1-3" title="3">EC_COVID19<span class="op">$</span>positivo =<span class="st"> </span><span class="kw">diff</span>(<span class="kw">c</span>(<span class="dv">0</span>, EC_COVID19<span class="op">$</span>positivo))</a>
+<a class="sourceLine" id="cb1-4" title="4"></a>
+<a class="sourceLine" id="cb1-5" title="5">EC_incid =<span class="st"> </span><span class="kw">rep</span>(EC_COVID19<span class="op">$</span>corte, EC_COVID19<span class="op">$</span>positivo)</a>
+<a class="sourceLine" id="cb1-6" title="6"></a>
+<a class="sourceLine" id="cb1-7" title="7"><span class="kw">table</span>(EC_incid)</a></code></pre></div>
+<pre><code>## EC_incid
+## 2020-02-29 2020-03-02 2020-03-03 2020-03-04 2020-03-05 2020-03-07 2020-03-09 
+##          1          5          1          3          3          1          1 
+## 2020-03-10 2020-03-12 2020-03-13 2020-03-14 2020-03-15 2020-03-16 2020-03-17 
+##          2          2          4          5          9         21         53 
+## 2020-03-18 2020-03-19 2020-03-20 
+##         44         44        168</code></pre>
+<p>A continuación es posible ajustar un modelo logarítmico para la incidencia en el tiempo utilizando el paquete <code>incidence</code>:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1"><span class="kw">library</span>(incidence)</a>
+<a class="sourceLine" id="cb3-2" title="2"></a>
+<a class="sourceLine" id="cb3-3" title="3">EC_incid =<span class="st"> </span><span class="kw">incidence</span>(EC_incid)</a>
+<a class="sourceLine" id="cb3-4" title="4"></a>
+<a class="sourceLine" id="cb3-5" title="5">EC_model =<span class="st"> </span><span class="kw">fit</span>(EC_incid[<span class="dv">8</span><span class="op">:</span><span class="kw">nrow</span>(EC_incid)]) <span class="co"># excluyendo primera semana</span></a>
+<a class="sourceLine" id="cb3-6" title="6"></a>
+<a class="sourceLine" id="cb3-7" title="7"><span class="kw">summary</span>(EC_model<span class="op">$</span>model)</a></code></pre></div>
+<pre><code>## 
+## Call:
+## stats::lm(formula = log(counts) ~ dates.x, data = df)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -0.62132 -0.33955 -0.02888  0.28422  0.70723 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) -0.90940    0.30277  -3.004   0.0133 *  
+## dates.x      0.40434    0.03514  11.507 4.33e-07 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.4788 on 10 degrees of freedom
+## Multiple R-squared:  0.9298, Adjusted R-squared:  0.9228 
+## F-statistic: 132.4 on 1 and 10 DF,  p-value: 4.329e-07</code></pre>
+<p>En el caso de Ecuador, el comportamiento logarítmico (R<sup>2</sup> = 0.9298) es observable una semana después de la detección del primer caso. De acuerdo a este modelo se espera que cada 1.71 días se dupliquen los casos; esto, con un intervalo de confianza (CI) al 95 % de 1.44 a 2.13 días. En el siguiente gráfico las columnas rojas representan la incidencia diaria, la curva el modelo logarítmico -las líneas entrecortadas delimitan el 95 % CI- y la recta amarilla el inicio del estado de excepción, decretado para frenar las transmisiones.</p>
+<div class="figure"><span id="fig:logplot"></span>
+<img src="../../../../post/2020/03/20-caracterizacion-covid-ecuador_files/figure-html/logplot-1.svg" alt="Incidencia diaria de COVID-19 en Ecuador y modelo logarítmico ajustado" width="100%" />
+<p class="caption">
+Figure 1: Incidencia diaria de COVID-19 en Ecuador y modelo logarítmico ajustado
+</p>
+</div>
+<p>La estimación de R<sub>0</sub> con <code>earlyR</code> requiere conocer el SI del COVID-19; en este sentido, la literatura reciente presenta dos alternativas. La primera, aprovechar el conocimiento de epidemias anteriores; <span class="citation">Zhao, Lin, et al. (<a href="#ref-covia" role="doc-biblioref">2020</a>)</span> proponen promediar las características del MERS (mean = 7.6, sd = 3.4) y del SARS (mean = 8.4, sd = 3.8), síndromes causados por otros coronavirus. La segunda alternativa consiste en estimar el SI utilizando las pocas cadenas de transmisión ya identificadas <span class="citation">(Zhao, Gao, et al. <a href="#ref-covib" role="doc-biblioref">2020</a>; Nishiura, Linton, and Akhmetzhanov <a href="#ref-covic" role="doc-biblioref">2020</a>)</span>; de esta manera se obtiene un SI preliminar, pero propio del SARS-CoV-2. Con estos antecedentes, se estimó <code>R_viruses</code> y <code>R_chains</code> usando la primera y segunda alternativa, respectivamente; los siguientes histogramas presentan la distribución de R<sub>0</sub> en ambos casos.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1"><span class="kw">library</span>(earlyR)</a>
+<a class="sourceLine" id="cb5-2" title="2"></a>
+<a class="sourceLine" id="cb5-3" title="3">R_viruses =<span class="st"> </span><span class="kw">get_R</span>(EC_incid, <span class="dt">si_mean =</span> <span class="dv">8</span>, <span class="dt">si_sd =</span> <span class="fl">3.6</span>, <span class="dt">max_R =</span> <span class="dv">6</span>) <span class="co"># según Zhao, Lin et al.</span></a>
+<a class="sourceLine" id="cb5-4" title="4"></a>
+<a class="sourceLine" id="cb5-5" title="5">R_chains =<span class="st"> </span><span class="kw">get_R</span>(EC_incid, <span class="dt">si_mean =</span> <span class="fl">4.4</span>, <span class="dt">si_sd =</span> <span class="dv">3</span>, <span class="dt">max_R =</span> <span class="dv">6</span>) <span class="co"># según Zhao, Gao et al.</span></a>
+<a class="sourceLine" id="cb5-6" title="6"></a>
+<a class="sourceLine" id="cb5-7" title="7"><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>), <span class="dt">mar =</span> <span class="kw">c</span>(<span class="dv">4</span>,<span class="dv">4</span>,<span class="dv">1</span>,<span class="dv">1</span>))</a>
+<a class="sourceLine" id="cb5-8" title="8"></a>
+<a class="sourceLine" id="cb5-9" title="9"><span class="kw">hist</span>(<span class="kw">sample_R</span>(R_viruses), <span class="dt">freq =</span> <span class="ot">FALSE</span>, <span class="dt">main =</span> <span class="ot">NULL</span>, <span class="dt">xlab =</span> <span class="st">&quot;R_viruses&quot;</span>)</a>
+<a class="sourceLine" id="cb5-10" title="10"></a>
+<a class="sourceLine" id="cb5-11" title="11"><span class="kw">hist</span>(<span class="kw">sample_R</span>(R_chains), <span class="dt">freq =</span> <span class="ot">FALSE</span>, <span class="dt">main =</span> <span class="ot">NULL</span>, <span class="dt">xlab =</span> <span class="st">&quot;R_chains&quot;</span>)</a></code></pre></div>
+<div class="figure"><span id="fig:number"></span>
+<img src="../../../../post/2020/03/20-caracterizacion-covid-ecuador_files/figure-html/number-1.svg" alt="Distribución de Ro del COVID-19 según SI de otros coronavirus 👈 y de cadenas de transmisión estudiadas 👉" width="100%" />
+<p class="caption">
+Figure 2: Distribución de Ro del COVID-19 según SI de otros coronavirus 👈 y de cadenas de transmisión estudiadas 👉
+</p>
+</div>
+<p>La primera alternativa arroja 4.9069 como el valor más probable; es posible considerar este valor una sobrestimación de R<sub>0</sub> según lo observado en estudios recientes. Mientras tanto, la segunda alternativa estima un R<sub>0</sub> = 2.1922 (95 % CI: 1.982 - 2.4266); un valor congruente con los estudios, donde se ha observado que el SARS-CoV-2 posee un SI más corto que otros coronavirus. Por ende, aun con un ritmo reproductivo menor, puede generar más casos.</p>
+<p>Considerando R<sub>0</sub> se puede modelar una proyección futura, más flexible que la arrojada por el modelo exponencial solamente. Se ha utilizado <code>projections</code> para predecir tres escenarios, calculando en cada uno diez mil simulaciones para cada día de las dos próximas semanas.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" title="1"><span class="kw">library</span>(projections)</a>
+<a class="sourceLine" id="cb6-2" title="2"></a>
+<a class="sourceLine" id="cb6-3" title="3">EC_proj =<span class="st"> </span><span class="kw">project</span>(EC_incid, R_sample, R_chains<span class="op">$</span>si, <span class="dt">n_days =</span> <span class="dv">14</span>, <span class="dt">n_sim =</span> <span class="fl">1e4</span>)</a>
+<a class="sourceLine" id="cb6-4" title="4"></a>
+<a class="sourceLine" id="cb6-5" title="5"><span class="kw">rowMeans</span>(EC_proj)</a></code></pre></div>
+<pre><code>## 2020-03-21 2020-03-22 2020-03-23 2020-03-24 2020-03-25 2020-03-26 2020-03-27 
+##   108.2321   140.9415   176.4721   218.1997   268.0369   329.9481   405.7184 
+## 2020-03-28 2020-03-29 2020-03-30 2020-03-31 2020-04-01 2020-04-02 2020-04-03 
+##   498.0073   611.9344   751.4032   924.1048  1136.1483  1395.9610  1713.7161</code></pre>
+<p>Estos datos representan la incidencia promedio para cada día, en un primer escenario donde R<sub>0</sub> no cambia en absoluto. Los casos actuales y la proyección futura -la región sombreada delimita el 95 % CI- se presentan en el siguiente gráfico de manera acumulativa:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1">EC_incid =<span class="st"> </span><span class="kw">cumulate</span>(EC_incid)</a>
+<a class="sourceLine" id="cb8-2" title="2"></a>
+<a class="sourceLine" id="cb8-3" title="3">EC_proj =<span class="st"> </span><span class="kw">cumulate</span>(EC_proj)</a>
+<a class="sourceLine" id="cb8-4" title="4"></a>
+<a class="sourceLine" id="cb8-5" title="5"><span class="kw">add_projections</span>(<span class="kw">plot</span>(EC_incid), EC_proj <span class="op">+</span><span class="st"> </span><span class="kw">max</span>(EC_incid<span class="op">$</span>counts), <span class="kw">c</span>(.<span class="dv">025</span>, <span class="fl">.5</span>)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb8-6" title="6"><span class="st">   </span><span class="kw">geom_vline</span>(<span class="dt">xintercept =</span> <span class="kw">as.Date</span>(<span class="st">&quot;2020-03-17&quot;</span>), <span class="dt">col =</span> <span class="st">&quot;gold&quot;</span>, <span class="dt">alpha =</span> <span class="fl">.6</span>, <span class="dt">size =</span> <span class="dv">2</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb8-7" title="7"><span class="st">   </span><span class="kw">scale_x_date</span>(<span class="dt">date_breaks =</span> <span class="st">&quot;4 days&quot;</span>, <span class="dt">date_labels =</span> <span class="st">&quot;%b %e&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb8-8" title="8"><span class="st">   </span><span class="kw">scale_fill_manual</span>(<span class="dt">values =</span> <span class="st">&quot;firebrick&quot;</span>)</a></code></pre></div>
+<div class="figure"><span id="fig:project-normal"></span>
+<img src="../../../../post/2020/03/20-caracterizacion-covid-ecuador_files/figure-html/project-normal-1.svg" alt="Proyección de incidencia diaria acumulada de COVID-19 en Ecuador si R0 = 2.1922" width="100%" />
+<p class="caption">
+Figure 3: Proyección de incidencia diaria acumulada de COVID-19 en Ecuador si R0 = 2.1922
+</p>
+</div>
+<p>El segundo y tercer escenarios calculados suponen que R<sub>0</sub> se reduce a la mitad (figura <a href="#fig:project-better">4</a>) y a la cuarta parte (figura <a href="#fig:project-best">5</a>), respectivamente:</p>
+<div class="figure"><span id="fig:project-better"></span>
+<img src="../../../../post/2020/03/20-caracterizacion-covid-ecuador_files/figure-html/project-better-1.svg" alt="Proyección de incidencia diaria acumulada de COVID-19 en Ecuador si R0 = 1.0961" width="100%" />
+<p class="caption">
+Figure 4: Proyección de incidencia diaria acumulada de COVID-19 en Ecuador si R0 = 1.0961
+</p>
+</div>
+<div class="figure"><span id="fig:project-best"></span>
+<img src="../../../../post/2020/03/20-caracterizacion-covid-ecuador_files/figure-html/project-best-1.svg" alt="Proyección de incidencia diaria acumulada de COVID-19 en Ecuador si R0 = 0.548" width="100%" />
+<p class="caption">
+Figure 5: Proyección de incidencia diaria acumulada de COVID-19 en Ecuador si R0 = 0.548
+</p>
+</div>
+<p>Evidentemente, si R<sub>0</sub> &lt; 1 la epidemia será controlada eventualmente. Sin embargo, <strong>estas proyecciones no son realistas</strong> pues cualquier cambio introducido en R<sub>0</sub> -a través de medidas políticas, sociales y sanitarias- no se refleja inmediatamente; en Ecuador es necesario contar las infecciones previas a la declaración de estado de excepción, y que aún no han superado el periodo de incubación. Se pretende actualizar este post conforme las incidencias diarias sean reportadas y reflejen, con optimismo, las medidas adoptadas.</p>
+<div id="referencias" class="section level1 unnumbered">
+<h1>Referencias</h1>
+<div id="refs" class="references">
+<div id="ref-covid">
+<p>Jiang, Xue, Yawei Niu, Xiong Li, Lin Li, Wenxiang Cai, Yucan Chen, Bo Liao, and Edwin Wang. 2020. “Is a 14-Day Quarantine Period Optimal for Effectively Controlling Coronavirus Disease 2019 (Covid-19)? (Preprint).” <a href="https://doi.org/10.1101/2020.03.15.20036533">https://doi.org/10.1101/2020.03.15.20036533</a>.</p>
+</div>
+<div id="ref-covic">
+<p>Nishiura, Hiroshi, Natalie Linton, and Andrei Akhmetzhanov. 2020. “Serial Interval of Novel Coronavirus (Covid-19) Infections (Preprint).” <a href="https://doi.org/10.1016/j.ijid.2020.02.060">https://doi.org/10.1016/j.ijid.2020.02.060</a>.</p>
+</div>
+<div id="ref-covib">
+<p>Zhao, Shi, Daozhou Gao, Zian Zhuang, Ka Chong, Yongli Cai, Jinjun Ran, Peihua Cao, et al. 2020. “Estimating the Serial Interval of the Novel Coronavirus Disease (Covid-19): A Statistical Analysis Using the Public Data in Hong Kong from January 16 to February 15, 2020 (Preprint).” <a href="https://doi.org/10.1101/2020.02.21.20026559">https://doi.org/10.1101/2020.02.21.20026559</a>.</p>
+</div>
+<div id="ref-covia">
+<p>Zhao, Shi, Qianyin Lin, Jinjun Ran, Salihu Musa, Guangpu Yang, Weiming Wang, Yijun Lou, et al. 2020. “Preliminary Estimation of the Basic Reproduction Number of Novel Coronavirus (2019-nCoV) in China, from 2019 to 2020: A Data-Driven Analysis in the Early Phase of the Outbreak.” <em>International Journal of Infectious Diseases</em> 92 (January). <a href="https://doi.org/10.1016/j.ijid.2020.01.050">https://doi.org/10.1016/j.ijid.2020.01.050</a>.</p>
+</div>
+</div>
+</div>
+
+              
+            </div>
+          </div>
+          <div id="post-footer" class="post-footer main-content-wrap">
+            
+              
+                
+                
+                  <div class="post-footer-tags">
+                    <span class="text-color-light text-small">Etiquetado en</span><br/>
+                    
+  <a class="tag tag--primary tag--small" href="../../../../tags/coronavirus/">coronavirus</a>
+
+  <a class="tag tag--primary tag--small" href="../../../../tags/regresi%C3%B3n-logar%C3%ADtmica/">regresión logarítmica</a>
+
+                  </div>
+                
+              
+            
+            <div class="post-actions-wrap">
+  
+      <nav >
+        <ul class="post-actions post-action-nav">
+          
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--disabled">
+              
+                  <i class="fa fa-angle-left"></i>
+                  <span class="hide-xs hide-sm text-small icon-ml">Siguiente</span>
+                </a>
+            </li>
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="../../../../post/2020/03/04-crecimiento-diario-nodos/" data-tooltip="El crecimiento diario de los nodos">
+              
+                  <span class="hide-xs hide-sm text-small icon-mr">Anterior</span>
+                  <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+          
+        </ul>
+      </nav>
+    <ul class="post-actions post-action-share" >
+      
+        <li class="post-action hide-lg hide-md hide-sm">
+          <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions">
+            <i class="fa fa-share-alt"></i>
+          </a>
+        </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://ruevko.github.io/hexagonal/post/2020/03/20-caracterizacion-covid-ecuador/">
+              <i class="fab fa-twitter"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://ruevko.github.io/hexagonal/post/2020/03/20-caracterizacion-covid-ecuador/">
+              <i class="fab fa-facebook-f"></i>
+            </a>
+          </li>
+        
+      
+      
+      <li class="post-action">
+        
+          <a class="post-action-btn btn btn--default" href="#">
+        
+          <i class="fa fa-angle-double-up"></i>
+        </a>
+      </li>
+    </ul>
+  
+</div>
+
+            
+              
+            
+          </div>
+        </article>
+        <footer id="footer" class="main-content-wrap">
+  <span class="copyrights">
+    &copy; 2020 <a href="https://github.com/ruevko">ruevko</a>. Todos los derechos reservados
+  </span>
+</footer>
+
+      </div>
+      <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+        <div class="post-actions-wrap">
+  
+      <nav >
+        <ul class="post-actions post-action-nav">
+          
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--disabled">
+              
+                  <i class="fa fa-angle-left"></i>
+                  <span class="hide-xs hide-sm text-small icon-ml">Siguiente</span>
+                </a>
+            </li>
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="../../../../post/2020/03/04-crecimiento-diario-nodos/" data-tooltip="El crecimiento diario de los nodos">
+              
+                  <span class="hide-xs hide-sm text-small icon-mr">Anterior</span>
+                  <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+          
+        </ul>
+      </nav>
+    <ul class="post-actions post-action-share" >
+      
+        <li class="post-action hide-lg hide-md hide-sm">
+          <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions">
+            <i class="fa fa-share-alt"></i>
+          </a>
+        </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://ruevko.github.io/hexagonal/post/2020/03/20-caracterizacion-covid-ecuador/">
+              <i class="fab fa-twitter"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://ruevko.github.io/hexagonal/post/2020/03/20-caracterizacion-covid-ecuador/">
+              <i class="fab fa-facebook-f"></i>
+            </a>
+          </li>
+        
+      
+      
+      <li class="post-action">
+        
+          <a class="post-action-btn btn btn--default" href="#">
+        
+          <i class="fa fa-angle-double-up"></i>
+        </a>
+      </li>
+    </ul>
+  
+</div>
+
+      </div>
+      <div id="share-options-bar" class="share-options-bar" data-behavior="4">
+  <i id="btn-close-shareoptions" class="fa fa-close"></i>
+  <ul class="share-options">
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=https%3A%2F%2Fruevko.github.io%2Fhexagonal%2Fpost%2F2020%2F03%2F20-caracterizacion-covid-ecuador%2F">
+          <i class="fab fa-twitter"></i><span>Compartir en Twitter</span>
+        </a>
+      </li>
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fruevko.github.io%2Fhexagonal%2Fpost%2F2020%2F03%2F20-caracterizacion-covid-ecuador%2F">
+          <i class="fab fa-facebook-f"></i><span>Compartir en Facebook</span>
+        </a>
+      </li>
+    
+  </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+
+    </div>
+    
+    <div id="about">
+  <div id="about-card">
+    <div id="about-btn-close">
+      <i class="fas fa-times"></i>
+    </div>
+    
+      <img id="about-card-picture" src="https://ruevko.github.io/hexagonal/logo.png" alt="Foto de autor" />
+    
+    <h4 id="about-card-name">La Galería Hexagonal</h4>
+    
+      <div id="about-card-bio">Este es el blog de <a href="https://instagram.com/ruevko">Rafael Castro</a>, orientado a Cartografía y Data Analytics.</div>
+    
+    
+      <div id="about-card-job">
+        <i class="fas fa-graduation-cap"></i>
+        <br/>
+        Geógrafo
+      </div>
+    
+    
+      <div id="about-card-location">
+        <i class="fas fa-home"></i>
+        <br/>
+        Ecuador
+      </div>
+    
+  </div>
+</div>
+
+    
+
+    
+  
+    <div id="cover" style="background-image:url('https://res.cloudinary.com/dodnzqhiz/image/upload/v1577918037/crv.png');"></div>
+  
+
+
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.7/js/jquery.fancybox.min.js" integrity="sha256-GEAnjcTqVP+vBp3SSc8bEDQqvWAZMiHyUSIorrWwH50=" crossorigin="anonymous"></script>
+
+
+<script src="../../../../js/script-pcw6v3xilnxydl1vddzazdverrnn9ctynvnxgwho987mfyqkuylcb1nlt.min.js"></script>
+
+
+<script lang="javascript">
+window.onload = updateMinWidth;
+window.onresize = updateMinWidth;
+document.getElementById("sidebar").addEventListener("transitionend", updateMinWidth);
+function updateMinWidth() {
+  var sidebar = document.getElementById("sidebar");
+  var main = document.getElementById("main");
+  main.style.minWidth = "";
+  var w1 = getComputedStyle(main).getPropertyValue("min-width");
+  var w2 = getComputedStyle(sidebar).getPropertyValue("width");
+  var w3 = getComputedStyle(sidebar).getPropertyValue("left");
+  main.style.minWidth = `calc(${w1} - ${w2} - ${w3})`;
+}
+</script>
+
+
+  
+    
+  
+
+
+
+
+    
+  </body>
+</html>
+

@@ -3,8 +3,43 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://ruevko.github.io/hexagonal/post/2020/03/20-caracterizacion-covid-ecuador/</loc>
+    <lastmod>2020-03-20T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://ruevko.github.io/hexagonal/categories/</loc>
-    <lastmod>2020-03-04T00:00:00+00:00</lastmod>
+    <lastmod>2020-03-20T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://ruevko.github.io/hexagonal/tags/coronavirus/</loc>
+    <lastmod>2020-03-20T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://ruevko.github.io/hexagonal/</loc>
+    <lastmod>2020-03-20T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://ruevko.github.io/hexagonal/post/</loc>
+    <lastmod>2020-03-20T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://ruevko.github.io/hexagonal/tags/regresi%C3%B3n-logar%C3%ADtmica/</loc>
+    <lastmod>2020-03-20T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://ruevko.github.io/hexagonal/categories/reporte/</loc>
+    <lastmod>2020-03-20T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://ruevko.github.io/hexagonal/tags/</loc>
+    <lastmod>2020-03-20T00:00:00+00:00</lastmod>
   </url>
   
   <url>
@@ -28,17 +63,7 @@
   </url>
   
   <url>
-    <loc>https://ruevko.github.io/hexagonal/post/</loc>
-    <lastmod>2020-03-04T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
     <loc>https://ruevko.github.io/hexagonal/tags/regresi%C3%B3n-lineal/</loc>
-    <lastmod>2020-03-04T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://ruevko.github.io/hexagonal/tags/</loc>
     <lastmod>2020-03-04T00:00:00+00:00</lastmod>
   </url>
   
@@ -75,16 +100,6 @@
   <url>
     <loc>https://ruevko.github.io/hexagonal/tags/web-scraping/</loc>
     <lastmod>2020-01-07T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://ruevko.github.io/hexagonal/page/</loc>
-    <lastmod>2020-01-01T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://ruevko.github.io/hexagonal/</loc>
-    <lastmod>2020-01-01T00:00:00+00:00</lastmod>
   </url>
   
   <url>

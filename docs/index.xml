@@ -6,10 +6,19 @@
     <description>Recent content on La Galería Hexagonal</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>es-es</language>
-    <lastBuildDate>Wed, 01 Jan 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 20 Mar 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://ruevko.github.io/hexagonal/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Caracterización del COVID-19 en Ecuador</title>
+      <link>https://ruevko.github.io/hexagonal/post/2020/03/20-caracterizacion-covid-ecuador/</link>
+      <pubDate>Fri, 20 Mar 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://ruevko.github.io/hexagonal/post/2020/03/20-caracterizacion-covid-ecuador/</guid>
+      <description>Utilizando paquetes desarrollados por el R Epidemics Consortium, se estima el ritmo reproductivo básico y se proyectan tres escenarios futuros para los casos positivos acumulados diariamente.</description>
+    </item>
     
     <item>
       <title>El crecimiento diario de los nodos</title>
@@ -45,18 +54,6 @@
       
       <guid>https://ruevko.github.io/hexagonal/post/2020/01/07-estimando-nodos-openstreetmap-pais/</guid>
       <description>Se presenta una metodología basada en &lt;em&gt;web scraping&lt;/em&gt; para generar un mapa coroplético del número de nodos acumulados en cada país.</description>
-    </item>
-    
-    <item>
-      <title></title>
-      <link>https://ruevko.github.io/hexagonal/page/</link>
-      <pubDate>Wed, 01 Jan 2020 00:00:00 +0000</pubDate>
-      
-      <guid>https://ruevko.github.io/hexagonal/page/</guid>
-      <description>&amp;ldquo;El universo (que otros llaman la Biblioteca) se compone de un número indefinido, y tal vez infinito, de galerías hexagonales, con vastos pozos de ventilación en el medio, cercados por barandas bajísimas. Desde cualquier hexágono se ven los pisos
-inferiores y superiores: interminablemente.&amp;rdquo;
-Jorge Luis Borges (1941)
- Acerca de Hay dos razones detrás del nombre de este blog. La primera es un tributo a la maestría de Borges al vislumbrar -en uno de sus cuentos- al conocimiento como algo finito, pero exorbitantemente grande a la vez.</description>
     </item>
     
   </channel>

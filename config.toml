@@ -1,5 +1,5 @@
 
-ignoreFiles = ["\\.bib$", "\\.csv$", "\\.RDS$", "\\.Rmd$", "_files$", "_cache$"]
+ignoreFiles = ["\\.bib$", "\\.csv$", "\\.png$", "\\.RDS$", "\\.Rmd$", "_files$", "_cache$"]
 
 publishDir = "docs"
 title = "La Galería Hexagonal"
