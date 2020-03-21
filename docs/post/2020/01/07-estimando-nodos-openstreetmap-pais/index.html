@@ -325,16 +325,16 @@ code span.wa { color: #bf0303; } /* Warning */
 <a class="sourceLine" id="cb2-4" title="4"></a>
 <a class="sourceLine" id="cb2-5" title="5">test[<span class="kw">as.integer</span>(test<span class="op">$</span>members) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">sort.list</span>(<span class="dt">decreasing =</span> <span class="ot">TRUE</span>), ] <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">head</span>(<span class="dv">10</span>)</a></code></pre></div>
 <pre><code>##            country members created deleted       date
-## 236  United States     592  328726   23184 2019-12-31
-## 82         Germany     503   50952    5790 2019-12-31
-## 74          France     245   46599   12200 2019-12-31
-## 235 United Kingdom     211   34925    2246 2019-12-31
-## 103      Indonesia     158   57315    3578 2019-12-31
-## 30          Brazil     149  134148    1067 2019-12-31
-## 108          Italy     130   25751    2480 2019-12-31
-## 181         Poland     130   31152    2998 2019-12-31
-## 187         Russia     126   53118    5292 2019-12-31
-## 204          Spain      98   54702     887 2019-12-31</code></pre>
+## 193        Germany     679   81769    7891 2019-12-31
+## 192  United States     667  258968   16367 2019-12-31
+## 191         France     335   55615    7871 2019-12-31
+## 190 United Kingdom     253   44646    4446 2019-12-31
+## 189      Indonesia     197   65942    2802 2019-12-31
+## 188         Russia     185   59591    5172 2019-12-31
+## 187         Brazil     169  207501    5528 2019-12-31
+## 186         Poland     165   51049    5055 2019-12-31
+## 185          Italy     148   25234    1534 2019-12-31
+## 184          Spain     140   50878    2711 2019-12-31</code></pre>
 <p>Se trata de los diez países que tuvieron más miembros activos el último día de 2019, tal y como lo presenta <a href="http://osmstats.neis-one.org/?item=countries&amp;date=2019-12-31">esta</a> página específica. Ahora, la verdadera utilidad de la función aparecerá al iterarla en muchas fechas. Considerando que los datos empiezan el 1 de noviembre de 2011, se decidió iterar por 2923 días, hasta el 1 de noviembre de 2019; es decir, se va a contabilizar el crecimiento de OpenStreetMap en ocho años.</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" title="1">days =<span class="st"> </span><span class="kw">as.Date</span>(<span class="st">&quot;2011-11-1&quot;</span>) <span class="op">+</span><span class="st"> </span><span class="dv">0</span><span class="op">:</span><span class="dv">2922</span></a>
 <a class="sourceLine" id="cb4-2" title="2"></a>

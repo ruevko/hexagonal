@@ -3,5 +3,6 @@
 .Rprofile
 .Ruserdata
 .Rproj.user
+static/rmarkdown-libs
 static/post
 content/post/**/*.html

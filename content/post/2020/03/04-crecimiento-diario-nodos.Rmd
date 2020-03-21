@@ -16,7 +16,7 @@ keywords:
 
 link-citations: true
 bibliography: '../../babel.bib'
-thumbnailImage: '/hexagonal/post/2020/03/04-crecimiento-diario-nodos_files/figure-html/model3-1.svg'
+thumbnailImage: 'https://ruevko.github.io/hexagonal/post/2020/03/04-crecimiento-diario-nodos_files/figure-html/model-low-1.png'
 summary: Se ajustó un modelo lineal por cada país, para conocer el crecimiento de nodos OpenStreetMap a través del tiempo.
 ---
 
@@ -152,7 +152,7 @@ head(countries_model)
 
 Para ilustrar los resultados se presentan las regresiones de los países seleccionados:
 
-```{r model2, fig.asp=1.2, fig.cap="Regresiones lineales ajustadas en países seleccionados"}
+```{r model-sel, dev="png", fig.asp=1.2, fig.cap="Regresiones lineales ajustadas en países seleccionados"}
 # my_test = nest(countries_month) %>% mutate(
 #    data = map(data, ~mutate(., month = 1:96)),
 #    lm0 = map(data, ~lm(CumNodes ~ 0 + month, data = .)),
@@ -172,7 +172,7 @@ select(countries_model, continent:data) %>%
 
 Se obtuvo un buen ajuste en la mayoría de casos, en función del coeficiente de determinación (el "r" cuadrado) [ajustado](https://en.wikipedia.org/wiki/Coefficient_of_determination#Adjusted_R2). Solamente nueve países obtuvieron un coeficiente menor a 0.70 debido probablemente a que las contribuciones aparecieron de una manera atípica. 
 
-```{r model3, fig.asp=.9, fig.cap="Regresiones lineales ajustadas con coeficiente de determinación menor a 0.70"}
+```{r model-low, dev="png", fig.asp=.9, fig.cap="Regresiones lineales ajustadas con coeficiente de determinación menor a 0.70"}
 my_model = mutate_at(countries_model, "continent", ~case_when(
    . == "Africa"        ~ scale_fill_hue()$palette(6)[1],
    . == "Asia"          ~ scale_fill_hue()$palette(6)[2],

@@ -11,16 +11,17 @@ tags:
 keywords:
   - coronavirus
   - logarithmic regression
-
 link-citations: true
 bibliography: '../../babel.bib'
 coverImage: 'https://github.com/ruevko/hexagonal/raw/master/content/post/2020/03/covid.png'
 summary: Utilizando paquetes desarrollados por el R Epidemics Consortium, se estima el ritmo reproductivo básico y se proyectan tres escenarios futuros para los casos positivos acumulados diariamente.
 ---
 
+**Actualizado: 21 de marzo, 11 AM**
+
 En vista de la emergencia en curso causada por el SARS-CoV-2 se presenta una caracterización de la epidemia en Ecuador. Se ha aplicado una metodología sugerida por el R Epidemics Consortium [RECON](https://www.repidemicsconsortium.org/) que permite estimar tempranamente el ritmo reproductivo del virus; esta metodología requiere poseer información sobre la transmisión, y datos de la incidencia. La información requerida contempla los siguientes conceptos:
 
-`r knitr::opts_chunk$set(fig.asp=.5)`
+`r knitr::opts_chunk$set(echo = FALSE)`
 
 * El ritmo reproductivo básico (*Basic Reproduction Number*, R~0~) es el número esperado de casos nuevos, generados directamente por un determinado caso en una población completamente susceptible; es crucial entender que R~0~ no es una constante biológica de un patógeno, pues es afectado por factores ambientales y conductuales.
 
@@ -32,9 +33,9 @@ En vista de la emergencia en curso causada por el SARS-CoV-2 se presenta una car
 
     + En el periodo infeccioso, una persona infectada puede causar nuevas infecciones.
 
-```{r data, echo=FALSE}
+```{r data}
 EC_COVID19 = data.frame(
-   fuente = c(rep("Salud_Ec", 9), rep("Riesgos_Ec", 13)),
+   fuente = c(rep("@Salud_Ec", 9), rep("@Riesgos_Ec", 15)),
    status = c(
       "1233774191326957575",
       "1234331734889697281",
@@ -57,8 +58,10 @@ EC_COVID19 = data.frame(
       "1240399748751900674",  #11
       "1240655168158515200",  #12
       "1240750001917243392",  #13
-      "1241018222079610881"), #14
-   sitrep = c(rep(NA, 9), 1:8, 10:14),
+      "1241018222079610881",  #14
+      "1241123691427176450",  #15
+      "1241379969797967883"), #16
+   sitrep = c(rep(NA, 9), 1:8, 10:16),
    corte = as.POSIXct(c(
       "2020-02-29 10:02",
       "2020-03-01 23:02",
@@ -81,29 +84,42 @@ EC_COVID19 = data.frame(
       "2020-03-18 15:00",  #11
       "2020-03-19 08:00",  #12
       "2020-03-19 16:00",  #13
-      "2020-03-20 10:00"), #14
+      "2020-03-20 10:00",  #14
+      "2020-03-20 16:00",  #15
+      "2020-03-21 10:00"), #16
       "America/Guayaquil"),
-   cerco = c(rep(NA, 9), 279, 279, 317, 273, 273, 273, 315, 451, NA, 575, 575, 746, 746),
-   negativo = c(rep(NA, 12), 51, 51, 51, 51, 51, 278, 312, 336, 412, 483),
-   positivo = c(1,6,7,10,13,14,15,17,19,23,23,28,37,37,58,58,111,155,168,199,260,367),
-   fallecido = c(rep(0, 9), 1, 1, rep(2, 7), 3, 3, 4, 5))
+   cerco = c(rep(NA, 9), 279, 279, 317, 273, 273, 273, 315, 451, NA, 575, 575, 746, 746, 1213, 1213),
+   negativo = c(rep(NA, 12), 51, 51, 51, 51, 51, 278, 312, 336, 412, 483, 533, 601),
+   positivo = c(1,6,7,10,13,14,15,17,19,23,23,28,37,37,58,58,111,155,168,199,260,367,426,506),
+   fallecido = c(rep(0, 9), 1, 1, rep(2, 7), 3, 3, 4, 5, 7, 7))
 
 write.csv(EC_COVID19, "EC_COVID19.csv", row.names = FALSE)
 
 #EC_COVID19 = read.csv("EC_COVID19.csv", colClasses = c(status = "character", corte = "POSIXct"))
-
-EC_COVID19 = EC_COVID19[-c(11,14,16,19,21), c(1,4,7,8)]
 ```
 
 Si las infecciones ocurren aleatoriamente, se espera que el SI promedio sea igual a la suma del periodo latente promedio y la mitad del periodo infeccioso promedio. Por otra parte, el periodo latente no necesariamente es mayor al de incubación: dependiendo del virus, una persona puede volverse infecciosa antes de presentar síntomas. En el caso del SARS-CoV-2, se halló que su periodo de incubación posee una mediana de siete días [@covid], pero el periodo infeccioso puede comenzar un día antes.
 
 Con respecto a los datos, se ha recopilado los reportes publicados por el Servicio Nacional de Gestión de Riesgos [SNGRE](https://twitter.com/Riesgos_Ec); casos anteriores al primer reporte corresponden a comunicados del Ministerio de Salud Pública [MSP](https://twitter.com/Salud_Ec).
 
-`r knitr::kable(dplyr::mutate(EC_COVID19, corte = as.character(corte, "%b %e, %l %p")), col.names = c("Fuente", "Fecha de corte", "Casos positivos", "Personas fallecidas"))`
+```{r table, fig.height=3.5}
+EC_COVID19 = EC_COVID19[-c(11,14,16,19,21,23), c(1,4,7,8)]
+
+EC_table = dplyr::mutate(EC_COVID19, corte = as.character(corte, "%e de %B, %l %p"))
+
+EC_table = dplyr::arrange(EC_table, desc(positivo))
+
+EC_table = DT::datatable(EC_table, options = list(
+   pageLength = 6, lengthChange = FALSE, searching = FALSE,
+   language = list(url = '//cdn.datatables.net/plug-ins/1.10.11/i18n/Spanish.json')),
+   colnames=c("Fuente","Fecha de corte","Casos positivos","Personas fallecidas"))
+
+widgetframe::frameWidget(EC_table)
+```
 
 Los datos completos, incluyendo los casos descartados y algunos reportes omitidos (en los días con dos reportes se escogió el matutino), se encuentran [aquí](https://github.com/ruevko/hexagonal/blob/master/content/post/2020/03/EC_COVID19.csv). El primer paso para estimar R~0~ consiste en transformar los casos positivos acumulados en incidencia diaria:
 
-```{r incidence}
+```{r incidence, echo=TRUE}
 EC_COVID19$corte = as.Date(EC_COVID19$corte)
 
 EC_COVID19$positivo = diff(c(0, EC_COVID19$positivo))
@@ -115,7 +131,7 @@ table(EC_incid)
 
 A continuación es posible ajustar un modelo logarítmico para la incidencia en el tiempo utilizando el paquete `incidence`:
 
-```{r logmodel}
+```{r logmodel, echo=TRUE}
 library(incidence)
 
 EC_incid = incidence(EC_incid)
@@ -127,16 +143,16 @@ summary(EC_model$model)
 
 En el caso de Ecuador, el comportamiento logarítmico (R^2^ = `r round(summary(EC_model$model)$r.squared, 4)`) es observable una semana después de la detección del primer caso. De acuerdo a este modelo se espera que cada `r round(EC_model$info$doubling, 2)` días se dupliquen los casos; esto, con un intervalo de confianza (CI) al 95 % de `r paste(round(EC_model$info$doubling.conf, 2), collapse = " a ")` días. En el siguiente gráfico las columnas rojas representan la incidencia diaria, la curva el modelo logarítmico -las líneas entrecortadas delimitan el 95 % CI- y la recta amarilla el inicio del estado de excepción, decretado para frenar las transmisiones.
 
-```{r logplot, echo=FALSE, fig.cap="Incidencia diaria de COVID-19 en Ecuador y modelo logarítmico ajustado"}
+```{r logplot, fig.asp=.5, fig.cap="Incidencia diaria de COVID-19 en Ecuador y modelo logarítmico ajustado"}
 library(ggplot2)
 
-x = plot(EC_incid) + theme_minimal() + theme(title = element_blank()) +
-   theme(plot.background = element_rect(fill = "grey10"), panel.grid = element_line("grey20")) +
+EC_cover = plot(EC_incid) + theme_minimal() + theme(title = element_blank()) +
+   theme(plot.background = element_rect(fill = "grey15"), panel.grid = element_line("grey25")) +
    scale_x_date(date_breaks = "2 days", date_labels = "%b %e") + scale_y_sqrt()
 
-ggsave("covid.png", x, dpi = 200, width = 16/2.5, height = 9/2.5)
+ggsave("covid.png", EC_cover, dpi = 200, width = 16/2.5, height = 9/3)
 
-theme_set(theme_light() + theme(legend.position = "none"))
+theme_set(theme_light() + theme(legend.position = "none", axis.title.x = element_blank()))
 
 plot(EC_incid, fit = EC_model) +
    scale_fill_manual(values = "firebrick") +
@@ -146,7 +162,7 @@ plot(EC_incid, fit = EC_model) +
 
 La estimación de R~0~ con `earlyR` requiere conocer el SI del COVID-19; en este sentido, la literatura reciente presenta dos alternativas. La primera, aprovechar el conocimiento de epidemias anteriores; @covia proponen promediar las características del MERS (mean = 7.6, sd = 3.4) y del SARS (mean = 8.4, sd = 3.8), síndromes causados por otros coronavirus. La segunda alternativa consiste en estimar el SI utilizando las pocas cadenas de transmisión ya identificadas [@covib; @covic]; de esta manera se obtiene un SI preliminar, pero propio del SARS-CoV-2. Con estos antecedentes, se estimó `R_viruses` y `R_chains` usando la primera y segunda alternativa, respectivamente; los siguientes histogramas presentan la distribución de R~0~ en ambos casos.
 
-```{r number, fig.asp=.35, fig.cap="Distribución de Ro del COVID-19 según SI de otros coronavirus :point_left: y de cadenas de transmisión estudiadas :point_right:"}
+```{r number, echo=TRUE, fig.asp=.35, fig.cap="Distribución de Ro del COVID-19 según SI de otros coronavirus :point_left: y de cadenas de transmisión estudiadas :point_right:"}
 library(earlyR)
 
 R_viruses = get_R(EC_incid, si_mean = 8, si_sd = 3.6, max_R = 6) # según Zhao, Lin et al.
@@ -164,7 +180,7 @@ La primera alternativa arroja `r round(R_viruses$R_ml, 4)` como el valor más pr
 
 Considerando R~0~ se puede modelar una proyección futura, más flexible que la arrojada por el modelo exponencial solamente. Se ha utilizado `projections` para predecir tres escenarios, calculando en cada uno diez mil simulaciones para cada día de las dos próximas semanas.
 
-```{r project}
+```{r project, echo=TRUE}
 library(projections)
 
 EC_proj = project(EC_incid, R_sample, R_chains$si, n_days = 14, n_sim = 1e4)
@@ -174,7 +190,7 @@ rowMeans(EC_proj)
 
 Estos datos representan la incidencia promedio para cada día, en un primer escenario donde R~0~ no cambia en absoluto. Los casos actuales y la proyección futura -la región sombreada delimita el 95 % CI- se presentan en el siguiente gráfico de manera acumulativa:
 
-```{r project-normal, fig.cap=paste("Proyección de incidencia diaria acumulada de COVID-19 en Ecuador si R0 =", round(R_chains$R_ml, 4))}
+```{r project-normal, echo=TRUE, fig.asp=.5, fig.cap=paste("Proyección de incidencia diaria acumulada de COVID-19 en Ecuador si R0 =", round(R_chains$R_ml, 4))}
 EC_incid = cumulate(EC_incid)
 
 EC_proj = cumulate(EC_proj)
@@ -182,26 +198,29 @@ EC_proj = cumulate(EC_proj)
 add_projections(plot(EC_incid), EC_proj + max(EC_incid$counts), c(.025, .5)) +
    geom_vline(xintercept = as.Date("2020-03-17"), col = "gold", alpha = .6, size = 2) +
    scale_x_date(date_breaks = "4 days", date_labels = "%b %e") +
+   scale_y_continuous(breaks = 1000 * 0:11) +
    scale_fill_manual(values = "firebrick")
 ```
 
 El segundo y tercer escenarios calculados suponen que R~0~ se reduce a la mitad (figura \@ref(fig:project-better)) y a la cuarta parte (figura \@ref(fig:project-best)), respectivamente:
 
-```{r project-better, echo=FALSE, fig.cap=paste("Proyección de incidencia diaria acumulada de COVID-19 en Ecuador si R0 =", round(R_chains$R_ml/2, 4))}
+```{r project-better, fig.asp=.5, fig.cap=paste("Proyección de incidencia diaria acumulada de COVID-19 en Ecuador si R0 =", round(R_chains$R_ml/2, 4))}
 EC_proj = cumulate(project(EC_incid, R_chains$R_ml/2, R_chains$si, 1e4, 14))
 
 add_projections(plot(EC_incid), EC_proj + max(EC_incid$counts), c(.025, .5)) +
    geom_vline(xintercept = as.Date("2020-03-17"), col = "gold", alpha = .6, size = 2) +
    scale_x_date(date_breaks = "4 days", date_labels = "%b %e") +
+   scale_y_continuous(breaks = 500 * 0:9) +
    scale_fill_manual(values = "firebrick")
 ```
 
-```{r project-best, echo=FALSE, fig.cap=paste("Proyección de incidencia diaria acumulada de COVID-19 en Ecuador si R0 =", round(R_chains$R_ml/4, 4))}
+```{r project-best, fig.asp=.5, fig.cap=paste("Proyección de incidencia diaria acumulada de COVID-19 en Ecuador si R0 =", round(R_chains$R_ml/4, 4))}
 EC_proj = cumulate(project(EC_incid, R_chains$R_ml/4, R_chains$si, 1e4, 14))
 
 add_projections(plot(EC_incid), EC_proj + max(EC_incid$counts), c(.025, .5)) +
    geom_vline(xintercept = as.Date("2020-03-17"), col = "gold", alpha = .6, size = 2) +
    scale_x_date(date_breaks = "4 days", date_labels = "%b %e") +
+   scale_y_continuous(breaks = 250 * 0:9) +
    scale_fill_manual(values = "firebrick")
 ```
 
