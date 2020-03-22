@@ -1,5 +1,5 @@
 
-ignoreFiles = ["\\.bib$", "\\.csv$", "\\.png$", "\\.RDS$", "\\.Rmd$", "_files$", "_cache$"]
+ignoreFiles = ["\\.bib$", "\\.csv$", "\\.jpg$", "\\.RDS$", "\\.Rmd$", "_files$", "_cache$"]
 
 publishDir = "docs"
 title = "La Galería Hexagonal"
@@ -86,17 +86,17 @@ paginate = 5
 
 [params]
 
-  keywords = ["mapas", "datos", "análisis", "maps", "data", "analysis"]
-  description = "La Galería Hexagonal es el blog de Rafael Castro, orientado a cartografía y análisis de datos."
-  dateFormat = "2 de January de 2006"
-  coverImage = "https://res.cloudinary.com/dodnzqhiz/image/upload/v1577918037/crv.png"
   favicon = "/favicon.png"
+  dateFormat = "2 de January de 2006"
+  keywords = ["mapas", "datos", "análisis", "maps", "data", "analytics"]
+  description = "La Galería Hexagonal es el blog de Rafael Castro, orientado a Cartografía y Data Analytics."
+  coverImage = "https://res.cloudinary.com/dodnzqhiz/image/upload/v1577918037/crv.png"
   thumbnailImagePosition = "right"
   thumbnailImage = true
   autoThumbnailImage = true
   hierarchicalCategories = false
+  imageGallery = false
   clearReading = true
-  imageGallery = true
   sidebarBehavior = 1
 
   [[params.sharingOptions]]

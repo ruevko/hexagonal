@@ -12,12 +12,12 @@
     
     
     <item>
-      <title>El crecimiento diario de los nodos</title>
+      <title>La tasa de crecimiento diaria</title>
       <link>https://ruevko.github.io/hexagonal/post/2020/03/04-crecimiento-diario-nodos/</link>
       <pubDate>Wed, 04 Mar 2020 00:00:00 +0000</pubDate>
       
       <guid>https://ruevko.github.io/hexagonal/post/2020/03/04-crecimiento-diario-nodos/</guid>
-      <description>Se ajustó un modelo lineal por cada país, para conocer el crecimiento de nodos OpenStreetMap a través del tiempo.</description>
+      <description>Se ajustó un modelo lineal por cada país, para conocer el crecimiento de OpenStreetMap en función de los nodos creados a diario.</description>
     </item>
     
     <item>

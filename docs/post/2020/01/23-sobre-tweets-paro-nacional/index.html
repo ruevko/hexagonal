@@ -7,7 +7,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="generator" content="Hugo 0.66.0 with theme Tranquilpeak 0.4.7-BETA">
 <meta name="author" content="La Galería Hexagonal">
-<meta name="keywords" content="hashtags, national strike, mapas, datos, análisis, maps, data, analysis">
+<meta name="keywords" content="hashtags, national strike, mapas, datos, análisis, maps, data, analytics">
 <meta name="description" content="Una discusión de tweets publicados con tres hashtags populares durante el paro de octubre en Ecuador, y del inconveniente para recuperar esos datos hoy en día.">
 
 
@@ -50,6 +50,9 @@
 
 
 
+
+  <meta property="og:image" content="https://pbs.twimg.com/media/ENzwak5XsAATLc0?format=jpg&name=small">
+  <meta property="twitter:image" content="https://pbs.twimg.com/media/ENzwak5XsAATLc0?format=jpg&name=small">
 
 
 
@@ -143,7 +146,7 @@
     
       <i class="sidebar-button-icon fa fa-lg fa-search-location"></i>
       
-      <span class="sidebar-button-desc">Archivos</span>
+      <span class="sidebar-button-desc">Archivo</span>
     </a>
   </li>
 
@@ -287,7 +290,7 @@ code span.wa { color: #bf0303; } /* Warning */
 
 
 <p>Los últimos meses del año pasado presenciaron movilizaciones en algunos países del mundo, respondiendo a acciones gubernamentales de diversas índoles. En Ecuador, las protestas de octubre fueron detonadas por las medidas económicas anunciadas por la presidencia, con el propósito de cumplir una agenda acordada con el Fondo Monetario Internacional.</p>
-<p>El principal cambio consistía en terminar el subsidio de combustibles; como suele suceder con las medidas inmediatas, que no contemplan un cambio progresivo ni un desarrollo equitativo, ciertos sectores -estudiantes, transportistas, agricultores, indígenas- hubiesen sido los más afectados. Tras un paro nacional que se extendió del 3 al 13 de octubre, las medidas económicas fueron retiradas. Para mayor información sobre las medidas, las acciones de los sectores vulnerados y las represalias del gobierno, se sugiere consultar las siguientes fuentes: <a href="https://wambra.ec/la-protesta-indigena-y-popular-que-levanto-a-ecuador/">Wambra</a>, <a href="http://www.pichinchacomunicaciones.com.ec/">Pichincha Comunicaciones</a><a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>, <a href="https://www.revistacrisis.com/coyuntura/apuntes-sobre-el-triunfo-popular-de-octubre/">Crisis</a> y <a href="https://conaie.org/2019/10/09/septimo-dia-de-movilizacion-nacional-del-movimiento-indigena/">CONAIE</a>.</p>
+<p>El principal cambio consistía en terminar el subsidio de combustibles; como suele suceder con las medidas inmediatas, que no contemplan un cambio progresivo ni un desarrollo equitativo, ciertos sectores -estudiantes, transportistas, agricultores, indígenas- hubiesen sido los más afectados. Tras un paro nacional que se extendió del 3 al 13 de octubre, las medidas económicas fueron retiradas. Para mayor información sobre las medidas, las acciones de los sectores vulnerados y las represalias del gobierno, se sugiere consultar las siguientes fuentes: <a href="https://wambra.ec/la-protesta-indigena-y-popular-que-levanto-a-ecuador/">Wambra</a>, <a href="http://www.pichinchacomunicaciones.com.ec/federaciones-de-transporte-del-pais-paralizaran-actividades-si-gobierno-no-deroga-decreto/">Pichincha Comunicaciones</a><a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>, <a href="https://www.revistacrisis.com/coyuntura/apuntes-sobre-el-triunfo-popular-de-octubre/">Crisis</a> y <a href="https://conaie.org/2019/10/09/septimo-dia-de-movilizacion-nacional-del-movimiento-indigena/">CONAIE</a>.</p>
 <p>El propósito de este post es demostrar cómo ejecuté un análisis con los <em>tweets</em> generados entre el 1 y el 10 de octubre, considerando tres <em>hashtags</em> populares durante el paro nacional en Ecuador. La premisa es que la elección de un <em>hashtag</em> expone la intención del usuario, de reportar los hechos acontecidos durante el paro o de desaprobar al mismo. Originalmente trabajé con el paquete <code>twitteR</code> el cual permite obtener <em>tweets</em> a través de la API gratuita de Twitter; no obstante, es necesario ejecutar previamente una función de autenticación<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw">library</span>(twitteR)</a>
 <a class="sourceLine" id="cb1-2" title="2"></a>
@@ -348,7 +351,7 @@ code span.wa { color: #bf0303; } /* Warning */
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left"><a href="https://twitter.com/search?q=%23ParoNacionalEcuador%20until%3A2019-10-10%20since%3A2019-10-01">#ParoNacionalEcuador</a></td>
+<td align="left"><a href="https://twitter.com/search?q=%23ParoNacionalEcuador%20since%3A2019-10-01%20until%3A2019-10-10">#ParoNacionalEcuador</a></td>
 <td align="right">13770</td>
 <td align="right">11471</td>
 <td align="right">0.8330</td>
@@ -356,7 +359,7 @@ code span.wa { color: #bf0303; } /* Warning */
 <td align="right">2.5996</td>
 </tr>
 <tr class="even">
-<td align="left"><a href="https://twitter.com/search?q=%23EcuadorPaisDePaz%20until%3A2019-10-10%20since%3A2019-10-01">#EcuadorPaisDePaz</a></td>
+<td align="left"><a href="https://twitter.com/search?q=%23EcuadorPaisDePaz%20since%3A2019-10-01%20until%3A2019-10-10">#EcuadorPaisDePaz</a></td>
 <td align="right">19754</td>
 <td align="right">13356</td>
 <td align="right">0.6761</td>
@@ -364,7 +367,7 @@ code span.wa { color: #bf0303; } /* Warning */
 <td align="right">3.6500</td>
 </tr>
 <tr class="odd">
-<td align="left"><a href="https://twitter.com/search?q=%23ElParoSigue%20until%3A2019-10-10%20since%3A2019-10-01">#ElParoSigue</a></td>
+<td align="left"><a href="https://twitter.com/search?q=%23ElParoSigue%20since%3A2019-10-01%20until%3A2019-10-10">#ElParoSigue</a></td>
 <td align="right">13083</td>
 <td align="right">10223</td>
 <td align="right">0.7814</td>

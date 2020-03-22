@@ -7,7 +7,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="generator" content="Hugo 0.66.0 with theme Tranquilpeak 0.4.7-BETA">
 <meta name="author" content="La Galería Hexagonal">
-<meta name="keywords" content="hashtags, national strike, mapas, datos, análisis, maps, data, analysis">
+<meta name="keywords" content="hashtags, national strike, mapas, datos, análisis, maps, data, analytics">
 <meta name="description" content="Continúa la discusión de tweets publicados durante el paro de octubre, considerando ahora seis hashtags populares.">
 
 
@@ -51,8 +51,8 @@
 
 
 
-  <meta property="og:image" content="https://ruevko.github.io/hexagonal/post/2020/02/19-sobre-tweets-paro-nacional-parte_files/figure-html/plot1-1.svg">
-  <meta property="twitter:image" content="https://ruevko.github.io/hexagonal/post/2020/02/19-sobre-tweets-paro-nacional-parte_files/figure-html/plot1-1.svg">
+  <meta property="og:image" content="https://github.com/ruevko/hexagonal/raw/master/content/post/2020/02/cacerolazo.jpg">
+  <meta property="twitter:image" content="https://github.com/ruevko/hexagonal/raw/master/content/post/2020/02/cacerolazo.jpg">
 
 
 
@@ -146,7 +146,7 @@
     
       <i class="sidebar-button-icon fa fa-lg fa-search-location"></i>
       
-      <span class="sidebar-button-desc">Archivos</span>
+      <span class="sidebar-button-desc">Archivo</span>
     </a>
   </li>
 
@@ -221,6 +221,7 @@
           <div class="post-content markdown" itemprop="articleBody">
             <div class="main-content-wrap">
               
+<script src="../../../../rmarkdown-libs/kePrint/kePrint.js"></script>
 <style type="text/css">
 a.sourceLine { display: inline-block; line-height: 1.25; }
 a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
@@ -304,8 +305,8 @@ code span.wa { color: #bf0303; } /* Warning */
 <a class="sourceLine" id="cb2-3" title="3">gg =<span class="st"> </span><span class="kw">ggplot</span>() <span class="op">+</span><span class="st"> </span><span class="kw">coord_flip</span>() <span class="op">+</span><span class="st"> </span><span class="kw">theme</span>(<span class="dt">axis.title=</span><span class="kw">element_blank</span>(), <span class="dt">legend.position=</span><span class="st">&quot;none&quot;</span>)</a>
 <a class="sourceLine" id="cb2-4" title="4"></a>
 <a class="sourceLine" id="cb2-5" title="5">gg <span class="op">+</span><span class="st"> </span><span class="kw">geom_bar</span>(<span class="kw">aes</span>(ht, <span class="dt">fill=</span>ht), df_all)</a></code></pre></div>
-<div class="figure"><span id="fig:plot1"></span>
-<img src="../../../../post/2020/02/19-sobre-tweets-paro-nacional-parte_files/figure-html/plot1-1.svg" alt="Frecuencia de tweets por hashtag" width="100%" />
+<div class="figure" style="text-align: center"><span id="fig:plot1"></span>
+<img src="../../../../post/2020/02/19-sobre-tweets-paro-nacional-parte_files/figure-html/plot1-1.png" alt="Frecuencia de tweets por hashtag" width="100%" />
 <p class="caption">
 Figure 1: Frecuencia de tweets por hashtag
 </p>
@@ -316,83 +317,185 @@ Figure 1: Frecuencia de tweets por hashtag
 <a class="sourceLine" id="cb3-3" title="3">df_long =<span class="st"> </span><span class="kw">pivot_longer</span>(df_all, <span class="kw">c</span>(<span class="st">&quot;favorites&quot;</span>, <span class="st">&quot;retweets&quot;</span>))</a>
 <a class="sourceLine" id="cb3-4" title="4"></a>
 <a class="sourceLine" id="cb3-5" title="5">gg <span class="op">+</span><span class="st"> </span><span class="kw">geom_boxplot</span>(<span class="kw">aes</span>(ht, value, <span class="dt">fill=</span>ht), df_long) <span class="op">+</span><span class="st"> </span><span class="kw">facet_wrap</span>(<span class="op">~</span>name) <span class="op">+</span><span class="st"> </span><span class="kw">scale_y_log10</span>()</a></code></pre></div>
-<div class="figure"><span id="fig:plot2"></span>
-<img src="../../../../post/2020/02/19-sobre-tweets-paro-nacional-parte_files/figure-html/plot2-1.svg" alt="Boxplots de favorites y retweets por hashtag" width="100%" />
+<div class="figure" style="text-align: center"><span id="fig:plot2"></span>
+<img src="../../../../post/2020/02/19-sobre-tweets-paro-nacional-parte_files/figure-html/plot2-1.png" alt="Boxplots de favorites y retweets por hashtag" width="100%" />
 <p class="caption">
 Figure 2: Boxplots de favorites y retweets por hashtag
 </p>
 </div>
 <p>A pesar de que #ParoNacionalEC apareció en más publicaciones, #EcuadorPaisDePaz fue el <em>hashtag</em> más popular en cuanto a favoritos y RTs, con varios valores atípicos. Es un hecho lamentable, pues refleja cierta simpatía -al menos en Twitter- que la ciudadanía tuvo hacia el discurso del estado. La popularidad de #ElParoNoPara o #ElParoSigue poseyó valores más regulares. Para observar los datos de una manera distinta, la siguiente tabla resume los niveles de RTs y las razones de contribución (<em>tweets</em> promedio por usuario).</p>
+<div style="border: 1px solid #ddd; padding: 5px; overflow-x: scroll; width:100%; ">
 <table>
-<caption><span id="tab:table">Table 1: </span>Resumen de todos los tweets y retweets</caption>
+<caption>
+<span id="tab:table">Table 1: </span>Resumen de todos los tweets y retweets
+</caption>
 <thead>
-<tr class="header">
-<th align="left">Hashtag</th>
-<th align="right">Tweets</th>
-<th align="right">Usuarios</th>
-<th align="right">Razón</th>
-<th align="right">RTsMedio</th>
-<th align="right">RTsMáximo</th>
-<th align="right">RTsTotal</th>
+<tr>
+<th style="text-align:left;">
+Hashtag
+</th>
+<th style="text-align:right;">
+Tweets
+</th>
+<th style="text-align:right;">
+Usuarios
+</th>
+<th style="text-align:right;">
+Razón
+</th>
+<th style="text-align:right;">
+RTsMedio
+</th>
+<th style="text-align:right;">
+RTsMax
+</th>
+<th style="text-align:right;">
+RTsTotal
+</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
-<td align="left">#ParoNacionalEC</td>
-<td align="right">429</td>
-<td align="right">223</td>
-<td align="right">1.92</td>
-<td align="right">306.00</td>
-<td align="right">3627</td>
-<td align="right">131275</td>
+<tr>
+<td style="text-align:left;">
+#ParoNacionalEC
+</td>
+<td style="text-align:right;">
+429
+</td>
+<td style="text-align:right;">
+223
+</td>
+<td style="text-align:right;">
+1.92
+</td>
+<td style="text-align:right;">
+306.00
+</td>
+<td style="text-align:right;">
+3627
+</td>
+<td style="text-align:right;">
+131275
+</td>
 </tr>
-<tr class="even">
-<td align="left">#EcuadorPaisDePaz</td>
-<td align="right">367</td>
-<td align="right">158</td>
-<td align="right">2.32</td>
-<td align="right">259.21</td>
-<td align="right">8592</td>
-<td align="right">95129</td>
+<tr>
+<td style="text-align:left;">
+#EcuadorPaisDePaz
+</td>
+<td style="text-align:right;">
+367
+</td>
+<td style="text-align:right;">
+158
+</td>
+<td style="text-align:right;">
+2.32
+</td>
+<td style="text-align:right;">
+259.21
+</td>
+<td style="text-align:right;">
+8592
+</td>
+<td style="text-align:right;">
+95129
+</td>
 </tr>
-<tr class="odd">
-<td align="left">#ParoNacionalEcuador</td>
-<td align="right">244</td>
-<td align="right">149</td>
-<td align="right">1.64</td>
-<td align="right">283.54</td>
-<td align="right">5426</td>
-<td align="right">69183</td>
+<tr>
+<td style="text-align:left;">
+#ParoNacionalEcuador
+</td>
+<td style="text-align:right;">
+244
+</td>
+<td style="text-align:right;">
+149
+</td>
+<td style="text-align:right;">
+1.64
+</td>
+<td style="text-align:right;">
+283.54
+</td>
+<td style="text-align:right;">
+5426
+</td>
+<td style="text-align:right;">
+69183
+</td>
 </tr>
-<tr class="even">
-<td align="left">#ElParoSigue</td>
-<td align="right">186</td>
-<td align="right">106</td>
-<td align="right">1.75</td>
-<td align="right">278.66</td>
-<td align="right">2133</td>
-<td align="right">51830</td>
+<tr>
+<td style="text-align:left;">
+#ElParoSigue
+</td>
+<td style="text-align:right;">
+186
+</td>
+<td style="text-align:right;">
+106
+</td>
+<td style="text-align:right;">
+1.75
+</td>
+<td style="text-align:right;">
+278.66
+</td>
+<td style="text-align:right;">
+2133
+</td>
+<td style="text-align:right;">
+51830
+</td>
 </tr>
-<tr class="odd">
-<td align="left">#ElParoNoPara</td>
-<td align="right">132</td>
-<td align="right">91</td>
-<td align="right">1.45</td>
-<td align="right">263.20</td>
-<td align="right">2473</td>
-<td align="right">34743</td>
+<tr>
+<td style="text-align:left;">
+#ElParoNoPara
+</td>
+<td style="text-align:right;">
+132
+</td>
+<td style="text-align:right;">
+91
+</td>
+<td style="text-align:right;">
+1.45
+</td>
+<td style="text-align:right;">
+263.20
+</td>
+<td style="text-align:right;">
+2473
+</td>
+<td style="text-align:right;">
+34743
+</td>
 </tr>
-<tr class="even">
-<td align="left">#DialogoPorLaPaz</td>
-<td align="right">86</td>
-<td align="right">61</td>
-<td align="right">1.41</td>
-<td align="right">102.88</td>
-<td align="right">627</td>
-<td align="right">8848</td>
+<tr>
+<td style="text-align:left;">
+#DialogoPorLaPaz
+</td>
+<td style="text-align:right;">
+86
+</td>
+<td style="text-align:right;">
+61
+</td>
+<td style="text-align:right;">
+1.41
+</td>
+<td style="text-align:right;">
+102.88
+</td>
+<td style="text-align:right;">
+627
+</td>
+<td style="text-align:right;">
+8848
+</td>
 </tr>
 </tbody>
 </table>
+</div>
 <p>Confirmando lo expuesto en la primera parte de este post, el uso de #EcuadorPaisDePaz se aproximó al <em>spam</em>, con más publicaciones y menos usuarios. Al contrario, #DialogoPorLaPaz tiene la razón más baja y resulta ambiguo discernir si su uso se relacionó mayoritariamente con el estado o la oposición, principalmente por la baja cantidad de <em>tweets</em>. Por otra parte, si observamos el promedio y el total de RTs, es claro que #ParoNacionalEC tuvo mayor alcance. Se observó que las publicaciones con este <em>hashtag</em> reportaban las acciones de y contra los sectores movilizados; así, el <em>tweet</em> con #ParoNacionalEC que recibió más RTs fue: <blockquote class="twitter-tweet"><p lang="es" dir="ltr">Lenin decreta toque de queda pero al pueblo ecuatoriano nadie lo calla! Cacerolazo en protesta de la represión policial, el toque de queda y por aquellos que luchan en contra de un gobierno asesino que fomenta la desigualdad social. <a href="https://twitter.com/hashtag/ToqueDeQueda?src=hash&amp;ref_src=twsrc%5Etfw">#ToqueDeQueda</a> <a href="https://twitter.com/hashtag/ParoNacionalEC?src=hash&amp;ref_src=twsrc%5Etfw">#ParoNacionalEC</a> <a href="https://twitter.com/hashtag/Cacerolazo?src=hash&amp;ref_src=twsrc%5Etfw">#Cacerolazo</a> <a href="https://t.co/ViQgOMTOZJ">pic.twitter.com/ViQgOMTOZJ</a></p>&mdash; Ani Aguirre (@AniAguirre10) <a href="https://twitter.com/AniAguirre10/status/1183225522651832320?ref_src=twsrc%5Etfw">October 13, 2019</a></blockquote>
 <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 </p>
@@ -406,123 +509,252 @@ Figure 2: Boxplots de favorites y retweets por hashtag
 <a class="sourceLine" id="cb4-4" title="4"><span class="st">   </span><span class="kw">summarise</span>(<span class="dt">Tweets =</span> <span class="kw">n_distinct</span>(id), <span class="dt">Usuarios =</span> <span class="kw">n_distinct</span>(us)) <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb4-5" title="5"><span class="st">   </span><span class="kw">rename_at</span>(<span class="kw">vars</span>(<span class="op">-</span>Tweets, <span class="op">-</span>Usuarios), <span class="op">~</span><span class="kw">gsub</span>(<span class="st">&quot;[[:lower:]]&quot;</span>, <span class="st">&quot;&quot;</span>, .))</a></code></pre></div>
 <p>La siguiente tabla presenta las combinaciones de <em>hashtags</em> -mostrando solo iniciales- que aparecieron.</p>
+<div style="border: 1px solid #ddd; padding: 5px; overflow-x: scroll; width:100%; ">
 <table>
-<caption><span id="tab:help2">Table 2: </span>Resumen de los tweets con hashtags combinados</caption>
+<caption>
+<span id="tab:help2">Table 2: </span>Resumen de los tweets con hashtags combinados
+</caption>
 <thead>
-<tr class="header">
-<th align="center">#DPLP</th>
-<th align="center">#EPDP</th>
-<th align="center">#EPNP</th>
-<th align="center">#EPS</th>
-<th align="center">#PNEC</th>
-<th align="center">#PNE</th>
-<th align="right">Tweets</th>
-<th align="right">Usuarios</th>
+<tr>
+<th style="text-align:center;">
+#DPLP
+</th>
+<th style="text-align:center;">
+#EPDP
+</th>
+<th style="text-align:center;">
+#EPNP
+</th>
+<th style="text-align:center;">
+#EPS
+</th>
+<th style="text-align:center;">
+#PNEC
+</th>
+<th style="text-align:center;">
+#PNE
+</th>
+<th style="text-align:right;">
+Tweets
+</th>
+<th style="text-align:right;">
+Usuarios
+</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
-<td align="center"></td>
-<td align="center"></td>
-<td align="center"></td>
-<td align="center"></td>
-<td align="center">✓</td>
-<td align="center">✓</td>
-<td align="right">6</td>
-<td align="right">6</td>
+<tr>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+✓
+</td>
+<td style="text-align:center;">
+✓
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+6
+</td>
 </tr>
-<tr class="even">
-<td align="center"></td>
-<td align="center"></td>
-<td align="center"></td>
-<td align="center">✓</td>
-<td align="center"></td>
-<td align="center">✓</td>
-<td align="right">14</td>
-<td align="right">11</td>
+<tr>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+✓
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+✓
+</td>
+<td style="text-align:right;">
+14
+</td>
+<td style="text-align:right;">
+11
+</td>
 </tr>
-<tr class="odd">
-<td align="center"></td>
-<td align="center"></td>
-<td align="center"></td>
-<td align="center">✓</td>
-<td align="center">✓</td>
-<td align="center"></td>
-<td align="right">4</td>
-<td align="right">4</td>
+<tr>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+✓
+</td>
+<td style="text-align:center;">
+✓
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+4
+</td>
 </tr>
-<tr class="even">
-<td align="center"></td>
-<td align="center"></td>
-<td align="center"></td>
-<td align="center">✓</td>
-<td align="center">✓</td>
-<td align="center">✓</td>
-<td align="right">1</td>
-<td align="right">1</td>
+<tr>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+✓
+</td>
+<td style="text-align:center;">
+✓
+</td>
+<td style="text-align:center;">
+✓
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
 </tr>
-<tr class="odd">
-<td align="center"></td>
-<td align="center"></td>
-<td align="center">✓</td>
-<td align="center"></td>
-<td align="center"></td>
-<td align="center">✓</td>
-<td align="right">6</td>
-<td align="right">6</td>
+<tr>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+✓
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+✓
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+6
+</td>
 </tr>
-<tr class="even">
-<td align="center"></td>
-<td align="center"></td>
-<td align="center">✓</td>
-<td align="center"></td>
-<td align="center">✓</td>
-<td align="center"></td>
-<td align="right">6</td>
-<td align="right">6</td>
+<tr>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+✓
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+✓
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+6
+</td>
 </tr>
-<tr class="odd">
-<td align="center"></td>
-<td align="center"></td>
-<td align="center">✓</td>
-<td align="center">✓</td>
-<td align="center"></td>
-<td align="center"></td>
-<td align="right">4</td>
-<td align="right">2</td>
+<tr>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+✓
+</td>
+<td style="text-align:center;">
+✓
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+2
+</td>
 </tr>
-<tr class="even">
-<td align="center"></td>
-<td align="center">✓</td>
-<td align="center">✓</td>
-<td align="center"></td>
-<td align="center"></td>
-<td align="center"></td>
-<td align="right">1</td>
-<td align="right">1</td>
+<tr>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+✓
+</td>
+<td style="text-align:center;">
+✓
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
 </tr>
-<tr class="odd">
-<td align="center">✓</td>
-<td align="center">✓</td>
-<td align="center"></td>
-<td align="center"></td>
-<td align="center"></td>
-<td align="center"></td>
-<td align="right">2</td>
-<td align="right">1</td>
+<tr>
+<td style="text-align:center;">
+✓
+</td>
+<td style="text-align:center;">
+✓
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+1
+</td>
 </tr>
 </tbody>
 </table>
+</div>
 <p>Habiendo analizado todo esto, ¿quiénes utilizaron en mayor cantidad cada <em>hashtag</em>? Este gráfico -que conserva la legenda de color del gráfico <a href="#fig:plot1">1</a>- recoge solamente los usuarios con diez o más publicaciones. Se demuestra cómo en las cuentas de ejército, policía y presidente -los responsables de la violencia que sufrieron los manifestantes- abundaron los mensajes de paz, alcanzando una cantidad ridícula con la secretaría general de comunicación de la presidencia. Mientras tanto se evidenciaron los mensajes de respaldo al paro desde el KolectiVOZ y la CONAIE, y de reportaje en Pichincha Comunicaciones y Wambra.</p>
-<div class="figure"><span id="fig:plot3"></span>
-<img src="../../../../post/2020/02/19-sobre-tweets-paro-nacional-parte_files/figure-html/plot3-1.svg" alt="Usuarios que publicaron diez o más tweets por hashtag" width="100%" />
+<div class="figure" style="text-align: center"><span id="fig:plot3"></span>
+<img src="../../../../post/2020/02/19-sobre-tweets-paro-nacional-parte_files/figure-html/plot3-1.png" alt="Usuarios que publicaron diez o más tweets por hashtag" width="100%" />
 <p class="caption">
 Figure 3: Usuarios que publicaron diez o más tweets por hashtag
 </p>
 </div>
 <p>Para cerrar este análisis se presenta un histograma sobre el tiempo de publicación de los <em>tweets</em>; cada columna encierra seis horas. Los tiempos son congruentes con la propaganda del #EcuadorPaísDePaz, posterior al inicio del paro, y la expectativa del #DialogoPorLaPaz, refiriéndose a la reunión del 13 de octubre donde se derogaron las medidas económicas, poniendo efectivamente fin al paro.</p>
-<div class="figure"><span id="fig:plot4"></span>
-<img src="../../../../post/2020/02/19-sobre-tweets-paro-nacional-parte_files/figure-html/plot4-1.svg" alt="Tiempo de publicación de los tweets por hashtag" width="100%" />
+<div class="figure" style="text-align: center"><span id="fig:plot4"></span>
+<img src="../../../../post/2020/02/19-sobre-tweets-paro-nacional-parte_files/figure-html/plot4-1.png" alt="Tiempo de publicación de los tweets por hashtag" width="100%" />
 <p class="caption">
 Figure 4: Tiempo de publicación de los tweets por hashtag
 </p>
@@ -554,7 +786,7 @@ Figure 4: Tiempo de publicación de los tweets por hashtag
           
             <li class="post-action">
               
-                <a class="post-action-btn btn btn--default tooltip--top" href="../../../../post/2020/03/04-crecimiento-diario-nodos/" data-tooltip="El crecimiento diario de los nodos">
+                <a class="post-action-btn btn btn--default tooltip--top" href="../../../../post/2020/03/04-crecimiento-diario-nodos/" data-tooltip="La tasa de crecimiento diaria">
               
                   <i class="fa fa-angle-left"></i>
                   <span class="hide-xs hide-sm text-small icon-ml">Siguiente</span>
@@ -624,7 +856,7 @@ Figure 4: Tiempo de publicación de los tweets por hashtag
           
             <li class="post-action">
               
-                <a class="post-action-btn btn btn--default tooltip--top" href="../../../../post/2020/03/04-crecimiento-diario-nodos/" data-tooltip="El crecimiento diario de los nodos">
+                <a class="post-action-btn btn btn--default tooltip--top" href="../../../../post/2020/03/04-crecimiento-diario-nodos/" data-tooltip="La tasa de crecimiento diaria">
               
                   <i class="fa fa-angle-left"></i>
                   <span class="hide-xs hide-sm text-small icon-ml">Siguiente</span>

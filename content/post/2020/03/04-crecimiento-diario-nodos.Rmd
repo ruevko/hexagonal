@@ -1,5 +1,5 @@
 ---
-title: El crecimiento diario de los nodos
+title: La tasa de crecimiento diaria
 author: Rafael Castro
 date: '2020-03-04'
 slug: 04-crecimiento-diario-nodos
@@ -8,16 +8,16 @@ categories:
 tags:
   - nodos
   - coropletas
-  - regresión lineal
+  - regresión
 keywords:
   - nodes
   - choropleths
-  - linear regression
+  - regression
 
 link-citations: true
 bibliography: '../../babel.bib'
 thumbnailImage: 'https://ruevko.github.io/hexagonal/post/2020/03/04-crecimiento-diario-nodos_files/figure-html/model-low-1.png'
-summary: Se ajustó un modelo lineal por cada país, para conocer el crecimiento de nodos OpenStreetMap a través del tiempo.
+summary: Se ajustó un modelo lineal por cada país, para conocer el crecimiento de OpenStreetMap en función de los nodos creados a diario.
 ---
 
 `r knitr::opts_chunk$set(echo=FALSE)`
@@ -83,7 +83,7 @@ head(countries_month)
 
 Incluso agregando los datos, existen `r n_distinct(countries_month$date)` observaciones mensuales por cada uno de los `r n_distinct(countries_month$country)` países. Para el siguiente gráfico se agregó aún más los datos: se agrupó los países de acuerdo al continente (exceptuando Antártida) y se promedió la suma de nodos creados.
 
-```{r mean, fig.asp=.45, fig.cap="Promedio de nodos creados mensualmente en cada continente"}
+```{r mean, fig.asp=.4, fig.cap="Promedio de nodos creados mensualmente en cada continente"}
 my_top = filter(countries_month, !continent %in% c("Antarctica", "Seven seas (open ocean)"))
 
 group_by(my_top, continent, date) %>%
@@ -106,7 +106,7 @@ Visualizar el promedio a través de los meses confirma el hecho de que los país
 11. Nueva Zelanda
 12. Argentina
 
-```{r cumsum, fig.asp=.9, fig.cap="Suma :point_up_2: y suma acumulativa :point_down: de nodos creados mensualmente en países seleccionados"}
+```{r cumsum, fig.asp=.7, fig.cap="Suma :point_up_2: y suma acumulativa :point_down: de nodos creados mensualmente en países seleccionados"}
 my_top = summarise_at(my_top, "SumNodes", sum) %>% top_n(2, SumNodes) %>% pull(country)
 
 filter(countries_month, country %in% my_top) %>%
@@ -152,7 +152,7 @@ head(countries_model)
 
 Para ilustrar los resultados se presentan las regresiones de los países seleccionados:
 
-```{r model-sel, dev="png", fig.asp=1.2, fig.cap="Regresiones lineales ajustadas en países seleccionados"}
+```{r model-sel, fig.asp=4/3, fig.cap="Regresiones lineales ajustadas en países seleccionados"}
 # my_test = nest(countries_month) %>% mutate(
 #    data = map(data, ~mutate(., month = 1:96)),
 #    lm0 = map(data, ~lm(CumNodes ~ 0 + month, data = .)),
@@ -172,7 +172,7 @@ select(countries_model, continent:data) %>%
 
 Se obtuvo un buen ajuste en la mayoría de casos, en función del coeficiente de determinación (el "r" cuadrado) [ajustado](https://en.wikipedia.org/wiki/Coefficient_of_determination#Adjusted_R2). Solamente nueve países obtuvieron un coeficiente menor a 0.70 debido probablemente a que las contribuciones aparecieron de una manera atípica. 
 
-```{r model-low, dev="png", fig.asp=.9, fig.cap="Regresiones lineales ajustadas con coeficiente de determinación menor a 0.70"}
+```{r model-low, fig.asp=1, fig.cap="Regresiones lineales ajustadas con coeficiente de determinación menor a 0.70"}
 my_model = mutate_at(countries_model, "continent", ~case_when(
    . == "Africa"        ~ scale_fill_hue()$palette(6)[1],
    . == "Asia"          ~ scale_fill_hue()$palette(6)[2],
@@ -199,7 +199,7 @@ En las regresiones que tuvieron buen ajuste, la característica que permite cara
 
 Para cerrar este post se presentan los mapas coropléticos con las pendientes -las tasas diarias de creación de nodos- y los coeficientes de determinación ajustados de las regresiones calculadas en cada país.
 
-```{r map-slope, fig.asp=.605, fig.cap="Tasa diaria estimada de nodos creados por país"}
+```{r map-slope, dev="svg", fig.asp=.605, fig.cap="Tasa diaria estimada de nodos creados por país"}
 rm(countries, my_model, my_model2)
 
 World = select(countries_model, country, m, r) %>%
@@ -215,7 +215,7 @@ my_plot(World) +
    theme(legend.key.width = unit(.025, "npc"), legend.key.height = unit(.045, "npc"))
 ```
 
-```{r map-coeff, fig.asp=.605, fig.cap="Coeficiente de determinación del ajuste lineal por país"}
+```{r map-coeff, dev="svg", fig.asp=.605, fig.cap="Coeficiente de determinación del ajuste lineal por país"}
 my_plot(World) +
    scale_fill_viridis_d(na.value = "grey", option = "B", begin = .25) +
    geom_sf(aes(fill = r), color = NA, inherit.aes = FALSE) +

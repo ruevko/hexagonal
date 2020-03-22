@@ -12,12 +12,13 @@ keywords:
   - hashtags
   - national strike
 
+thumbnailImage: 'https://pbs.twimg.com/media/ENzwak5XsAATLc0?format=jpg&name=small'
 summary: Una discusión de *tweets* publicados con tres *hashtags* populares durante el paro de octubre en Ecuador, y del inconveniente para recuperar esos datos hoy en día.
 ---
 
 Los últimos meses del año pasado presenciaron movilizaciones en algunos países del mundo, respondiendo a acciones gubernamentales de diversas índoles. En Ecuador, las protestas de octubre fueron detonadas por las medidas económicas anunciadas por la presidencia, con el propósito de cumplir una agenda acordada con el Fondo Monetario Internacional.
 
-El principal cambio consistía en terminar el subsidio de combustibles; como suele suceder con las medidas inmediatas, que no contemplan un cambio progresivo ni un desarrollo equitativo, ciertos sectores -estudiantes, transportistas, agricultores, indígenas- hubiesen sido los más afectados. Tras un paro nacional que se extendió del 3 al 13 de octubre, las medidas económicas fueron retiradas. Para mayor información sobre las medidas, las acciones de los sectores vulnerados y las represalias del gobierno, se sugiere consultar las siguientes fuentes: [Wambra](https://wambra.ec/la-protesta-indigena-y-popular-que-levanto-a-ecuador/), [Pichincha Comunicaciones](http://www.pichinchacomunicaciones.com.ec/)^[A la fecha de publicación, el sitio web se encuentra suspendido debido a denuncias de la presidencia. De cualquier forma Pichincha Comunicaciones, al igual que las otras fuentes sugeridas, presenta en su Twitter la cobertura que realizó durante el paro.], [Crisis](https://www.revistacrisis.com/coyuntura/apuntes-sobre-el-triunfo-popular-de-octubre/) y [CONAIE](https://conaie.org/2019/10/09/septimo-dia-de-movilizacion-nacional-del-movimiento-indigena/).
+El principal cambio consistía en terminar el subsidio de combustibles; como suele suceder con las medidas inmediatas, que no contemplan un cambio progresivo ni un desarrollo equitativo, ciertos sectores -estudiantes, transportistas, agricultores, indígenas- hubiesen sido los más afectados. Tras un paro nacional que se extendió del 3 al 13 de octubre, las medidas económicas fueron retiradas. Para mayor información sobre las medidas, las acciones de los sectores vulnerados y las represalias del gobierno, se sugiere consultar las siguientes fuentes: [Wambra](https://wambra.ec/la-protesta-indigena-y-popular-que-levanto-a-ecuador/), [Pichincha Comunicaciones](http://www.pichinchacomunicaciones.com.ec/federaciones-de-transporte-del-pais-paralizaran-actividades-si-gobierno-no-deroga-decreto/)^[A la fecha de publicación, el sitio web se encuentra suspendido debido a denuncias de la presidencia. De cualquier forma Pichincha Comunicaciones, al igual que las otras fuentes sugeridas, presenta en su Twitter la cobertura que realizó durante el paro.], [Crisis](https://www.revistacrisis.com/coyuntura/apuntes-sobre-el-triunfo-popular-de-octubre/) y [CONAIE](https://conaie.org/2019/10/09/septimo-dia-de-movilizacion-nacional-del-movimiento-indigena/).
 
 El propósito de este post es demostrar cómo ejecuté un análisis con los *tweets* generados entre el 1 y el 10 de octubre, considerando tres *hashtags* populares durante el paro nacional en Ecuador. La premisa es que la elección de un *hashtag* expone la intención del usuario, de reportar los hechos acontecidos durante el paro o de desaprobar al mismo. Originalmente trabajé con el paquete `twitteR` el cual permite obtener *tweets* a través de la API gratuita de Twitter; no obstante, es necesario ejecutar previamente una función de autenticación^[La autenticación consiste en suministrar unas claves personales de consumidor y de acceso; para obtener esas claves uno debe poseer primero una cuenta de desarrollador.].
 
@@ -66,11 +67,19 @@ Entre las publicaciones de dicho blog, llamo la atención a un artículo sobre l
 
 Una vez tabulados los metadatos, existe una variedad de aspectos que pueden ser analizados. La siguiente tabla presenta el conteo de *tweets* que contienen uno de tres *hashtags*, así como el porcentaje de los mismos que he considerado únicos (esto es, no son *replies* ni su texto se encuentra repetido), el conteo de usuarios y la razón promedio de *tweets* por usuario.
 
-hashtag                                                                                                                 tweets (1)  tweets únicos (2)    porcentaje (2÷1)  usuarios (3)    razón (1÷3)
----------------------------------------------------------------------------------------------------------------------- ----------- ------------------ ------------------- ------------- --------------
-[#ParoNacionalEcuador ](https://twitter.com/search?q=%23ParoNacionalEcuador%20until%3A2019-10-10%20since%3A2019-10-01)       13770              11471              0.8330          5297         2.5996
-[#EcuadorPaisDePaz](https://twitter.com/search?q=%23EcuadorPaisDePaz%20until%3A2019-10-10%20since%3A2019-10-01)              19754              13356              0.6761          5412         3.6500
-[#ElParoSigue](https://twitter.com/search?q=%23ElParoSigue%20until%3A2019-10-10%20since%3A2019-10-01)                        13083              10223              0.7814          3892         3.3615
+```{r table, echo=FALSE}
+data.frame(v0 = c("[#ParoNacionalEcuador ](https://twitter.com/search?q=%23ParoNacionalEcuador",
+                  "[#EcuadorPaisDePaz](https://twitter.com/search?q=%23EcuadorPaisDePaz",
+                  "[#ElParoSigue](https://twitter.com/search?q=%23ElParoSigue"),
+           v1 = c(013770, 019754, 013083),
+           v2 = c(011471, 013356, 010223),
+           v3 = c(0.8330, 0.6761, 0.7814),
+           v4 = c(005297, 005412, 003892),
+           v5 = c(2.5996, 3.6500, 3.3615)) %>%
+   mutate(v0 = paste0(v0, "%20since%3A2019-10-01%20until%3A2019-10-10)")) %>%
+   knitr::kable(col.names = c("hashtag", "tweets (1)", "tweets únicos (2)",
+                              "porcentaje (2÷1)", "usuarios (3)", "razón (1÷3)"))
+```
 
 Un par de ideas se derivan de este conteo. La inclusión de #EcuadorPaisDePaz se relaciona con un desprecio por las protestas, pero también se relaciona con el porcentaje más bajo de *tweets* únicos y la razón más alta de *tweets* por cuenta. Aunque los números no son atípicos, estas son las características del *spam*. En contraposición, el uso de #ParoNacionalEcuador demuestra el porcentaje más alto de publicaciones útiles, y la tasa más baja de contribución por usuario; este *hashtag* fue comúnmente utilizado para reportar con fotos y videos las situaciones violentas y la represión ejecutada por los aparatos del estado.
 

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>regresión on La Galería Hexagonal</title>
+    <link>https://ruevko.github.io/hexagonal/tags/regresi%C3%B3n/</link>
+    <description>Recent content in regresión on La Galería Hexagonal</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>es-es</language>
+    <lastBuildDate>Fri, 20 Mar 2020 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://ruevko.github.io/hexagonal/tags/regresi%C3%B3n/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Caracterización del COVID-19 en Ecuador</title>
+      <link>https://ruevko.github.io/hexagonal/post/2020/03/20-caracterizacion-covid-ecuador/</link>
+      <pubDate>Fri, 20 Mar 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://ruevko.github.io/hexagonal/post/2020/03/20-caracterizacion-covid-ecuador/</guid>
+      <description>Utilizando paquetes desarrollados por el R Epidemics Consortium, se estima el ritmo reproductivo básico y se proyectan tres escenarios futuros para los casos positivos acumulados diariamente.</description>
+    </item>
+    
+    <item>
+      <title>La tasa de crecimiento diaria</title>
+      <link>https://ruevko.github.io/hexagonal/post/2020/03/04-crecimiento-diario-nodos/</link>
+      <pubDate>Wed, 04 Mar 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://ruevko.github.io/hexagonal/post/2020/03/04-crecimiento-diario-nodos/</guid>
+      <description>Se ajustó un modelo lineal por cada país, para conocer el crecimiento de OpenStreetMap en función de los nodos creados a diario.</description>
+    </item>
+    
+  </channel>
+</rss>

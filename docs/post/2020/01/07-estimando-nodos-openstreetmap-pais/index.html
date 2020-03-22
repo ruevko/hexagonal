@@ -7,7 +7,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="generator" content="Hugo 0.66.0 with theme Tranquilpeak 0.4.7-BETA">
 <meta name="author" content="La Galería Hexagonal">
-<meta name="keywords" content="nodes, choropleths, web scraping, mapas, datos, análisis, maps, data, analysis">
+<meta name="keywords" content="nodes, choropleths, web scraping, mapas, datos, análisis, maps, data, analytics">
 <meta name="description" content="Se presenta una metodología basada en web scraping para generar un mapa coroplético del número de nodos acumulados en cada país.">
 
 
@@ -148,7 +148,7 @@
     
       <i class="sidebar-button-icon fa fa-lg fa-search-location"></i>
       
-      <span class="sidebar-button-desc">Archivos</span>
+      <span class="sidebar-button-desc">Archivo</span>
     </a>
   </li>
 
@@ -362,7 +362,7 @@ code span.wa { color: #bf0303; } /* Warning */
 <a class="sourceLine" id="cb7-5" title="5"></a>
 <a class="sourceLine" id="cb7-6" title="6"><span class="kw">left_join</span>(World, countries_nodes, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;name&quot;</span> =<span class="st"> &quot;country&quot;</span>)) <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb7-7" title="7"><span class="st">   </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">fill =</span> nodes)) <span class="op">+</span><span class="st"> </span><span class="kw">geom_sf</span>(<span class="dt">color =</span> <span class="ot">NA</span>) <span class="op">+</span><span class="st"> </span><span class="kw">theme_minimal</span>()</a></code></pre></div>
-<div class="figure"><span id="fig:map"></span>
+<div class="figure" style="text-align: center"><span id="fig:map"></span>
 <img src="../../../../post/2020/01/07-estimando-nodos-openstreetmap-pais_files/figure-html/map-1.svg" alt="Primer intento de generar nuestro mapa" width="100%" />
 <p class="caption">
 Figure 1: Primer intento de generar nuestro mapa
@@ -406,7 +406,7 @@ Figure 1: Primer intento de generar nuestro mapa
 <a class="sourceLine" id="cb9-25" title="25"><span class="kw">setdiff</span>(World<span class="op">$</span>name, countries_nodes<span class="op">$</span>country)</a></code></pre></div>
 <pre><code>## [1] &quot;N. Cyprus&quot;   &quot;Palestine&quot;   &quot;Somaliland&quot;  &quot;Timor-Leste&quot;</code></pre>
 <p>Chipre del Norte, Palestina, Somalilandia y Timor Oriental son países -¿con reconocimiento limitado?- que no figuran en la fuente de datos, y por ende persistirán vacíos en el mapa. Por otra parte un total de 80 países o territorios están en la fuente, pero son demasiado pequeños para aparecer en el mapa: Andorra, Singapur y las Antillas Menores, por citar ejemplos. Efectivamente, del total de 4197.32 millones de nodos, en el mapa se encuentran 4180.61 millones; esto es el 99.6 %. Con estas aclaraciones, solo falta unir los datos nuevamente y generar el mapa con un par de mejoras.</p>
-<div class="figure"><span id="fig:finalmap"></span>
+<div class="figure" style="text-align: center"><span id="fig:finalmap"></span>
 <img src="../../../../post/2020/01/07-estimando-nodos-openstreetmap-pais_files/figure-html/finalmap-1.svg" alt="Segundo intento de generar nuestro mapa 🎉" width="100%" />
 <p class="caption">
 Figure 2: Segundo intento de generar nuestro mapa 🎉

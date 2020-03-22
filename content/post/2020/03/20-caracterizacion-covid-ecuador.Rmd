@@ -4,20 +4,21 @@ author: Rafael Castro
 date: '2020-03-20'
 slug: 20-caracterizacion-covid-ecuador
 categories:
-  - Reporte
+  - Reportes
 tags:
   - coronavirus
-  - regresión logarítmica
+  - regresión
 keywords:
   - coronavirus
-  - logarithmic regression
+  - regression
+
 link-citations: true
 bibliography: '../../babel.bib'
-coverImage: 'https://github.com/ruevko/hexagonal/raw/master/content/post/2020/03/covid.png'
+coverImage: 'https://github.com/ruevko/hexagonal/raw/master/content/post/2020/03/ec_covid19.jpg' 
 summary: Utilizando paquetes desarrollados por el R Epidemics Consortium, se estima el ritmo reproductivo básico y se proyectan tres escenarios futuros para los casos positivos acumulados diariamente.
 ---
 
-**Actualizado: 21 de marzo, 11 AM**
+**Actualizado: 21 de marzo, 12 AM**
 
 En vista de la emergencia en curso causada por el SARS-CoV-2 se presenta una caracterización de la epidemia en Ecuador. Se ha aplicado una metodología sugerida por el R Epidemics Consortium [RECON](https://www.repidemicsconsortium.org/) que permite estimar tempranamente el ritmo reproductivo del virus; esta metodología requiere poseer información sobre la transmisión, y datos de la incidencia. La información requerida contempla los siguientes conceptos:
 
@@ -35,7 +36,7 @@ En vista de la emergencia en curso causada por el SARS-CoV-2 se presenta una car
 
 ```{r data}
 EC_COVID19 = data.frame(
-   fuente = c(rep("@Salud_Ec", 9), rep("@Riesgos_Ec", 15)),
+   fuente = c(rep("Salud_Ec", 9), rep("Riesgos_Ec", 15)),
    status = c(
       "1233774191326957575",
       "1234331734889697281",
@@ -102,19 +103,21 @@ Si las infecciones ocurren aleatoriamente, se espera que el SI promedio sea igua
 
 Con respecto a los datos, se ha recopilado los reportes publicados por el Servicio Nacional de Gestión de Riesgos [SNGRE](https://twitter.com/Riesgos_Ec); casos anteriores al primer reporte corresponden a comunicados del Ministerio de Salud Pública [MSP](https://twitter.com/Salud_Ec).
 
-```{r table, fig.height=3.5}
+```{r table}
 EC_COVID19 = EC_COVID19[-c(11,14,16,19,21,23), c(1,4,7,8)]
 
-EC_table = dplyr::mutate(EC_COVID19, corte = as.character(corte, "%e de %B, %l %p"))
+library(kableExtra)
 
-EC_table = dplyr::arrange(EC_table, desc(positivo))
+dplyr::mutate(EC_COVID19, corte = as.character(corte, "%e de %B, %l %p")) %>%
+   dplyr::arrange(desc(positivo)) %>% kable(row.names = FALSE, col.names = c(
+      "Fuente", "Fecha de corte", "Casos positivos", "Personas fallecidas")) %>%
+   scroll_box("280px")
 
-EC_table = DT::datatable(EC_table, options = list(
-   pageLength = 6, lengthChange = FALSE, searching = FALSE,
-   language = list(url = '//cdn.datatables.net/plug-ins/1.10.11/i18n/Spanish.json')),
-   colnames=c("Fuente","Fecha de corte","Casos positivos","Personas fallecidas"))
-
-widgetframe::frameWidget(EC_table)
+# EC_table = DT::datatable(EC_table, options = list(
+#    pageLength = 7, lengthChange = FALSE, searching = FALSE, fig.height=3.7
+#    language = list(url = '//cdn.datatables.net/plug-ins/1.10.11/i18n/Spanish.json')),
+#    colnames=c("Fuente","Fecha de corte","Casos positivos","Personas fallecidas"))
+# widgetframe::frameWidget(EC_table, height = 370)
 ```
 
 Los datos completos, incluyendo los casos descartados y algunos reportes omitidos (en los días con dos reportes se escogió el matutino), se encuentran [aquí](https://github.com/ruevko/hexagonal/blob/master/content/post/2020/03/EC_COVID19.csv). El primer paso para estimar R~0~ consiste en transformar los casos positivos acumulados en incidencia diaria:
@@ -138,7 +141,7 @@ EC_incid = incidence(EC_incid)
 
 EC_model = fit(EC_incid[8:nrow(EC_incid)]) # excluyendo primera semana
 
-summary(EC_model$model)
+EC_model$model
 ```
 
 En el caso de Ecuador, el comportamiento logarítmico (R^2^ = `r round(summary(EC_model$model)$r.squared, 4)`) es observable una semana después de la detección del primer caso. De acuerdo a este modelo se espera que cada `r round(EC_model$info$doubling, 2)` días se dupliquen los casos; esto, con un intervalo de confianza (CI) al 95 % de `r paste(round(EC_model$info$doubling.conf, 2), collapse = " a ")` días. En el siguiente gráfico las columnas rojas representan la incidencia diaria, la curva el modelo logarítmico -las líneas entrecortadas delimitan el 95 % CI- y la recta amarilla el inicio del estado de excepción, decretado para frenar las transmisiones.
@@ -146,11 +149,13 @@ En el caso de Ecuador, el comportamiento logarítmico (R^2^ = `r round(summary(E
 ```{r logplot, fig.asp=.5, fig.cap="Incidencia diaria de COVID-19 en Ecuador y modelo logarítmico ajustado"}
 library(ggplot2)
 
-EC_cover = plot(EC_incid) + theme_minimal() + theme(title = element_blank()) +
-   theme(plot.background = element_rect(fill = "grey15"), panel.grid = element_line("grey25")) +
-   scale_x_date(date_breaks = "2 days", date_labels = "%b %e") + scale_y_sqrt()
-
-ggsave("covid.png", EC_cover, dpi = 200, width = 16/2.5, height = 9/3)
+ggsave("ec_covid19.jpg", dpi = "screen", width = 16, height = 7.925, plot = {
+   plot(EC_incid) + theme_minimal() + scale_y_sqrt() +
+   scale_x_date(date_breaks = "2 days", date_labels = "%b %e") +
+   theme(plot.background = element_rect(fill = "grey15"),
+         panel.grid = element_line("grey25"),
+         text = element_text(size = 25),
+         title = element_blank())})
 
 theme_set(theme_light() + theme(legend.position = "none", axis.title.x = element_blank()))
 
@@ -162,14 +167,14 @@ plot(EC_incid, fit = EC_model) +
 
 La estimación de R~0~ con `earlyR` requiere conocer el SI del COVID-19; en este sentido, la literatura reciente presenta dos alternativas. La primera, aprovechar el conocimiento de epidemias anteriores; @covia proponen promediar las características del MERS (mean = 7.6, sd = 3.4) y del SARS (mean = 8.4, sd = 3.8), síndromes causados por otros coronavirus. La segunda alternativa consiste en estimar el SI utilizando las pocas cadenas de transmisión ya identificadas [@covib; @covic]; de esta manera se obtiene un SI preliminar, pero propio del SARS-CoV-2. Con estos antecedentes, se estimó `R_viruses` y `R_chains` usando la primera y segunda alternativa, respectivamente; los siguientes histogramas presentan la distribución de R~0~ en ambos casos.
 
-```{r number, echo=TRUE, fig.asp=.35, fig.cap="Distribución de Ro del COVID-19 según SI de otros coronavirus :point_left: y de cadenas de transmisión estudiadas :point_right:"}
+```{r number, echo=TRUE, dev="svg", fig.asp=.35, fig.cap="Distribución de Ro del COVID-19 según SI de otros coronavirus :point_left: y de cadenas de transmisión estudiadas :point_right:"}
 library(earlyR)
 
 R_viruses = get_R(EC_incid, si_mean = 8, si_sd = 3.6, max_R = 6) # según Zhao, Lin et al.
 
 R_chains = get_R(EC_incid, si_mean = 4.4, si_sd = 3, max_R = 6) # según Zhao, Gao et al.
 
-par(mfrow = c(1,2), mar = c(4,4,1,1))
+par(mfrow = c(1,2), mar = c(4,5,1,1))
 
 hist(sample_R(R_viruses), freq = FALSE, main = NULL, xlab = "R_viruses")
 
@@ -205,9 +210,9 @@ add_projections(plot(EC_incid), EC_proj + max(EC_incid$counts), c(.025, .5)) +
 El segundo y tercer escenarios calculados suponen que R~0~ se reduce a la mitad (figura \@ref(fig:project-better)) y a la cuarta parte (figura \@ref(fig:project-best)), respectivamente:
 
 ```{r project-better, fig.asp=.5, fig.cap=paste("Proyección de incidencia diaria acumulada de COVID-19 en Ecuador si R0 =", round(R_chains$R_ml/2, 4))}
-EC_proj = cumulate(project(EC_incid, R_chains$R_ml/2, R_chains$si, 1e4, 14))
+EC_proj = project(EC_incid, R_chains$R_ml/2, R_chains$si, 1e4, 14) %>% cumulate()
 
-add_projections(plot(EC_incid), EC_proj + max(EC_incid$counts), c(.025, .5)) +
+plot(EC_incid) %>% add_projections(EC_proj + max(EC_incid$counts), c(.025, .5)) +
    geom_vline(xintercept = as.Date("2020-03-17"), col = "gold", alpha = .6, size = 2) +
    scale_x_date(date_breaks = "4 days", date_labels = "%b %e") +
    scale_y_continuous(breaks = 500 * 0:9) +
@@ -215,9 +220,9 @@ add_projections(plot(EC_incid), EC_proj + max(EC_incid$counts), c(.025, .5)) +
 ```
 
 ```{r project-best, fig.asp=.5, fig.cap=paste("Proyección de incidencia diaria acumulada de COVID-19 en Ecuador si R0 =", round(R_chains$R_ml/4, 4))}
-EC_proj = cumulate(project(EC_incid, R_chains$R_ml/4, R_chains$si, 1e4, 14))
+EC_proj = project(EC_incid, R_chains$R_ml/4, R_chains$si, 1e4, 14) %>% cumulate()
 
-add_projections(plot(EC_incid), EC_proj + max(EC_incid$counts), c(.025, .5)) +
+plot(EC_incid) %>% add_projections(EC_proj + max(EC_incid$counts), c(.025, .5)) +
    geom_vline(xintercept = as.Date("2020-03-17"), col = "gold", alpha = .6, size = 2) +
    scale_x_date(date_breaks = "4 days", date_labels = "%b %e") +
    scale_y_continuous(breaks = 250 * 0:9) +

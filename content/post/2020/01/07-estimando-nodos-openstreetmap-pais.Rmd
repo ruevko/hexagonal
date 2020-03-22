@@ -106,7 +106,7 @@ summary(countries_nodes)
 
 Finalmente, para generar el mapa, basta con unir los datos calculados en el paso anterior, a polígonos que representen los países. En este caso se han utilizado los polígonos disponibles en `tmap`; tratándose de un objeto de clase `sf`, el paquete homónimo debe ser incluido para garantizar una unión correcta. El mapa es generado vía `ggplot2`.
 
-```{r map, fig.asp=.45, fig.cap="Primer intento de generar nuestro mapa"}
+```{r map, dev="svg", fig.asp=.45, fig.cap="Primer intento de generar nuestro mapa"}
 library(sf)
 library(ggplot2)
 
@@ -162,7 +162,7 @@ sw = sum(World$nodes, na.rm = TRUE)
 
 Chipre del Norte, Palestina, Somalilandia y Timor Oriental son países -¿con reconocimiento limitado?- que no figuran en la fuente de datos, y por ende persistirán vacíos en el mapa. Por otra parte un total de `r setdiff(countries_nodes$country, World$name) %>% length()` países o territorios están en la fuente, pero son demasiado pequeños para aparecer en el mapa: Andorra, Singapur y las Antillas Menores, por citar ejemplos. Efectivamente, del total de `r round(sc/1e6, 2)` millones de nodos, en el mapa se encuentran `r round(sw/1e6, 2)` millones; esto es el `r round(100*sw/sc, 2)` %. Con estas aclaraciones, solo falta unir los datos nuevamente y generar el mapa con un par de mejoras.
 
-```{r finalmap, echo=FALSE, fig.asp=.63, fig.cap="Segundo intento de generar nuestro mapa :tada:"}
+```{r finalmap, echo=FALSE, dev="svg", fig.asp=.63, fig.cap="Segundo intento de generar nuestro mapa :tada:"}
 ggplot(World, aes(fill = nodes)) + geom_sf(color = NA) + theme_minimal() +
    scale_fill_viridis_c(breaks = c(1, 2, 5) * rep(10 ** (5:8), each = 3),
                         na.value = "grey", trans = "log10") +
