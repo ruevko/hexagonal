@@ -18,7 +18,7 @@ coverImage: 'https://github.com/ruevko/hexagonal/raw/master/content/post/2020/03
 summary: Utilizando paquetes desarrollados por el R Epidemics Consortium, se estima el ritmo reproductivo básico y se proyectan tres escenarios futuros para los casos positivos acumulados diariamente.
 ---
 
-**Actualizado: 21 de marzo, 12 AM**
+**Actualizado: 22 de marzo, 12 AM**
 
 En vista de la emergencia en curso causada por el SARS-CoV-2 se presenta una caracterización de la epidemia en Ecuador. Se ha aplicado una metodología sugerida por el R Epidemics Consortium [RECON](https://www.repidemicsconsortium.org/) que permite estimar tempranamente el ritmo reproductivo del virus; esta metodología requiere poseer información sobre la transmisión, y datos de la incidencia. La información requerida contempla los siguientes conceptos:
 
@@ -36,7 +36,7 @@ En vista de la emergencia en curso causada por el SARS-CoV-2 se presenta una car
 
 ```{r data}
 EC_COVID19 = data.frame(
-   fuente = c(rep("Salud_Ec", 9), rep("Riesgos_Ec", 15)),
+   fuente = c(rep("Salud_Ec", 9), rep("Riesgos_Ec", 17)),
    status = c(
       "1233774191326957575",
       "1234331734889697281",
@@ -61,8 +61,10 @@ EC_COVID19 = data.frame(
       "1240750001917243392",  #13
       "1241018222079610881",  #14
       "1241123691427176450",  #15
-      "1241379969797967883"), #16
-   sitrep = c(rep(NA, 9), 1:8, 10:16),
+      "1241379969797967883",  #16
+      "1241485101780926465",  #17
+      "1241761146643853313"), #18
+   sitrep = c(rep(NA, 9), 1:8, 10:18),
    corte = as.POSIXct(c(
       "2020-02-29 10:02",
       "2020-03-01 23:02",
@@ -87,24 +89,48 @@ EC_COVID19 = data.frame(
       "2020-03-19 16:00",  #13
       "2020-03-20 10:00",  #14
       "2020-03-20 16:00",  #15
-      "2020-03-21 10:00"), #16
+      "2020-03-21 10:00",  #16
+      "2020-03-21 17:00",  #17
+      "2020-03-22 10:00"), #18
       "America/Guayaquil"),
-   cerco = c(rep(NA, 9), 279, 279, 317, 273, 273, 273, 315, 451, NA, 575, 575, 746, 746, 1213, 1213),
-   negativo = c(rep(NA, 12), 51, 51, 51, 51, 51, 278, 312, 336, 412, 483, 533, 601),
-   positivo = c(1,6,7,10,13,14,15,17,19,23,23,28,37,37,58,58,111,155,168,199,260,367,426,506),
-   fallecido = c(rep(0, 9), 1, 1, rep(2, 7), 3, 3, 4, 5, 7, 7))
+   cerco = c(rep(NA, 9),279,279,317,273,273,273,315,451,NA,575,575,746,746,1213,1213,1213,1347),
+   negativo = c(rep(NA, 12), 51, 51, 51, 51, 51, 278, 312, 336, 412, 483, 533, 601, 649, 872),
+   positivo =c(1,6,7,10,13,14,15,17,19,23,23,28,37,37,58,58,111,155,168,199,260,367,426,506,532,789),
+   fallecido = c(rep(0, 9), 1, 1, rep(2, 7), 3, 3, 4, 5, 7, 7, 7, 14))
 
 write.csv(EC_COVID19, "EC_COVID19.csv", row.names = FALSE)
 
 #EC_COVID19 = read.csv("EC_COVID19.csv", colClasses = c(status = "character", corte = "POSIXct"))
 ```
 
-Si las infecciones ocurren aleatoriamente, se espera que el SI promedio sea igual a la suma del periodo latente promedio y la mitad del periodo infeccioso promedio. Por otra parte, el periodo latente no necesariamente es mayor al de incubación: dependiendo del virus, una persona puede volverse infecciosa antes de presentar síntomas. En el caso del SARS-CoV-2, se halló que su periodo de incubación posee una mediana de siete días [@covid], pero el periodo infeccioso puede comenzar un día antes.
+Si las infecciones ocurren aleatoriamente, se espera que el SI promedio sea igual a la suma del periodo latente promedio y la mitad del periodo infeccioso promedio. Por otra parte, el periodo latente no siempre es mayor que el de incubación: dependiendo del virus, una persona puede volverse infecciosa antes de presentar síntomas. En el caso del SARS-CoV-2, se halló que su periodo de incubación posee una mediana de siete días [@covid], pero el periodo infeccioso puede comenzar un día antes. Este gráfico (que no representa necesariamente un caso de SARS-CoV-2) permite visualizar la relación existente entre los conceptos mencionados:
+
+```{r explain, dev="svg", fig.dim=c(9,2.4)}
+library(ggplot2)
+
+dias = data.frame(d = c(1, 5, 7, 10, 15), v0 = 0, v1 = 5, v2 = c(
+   "A infecta a B", "B se vuelve\ninfeccioso", "B presenta\nsíntomas",
+   "B infecta a C", "B ya no es\ninfeccioso"))
+
+peri = dplyr::mutate(data.frame(x0 = c(1, 5, 1, 1), x1 = c(10, 15, 5, 7), y0 = c(3, 1, 1, 2), y2 = c(
+   "Intervalo\nSerial", "Periodo\nInfeccioso", "Periodo\nLatente", "Periodo de\nIncubación")),
+   y1 = y0, x2 = (x0+x1)/2, y2 = forcats::fct_inorder(y2))
+
+ggplot(dias, aes(d, v1, label = v2)) + coord_cartesian(expand = FALSE) +
+   geom_hline(yintercept = 0, size = 2) + geom_linerange(aes(ymin = v0, ymax = v1)) +
+   geom_point(size = 1.5) + geom_point(aes(y = v0), size = 3) +
+   geom_text(hjust = 0, vjust = 1, nudge_x = .2, nudge_y = .2) +
+   scale_x_continuous("Días", 0:17, limits = c(0, 17)) + scale_y_continuous(breaks = NULL) +
+   theme(axis.title.y=element_blank(), panel.background=element_blank(), legend.position="none") +
+   geom_text(aes(x2, y0, label = y2, col = y2), peri, nudge_y=.05, fontface=2, inherit.aes=FALSE) +
+   geom_segment(aes(x0, y0, xend = x1, yend = y1, col = y2), peri, size = 1, inherit.aes = FALSE,
+                arrow = arrow(20, ends = "both")) + ggthemes::scale_color_gdocs()
+```
 
 Con respecto a los datos, se ha recopilado los reportes publicados por el Servicio Nacional de Gestión de Riesgos [SNGRE](https://twitter.com/Riesgos_Ec); casos anteriores al primer reporte corresponden a comunicados del Ministerio de Salud Pública [MSP](https://twitter.com/Salud_Ec).
 
 ```{r table}
-EC_COVID19 = EC_COVID19[-c(11,14,16,19,21,23), c(1,4,7,8)]
+EC_COVID19 = EC_COVID19[-c(11,14,16,19,21,23,25), c(1,4,7,8)]
 
 library(kableExtra)
 
@@ -147,8 +173,6 @@ EC_model$model
 En el caso de Ecuador, el comportamiento logarítmico (R^2^ = `r round(summary(EC_model$model)$r.squared, 4)`) es observable una semana después de la detección del primer caso. De acuerdo a este modelo se espera que cada `r round(EC_model$info$doubling, 2)` días se dupliquen los casos; esto, con un intervalo de confianza (CI) al 95 % de `r paste(round(EC_model$info$doubling.conf, 2), collapse = " a ")` días. En el siguiente gráfico las columnas rojas representan la incidencia diaria, la curva el modelo logarítmico -las líneas entrecortadas delimitan el 95 % CI- y la recta amarilla el inicio del estado de excepción, decretado para frenar las transmisiones.
 
 ```{r logplot, fig.asp=.5, fig.cap="Incidencia diaria de COVID-19 en Ecuador y modelo logarítmico ajustado"}
-library(ggplot2)
-
 ggsave("ec_covid19.jpg", dpi = "screen", width = 16, height = 7.925, plot = {
    plot(EC_incid) + theme_minimal() + scale_y_sqrt() +
    scale_x_date(date_breaks = "2 days", date_labels = "%b %e") +
@@ -162,6 +186,7 @@ theme_set(theme_light() + theme(legend.position = "none", axis.title.x = element
 plot(EC_incid, fit = EC_model) +
    scale_fill_manual(values = "firebrick") +
    scale_x_date(date_breaks = "2 days", date_labels = "%b %e") +
+   scale_y_continuous("Incidencia diaria", breaks = 50 * 0:9) +
    geom_vline(xintercept = as.Date("2020-03-17"), col = "gold", alpha = .6, size = 2)
 ```
 
@@ -176,9 +201,9 @@ R_chains = get_R(EC_incid, si_mean = 4.4, si_sd = 3, max_R = 6) # según Zhao, G
 
 par(mfrow = c(1,2), mar = c(4,5,1,1))
 
-hist(sample_R(R_viruses), freq = FALSE, main = NULL, xlab = "R_viruses")
+hist(sample_R(R_viruses, 1e3), freq = FALSE, main = NULL, xlab = "R_viruses")
 
-hist(sample_R(R_chains), freq = FALSE, main = NULL, xlab = "R_chains")
+hist(sample_R(R_chains, 1e3), freq = FALSE, main = NULL, xlab = "R_chains")
 ```
 
 La primera alternativa arroja `r round(R_viruses$R_ml, 4)` como el valor más probable; es posible considerar este valor una sobrestimación de R~0~ según lo observado en estudios recientes. Mientras tanto, la segunda alternativa estima un R~0~ = `r round(R_chains$R_ml, 4)` (95 % CI: `r R_sample = sample_R(R_chains, 1e4); paste(round(quantile(R_sample, c(.025, .975)), 4), collapse = " - ")`); un valor congruente con los estudios, donde se ha observado que el SARS-CoV-2 posee un SI más corto que otros coronavirus. Por ende, aun con un ritmo reproductivo menor, puede generar más casos.
@@ -203,11 +228,11 @@ EC_proj = cumulate(EC_proj)
 add_projections(plot(EC_incid), EC_proj + max(EC_incid$counts), c(.025, .5)) +
    geom_vline(xintercept = as.Date("2020-03-17"), col = "gold", alpha = .6, size = 2) +
    scale_x_date(date_breaks = "4 days", date_labels = "%b %e") +
-   scale_y_continuous(breaks = 1000 * 0:11) +
+   scale_y_continuous("Incidencia diaria acumulada", 2000 * 0:9) +
    scale_fill_manual(values = "firebrick")
 ```
 
-El segundo y tercer escenarios calculados suponen que R~0~ se reduce a la mitad (figura \@ref(fig:project-better)) y a la cuarta parte (figura \@ref(fig:project-best)), respectivamente:
+El segundo y tercer escenarios calculados suponen que R~0~ se reduce a la mitad (figura \@ref(fig:project-better)) y a la quinta parte (figura \@ref(fig:project-best)), respectivamente:
 
 ```{r project-better, fig.asp=.5, fig.cap=paste("Proyección de incidencia diaria acumulada de COVID-19 en Ecuador si R0 =", round(R_chains$R_ml/2, 4))}
 EC_proj = project(EC_incid, R_chains$R_ml/2, R_chains$si, 1e4, 14) %>% cumulate()
@@ -215,18 +240,22 @@ EC_proj = project(EC_incid, R_chains$R_ml/2, R_chains$si, 1e4, 14) %>% cumulate(
 plot(EC_incid) %>% add_projections(EC_proj + max(EC_incid$counts), c(.025, .5)) +
    geom_vline(xintercept = as.Date("2020-03-17"), col = "gold", alpha = .6, size = 2) +
    scale_x_date(date_breaks = "4 days", date_labels = "%b %e") +
-   scale_y_continuous(breaks = 500 * 0:9) +
+   scale_y_continuous("Incidencia diaria acumulada", 500 * 0:15) +
    scale_fill_manual(values = "firebrick")
+
+#rowMeans(EC_proj) + max(EC_incid$counts)
 ```
 
-```{r project-best, fig.asp=.5, fig.cap=paste("Proyección de incidencia diaria acumulada de COVID-19 en Ecuador si R0 =", round(R_chains$R_ml/4, 4))}
-EC_proj = project(EC_incid, R_chains$R_ml/4, R_chains$si, 1e4, 14) %>% cumulate()
+```{r project-best, fig.asp=.5, fig.cap=paste("Proyección de incidencia diaria acumulada de COVID-19 en Ecuador si R0 =", round(R_chains$R_ml/5, 4))}
+EC_proj = project(EC_incid, R_chains$R_ml/5, R_chains$si, 1e4, 14) %>% cumulate()
 
 plot(EC_incid) %>% add_projections(EC_proj + max(EC_incid$counts), c(.025, .5)) +
    geom_vline(xintercept = as.Date("2020-03-17"), col = "gold", alpha = .6, size = 2) +
    scale_x_date(date_breaks = "4 days", date_labels = "%b %e") +
-   scale_y_continuous(breaks = 250 * 0:9) +
+   scale_y_continuous("Incidencia diaria acumulada", 250 * 0:9) +
    scale_fill_manual(values = "firebrick")
+
+#rowMeans(EC_proj) + max(EC_incid$counts)
 ```
 
 Evidentemente, si R~0~ < 1 la epidemia será controlada eventualmente. Sin embargo, **estas proyecciones no son realistas** pues cualquier cambio introducido en R~0~ -a través de medidas políticas, sociales y sanitarias-  no se refleja inmediatamente; en Ecuador es necesario contar las infecciones previas a la declaración de estado de excepción, y que aún no han superado el periodo de incubación. Se pretende actualizar este post conforme las incidencias diarias sean reportadas y reflejen, con optimismo, las medidas adoptadas.

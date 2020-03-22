@@ -298,7 +298,7 @@ code span.wa { color: #bf0303; } /* Warning */
 </style>
 
 
-<p><strong>Actualizado: 21 de marzo, 12 AM</strong></p>
+<p><strong>Actualizado: 22 de marzo, 12 AM</strong></p>
 <p>En vista de la emergencia en curso causada por el SARS-CoV-2 se presenta una caracterización de la epidemia en Ecuador. Se ha aplicado una metodología sugerida por el R Epidemics Consortium <a href="https://www.repidemicsconsortium.org/">RECON</a> que permite estimar tempranamente el ritmo reproductivo del virus; esta metodología requiere poseer información sobre la transmisión, y datos de la incidencia. La información requerida contempla los siguientes conceptos:</p>
 <ul>
 <li><p>El ritmo reproductivo básico (<em>Basic Reproduction Number</em>, R<sub>0</sub>) es el número esperado de casos nuevos, generados directamente por un determinado caso en una población completamente susceptible; es crucial entender que R<sub>0</sub> no es una constante biológica de un patógeno, pues es afectado por factores ambientales y conductuales.</p></li>
@@ -309,7 +309,8 @@ code span.wa { color: #bf0303; } /* Warning */
 <li><p>En el periodo infeccioso, una persona infectada puede causar nuevas infecciones.</p></li>
 </ul></li>
 </ul>
-<p>Si las infecciones ocurren aleatoriamente, se espera que el SI promedio sea igual a la suma del periodo latente promedio y la mitad del periodo infeccioso promedio. Por otra parte, el periodo latente no necesariamente es mayor al de incubación: dependiendo del virus, una persona puede volverse infecciosa antes de presentar síntomas. En el caso del SARS-CoV-2, se halló que su periodo de incubación posee una mediana de siete días <span class="citation">(Jiang et al. <a href="#ref-covid" role="doc-biblioref">2020</a>)</span>, pero el periodo infeccioso puede comenzar un día antes.</p>
+<p>Si las infecciones ocurren aleatoriamente, se espera que el SI promedio sea igual a la suma del periodo latente promedio y la mitad del periodo infeccioso promedio. Por otra parte, el periodo latente no siempre es mayor que el de incubación: dependiendo del virus, una persona puede volverse infecciosa antes de presentar síntomas. En el caso del SARS-CoV-2, se halló que su periodo de incubación posee una mediana de siete días <span class="citation">(Jiang et al. <a href="#ref-covid" role="doc-biblioref">2020</a>)</span>, pero el periodo infeccioso puede comenzar un día antes. Este gráfico (que no representa necesariamente un caso de SARS-CoV-2) permite visualizar la relación existente entre los conceptos mencionados:</p>
+<p><img src="../../../../post/2020/03/20-caracterizacion-covid-ecuador_files/figure-html/explain-1.svg" width="864" /></p>
 <p>Con respecto a los datos, se ha recopilado los reportes publicados por el Servicio Nacional de Gestión de Riesgos <a href="https://twitter.com/Riesgos_Ec">SNGRE</a>; casos anteriores al primer reporte corresponden a comunicados del Ministerio de Salud Pública <a href="https://twitter.com/Salud_Ec">MSP</a>.</p>
 <div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:280px; ">
 <table>
@@ -330,6 +331,20 @@ Personas fallecidas
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Riesgos_Ec
+</td>
+<td style="text-align:left;">
+22 de marzo, 10 AM
+</td>
+<td style="text-align:right;">
+789
+</td>
+<td style="text-align:right;">
+14
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Riesgos_Ec
@@ -598,8 +613,8 @@ Salud_Ec
 ##          1          5          1          3          3          1          1 
 ## 2020-03-10 2020-03-12 2020-03-13 2020-03-14 2020-03-15 2020-03-16 2020-03-17 
 ##          2          2          4          5          9         21         53 
-## 2020-03-18 2020-03-19 2020-03-20 2020-03-21 
-##         44         44        168        139</code></pre>
+## 2020-03-18 2020-03-19 2020-03-20 2020-03-21 2020-03-22 
+##         44         44        168        139        283</code></pre>
 <p>A continuación es posible ajustar un modelo logarítmico para la incidencia en el tiempo utilizando el paquete <code>incidence</code>:</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1"><span class="kw">library</span>(incidence)</a>
 <a class="sourceLine" id="cb3-2" title="2"></a>
@@ -614,8 +629,8 @@ Salud_Ec
 ## 
 ## Coefficients:
 ## (Intercept)      dates.x  
-##     -0.9066       0.4038</code></pre>
-<p>En el caso de Ecuador, el comportamiento logarítmico (R<sup>2</sup> = 0.9421) es observable una semana después de la detección del primer caso. De acuerdo a este modelo se espera que cada 1.72 días se dupliquen los casos; esto, con un intervalo de confianza (CI) al 95 % de 1.47 a 2.05 días. En el siguiente gráfico las columnas rojas representan la incidencia diaria, la curva el modelo logarítmico -las líneas entrecortadas delimitan el 95 % CI- y la recta amarilla el inicio del estado de excepción, decretado para frenar las transmisiones.</p>
+##     -0.9479       0.4110</code></pre>
+<p>En el caso de Ecuador, el comportamiento logarítmico (R<sup>2</sup> = 0.9522) es observable una semana después de la detección del primer caso. De acuerdo a este modelo se espera que cada 1.69 días se dupliquen los casos; esto, con un intervalo de confianza (CI) al 95 % de 1.48 a 1.96 días. En el siguiente gráfico las columnas rojas representan la incidencia diaria, la curva el modelo logarítmico -las líneas entrecortadas delimitan el 95 % CI- y la recta amarilla el inicio del estado de excepción, decretado para frenar las transmisiones.</p>
 <div class="figure"><span id="fig:logplot"></span>
 <img src="../../../../post/2020/03/20-caracterizacion-covid-ecuador_files/figure-html/logplot-1.png" alt="Incidencia diaria de COVID-19 en Ecuador y modelo logarítmico ajustado" width="672" />
 <p class="caption">
@@ -631,26 +646,26 @@ Figure 1: Incidencia diaria de COVID-19 en Ecuador y modelo logarítmico ajustad
 <a class="sourceLine" id="cb5-6" title="6"></a>
 <a class="sourceLine" id="cb5-7" title="7"><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>), <span class="dt">mar =</span> <span class="kw">c</span>(<span class="dv">4</span>,<span class="dv">5</span>,<span class="dv">1</span>,<span class="dv">1</span>))</a>
 <a class="sourceLine" id="cb5-8" title="8"></a>
-<a class="sourceLine" id="cb5-9" title="9"><span class="kw">hist</span>(<span class="kw">sample_R</span>(R_viruses), <span class="dt">freq =</span> <span class="ot">FALSE</span>, <span class="dt">main =</span> <span class="ot">NULL</span>, <span class="dt">xlab =</span> <span class="st">&quot;R_viruses&quot;</span>)</a>
+<a class="sourceLine" id="cb5-9" title="9"><span class="kw">hist</span>(<span class="kw">sample_R</span>(R_viruses, <span class="fl">1e3</span>), <span class="dt">freq =</span> <span class="ot">FALSE</span>, <span class="dt">main =</span> <span class="ot">NULL</span>, <span class="dt">xlab =</span> <span class="st">&quot;R_viruses&quot;</span>)</a>
 <a class="sourceLine" id="cb5-10" title="10"></a>
-<a class="sourceLine" id="cb5-11" title="11"><span class="kw">hist</span>(<span class="kw">sample_R</span>(R_chains), <span class="dt">freq =</span> <span class="ot">FALSE</span>, <span class="dt">main =</span> <span class="ot">NULL</span>, <span class="dt">xlab =</span> <span class="st">&quot;R_chains&quot;</span>)</a></code></pre></div>
+<a class="sourceLine" id="cb5-11" title="11"><span class="kw">hist</span>(<span class="kw">sample_R</span>(R_chains, <span class="fl">1e3</span>), <span class="dt">freq =</span> <span class="ot">FALSE</span>, <span class="dt">main =</span> <span class="ot">NULL</span>, <span class="dt">xlab =</span> <span class="st">&quot;R_chains&quot;</span>)</a></code></pre></div>
 <div class="figure"><span id="fig:number"></span>
 <img src="../../../../post/2020/03/20-caracterizacion-covid-ecuador_files/figure-html/number-1.svg" alt="Distribución de Ro del COVID-19 según SI de otros coronavirus 👈 y de cadenas de transmisión estudiadas 👉" width="672" />
 <p class="caption">
 Figure 2: Distribución de Ro del COVID-19 según SI de otros coronavirus 👈 y de cadenas de transmisión estudiadas 👉
 </p>
 </div>
-<p>La primera alternativa arroja 4.5465 como el valor más probable; es posible considerar este valor una sobrestimación de R<sub>0</sub> según lo observado en estudios recientes. Mientras tanto, la segunda alternativa estima un R<sub>0</sub> = 2.03 (95 % CI: 1.8619 - 2.2102); un valor congruente con los estudios, donde se ha observado que el SARS-CoV-2 posee un SI más corto que otros coronavirus. Por ende, aun con un ritmo reproductivo menor, puede generar más casos.</p>
+<p>La primera alternativa arroja 4.7207 como el valor más probable; es posible considerar este valor una sobrestimación de R<sub>0</sub> según lo observado en estudios recientes. Mientras tanto, la segunda alternativa estima un R<sub>0</sub> = 2.0841 (95 % CI: 1.9459 - 2.2342); un valor congruente con los estudios, donde se ha observado que el SARS-CoV-2 posee un SI más corto que otros coronavirus. Por ende, aun con un ritmo reproductivo menor, puede generar más casos.</p>
 <p>Considerando R<sub>0</sub> se puede modelar una proyección futura, más flexible que la arrojada por el modelo exponencial solamente. Se ha utilizado <code>projections</code> para predecir tres escenarios, calculando en cada uno diez mil simulaciones para cada día de las dos próximas semanas.</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" title="1"><span class="kw">library</span>(projections)</a>
 <a class="sourceLine" id="cb6-2" title="2"></a>
 <a class="sourceLine" id="cb6-3" title="3">EC_proj =<span class="st"> </span><span class="kw">project</span>(EC_incid, R_sample, R_chains<span class="op">$</span>si, <span class="dt">n_days =</span> <span class="dv">14</span>, <span class="dt">n_sim =</span> <span class="fl">1e4</span>)</a>
 <a class="sourceLine" id="cb6-4" title="4"></a>
 <a class="sourceLine" id="cb6-5" title="5"><span class="kw">rowMeans</span>(EC_proj)</a></code></pre></div>
-<pre><code>## 2020-03-22 2020-03-23 2020-03-24 2020-03-25 2020-03-26 2020-03-27 2020-03-28 
-##   139.7076   172.9241   209.4380   251.7282   301.0909   360.6653   432.1774 
-## 2020-03-29 2020-03-30 2020-03-31 2020-04-01 2020-04-02 2020-04-03 2020-04-04 
-##   516.6729   618.8562   739.0363   886.6312  1061.4125  1269.1457  1520.6546</code></pre>
+<pre><code>## 2020-03-23 2020-03-24 2020-03-25 2020-03-26 2020-03-27 2020-03-28 2020-03-29 
+##   222.9667   281.0238   344.1267   417.3118   503.9178   609.0908   735.8126 
+## 2020-03-30 2020-03-31 2020-04-01 2020-04-02 2020-04-03 2020-04-04 2020-04-05 
+##   887.5471  1072.2918  1294.5923  1563.9690  1889.7482  2279.6449  2754.6759</code></pre>
 <p>Estos datos representan la incidencia promedio para cada día, en un primer escenario donde R<sub>0</sub> no cambia en absoluto. Los casos actuales y la proyección futura -la región sombreada delimita el 95 % CI- se presentan en el siguiente gráfico de manera acumulativa:</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1">EC_incid =<span class="st"> </span><span class="kw">cumulate</span>(EC_incid)</a>
 <a class="sourceLine" id="cb8-2" title="2"></a>
@@ -659,25 +674,25 @@ Figure 2: Distribución de Ro del COVID-19 según SI de otros coronavirus 👈 y
 <a class="sourceLine" id="cb8-5" title="5"><span class="kw">add_projections</span>(<span class="kw">plot</span>(EC_incid), EC_proj <span class="op">+</span><span class="st"> </span><span class="kw">max</span>(EC_incid<span class="op">$</span>counts), <span class="kw">c</span>(.<span class="dv">025</span>, <span class="fl">.5</span>)) <span class="op">+</span></a>
 <a class="sourceLine" id="cb8-6" title="6"><span class="st">   </span><span class="kw">geom_vline</span>(<span class="dt">xintercept =</span> <span class="kw">as.Date</span>(<span class="st">&quot;2020-03-17&quot;</span>), <span class="dt">col =</span> <span class="st">&quot;gold&quot;</span>, <span class="dt">alpha =</span> <span class="fl">.6</span>, <span class="dt">size =</span> <span class="dv">2</span>) <span class="op">+</span></a>
 <a class="sourceLine" id="cb8-7" title="7"><span class="st">   </span><span class="kw">scale_x_date</span>(<span class="dt">date_breaks =</span> <span class="st">&quot;4 days&quot;</span>, <span class="dt">date_labels =</span> <span class="st">&quot;%b %e&quot;</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb8-8" title="8"><span class="st">   </span><span class="kw">scale_y_continuous</span>(<span class="dt">breaks =</span> <span class="dv">1000</span> <span class="op">*</span><span class="st"> </span><span class="dv">0</span><span class="op">:</span><span class="dv">11</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb8-8" title="8"><span class="st">   </span><span class="kw">scale_y_continuous</span>(<span class="st">&quot;Incidencia diaria acumulada&quot;</span>, <span class="dv">2000</span> <span class="op">*</span><span class="st"> </span><span class="dv">0</span><span class="op">:</span><span class="dv">9</span>) <span class="op">+</span></a>
 <a class="sourceLine" id="cb8-9" title="9"><span class="st">   </span><span class="kw">scale_fill_manual</span>(<span class="dt">values =</span> <span class="st">&quot;firebrick&quot;</span>)</a></code></pre></div>
 <div class="figure"><span id="fig:project-normal"></span>
-<img src="../../../../post/2020/03/20-caracterizacion-covid-ecuador_files/figure-html/project-normal-1.png" alt="Proyección de incidencia diaria acumulada de COVID-19 en Ecuador si R0 = 2.03" width="672" />
+<img src="../../../../post/2020/03/20-caracterizacion-covid-ecuador_files/figure-html/project-normal-1.png" alt="Proyección de incidencia diaria acumulada de COVID-19 en Ecuador si R0 = 2.0841" width="672" />
 <p class="caption">
-Figure 3: Proyección de incidencia diaria acumulada de COVID-19 en Ecuador si R0 = 2.03
+Figure 3: Proyección de incidencia diaria acumulada de COVID-19 en Ecuador si R0 = 2.0841
 </p>
 </div>
-<p>El segundo y tercer escenarios calculados suponen que R<sub>0</sub> se reduce a la mitad (figura <a href="#fig:project-better">4</a>) y a la cuarta parte (figura <a href="#fig:project-best">5</a>), respectivamente:</p>
+<p>El segundo y tercer escenarios calculados suponen que R<sub>0</sub> se reduce a la mitad (figura <a href="#fig:project-better">4</a>) y a la quinta parte (figura <a href="#fig:project-best">5</a>), respectivamente:</p>
 <div class="figure"><span id="fig:project-better"></span>
-<img src="../../../../post/2020/03/20-caracterizacion-covid-ecuador_files/figure-html/project-better-1.png" alt="Proyección de incidencia diaria acumulada de COVID-19 en Ecuador si R0 = 1.015" width="672" />
+<img src="../../../../post/2020/03/20-caracterizacion-covid-ecuador_files/figure-html/project-better-1.png" alt="Proyección de incidencia diaria acumulada de COVID-19 en Ecuador si R0 = 1.042" width="672" />
 <p class="caption">
-Figure 4: Proyección de incidencia diaria acumulada de COVID-19 en Ecuador si R0 = 1.015
+Figure 4: Proyección de incidencia diaria acumulada de COVID-19 en Ecuador si R0 = 1.042
 </p>
 </div>
 <div class="figure"><span id="fig:project-best"></span>
-<img src="../../../../post/2020/03/20-caracterizacion-covid-ecuador_files/figure-html/project-best-1.png" alt="Proyección de incidencia diaria acumulada de COVID-19 en Ecuador si R0 = 0.5075" width="672" />
+<img src="../../../../post/2020/03/20-caracterizacion-covid-ecuador_files/figure-html/project-best-1.png" alt="Proyección de incidencia diaria acumulada de COVID-19 en Ecuador si R0 = 0.4168" width="672" />
 <p class="caption">
-Figure 5: Proyección de incidencia diaria acumulada de COVID-19 en Ecuador si R0 = 0.5075
+Figure 5: Proyección de incidencia diaria acumulada de COVID-19 en Ecuador si R0 = 0.4168
 </p>
 </div>
 <p>Evidentemente, si R<sub>0</sub> &lt; 1 la epidemia será controlada eventualmente. Sin embargo, <strong>estas proyecciones no son realistas</strong> pues cualquier cambio introducido en R<sub>0</sub> -a través de medidas políticas, sociales y sanitarias- no se refleja inmediatamente; en Ecuador es necesario contar las infecciones previas a la declaración de estado de excepción, y que aún no han superado el periodo de incubación. Se pretende actualizar este post conforme las incidencias diarias sean reportadas y reflejen, con optimismo, las medidas adoptadas.</p>
