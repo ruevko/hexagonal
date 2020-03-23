@@ -18,7 +18,7 @@ coverImage: 'https://github.com/ruevko/hexagonal/raw/master/content/post/2020/03
 summary: Utilizando paquetes desarrollados por el R Epidemics Consortium, se estima el ritmo reproductivo básico y se proyectan tres escenarios futuros para los casos positivos acumulados diariamente.
 ---
 
-**Actualizado: 22 de marzo, 12 AM**
+**Actualizado: 23 de marzo, 12 AM**
 
 En vista de la emergencia en curso causada por el SARS-CoV-2 se presenta una caracterización de la epidemia en Ecuador. Se ha aplicado una metodología sugerida por el R Epidemics Consortium [RECON](https://www.repidemicsconsortium.org/) que permite estimar tempranamente el ritmo reproductivo del virus; esta metodología requiere poseer información sobre la transmisión, y datos de la incidencia. La información requerida contempla los siguientes conceptos:
 
@@ -36,7 +36,7 @@ En vista de la emergencia en curso causada por el SARS-CoV-2 se presenta una car
 
 ```{r data}
 EC_COVID19 = data.frame(
-   fuente = c(rep("Salud_Ec", 9), rep("Riesgos_Ec", 17)),
+   fuente = c(rep("Salud_Ec", 9), rep("Riesgos_Ec", 18)),
    status = c(
       "1233774191326957575",
       "1234331734889697281",
@@ -63,8 +63,9 @@ EC_COVID19 = data.frame(
       "1241123691427176450",  #15
       "1241379969797967883",  #16
       "1241485101780926465",  #17
-      "1241761146643853313"), #18
-   sitrep = c(rep(NA, 9), 1:8, 10:18),
+      "1241761146643853313",  #18
+      "1242105767366406150"), #19
+   sitrep = c(rep(NA, 9), 1:8, 10:19),
    corte = as.POSIXct(c(
       "2020-02-29 10:02",
       "2020-03-01 23:02",
@@ -91,12 +92,13 @@ EC_COVID19 = data.frame(
       "2020-03-20 16:00",  #15
       "2020-03-21 10:00",  #16
       "2020-03-21 17:00",  #17
-      "2020-03-22 10:00"), #18
+      "2020-03-22 10:00",  #18
+      "2020-03-23 10:00"), #19
       "America/Guayaquil"),
-   cerco = c(rep(NA, 9),279,279,317,273,273,273,315,451,NA,575,575,746,746,1213,1213,1213,1347),
-   negativo = c(rep(NA, 12), 51, 51, 51, 51, 51, 278, 312, 336, 412, 483, 533, 601, 649, 872),
-   positivo =c(1,6,7,10,13,14,15,17,19,23,23,28,37,37,58,58,111,155,168,199,260,367,426,506,532,789),
-   fallecido = c(rep(0, 9), 1, 1, rep(2, 7), 3, 3, 4, 5, 7, 7, 7, 14))
+   cerco = c(rep(NA, 9),279,279,317,273,273,273,315,451,NA,575,575,746,746,1213,1213,1213,1347,1347),
+   negativo = c(rep(NA, 12), 51, 51, 51, 51, 51, 278, 312, 336, 412, 483, 533, 601, 649, 872, 1091),
+   positivo=c(1,6,7,10,13:15,17,19,23,23,28,37,37,58,58,111,155,168,199,260,367,426,506,532,789,981),
+   fallecido = c(rep(0, 9), 1, 1, rep(2, 7), 3, 3, 4, 5, 7, 7, 7, 14, 18))
 
 write.csv(EC_COVID19, "EC_COVID19.csv", row.names = FALSE)
 
@@ -206,7 +208,7 @@ hist(sample_R(R_viruses, 1e3), freq = FALSE, main = NULL, xlab = "R_viruses")
 hist(sample_R(R_chains, 1e3), freq = FALSE, main = NULL, xlab = "R_chains")
 ```
 
-La primera alternativa arroja `r round(R_viruses$R_ml, 4)` como el valor más probable; es posible considerar este valor una sobrestimación de R~0~ según lo observado en estudios recientes. Mientras tanto, la segunda alternativa estima un R~0~ = `r round(R_chains$R_ml, 4)` (95 % CI: `r R_sample = sample_R(R_chains, 1e4); paste(round(quantile(R_sample, c(.025, .975)), 4), collapse = " - ")`); un valor congruente con los estudios, donde se ha observado que el SARS-CoV-2 posee un SI más corto que otros coronavirus. Por ende, aun con un ritmo reproductivo menor, puede generar más casos.
+La primera alternativa arroja `r round(R_viruses$R_ml, 2)` como el valor más probable; es posible considerar este valor una sobrestimación de R~0~ según lo observado en estudios recientes. Mientras tanto, la segunda alternativa estima un R~0~ = `r round(R_chains$R_ml, 2)` (95 % CI: `r R_sample = sample_R(R_chains, 1e4); paste(round(quantile(R_sample, c(.025, .975)), 2), collapse = " - ")`); un valor congruente con los estudios, donde se ha observado que el SARS-CoV-2 posee un SI más corto que otros coronavirus. Por ende, aun con un ritmo reproductivo menor, puede generar más casos.
 
 Considerando R~0~ se puede modelar una proyección futura, más flexible que la arrojada por el modelo exponencial solamente. Se ha utilizado `projections` para predecir tres escenarios, calculando en cada uno diez mil simulaciones para cada día de las dos próximas semanas.
 
@@ -228,7 +230,7 @@ EC_proj = cumulate(EC_proj)
 add_projections(plot(EC_incid), EC_proj + max(EC_incid$counts), c(.025, .5)) +
    geom_vline(xintercept = as.Date("2020-03-17"), col = "gold", alpha = .6, size = 2) +
    scale_x_date(date_breaks = "4 days", date_labels = "%b %e") +
-   scale_y_continuous("Incidencia diaria acumulada", 2000 * 0:9) +
+   scale_y_continuous("Incidencia diaria acumulada", 1e3 * 0:13) +
    scale_fill_manual(values = "firebrick")
 ```
 
