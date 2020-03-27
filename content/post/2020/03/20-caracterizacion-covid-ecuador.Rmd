@@ -18,7 +18,7 @@ coverImage: 'https://github.com/ruevko/hexagonal/raw/master/content/post/2020/03
 summary: Utilizando paquetes desarrollados por el R Epidemics Consortium, se estima el ritmo reproductivo básico y se proyectan tres escenarios futuros para los casos positivos acumulados diariamente.
 ---
 
-**Actualizado: 26 de marzo, 1 PM**
+**Actualizado: 27 de marzo, 11 AM**
 
 En vista de la emergencia en curso causada por el SARS-CoV-2 se presenta una caracterización de la epidemia en Ecuador. Se ha aplicado una metodología sugerida por el R Epidemics Consortium [RECON](https://www.repidemicsconsortium.org/) que permite estimar tempranamente el ritmo reproductivo del virus; esta metodología requiere poseer información sobre la transmisión, y datos de la incidencia. La información requerida contempla los siguientes conceptos:
 
@@ -36,8 +36,8 @@ En vista de la emergencia en curso causada por el SARS-CoV-2 se presenta una car
 
 ```{r data}
 EC_COVID19 = data.frame(
-   fuente = c(rep("Salud_Ec", 9), rep("Riesgos_Ec", 23)),
-   status = c(
+   fuente = c(rep("Salud_Ec", 9), rep("Riesgos_Ec", 25)),
+   status = {c(
       "1233774191326957575",
       "1234331734889697281",
       "1234670644878462980",
@@ -69,9 +69,11 @@ EC_COVID19 = data.frame(
       "1242581856891146243",  #21
       "1242834504324128775",  #22
       "1242935910028771329",  #23
-      "1243194238269034497"), #24
-   sitrep = c(rep(NA, 9), 1:8, 10:24),
-   corte = as.POSIXct(c(
+      "1243194238269034497",  #24
+      "1243297352435273730",  #25
+      "1243571908878180354")},#26
+   sitrep = c(rep(NA, 9), 1:8, 10:26),
+   corte = as.POSIXct({c(
       "2020-02-29 10:02",
       "2020-03-01 23:02",
       "2020-03-02 22:01",
@@ -103,15 +105,17 @@ EC_COVID19 = data.frame(
       "2020-03-24 17:00",  #21
       "2020-03-25 10:00",  #22
       "2020-03-25 17:00",  #23
-      "2020-03-26 10:00"), #24
+      "2020-03-26 10:00",  #24
+      "2020-03-26 17:00",  #25
+      "2020-03-27 10:00")},#26
       "America/Guayaquil"),
    cerco = c(rep(NA, 9), 279, 279, 317, 273, 273, 273, 315, 451, NA, 575, 575,
-             746, 746, 1213, 1213, 1213, 1347, 1347, 1347, NA, NA, NA, NA),
-   negativo = c(rep(NA, 12), 51, 51, 51, 51, 51, 278, 312, 336, 412, 483,
-                533, 601, 649, 872, 1091, 1211, 1225, 1346, 1387, 1676),
-   positivo = c(1, 6, 7, 10, 13, 14, 15, 17, 19, 23, 23, 28, 37, 37, 58, 58, 111, 155,
-                168, 199, 260, 367, 426, 506, 532, 789, 981, 1049, 1082, 1173, 1211, 1382),
-   fallecido = c(rep(0, 9), 1, 1, rep(2, 7), 3, 3, 4, 5, 7, 7, 7, 14, 18, 27, 27, 28, 29, 34))
+             746, 746, 1213, 1213, 1213, 1347, 1347, 1347, NA, NA, NA, NA, NA, NA),
+   negativo = c(rep(NA, 12), 51, 51, 51, 51, 51, 278, 312, 336, 412, 483, 533,
+                601, 649, 872, 1091, 1211, 1225, 1346, 1387, 1676, 1722, 1889),
+   positivo = c(1, 6, 7, 10, 13, 14, 15, 17, 19, 23, 23, 28, 37, 37, 58, 58, 111, 155, 168, 199,
+                260, 367, 426, 506, 532, 789, 981, 1049, 1082, 1173, 1211, 1382, 1403, 1595),
+   fallecido =c(rep(0, 9), 1, 1, rep(2, 7), 3, 3, 4, 5, 7, 7, 7, 14, 18, 27, 27, 28, 29, 34, 34, 36))
 
 write.csv(EC_COVID19, "EC_COVID19.csv", row.names = FALSE)
 
@@ -145,7 +149,7 @@ ggplot(dias, aes(d, v1, label = v2)) + coord_cartesian(expand = FALSE) +
 Con respecto a los datos, se ha recopilado los reportes publicados por el Servicio Nacional de Gestión de Riesgos [SNGRE](https://twitter.com/Riesgos_Ec); casos anteriores al primer reporte corresponden a comunicados del Ministerio de Salud Pública [MSP](https://twitter.com/Salud_Ec).
 
 ```{r table}
-EC_COVID19 = EC_COVID19[-c(11, 14, 16, 19, 21, 23, 25, 29, 31), c(1, 4, 7, 8)]
+EC_COVID19 = EC_COVID19[-c(11, 14, 16, 19, 21, 23, 25, 29, 31, 33), c(1, 4, 7, 8)]
 
 library(kableExtra)
 
