@@ -24,7 +24,7 @@ summary: Utilizando paquetes desarrollados por el R Epidemics Consortium, se est
 
 `r knitr::opts_chunk$set(echo = FALSE)`
 
-**Actualizado: 15 de abril, 6 PM**
+**Actualizado: 16 de abril, 1 PM**
 
 En atención a la emergencia en curso causada por el SARS-CoV-2 se presenta una caracterización de la epidemia en Ecuador. Se ha aplicado una metodología desarrollada por el R Epidemics Consortium [RECON](https://www.repidemicsconsortium.org/) que permite estimar tempranamente una variable clave como lo es el ritmo reproductivo; dicha metodología requiere poseer conocimientos sobre el virus y datos sobre la incidencia diaria. Notar que se ha utilizado `library(tidyverse)` adicionalmente.
 
@@ -108,7 +108,7 @@ COVID19_Riesgos_Ec[nrow(COVID19_Riesgos_Ec):1, ] %>% transmute(
    scroll_box("232px")
 ```
 
-Ciertos días fueron publicadas dos infografías, en cuyo caso se ha seleccionado la matutina; los datos completos se encuentran en [este](https://github.com/ruevko/hexagonal/blob/master/content/post/2020/03/COVID19_Riesgos_Ec.csv) enlace. Mientras que la primera infografía corresponde al 13 de marzo, el primer caso ecuatoriano fue anunciado el 29 de febrero; por esto, también se han recopilado comunicados del Ministerio de Salud Pública [MSP](https://twitter.com/Salud_Ec) anteriores a las infografías.
+Ciertos días fueron publicadas dos infografías, en cuyo caso se ha seleccionado la matutina; los datos completos se encuentran en [este](https://github.com/ruevko/hexagonal/blob/master/content/post/2020/03/COVID19_Riesgos_Ec.csv) enlace. Mientras que la primera infografía corresponde al 13 de marzo, el primer caso ecuatoriano fue anunciado el 29 de febrero; por esto, también se han recopilado comunicados del Ministerio de Salud Pública [MSP](https://twitter.com/Salud_Ec) anteriores a las infografías. Cabe mencionar que, durante dichos comunicados, aún no existían fallecidos por COVID-19 en el país.
 
 ```{r salud}
 COVID19_Salud_Ec[9:1, ] %>% mutate( #517
@@ -136,7 +136,7 @@ En el paso anterior se han unido las dos fuentes de datos y se han calculado nue
 
 Un hecho de las epidemias es que, incluso en el peor escenario, no pueden crecer indefinidamente pues se agotaría la población susceptible al contagio. Cuando la tasa de crecimiento -la cual define un crecimiento exponencial- se establezca definitivamente en su valor mínimo (que es uno), el total de casos confirmados se detendrá. Por otra parte, resulta interesante seguir los cambios en el factor de crecimiento: valores menores a uno indican una reducción del avance de la epidemia y viceversa, valores mayores a uno indican que el crecimiento exponencial continúa.
 
-En los siguientes gráficos se han omitido los datos recopilados del MSP; las barras representan el total diario de casos confirmados, la guía de color representa la tasa de crecimiento, y el texto multiplicativo el factor de crecimiento.
+En los siguientes gráficos se excluyen los datos antes del primer centenar -ocurrido el 17 de marzo- de casos; las barras representan el total diario de casos confirmados, la guía de color representa la tasa de crecimiento, y el texto multiplicativo el factor de crecimiento.
 
 ```{r dat-plot, fig.asp=.5, fig.cap="Total de casos COVID-19 confirmados en Ecuador, incluyendo tasas y factores de crecimiento"}
 Ec_data[34, "Rate"] = 1
@@ -145,15 +145,15 @@ Ec_data[1:2, c("Rate", "Factor")] = NA
 
 #`r shortcode("youtube", "Kas0tIxDvrg")`
 
-my_plot = function(my_aes, my_dat = Ec_data[-{1:9}, ]){
+my_plot = function(my_aes, my_dat = Ec_data[-{1:13}, ]){
    ggplot(my_dat, my_aes) + theme_light() +
       theme(axis.title.x = element_blank()) +
       scale_fill_viridis_c(option = "C", trans = "log10") +
-      scale_y_continuous("Casos Confirmados", 1e3 * 0:9, limits = c(0, 8100)) +
+      scale_y_continuous("Casos Confirmados", 1e3 * 0:9, limits = c(0, 8500)) +
       scale_x_date(date_breaks = "4 days", date_labels = "%e %b")}
 
 my_plot(aes(day, conf, fill = Rate)) + geom_col(width = 1) +
-   geom_text(aes(label = paste0("x", round(Factor, 1))), nudge_y = 180, size = 1.8)
+   geom_text(aes(label = paste0("x", round(Factor, 1))), nudge_y = 200, size = 2)
 ```
 
 ## Ajuste de Regresión Exponencial
@@ -175,7 +175,7 @@ Se obtuvieron los coeficientes de determinación `r summary(mod_bef)$r.squared %
 ```{r log-plot, dev="svg", fig.asp=.4, fig.cap="Regresión antes (naranja) y después (morado) del 22 de marzo, incluyendo factores de crecimiento"}
 Ec_data[1:9, c("conf.bef", "conf.af")] = NA
 
-mod_plot = my_plot(aes(day, conf, size = Factor)) +
+mod_plot = my_plot(aes(day, conf, size = Factor), Ec_data[-{1:9}, ]) +
    geom_line(aes(y = conf.bef), size = 1, col = "#ED7953") +
    geom_line(aes(y = conf.af), size = 1, col = "#9C179E") +
    scale_x_date(date_breaks = "8 days", date_labels = "%e %b") +
@@ -207,8 +207,8 @@ Ec_inci = Ec_data$day %>%
 ggsave("COVID19_Ec.jpg", dpi = "screen", width = 16, height = 7.925, plot = plot(Ec_inci[-{1:12}]) +
           scale_y_continuous(breaks = c(1e2 * 1:9)) + coord_cartesian(ylim = c(0, 1e3)) +
           scale_x_date(date_breaks = "4 days", date_labels = "%e %b") + theme_minimal() +
-          theme(plot.background = element_rect(fill = "grey10"), panel.grid = element_line("grey20"),
-                axis.text = element_text(size = 20, color = "grey20"), title = element_blank()))
+          theme(plot.background = element_rect(fill = "grey15"), panel.grid = element_line("grey20"),
+                axis.text = element_text(size = 20, color = "grey25"), title = element_blank()))
 ```
 
 El objeto generado por `incidence()` contiene la incidencia diaria necesaria para la estimación; no obstante, hace falta conocer el SI característico de la epidemia. En este contexto, lo recomendable es obtener la media y desviación estándar del SI a partir de la literatura; considérese que una estimación temprana es recomendable, pues utilizar los datos de una epidemia avanzada incluiría los efectos de las medidas de control, subestimando de esta manera el SI [@covia].
@@ -297,7 +297,7 @@ Ec_data = as_tibble(t(as.matrix(Ec_proj))) %>%
 my_plot(aes(day, conf)) + geom_col(width = 1, alpha = .75) +
    geom_ribbon(aes(ymin = pro.lo, ymax = pro.hi), fill = "#0D088766") +
    geom_line(aes(y = pro.me), col = "#0D0887FF", size = 1) +
-   scale_y_continuous("Casos Confirmados", 1e3 * 0:13, limits = c(0, 13500))
+   scale_y_continuous("Casos Confirmados", 1e3 * 0:14, limits = c(0, 13500))
 ```
 
 ## Tercer escenario: R~0~ al 50 %
@@ -305,7 +305,7 @@ my_plot(aes(day, conf)) + geom_col(width = 1, alpha = .75) +
 Supongamos finalmente que R0 se redujo a la mitad de su valor más probable original, es decir a `r round(.50 * R_get$R_ml, 2)`. Cada ocho individuos infectados habría aproximadamente siete casos nuevos, significando una reducción en el avance de la epidemia. No obstante esto es una subestimación del escenario real, pues hasta la fecha se habrían confirmado solamente unos 3300 casos.
 
 ```{r project-050, fig.asp=.5, fig.cap=paste("Proyección de casos COVID-19 confirmados en Ecuador, si R0 =", round(.50 * R_get$R_ml, 2))}
-Ec_proj = project(Ec_inci[1:27], .50 * R_samp, R_get$si, n_days = 20, n_sim = 1e4) #+
+Ec_proj = project(Ec_inci[1:27], .50 * R_samp, R_get$si, n_days = 21, n_sim = 1e4) #+
 
 Ec_data = as_tibble(t(as.matrix(Ec_proj))) %>%
    summarise_all(list(pro.lo = ~quantile(., .025),
@@ -313,7 +313,7 @@ Ec_data = as_tibble(t(as.matrix(Ec_proj))) %>%
                       pro.hi = ~quantile(., .975))) %>%
    pivot_longer(names(.), names_to = c("day", "name"), names_sep = "_") %>%
    pivot_wider() %>% mutate_if(is.numeric, ~cumsum(.) + 1382) %>%
-   mutate_at("day", as.Date) %>% full_join(Ec_data[1:43, 1:10], .) #+
+   mutate_at("day", as.Date) %>% full_join(Ec_data[1:44, 1:10], .) #+
 
 # as.data.frame(Ec_data[c(1:4, 7, 9, 12)])
 
