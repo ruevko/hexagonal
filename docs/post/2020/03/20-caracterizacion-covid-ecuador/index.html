@@ -8,18 +8,18 @@
 <meta name="generator" content="Hugo 0.66.0 with theme Tranquilpeak 0.4.7-BETA">
 <meta name="author" content="La Galería Hexagonal">
 <meta name="keywords" content="coronavirus, regression, mapas, datos, análisis, maps, data, analytics">
-<meta name="description" content="Utilizando paquetes desarrollados por el R Epidemics Consortium, se estima el ritmo reproductivo básico y se proyectan tres escenarios futuros para los casos positivos acumulados diariamente.">
+<meta name="description" content="Utilizando paquetes desarrollados por el R Epidemics Consortium, se estima el ritmo reproductivo básico y se proponen tres escenarios del crecimiento de los casos confirmados.">
 
 
-<meta property="og:description" content="Utilizando paquetes desarrollados por el R Epidemics Consortium, se estima el ritmo reproductivo básico y se proyectan tres escenarios futuros para los casos positivos acumulados diariamente.">
+<meta property="og:description" content="Utilizando paquetes desarrollados por el R Epidemics Consortium, se estima el ritmo reproductivo básico y se proponen tres escenarios del crecimiento de los casos confirmados.">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Caracterización del COVID-19 en Ecuador">
 <meta name="twitter:title" content="Caracterización del COVID-19 en Ecuador">
 <meta property="og:url" content="https://ruevko.github.io/hexagonal/post/2020/03/20-caracterizacion-covid-ecuador/">
 <meta property="twitter:url" content="https://ruevko.github.io/hexagonal/post/2020/03/20-caracterizacion-covid-ecuador/">
 <meta property="og:site_name" content="La Galería Hexagonal">
-<meta property="og:description" content="Utilizando paquetes desarrollados por el R Epidemics Consortium, se estima el ritmo reproductivo básico y se proyectan tres escenarios futuros para los casos positivos acumulados diariamente.">
-<meta name="twitter:description" content="Utilizando paquetes desarrollados por el R Epidemics Consortium, se estima el ritmo reproductivo básico y se proyectan tres escenarios futuros para los casos positivos acumulados diariamente.">
+<meta property="og:description" content="Utilizando paquetes desarrollados por el R Epidemics Consortium, se estima el ritmo reproductivo básico y se proponen tres escenarios del crecimiento de los casos confirmados.">
+<meta name="twitter:description" content="Utilizando paquetes desarrollados por el R Epidemics Consortium, se estima el ritmo reproductivo básico y se proponen tres escenarios del crecimiento de los casos confirmados.">
 <meta property="og:locale" content="es-es">
 
   
@@ -52,8 +52,8 @@
 
 
 
-  <meta property="og:image" content="https://github.com/ruevko/hexagonal/raw/master/content/post/2020/03/ec_covid19.jpg">
-  <meta property="twitter:image" content="https://github.com/ruevko/hexagonal/raw/master/content/post/2020/03/ec_covid19.jpg">
+  <meta property="og:image" content="https://github.com/ruevko/hexagonal/raw/master/content/post/2020/03/COVID19_Ec.jpg">
+  <meta property="twitter:image" content="https://github.com/ruevko/hexagonal/raw/master/content/post/2020/03/COVID19_Ec.jpg">
 
 
 
@@ -177,7 +177,7 @@
   <div class="post-header-cover
               text-left
               "
-       style="background-image:url('https://github.com/ruevko/hexagonal/raw/master/content/post/2020/03/ec_covid19.jpg')"
+       style="background-image:url('https://github.com/ruevko/hexagonal/raw/master/content/post/2020/03/COVID19_Ec.jpg')"
        data-behavior="4">
     
       <div class="post-header main-content-wrap text-left">
@@ -297,46 +297,352 @@ code span.vs { color: #bf0303; } /* VerbatimString */
 code span.wa { color: #bf0303; } /* Warning */
 </style>
 
-
-<p><strong>Actualizado: 27 de marzo, 11 AM</strong></p>
-<p>En vista de la emergencia en curso causada por el SARS-CoV-2 se presenta una caracterización de la epidemia en Ecuador. Se ha aplicado una metodología sugerida por el R Epidemics Consortium <a href="https://www.repidemicsconsortium.org/">RECON</a> que permite estimar tempranamente el ritmo reproductivo del virus; esta metodología requiere poseer información sobre la transmisión, y datos de la incidencia. La información requerida contempla los siguientes conceptos:</p>
+<div id="TOC">
 <ul>
-<li><p>El ritmo reproductivo básico (<em>Basic Reproduction Number</em>, R<sub>0</sub>) es el número esperado de casos nuevos, generados directamente por un determinado caso en una población completamente susceptible; es crucial entender que R<sub>0</sub> no es una constante biológica de un patógeno, pues es afectado por factores ambientales y conductuales.</p></li>
-<li><p>El intervalo serial (<em>Serial Interval</em>, SI) es el tiempo transcurrido entre casos sucesivos en una misma cadena de transmisión; es posible caracterizar al SI con una distribución <em>Gamma</em>, conociendo su media y desviación estándar en días; no confundir el SI con:</p>
+<li><a href="#definiciones"><strong>Definiciones</strong></a></li>
+<li><a href="#obtención-de-datos"><strong>Obtención de Datos</strong></a></li>
+<li><a href="#modelamiento-de-datos"><strong>Modelamiento de Datos</strong></a><ul>
+<li><a href="#ajuste-de-regresión-exponencial">Ajuste de Regresión Exponencial</a></li>
+<li><a href="#estimación-del-ritmo-reproductivo">Estimación del Ritmo Reproductivo</a></li>
+</ul></li>
+<li><a href="#proyecciones-futuras"><strong>Proyecciones Futuras</strong></a><ul>
+<li><a href="#primer-escenario-r0-al-100">Primer escenario: R<sub>0</sub> al 100 %</a></li>
+<li><a href="#segundo-escenario-r0-al-75">Segundo escenario: R<sub>0</sub> al 75 %</a></li>
+<li><a href="#tercer-escenario-r0-al-50">Tercer escenario: R<sub>0</sub> al 50 %</a></li>
+</ul></li>
+<li><a href="#conclusiones"><strong>Conclusiones</strong></a></li>
+<li><a href="#referencias"><strong>Referencias</strong></a></li>
+</ul>
+</div>
+
+<p><strong>Actualizado: 15 de abril, 6 PM</strong></p>
+<p>En atención a la emergencia en curso causada por el SARS-CoV-2 se presenta una caracterización de la epidemia en Ecuador. Se ha aplicado una metodología desarrollada por el R Epidemics Consortium <a href="https://www.repidemicsconsortium.org/">RECON</a> que permite estimar tempranamente una variable clave como lo es el ritmo reproductivo; dicha metodología requiere poseer conocimientos sobre el virus y datos sobre la incidencia diaria. Notar que se ha utilizado <code>library(tidyverse)</code> adicionalmente.</p>
+<div id="definiciones" class="section level1">
+<h1><strong>Definiciones</strong></h1>
+<p>Para aplicar la presente metodología es necesario familiarizarse con las siguientes definiciones <span class="citation">(Fine <a href="#ref-covia" role="doc-biblioref">2003</a>)</span>, relacionadas con la transmisión de un virus:</p>
+<ul>
+<li><p>El ritmo reproductivo básico (<em>Basic Reproduction Number</em>, R<sub>0</sub>) es el número promedio de transmisiones por caso; es decir, la cantidad esperada de casos nuevos que un determinado caso generará.</p></li>
+<li><p>El intervalo serial (<em>Serial Interval</em>, SI) es el tiempo que transcurre entre la aparición de síntomas en dos casos sucesivos; comúnmente se caracteriza al SI a través de su media y desviación estándar en días; no se debe confundir SI con:</p>
 <ul>
 <li><p>El periodo de incubación, entre una infección y la aparición de sus síntomas.</p></li>
 <li><p>El periodo latente, entre una infección y el comienzo del periodo infeccioso.</p></li>
 <li><p>En el periodo infeccioso, una persona infectada puede causar nuevas infecciones.</p></li>
 </ul></li>
 </ul>
-<p>Si las infecciones ocurren aleatoriamente, se espera que el SI promedio sea igual a la suma del periodo latente promedio y la mitad del periodo infeccioso promedio. Por otra parte, el periodo latente no siempre es mayor que el de incubación: dependiendo del virus, una persona puede volverse infecciosa antes de presentar síntomas. En el caso del SARS-CoV-2, se halló que su periodo de incubación posee una mediana de siete días <span class="citation">(Jiang et al. <a href="#ref-covid" role="doc-biblioref">2020</a>)</span>, pero el periodo infeccioso puede comenzar un día antes. Este gráfico (que no representa necesariamente un caso de SARS-CoV-2) permite visualizar la relación existente entre los conceptos mencionados:</p>
-<p><img src="../../../../post/2020/03/20-caracterizacion-covid-ecuador_files/figure-html/explain-1.svg" width="864" /></p>
-<p>Con respecto a los datos, se ha recopilado los reportes publicados por el Servicio Nacional de Gestión de Riesgos <a href="https://twitter.com/Riesgos_Ec">SNGRE</a>; casos anteriores al primer reporte corresponden a comunicados del Ministerio de Salud Pública <a href="https://twitter.com/Salud_Ec">MSP</a>.</p>
-<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:280px; ">
+<p>Es crucial entender que tanto el R<sub>0</sub> como el SI no son constantes biológicas de un virus, pues son afectados por factores internos -como la vulnerabilidad- y externos -como el ambiente, el contacto social o el tratamiento médico- del individuo infectado. El siguiente gráfico permite visualizar la relación existente entre el SI y los periodos mencionados:</p>
+<div class="figure"><span id="fig:period-a"></span>
+<img src="../../../../post/2020/03/20-caracterizacion-covid-ecuador_files/figure-html/period-a-1.png" alt="Evento de transmisión con Intervalo Serial positivo" width="864" />
+<p class="caption">
+Figure 1: Evento de transmisión con Intervalo Serial positivo
+</p>
+</div>
+<p>Tal y como lo presenta el gráfico, el periodo latente puede ser menor que el de incubación: el individuo infectado se vuelve infeccioso antes de presentar síntomas. Esto es posible con el SARS-CoV-2, pues se hallado que el periodo infeccioso puede llegar un día antes que los síntomas; hay que considerar que el periodo de incubación posee una mediana de siete días <span class="citation">(Jiang et al. <a href="#ref-covid" role="doc-biblioref">2020</a>)</span>.</p>
+<p>Por otra parte, debido a la variabilidad del periodo de incubación, también es posible que en una transmisión el individuo infectado presente síntomas antes que el causante de su infección. En este caso el SI se vuelve negativo, tal y como lo presenta el siguiente gráfico:</p>
+<div class="figure"><span id="fig:period-b"></span>
+<img src="../../../../post/2020/03/20-caracterizacion-covid-ecuador_files/figure-html/period-b-1.png" alt="Evento de transmisión con Intervalo Serial negativo" width="864" />
+<p class="caption">
+Figure 2: Evento de transmisión con Intervalo Serial negativo
+</p>
+</div>
+<p><span class="citation">Du et al. (<a href="#ref-covic" role="doc-biblioref">2020</a>)</span> han observado un porcentaje considerable de SI negativos entre los eventos de transmisión estudiados. Sin duda la posibilidad de transmitir el virus antes de presentar síntomas -los mismos que pueden ser leves o incluso inexistentes- es un factor que ha contribuido a la propagación descontrolada del SARS-CoV-2.</p>
+</div>
+<div id="obtención-de-datos" class="section level1">
+<h1><strong>Obtención de Datos</strong></h1>
+<p>Los datos requeridos en esta metodología han sido recopilados de las infografías publicadas diariamente por el Servicio Nacional de Gestión de Riesgos <a href="https://twitter.com/Riesgos_Ec">SNGRE</a> en su cuenta oficial de Twitter. En Ecuador existen actualmente 7858 casos confirmados, de los cuales el 4.94 % han fallecido.</p>
+<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:232px; ">
 <table>
+<caption>
+<span id="tab:riesgo">Table 1: </span>Datos recopilados de infografías del SNGRE
+</caption>
 <thead>
 <tr>
 <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
-Fuente
+Infografía
 </th>
 <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
-Fecha de corte
+Fecha
 </th>
 <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
-Casos positivos
+Casos Confirmados
 </th>
 <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
-Personas fallecidas
+Personas Fallecidas
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td style="text-align:left;">
-Riesgos_Ec
+<a href="https://twitter.com/Riesgos_Ec/status/1250456890250858497"># 51</a>
 </td>
 <td style="text-align:left;">
-27 de marzo, 10 AM
+15 de abril
+</td>
+<td style="text-align:right;">
+7858
+</td>
+<td style="text-align:right;">
+388
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://twitter.com/Riesgos_Ec/status/1250094201418797064"># 50</a>
+</td>
+<td style="text-align:left;">
+14 de abril
+</td>
+<td style="text-align:right;">
+7603
+</td>
+<td style="text-align:right;">
+369
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://twitter.com/Riesgos_Ec/status/1249732582897524737"># 49</a>
+</td>
+<td style="text-align:left;">
+13 de abril
+</td>
+<td style="text-align:right;">
+7529
+</td>
+<td style="text-align:right;">
+355
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://twitter.com/Riesgos_Ec/status/1249374576653619201"># 48</a>
+</td>
+<td style="text-align:left;">
+12 de abril
+</td>
+<td style="text-align:right;">
+7466
+</td>
+<td style="text-align:right;">
+333
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://twitter.com/Riesgos_Ec/status/1249006909488803842"># 47</a>
+</td>
+<td style="text-align:left;">
+11 de abril
+</td>
+<td style="text-align:right;">
+7257
+</td>
+<td style="text-align:right;">
+315
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://twitter.com/Riesgos_Ec/status/1248646235063533570"># 46</a>
+</td>
+<td style="text-align:left;">
+10 de abril
+</td>
+<td style="text-align:right;">
+7161
+</td>
+<td style="text-align:right;">
+297
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://twitter.com/Riesgos_Ec/status/1248275329371770880"># 45</a>
+</td>
+<td style="text-align:left;">
+9 de abril
+</td>
+<td style="text-align:right;">
+4965
+</td>
+<td style="text-align:right;">
+272
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://twitter.com/Riesgos_Ec/status/1247923136265359361"># 44</a>
+</td>
+<td style="text-align:left;">
+8 de abril
+</td>
+<td style="text-align:right;">
+4450
+</td>
+<td style="text-align:right;">
+242
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://twitter.com/Riesgos_Ec/status/1247666860025413633"># 43</a>
+</td>
+<td style="text-align:left;">
+7 de abril
+</td>
+<td style="text-align:right;">
+3995
+</td>
+<td style="text-align:right;">
+220
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://twitter.com/Riesgos_Ec/status/1247193694056448000"># 42</a>
+</td>
+<td style="text-align:left;">
+6 de abril
+</td>
+<td style="text-align:right;">
+3747
+</td>
+<td style="text-align:right;">
+191
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://twitter.com/Riesgos_Ec/status/1246834245731078148"># 41</a>
+</td>
+<td style="text-align:left;">
+5 de abril
+</td>
+<td style="text-align:right;">
+3646
+</td>
+<td style="text-align:right;">
+180
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://twitter.com/Riesgos_Ec/status/1246481814962737153"># 40</a>
+</td>
+<td style="text-align:left;">
+4 de abril
+</td>
+<td style="text-align:right;">
+3465
+</td>
+<td style="text-align:right;">
+172
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://twitter.com/Riesgos_Ec/status/1246107728558395392"># 39</a>
+</td>
+<td style="text-align:left;">
+3 de abril
+</td>
+<td style="text-align:right;">
+3368
+</td>
+<td style="text-align:right;">
+145
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://twitter.com/Riesgos_Ec/status/1245744381564510211"># 38</a>
+</td>
+<td style="text-align:left;">
+2 de abril
+</td>
+<td style="text-align:right;">
+3163
+</td>
+<td style="text-align:right;">
+120
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://twitter.com/Riesgos_Ec/status/1245382824431104002"># 36</a>
+</td>
+<td style="text-align:left;">
+1 de abril
+</td>
+<td style="text-align:right;">
+2748
+</td>
+<td style="text-align:right;">
+93
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://twitter.com/Riesgos_Ec/status/1245022617700098049"># 34</a>
+</td>
+<td style="text-align:left;">
+31 de marzo
+</td>
+<td style="text-align:right;">
+2240
+</td>
+<td style="text-align:right;">
+75
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://twitter.com/Riesgos_Ec/status/1244658363570556930"># 32</a>
+</td>
+<td style="text-align:left;">
+30 de marzo
+</td>
+<td style="text-align:right;">
+1962
+</td>
+<td style="text-align:right;">
+60
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://twitter.com/Riesgos_Ec/status/1244295121069395970"># 30</a>
+</td>
+<td style="text-align:left;">
+29 de marzo
+</td>
+<td style="text-align:right;">
+1890
+</td>
+<td style="text-align:right;">
+57
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://twitter.com/Riesgos_Ec/status/1243933711172874241"># 28</a>
+</td>
+<td style="text-align:left;">
+28 de marzo
+</td>
+<td style="text-align:right;">
+1823
+</td>
+<td style="text-align:right;">
+48
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://twitter.com/Riesgos_Ec/status/1243571908878180354"># 26</a>
+</td>
+<td style="text-align:left;">
+27 de marzo
 </td>
 <td style="text-align:right;">
 1595
@@ -347,10 +653,10 @@ Riesgos_Ec
 </tr>
 <tr>
 <td style="text-align:left;">
-Riesgos_Ec
+<a href="https://twitter.com/Riesgos_Ec/status/1243194238269034497"># 24</a>
 </td>
 <td style="text-align:left;">
-26 de marzo, 10 AM
+26 de marzo
 </td>
 <td style="text-align:right;">
 1382
@@ -361,10 +667,10 @@ Riesgos_Ec
 </tr>
 <tr>
 <td style="text-align:left;">
-Riesgos_Ec
+<a href="https://twitter.com/Riesgos_Ec/status/1242834504324128775"># 22</a>
 </td>
 <td style="text-align:left;">
-25 de marzo, 10 AM
+25 de marzo
 </td>
 <td style="text-align:right;">
 1173
@@ -375,10 +681,10 @@ Riesgos_Ec
 </tr>
 <tr>
 <td style="text-align:left;">
-Riesgos_Ec
+<a href="https://twitter.com/Riesgos_Ec/status/1242467589147758592"># 20</a>
 </td>
 <td style="text-align:left;">
-24 de marzo, 10 AM
+24 de marzo
 </td>
 <td style="text-align:right;">
 1049
@@ -389,10 +695,10 @@ Riesgos_Ec
 </tr>
 <tr>
 <td style="text-align:left;">
-Riesgos_Ec
+<a href="https://twitter.com/Riesgos_Ec/status/1242105767366406150"># 19</a>
 </td>
 <td style="text-align:left;">
-23 de marzo, 10 AM
+23 de marzo
 </td>
 <td style="text-align:right;">
 981
@@ -403,10 +709,10 @@ Riesgos_Ec
 </tr>
 <tr>
 <td style="text-align:left;">
-Riesgos_Ec
+<a href="https://twitter.com/Riesgos_Ec/status/1241761146643853313"># 18</a>
 </td>
 <td style="text-align:left;">
-22 de marzo, 10 AM
+22 de marzo
 </td>
 <td style="text-align:right;">
 789
@@ -417,10 +723,10 @@ Riesgos_Ec
 </tr>
 <tr>
 <td style="text-align:left;">
-Riesgos_Ec
+<a href="https://twitter.com/Riesgos_Ec/status/1241379969797967883"># 16</a>
 </td>
 <td style="text-align:left;">
-21 de marzo, 10 AM
+21 de marzo
 </td>
 <td style="text-align:right;">
 506
@@ -431,10 +737,10 @@ Riesgos_Ec
 </tr>
 <tr>
 <td style="text-align:left;">
-Riesgos_Ec
+<a href="https://twitter.com/Riesgos_Ec/status/1241018222079610881"># 14</a>
 </td>
 <td style="text-align:left;">
-20 de marzo, 10 AM
+20 de marzo
 </td>
 <td style="text-align:right;">
 367
@@ -445,10 +751,10 @@ Riesgos_Ec
 </tr>
 <tr>
 <td style="text-align:left;">
-Riesgos_Ec
+<a href="https://twitter.com/Riesgos_Ec/status/1240655168158515200"># 12</a>
 </td>
 <td style="text-align:left;">
-19 de marzo, 8 AM
+19 de marzo
 </td>
 <td style="text-align:right;">
 199
@@ -459,10 +765,10 @@ Riesgos_Ec
 </tr>
 <tr>
 <td style="text-align:left;">
-Riesgos_Ec
+<a href="https://twitter.com/Riesgos_Ec/status/1240250490912374785"># 10</a>
 </td>
 <td style="text-align:left;">
-18 de marzo, 5 AM
+18 de marzo
 </td>
 <td style="text-align:right;">
 155
@@ -473,10 +779,10 @@ Riesgos_Ec
 </tr>
 <tr>
 <td style="text-align:left;">
-Riesgos_Ec
+<a href="https://twitter.com/Riesgos_Ec/status/1239948244878348288"># 8</a>
 </td>
 <td style="text-align:left;">
-17 de marzo, 8 AM
+17 de marzo
 </td>
 <td style="text-align:right;">
 111
@@ -487,10 +793,10 @@ Riesgos_Ec
 </tr>
 <tr>
 <td style="text-align:left;">
-Riesgos_Ec
+<a href="https://twitter.com/Riesgos_Ec/status/1239581710729326595"># 6</a>
 </td>
 <td style="text-align:left;">
-16 de marzo, 9 AM
+16 de marzo
 </td>
 <td style="text-align:right;">
 58
@@ -501,10 +807,10 @@ Riesgos_Ec
 </tr>
 <tr>
 <td style="text-align:left;">
-Riesgos_Ec
+<a href="https://twitter.com/Riesgos_Ec/status/1239228487673810948"># 4</a>
 </td>
 <td style="text-align:left;">
-15 de marzo, 9 AM
+15 de marzo
 </td>
 <td style="text-align:right;">
 37
@@ -515,10 +821,10 @@ Riesgos_Ec
 </tr>
 <tr>
 <td style="text-align:left;">
-Riesgos_Ec
+<a href="https://twitter.com/Riesgos_Ec/status/1238941268098592775"># 3</a>
 </td>
 <td style="text-align:left;">
-14 de marzo, 3 PM
+14 de marzo
 </td>
 <td style="text-align:right;">
 28
@@ -529,10 +835,10 @@ Riesgos_Ec
 </tr>
 <tr>
 <td style="text-align:left;">
-Riesgos_Ec
+<a href="https://twitter.com/Riesgos_Ec/status/1238572655269330946"># 1</a>
 </td>
 <td style="text-align:left;">
-13 de marzo, 3 PM
+13 de marzo
 </td>
 <td style="text-align:right;">
 23
@@ -541,9 +847,32 @@ Riesgos_Ec
 1
 </td>
 </tr>
+</tbody>
+</table>
+</div>
+<p>Ciertos días fueron publicadas dos infografías, en cuyo caso se ha seleccionado la matutina; los datos completos se encuentran en <a href="https://github.com/ruevko/hexagonal/blob/master/content/post/2020/03/COVID19_Riesgos_Ec.csv">este</a> enlace. Mientras que la primera infografía corresponde al 13 de marzo, el primer caso ecuatoriano fue anunciado el 29 de febrero; por esto, también se han recopilado comunicados del Ministerio de Salud Pública <a href="https://twitter.com/Salud_Ec">MSP</a> anteriores a las infografías.</p>
+<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:232px; ">
+<table>
+<caption>
+<span id="tab:salud">Table 2: </span>Datos recopilados de comunicados del MSP
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+Comunicado
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+Fecha y Hora de Corte
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Casos Confirmados
+</th>
+</tr>
+</thead>
+<tbody>
 <tr>
 <td style="text-align:left;">
-Salud_Ec
+<a href="https://twitter.com/Salud_Ec/status/1238238472563032067">[🡕]</a>
 </td>
 <td style="text-align:left;">
 12 de marzo, 6 PM
@@ -551,13 +880,10 @@ Salud_Ec
 <td style="text-align:right;">
 19
 </td>
-<td style="text-align:right;">
-0
-</td>
 </tr>
 <tr>
 <td style="text-align:left;">
-Salud_Ec
+<a href="https://twitter.com/Salud_Ec/status/1237506194740109313">[🡕]</a>
 </td>
 <td style="text-align:left;">
 10 de marzo, 4 PM
@@ -565,13 +891,10 @@ Salud_Ec
 <td style="text-align:right;">
 17
 </td>
-<td style="text-align:right;">
-0
-</td>
 </tr>
 <tr>
 <td style="text-align:left;">
-Salud_Ec
+<a href="https://twitter.com/Salud_Ec/status/1236830188102733828">[🡕]</a>
 </td>
 <td style="text-align:left;">
 8 de marzo, 9 PM
@@ -579,13 +902,10 @@ Salud_Ec
 <td style="text-align:right;">
 15
 </td>
-<td style="text-align:right;">
-0
-</td>
 </tr>
 <tr>
 <td style="text-align:left;">
-Salud_Ec
+<a href="https://twitter.com/Salud_Ec/status/1236101438834696195">[🡕]</a>
 </td>
 <td style="text-align:left;">
 6 de marzo, 8 PM
@@ -593,13 +913,10 @@ Salud_Ec
 <td style="text-align:right;">
 14
 </td>
-<td style="text-align:right;">
-0
-</td>
 </tr>
 <tr>
 <td style="text-align:left;">
-Salud_Ec
+<a href="https://twitter.com/Salud_Ec/status/1235576943967449088">[🡕]</a>
 </td>
 <td style="text-align:left;">
 5 de marzo, 9 AM
@@ -607,13 +924,10 @@ Salud_Ec
 <td style="text-align:right;">
 13
 </td>
-<td style="text-align:right;">
-0
-</td>
 </tr>
 <tr>
 <td style="text-align:left;">
-Salud_Ec
+<a href="https://twitter.com/Salud_Ec/status/1235224139348271105">[🡕]</a>
 </td>
 <td style="text-align:left;">
 4 de marzo, 10 AM
@@ -621,13 +935,10 @@ Salud_Ec
 <td style="text-align:right;">
 10
 </td>
-<td style="text-align:right;">
-0
-</td>
 </tr>
 <tr>
 <td style="text-align:left;">
-Salud_Ec
+<a href="https://twitter.com/Salud_Ec/status/1234670644878462980">[🡕]</a>
 </td>
 <td style="text-align:left;">
 2 de marzo, 10 PM
@@ -635,13 +946,10 @@ Salud_Ec
 <td style="text-align:right;">
 7
 </td>
-<td style="text-align:right;">
-0
-</td>
 </tr>
 <tr>
 <td style="text-align:left;">
-Salud_Ec
+<a href="https://twitter.com/Salud_Ec/status/1234331734889697281">[🡕]</a>
 </td>
 <td style="text-align:left;">
 1 de marzo, 11 PM
@@ -649,13 +957,10 @@ Salud_Ec
 <td style="text-align:right;">
 6
 </td>
-<td style="text-align:right;">
-0
-</td>
 </tr>
 <tr>
 <td style="text-align:left;">
-Salud_Ec
+<a href="https://twitter.com/Salud_Ec/status/1233774191326957575">[🡕]</a>
 </td>
 <td style="text-align:left;">
 29 de febrero, 10 AM
@@ -663,126 +968,151 @@ Salud_Ec
 <td style="text-align:right;">
 1
 </td>
-<td style="text-align:right;">
-0
-</td>
 </tr>
 </tbody>
 </table>
 </div>
-<p>Los datos completos, incluyendo los casos descartados y algunos reportes omitidos (en los días con dos reportes se escogió el matutino), se encuentran <a href="https://github.com/ruevko/hexagonal/blob/master/content/post/2020/03/EC_COVID19.csv">aquí</a>. El primer paso para estimar R<sub>0</sub> consiste en transformar los casos positivos acumulados en incidencia diaria:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1">EC_COVID19<span class="op">$</span>corte =<span class="st"> </span><span class="kw">as.Date</span>(EC_COVID19<span class="op">$</span>corte)</a>
-<a class="sourceLine" id="cb1-2" title="2"></a>
-<a class="sourceLine" id="cb1-3" title="3">EC_COVID19<span class="op">$</span>positivo =<span class="st"> </span><span class="kw">diff</span>(<span class="kw">c</span>(<span class="dv">0</span>, EC_COVID19<span class="op">$</span>positivo))</a>
-<a class="sourceLine" id="cb1-4" title="4"></a>
-<a class="sourceLine" id="cb1-5" title="5">EC_incid =<span class="st"> </span><span class="kw">rep</span>(EC_COVID19<span class="op">$</span>corte, EC_COVID19<span class="op">$</span>positivo)</a>
-<a class="sourceLine" id="cb1-6" title="6"></a>
-<a class="sourceLine" id="cb1-7" title="7"><span class="kw">table</span>(EC_incid)</a></code></pre></div>
-<pre><code>## EC_incid
-## 2020-02-29 2020-03-02 2020-03-03 2020-03-04 2020-03-05 2020-03-07 2020-03-09 
-##          1          5          1          3          3          1          1 
-## 2020-03-10 2020-03-12 2020-03-13 2020-03-14 2020-03-15 2020-03-16 2020-03-17 
-##          2          2          4          5          9         21         53 
-## 2020-03-18 2020-03-19 2020-03-20 2020-03-21 2020-03-22 2020-03-23 2020-03-24 
-##         44         44        168        139        283        192         68 
-## 2020-03-25 2020-03-26 2020-03-27 
-##        124        209        213</code></pre>
-<p>A continuación es posible ajustar un modelo logarítmico para la incidencia en el tiempo utilizando el paquete <code>incidence</code>:</p>
+</div>
+<div id="modelamiento-de-datos" class="section level1">
+<h1><strong>Modelamiento de Datos</strong></h1>
+<p>El principal insumo para estimar R<sub>0</sub> es la incidencia diaria: la cantidad de casos que presentan síntomas -y luego son confirmados como infectados- cada día. Debido a las limitaciones de los datos, sin embargo, se ha utilizado en cambio la cantidad de casos confirmados cada día. Se trata de una aproximación a la incidencia pues, desde que un individuo presenta síntomas, hasta que confirman o descartan su infección, puede transcurrir un tiempo considerable. También se debe recordar que los datos oficiales son limitados, en el sentido de que algunos casos no fueron reportados o fueron asintomáticos.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1">Ec_data =<span class="st"> </span><span class="kw">mutate</span>(COVID19_Salud_Ec, <span class="dt">id =</span> <span class="ot">NA</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb1-2" title="2"><span class="st">   </span><span class="kw">bind_rows</span>(COVID19_Riesgos_Ec[<span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">4</span>)]) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb1-3" title="3"><span class="st">   </span><span class="kw">mutate</span>(<span class="dt">day =</span> <span class="kw">as.Date</span>(day),</a>
+<a class="sourceLine" id="cb1-4" title="4">          <span class="dt">Rate =</span> conf <span class="op">/</span><span class="st"> </span><span class="kw">lag</span>(conf, <span class="dv">1</span>, <span class="dv">0</span>),</a>
+<a class="sourceLine" id="cb1-5" title="5">          <span class="dt">Change =</span> conf <span class="op">-</span><span class="st"> </span><span class="kw">lag</span>(conf, <span class="dv">1</span>, <span class="dv">0</span>),</a>
+<a class="sourceLine" id="cb1-6" title="6">          <span class="dt">Factor =</span> Change <span class="op">/</span><span class="st"> </span><span class="kw">lag</span>(Change, <span class="dv">1</span>, <span class="dv">0</span>))</a></code></pre></div>
+<p>En el paso anterior se han unido las dos fuentes de datos y se han calculado nuevas variables: la tasa de crecimiento (<em>Rate</em>) es la razón del total de casos confirmados en el país en cierto día, con respecto al día anterior; el cambio (<em>Change</em>) es la diferencia del total, los nuevos casos confirmados cada día; y el factor de crecimiento (<em>Factor</em>) es la razón del cambio, la división de los nuevos casos confirmados en cierto día, con respecto al día anterior.</p>
+<p>Un hecho de las epidemias es que, incluso en el peor escenario, no pueden crecer indefinidamente pues se agotaría la población susceptible al contagio. Cuando la tasa de crecimiento -la cual define un crecimiento exponencial- se establezca definitivamente en su valor mínimo (que es uno), el total de casos confirmados se detendrá. Por otra parte, resulta interesante seguir los cambios en el factor de crecimiento: valores menores a uno indican una reducción del avance de la epidemia y viceversa, valores mayores a uno indican que el crecimiento exponencial continúa.</p>
+<p>En los siguientes gráficos se han omitido los datos recopilados del MSP; las barras representan el total diario de casos confirmados, la guía de color representa la tasa de crecimiento, y el texto multiplicativo el factor de crecimiento.</p>
+<div class="figure"><span id="fig:dat-plot"></span>
+<img src="../../../../post/2020/03/20-caracterizacion-covid-ecuador_files/figure-html/dat-plot-1.png" alt="Total de casos COVID-19 confirmados en Ecuador, incluyendo tasas y factores de crecimiento" width="672" />
+<p class="caption">
+Figure 3: Total de casos COVID-19 confirmados en Ecuador, incluyendo tasas y factores de crecimiento
+</p>
+</div>
+<div id="ajuste-de-regresión-exponencial" class="section level2">
+<h2>Ajuste de Regresión Exponencial</h2>
+<p>Debido a la variación en el cambio del total de casos confirmados, el ajuste de una única regresión exponencial no parece explicar completamente el crecimiento de la epidemia en Ecuador. Al parecer existen dos patrones de crecimiento: antes y después del 22 de marzo; esta fecha fue escogida de manera que maximice -en función del R<sup>2</sup> promedio- el ajuste de dos modelos. Lo que es más importante, esta fecha es congruente con las medidas de control adoptadas el 17 de marzo -aproximadamente una semana antes- que incluyen: toque de queda, prohibición de reuniones, restricción del tránsito vehicular, etc.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1">mod_bef =<span class="st"> </span><span class="kw">lm</span>(<span class="kw">log</span>(conf) <span class="op">~</span><span class="st"> </span>day, Ec_data[<span class="op">-</span>{<span class="dv">1</span><span class="op">:</span><span class="dv">9</span>}, ][<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, ]) <span class="co"># hasta el 22 de marzo</span></a>
+<a class="sourceLine" id="cb2-2" title="2"></a>
+<a class="sourceLine" id="cb2-3" title="3">mod_af =<span class="st"> </span><span class="kw">lm</span>(<span class="kw">log</span>(conf) <span class="op">~</span><span class="st"> </span>day, Ec_data[<span class="op">-</span>{<span class="dv">1</span><span class="op">:</span><span class="dv">9</span>}, ][<span class="op">-</span>{<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>}, ]) <span class="co"># desde el 23 de marzo</span></a>
+<a class="sourceLine" id="cb2-4" title="4"></a>
+<a class="sourceLine" id="cb2-5" title="5">Ec_data =<span class="st"> </span>Ec_data <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">mutate</span>(</a>
+<a class="sourceLine" id="cb2-6" title="6">   <span class="dt">conf.bef =</span> <span class="kw">exp</span>(<span class="kw">as.numeric</span>(day) <span class="op">*</span><span class="st"> </span><span class="kw">coef</span>(mod_bef)[<span class="dv">2</span>] <span class="op">+</span><span class="st"> </span><span class="kw">coef</span>(mod_bef)[<span class="dv">1</span>]),</a>
+<a class="sourceLine" id="cb2-7" title="7">   <span class="dt">conf.af =</span> <span class="kw">exp</span>(<span class="kw">as.numeric</span>(day) <span class="op">*</span><span class="st"> </span><span class="kw">coef</span>(mod_af)[<span class="dv">2</span>] <span class="op">+</span><span class="st"> </span><span class="kw">coef</span>(mod_af)[<span class="dv">1</span>]))</a></code></pre></div>
+<p>Se obtuvieron los coeficientes de determinación 0.9919 y 0.9802, y las pendientes 0.4096 y 0.0948, para los modelos anterior y posterior respectivamente. Al interpretar la pendiente de un modelo exponencial es posible deducir la tasa de crecimiento más real; de esta manera se halló que, antes de hacer efecto las medidas, el total de casos confirmados creció un 50.62 % cada día. En cambio, después de las medidas y hasta la fecha, se ha observado un crecimiento del 9.94 % diario. El siguiente gráfico presenta el factor de crecimiento -el cual explica los saltos en los datos- junto con los dos modelos ajustados; la versión derecha, al poseer una escala logarítmica, permite apreciar con mayor claridad la diferencia en el patrón de crecimiento.</p>
+<div class="figure"><span id="fig:log-plot"></span>
+<img src="../../../../post/2020/03/20-caracterizacion-covid-ecuador_files/figure-html/log-plot-1.svg" alt="Regresión antes (naranja) y después (morado) del 22 de marzo, incluyendo factores de crecimiento" width="672" />
+<p class="caption">
+Figure 4: Regresión antes (naranja) y después (morado) del 22 de marzo, incluyendo factores de crecimiento
+</p>
+</div>
+</div>
+<div id="estimación-del-ritmo-reproductivo" class="section level2">
+<h2>Estimación del Ritmo Reproductivo</h2>
+<p>Independientemente de haber hallado un buen ajuste a través de dos regresiones, es necesario estimar un único R<sub>0</sub> introduciendo en <code>incidence()</code> todos los datos disponibles, incluso si existen días sin datos (como ocurre con los comunicados del MSP).</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1"><span class="kw">library</span>(incidence)</a>
 <a class="sourceLine" id="cb3-2" title="2"></a>
-<a class="sourceLine" id="cb3-3" title="3">EC_incid =<span class="st"> </span><span class="kw">incidence</span>(EC_incid)</a>
-<a class="sourceLine" id="cb3-4" title="4"></a>
-<a class="sourceLine" id="cb3-5" title="5">EC_model =<span class="st"> </span><span class="kw">fit</span>(EC_incid[<span class="dv">8</span><span class="op">:</span><span class="dv">23</span>]) <span class="co"># del 7 al 22 de marzo</span></a>
-<a class="sourceLine" id="cb3-6" title="6"></a>
-<a class="sourceLine" id="cb3-7" title="7">EC_model<span class="op">$</span>model</a></code></pre></div>
-<pre><code>## 
-## Call:
-## stats::lm(formula = log(counts) ~ dates.x, data = df)
-## 
-## Coefficients:
-## (Intercept)      dates.x  
-##     -0.9479       0.4110</code></pre>
-<p>En Ecuador, el comportamiento logarítmico (R<sup>2</sup> = 0.9522) se observó del 7 de marzo -una semana después de detectado el primer caso- al 22 de marzo. En ese periodo los casos se duplicaron cada 1.69 días; esto, con un intervalo de confianza (CI) al 95 % de 1.48 a 1.96 días. Después de eso, la incidencia diaria es difícil de modelar; esto se podría relacionar tanto con las medidas de emergencia adoptadas, como con dudas sobre la veracidad de los datos. En el siguiente gráfico las columnas rojas representan la incidencia diaria, la curva el modelo logarítmico -las líneas entrecortadas delimitan el 95 % CI- y la recta amarilla el inicio del estado de excepción, decretado para frenar las transmisiones.</p>
-<div class="figure"><span id="fig:logplot"></span>
-<img src="../../../../post/2020/03/20-caracterizacion-covid-ecuador_files/figure-html/logplot-1.png" alt="Incidencia diaria de COVID-19 en Ecuador y modelo logarítmico ajustado" width="672" />
+<a class="sourceLine" id="cb3-3" title="3">Ec_inci =<span class="st"> </span>Ec_data<span class="op">$</span>day <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb3-4" title="4"><span class="st">   </span><span class="kw">rep</span>(Ec_data<span class="op">$</span>Change) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb3-5" title="5"><span class="st">   </span><span class="kw">incidence</span>()</a></code></pre></div>
+<p>El objeto generado por <code>incidence()</code> contiene la incidencia diaria necesaria para la estimación; no obstante, hace falta conocer el SI característico de la epidemia. En este contexto, lo recomendable es obtener la media y desviación estándar del SI a partir de la literatura; considérese que una estimación temprana es recomendable, pues utilizar los datos de una epidemia avanzada incluiría los efectos de las medidas de control, subestimando de esta manera el SI <span class="citation">(Fine <a href="#ref-covia" role="doc-biblioref">2003</a>)</span>.</p>
+<p>Se ha considerado dos artículos recientes que calculan el SI del SARS-CoV-2. <span class="citation">Nishiura, Linton, and Akhmetzhanov (<a href="#ref-covib" role="doc-biblioref">2020</a>)</span> han obtenido una media de 4.7 y una desviación estándar de 2.9 días a partir de 28 casos, ajustándose a una distribución <em>lognormal</em>. Se trata de un SI notablemente más corto que el otros coronavirus (se ha calculado para el SARS, por ejemplo, una media de 8.4 días), lo cual indica una velocidad superior de transmisión. Por otra parte, <span class="citation">Du et al. (<a href="#ref-covic" role="doc-biblioref">2020</a>)</span> han utilizado 468 casos en sus cálculos, 59 de ellos con SI negativo (gráfico <a href="#fig:period-b">2</a>); debido a los valores negativos, la distribución <em>normal</em> generó el mejor ajuste, con una media de 3.96 y una desviación estándar de 4.75 días.</p>
+<p>Con el propósito de escoger una distribución del SI, se ha iterado el cálculo de R<sub>0</sub> -utilizando la función <code>get_R()</code>- variando la fecha final de los datos introducidos, y utilizando cada vez las distribuciones sugeridas en los dos artículos.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" title="1"><span class="kw">library</span>(earlyR)</a>
+<a class="sourceLine" id="cb4-2" title="2"></a>
+<a class="sourceLine" id="cb4-3" title="3">my_getr =<span class="st"> </span><span class="cf">function</span>(i, <span class="dt">mn =</span> <span class="fl">3.96</span>, <span class="dt">sd =</span> <span class="fl">4.75</span>){</a>
+<a class="sourceLine" id="cb4-4" title="4">   <span class="cf">if</span>(i <span class="op">&lt;</span><span class="st"> </span><span class="dv">14</span>) <span class="kw">return</span>(<span class="ot">NA</span>)</a>
+<a class="sourceLine" id="cb4-5" title="5">   ml =<span class="st"> </span><span class="kw">get_R</span>(Ec_inci[<span class="dv">1</span><span class="op">:</span>i], <span class="dt">si_mean =</span> mn, <span class="dt">si_sd =</span> sd, <span class="dt">days =</span> <span class="dv">0</span>)<span class="op">$</span>R_ml</a>
+<a class="sourceLine" id="cb4-6" title="6">   <span class="cf">if</span>(<span class="kw">length</span>(ml) <span class="op">==</span><span class="st"> </span><span class="dv">1</span>) <span class="kw">return</span>(ml) <span class="cf">else</span> <span class="kw">return</span>(<span class="dv">0</span>)}</a>
+<a class="sourceLine" id="cb4-7" title="7"></a>
+<a class="sourceLine" id="cb4-8" title="8">Ec_data =<span class="st"> </span>Ec_data <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">mutate</span>(</a>
+<a class="sourceLine" id="cb4-9" title="9">   <span class="dt">Nishiura =</span> <span class="kw">map_dbl</span>(<span class="dv">4</span> <span class="op">+</span><span class="st"> </span><span class="kw">row_number</span>(), my_getr, <span class="dt">mn =</span> <span class="fl">4.7</span>, <span class="dt">sd =</span> <span class="fl">2.9</span>),</a>
+<a class="sourceLine" id="cb4-10" title="10">   <span class="dt">Zhanwei =</span> <span class="kw">map_dbl</span>(<span class="dv">4</span> <span class="op">+</span><span class="st"> </span><span class="kw">row_number</span>(), my_getr))</a></code></pre></div>
+<div class="figure"><span id="fig:num-plot"></span>
+<img src="../../../../post/2020/03/20-caracterizacion-covid-ecuador_files/figure-html/num-plot-1.svg" alt="Ritmo reproductivo estimado según distribuciones SI de dos artículos, incluyendo tasas de crecimiento" width="672" />
 <p class="caption">
-Figure 1: Incidencia diaria de COVID-19 en Ecuador y modelo logarítmico ajustado
+Figure 5: Ritmo reproductivo estimado según distribuciones SI de dos artículos, incluyendo tasas de crecimiento
 </p>
 </div>
-<p>La estimación de R<sub>0</sub> con <code>earlyR</code> requiere conocer el SI del COVID-19; en este sentido, la literatura reciente presenta dos alternativas. La primera, aprovechar el conocimiento de epidemias anteriores; <span class="citation">Zhao, Lin, et al. (<a href="#ref-covia" role="doc-biblioref">2020</a>)</span> proponen promediar las características del MERS (mean = 7.6, sd = 3.4) y del SARS (mean = 8.4, sd = 3.8), síndromes causados por otros coronavirus. La segunda alternativa consiste en estimar el SI utilizando las pocas cadenas de transmisión ya identificadas <span class="citation">(Zhao, Gao, et al. <a href="#ref-covib" role="doc-biblioref">2020</a>; Nishiura, Linton, and Akhmetzhanov <a href="#ref-covic" role="doc-biblioref">2020</a>)</span>; de esta manera se obtiene un SI preliminar, pero propio del SARS-CoV-2.</p>
-<p>Con estos antecedentes, se estimó <code>R_viruses</code> y <code>R_chains</code> usando la primera y segunda alternativa, respectivamente; se consideró la incidencia hasta el 22 de marzo, el pico actual de casos nuevos. Los siguientes histogramas presentan la distribución de los R<sub>0</sub> calculados.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1"><span class="kw">library</span>(earlyR)</a>
+<p>En este gráfico, R<sub>0</sub> = 0 quiere decir que fue imposible calcular esta variable, lo cual sucede al introducir todos los datos hasta el 3 de abril, y en adelante. Resulta evidente que, independientemente del artículo considerado, R<sub>0</sub> incrementa junto con la tasa de crecimiento; quiere decir que la estimación es fuertemente dependiente de los datos disponibles. Adicionalmente, si bien la diferencia no es grande, la estimación de acuerdo a <span class="citation">Du et al. (<a href="#ref-covic" role="doc-biblioref">2020</a>)</span> siempre es mayor.</p>
+<p>Considerando que se ignora si la presente metodología solamente es compatible con distribuciones positivas -como la <em>lognormal</em>- se decidió utilizar la distribución según <span class="citation">Nishiura, Linton, and Akhmetzhanov (<a href="#ref-covib" role="doc-biblioref">2020</a>)</span> y los datos hasta el 26 de marzo, presentándose alrededor de esta fecha la mayor estabilidad en los R<sub>0</sub> estimados. De esta manera, se obtuvo un intervalo de confianza (CI) al 95 % de 1.66 a 1.84.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1">R_get =<span class="st"> </span><span class="kw">get_R</span>(Ec_inci[<span class="dv">1</span><span class="op">:</span><span class="dv">27</span>], <span class="dt">si_mean =</span> <span class="fl">4.7</span>, <span class="dt">si_sd =</span> <span class="fl">2.9</span>, <span class="dt">days =</span> <span class="dv">0</span>)</a>
 <a class="sourceLine" id="cb5-2" title="2"></a>
-<a class="sourceLine" id="cb5-3" title="3">R_viruses =<span class="st"> </span><span class="kw">get_R</span>(EC_incid[<span class="dv">1</span><span class="op">:</span><span class="dv">23</span>], <span class="dt">si_mean =</span> <span class="dv">8</span>, <span class="dt">si_sd =</span> <span class="fl">3.6</span>, <span class="dt">max_R =</span> <span class="dv">6</span>) <span class="co"># Zhao, Lin et al.</span></a>
+<a class="sourceLine" id="cb5-3" title="3">R_samp =<span class="st"> </span><span class="kw">sample_R</span>(R_get, <span class="fl">1e4</span>)</a>
 <a class="sourceLine" id="cb5-4" title="4"></a>
-<a class="sourceLine" id="cb5-5" title="5">R_chains =<span class="st"> </span><span class="kw">get_R</span>(EC_incid[<span class="dv">1</span><span class="op">:</span><span class="dv">23</span>], <span class="dt">si_mean =</span> <span class="fl">4.4</span>, <span class="dt">si_sd =</span> <span class="dv">3</span>, <span class="dt">max_R =</span> <span class="dv">6</span>) <span class="co"># Zhao, Gao et al.</span></a>
-<a class="sourceLine" id="cb5-6" title="6"></a>
-<a class="sourceLine" id="cb5-7" title="7"><span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>), <span class="dt">mar =</span> <span class="kw">c</span>(<span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">1</span>, <span class="dv">1</span>))</a>
-<a class="sourceLine" id="cb5-8" title="8"></a>
-<a class="sourceLine" id="cb5-9" title="9"><span class="kw">hist</span>(<span class="kw">sample_R</span>(R_viruses, <span class="fl">1e3</span>), <span class="dt">freq =</span> <span class="ot">FALSE</span>, <span class="dt">main =</span> <span class="ot">NULL</span>, <span class="dt">xlab =</span> <span class="st">&quot;R_viruses&quot;</span>)</a>
-<a class="sourceLine" id="cb5-10" title="10"></a>
-<a class="sourceLine" id="cb5-11" title="11"><span class="kw">hist</span>(<span class="kw">sample_R</span>(R_chains, <span class="fl">1e3</span>), <span class="dt">freq =</span> <span class="ot">FALSE</span>, <span class="dt">main =</span> <span class="ot">NULL</span>, <span class="dt">xlab =</span> <span class="st">&quot;R_chains&quot;</span>)</a></code></pre></div>
-<div class="figure"><span id="fig:number"></span>
-<img src="../../../../post/2020/03/20-caracterizacion-covid-ecuador_files/figure-html/number-1.svg" alt="Distribución de Ro del COVID-19 según SI de otros coronavirus 👈 y de cadenas de transmisión estudiadas 👉" width="672" />
+<a class="sourceLine" id="cb5-5" title="5"><span class="kw">quantile</span>(R_samp, <span class="kw">c</span>(.<span class="dv">025</span>, <span class="fl">.5</span>, <span class="fl">.975</span>))</a></code></pre></div>
+<pre><code>##     2.5%      50%    97.5% 
+## 1.661662 1.751752 1.841842</code></pre>
+</div>
+</div>
+<div id="proyecciones-futuras" class="section level1">
+<h1><strong>Proyecciones Futuras</strong></h1>
+<p>La función <code>project()</code> permite utilizar una muestra de valores R<sub>0</sub> probables y proyectar el número esperado de casos confirmados en los próximos días. A continuación se proponen tres escenarios diferentes, reduciendo cada vez el valor R<sub>0</sub> más probable; en cada escenario se ha proyectado a partir del 27 de marzo (recordar que R<sub>0</sub> fue estimado hasta el 26) y, en los gráficos, la región sombreada representa el 95 % CI de la proyección.</p>
+<div id="primer-escenario-r0-al-100" class="section level2">
+<h2>Primer escenario: R<sub>0</sub> al 100 %</h2>
+<p>De acuerdo a la estimación de R<sub>0</sub> su valor más probable es 1.75 lo cual quiere decir que, cada cuatro individuos infectados, se han infectado siete más en promedio. El cálculo de la proyección y su CI se realiza como sigue:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1"><span class="kw">library</span>(projections)</a>
+<a class="sourceLine" id="cb7-2" title="2"></a>
+<a class="sourceLine" id="cb7-3" title="3">Ec_proj =<span class="st"> </span><span class="kw">project</span>(Ec_inci[<span class="dv">1</span><span class="op">:</span><span class="dv">27</span>], R_samp, R_get<span class="op">$</span>si, <span class="dt">n_days =</span> <span class="dv">11</span>, <span class="dt">n_sim =</span> <span class="fl">1e4</span>)</a>
+<a class="sourceLine" id="cb7-4" title="4"></a>
+<a class="sourceLine" id="cb7-5" title="5">Ec_data =<span class="st"> </span><span class="kw">as_tibble</span>(<span class="kw">t</span>(<span class="kw">as.matrix</span>(Ec_proj))) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb7-6" title="6"><span class="st">   </span><span class="kw">summarise_all</span>(<span class="kw">list</span>(<span class="dt">pro.lo =</span> <span class="op">~</span><span class="kw">quantile</span>(., <span class="fl">.025</span>),</a>
+<a class="sourceLine" id="cb7-7" title="7">                      <span class="dt">pro.me =</span> median,</a>
+<a class="sourceLine" id="cb7-8" title="8">                      <span class="dt">pro.hi =</span> <span class="op">~</span><span class="kw">quantile</span>(., <span class="fl">.975</span>))) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb7-9" title="9"><span class="st">   </span><span class="kw">pivot_longer</span>(<span class="kw">names</span>(.), <span class="dt">names_to =</span> <span class="kw">c</span>(<span class="st">&quot;day&quot;</span>, <span class="st">&quot;name&quot;</span>), <span class="dt">names_sep =</span> <span class="st">&quot;_&quot;</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb7-10" title="10"><span class="st">   </span><span class="kw">pivot_wider</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">mutate_if</span>(is.numeric, <span class="op">~</span><span class="kw">cumsum</span>(.) <span class="op">+</span><span class="st"> </span><span class="dv">1382</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb7-11" title="11"><span class="st">   </span><span class="kw">mutate_at</span>(<span class="st">&quot;day&quot;</span>, as.Date) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">full_join</span>(Ec_data, .)</a></code></pre></div>
+<p>Asumir que R<sub>0</sub> mantiene su valor más probable al 100 % sugiere un escenario donde ninguna medida fue introducida para contener la epidemia. Ciertamente este no es el caso, razón por la cual no se ha proyectado este escenario más allá del 6 de abril, fecha en la cual hubiesen existido ya siete mil casos confirmados.</p>
+<div class="figure"><span id="fig:project-100"></span>
+<img src="../../../../post/2020/03/20-caracterizacion-covid-ecuador_files/figure-html/project-100-1.png" alt="Proyección de casos COVID-19 confirmados en Ecuador, si R0 = 1.75" width="672" />
 <p class="caption">
-Figure 2: Distribución de Ro del COVID-19 según SI de otros coronavirus 👈 y de cadenas de transmisión estudiadas 👉
+Figure 6: Proyección de casos COVID-19 confirmados en Ecuador, si R0 = 1.75
 </p>
 </div>
-<p>La primera alternativa arroja 4.72 como el valor más probable; es posible considerar este valor una sobrestimación de R<sub>0</sub> según lo observado en estudios recientes. Mientras tanto, la segunda alternativa estima un R<sub>0</sub> = 2.08 (95 % CI: 1.95 - 2.23); un valor congruente con los estudios, donde se ha observado que el SARS-CoV-2 posee un SI más corto que otros coronavirus. Por ende, aun con un ritmo reproductivo menor, puede generar más casos.</p>
-<p>Considerando R<sub>0</sub> se puede modelar una proyección futura, más flexible que la arrojada por el modelo exponencial solamente. Se ha utilizado <code>projections</code> para predecir tres escenarios, calculando en cada uno diez mil simulaciones para cada día de las próximas dos semanas.</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" title="1"><span class="kw">library</span>(projections)</a>
-<a class="sourceLine" id="cb6-2" title="2"></a>
-<a class="sourceLine" id="cb6-3" title="3">EC_proj =<span class="st"> </span><span class="kw">project</span>(EC_incid[<span class="dv">1</span><span class="op">:</span><span class="dv">23</span>], R_sample, R_chains<span class="op">$</span>si, <span class="dt">n_days =</span> <span class="dv">14</span>, <span class="dt">n_sim =</span> <span class="fl">1e4</span>)</a>
-<a class="sourceLine" id="cb6-4" title="4"></a>
-<a class="sourceLine" id="cb6-5" title="5"><span class="kw">rowMeans</span>(EC_proj)</a></code></pre></div>
-<pre><code>## 2020-03-23 2020-03-24 2020-03-25 2020-03-26 2020-03-27 2020-03-28 2020-03-29 
-##   222.9667   281.0238   344.1267   417.3118   503.9178   609.0908   735.8126 
-## 2020-03-30 2020-03-31 2020-04-01 2020-04-02 2020-04-03 2020-04-04 2020-04-05 
-##   887.5471  1072.2918  1294.5923  1563.9690  1889.7482  2279.6449  2754.6759</code></pre>
-<p>Estos datos representan la incidencia promedio cada día, en un primer escenario donde R<sub>0</sub> no cambia en absoluto. Los casos actuales, exceptuando la primera semana, y la proyección futura -la región sombreada delimita el 95 % CI- se presentan en los siguientes gráficos de manera acumulativa:</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1">EC_cum =<span class="st"> </span><span class="kw">cumulate</span>(EC_incid)[<span class="op">-</span><span class="kw">c</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">7</span>)]</a>
-<a class="sourceLine" id="cb8-2" title="2"></a>
-<a class="sourceLine" id="cb8-3" title="3">EC_proj =<span class="st"> </span><span class="kw">cumulate</span>(EC_proj) <span class="op">+</span><span class="st"> </span>EC_cum<span class="op">$</span>counts[<span class="dv">16</span>]</a>
-<a class="sourceLine" id="cb8-4" title="4"></a>
-<a class="sourceLine" id="cb8-5" title="5"><span class="kw">add_projections</span>(<span class="kw">plot</span>(EC_cum), EC_proj, <span class="dt">quantiles =</span> <span class="kw">c</span>(.<span class="dv">025</span>, <span class="fl">.5</span>)) <span class="op">+</span></a>
-<a class="sourceLine" id="cb8-6" title="6"><span class="st">   </span><span class="kw">geom_vline</span>(<span class="dt">xintercept =</span> <span class="kw">as.Date</span>(<span class="st">&quot;2020-03-17&quot;</span>), <span class="dt">col =</span> <span class="st">&quot;gold&quot;</span>, <span class="dt">alpha =</span> <span class="fl">.6</span>, <span class="dt">size =</span> <span class="dv">2</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb8-7" title="7"><span class="st">   </span><span class="kw">scale_y_continuous</span>(<span class="st">&quot;Incidencia diaria acumulada&quot;</span>, <span class="fl">2e3</span> <span class="op">*</span><span class="st"> </span><span class="dv">0</span><span class="op">:</span><span class="dv">9</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb8-8" title="8"><span class="st">   </span><span class="kw">scale_x_date</span>(<span class="dt">date_breaks =</span> <span class="st">&quot;4 days&quot;</span>, <span class="dt">date_labels =</span> <span class="st">&quot;%b %e&quot;</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb8-9" title="9"><span class="st">   </span><span class="kw">scale_fill_manual</span>(<span class="dt">values =</span> <span class="st">&quot;firebrick&quot;</span>)</a></code></pre></div>
-<div class="figure"><span id="fig:project-normal"></span>
-<img src="../../../../post/2020/03/20-caracterizacion-covid-ecuador_files/figure-html/project-normal-1.png" alt="Proyección de incidencia diaria acumulada de COVID-19 en Ecuador si R0 = 2.08" width="672" />
+</div>
+<div id="segundo-escenario-r0-al-75" class="section level2">
+<h2>Segundo escenario: R<sub>0</sub> al 75 %</h2>
+<p>Supongamos que, a través de las medidas adoptadas en Ecuador, el ritmo reproductivo se redujo progresivamente hasta alcanzar el 75 % de su valor más probable original, esto es 1.31. Significaría que, cada tres individuos infectados, habría aproximadamente cuatro casos nuevos. De acuerdo al gráfico, parecería ser el escenario más cercano a la realidad hasta ahora; si fuera así, el 20 de abril se alcanzaría los 11300 casos confirmados.</p>
+<div class="figure"><span id="fig:project-075"></span>
+<img src="../../../../post/2020/03/20-caracterizacion-covid-ecuador_files/figure-html/project-075-1.png" alt="Proyección de casos COVID-19 confirmados en Ecuador, si R0 = 1.31" width="672" />
 <p class="caption">
-Figure 3: Proyección de incidencia diaria acumulada de COVID-19 en Ecuador si R0 = 2.08
+Figure 7: Proyección de casos COVID-19 confirmados en Ecuador, si R0 = 1.31
 </p>
 </div>
-<p>El segundo y tercer escenarios calculados suponen que R<sub>0</sub> se reduce a la mitad (figura <a href="#fig:project-better">4</a>) y a la cuarta parte (figura <a href="#fig:project-best">5</a>), respectivamente:</p>
-<div class="figure"><span id="fig:project-better"></span>
-<img src="../../../../post/2020/03/20-caracterizacion-covid-ecuador_files/figure-html/project-better-1.png" alt="Proyección de incidencia diaria acumulada de COVID-19 en Ecuador si R0 = 1.04" width="672" />
+</div>
+<div id="tercer-escenario-r0-al-50" class="section level2">
+<h2>Tercer escenario: R<sub>0</sub> al 50 %</h2>
+<p>Supongamos finalmente que R0 se redujo a la mitad de su valor más probable original, es decir a 0.88. Cada ocho individuos infectados habría aproximadamente siete casos nuevos, significando una reducción en el avance de la epidemia. No obstante esto es una subestimación del escenario real, pues hasta la fecha se habrían confirmado solamente unos 3300 casos.</p>
+<div class="figure"><span id="fig:project-050"></span>
+<img src="../../../../post/2020/03/20-caracterizacion-covid-ecuador_files/figure-html/project-050-1.png" alt="Proyección de casos COVID-19 confirmados en Ecuador, si R0 = 0.88" width="672" />
 <p class="caption">
-Figure 4: Proyección de incidencia diaria acumulada de COVID-19 en Ecuador si R0 = 1.04
+Figure 8: Proyección de casos COVID-19 confirmados en Ecuador, si R0 = 0.88
 </p>
 </div>
-<div class="figure"><span id="fig:project-best"></span>
-<img src="../../../../post/2020/03/20-caracterizacion-covid-ecuador_files/figure-html/project-best-1.png" alt="Proyección de incidencia diaria acumulada de COVID-19 en Ecuador si R0 = 0.52" width="672" />
-<p class="caption">
-Figure 5: Proyección de incidencia diaria acumulada de COVID-19 en Ecuador si R0 = 0.52
-</p>
 </div>
-<p>Evidentemente, si R<sub>0</sub> &lt; 1 la epidemia será controlada eventualmente. Sin embargo, <strong>estas proyecciones no son realistas</strong> pues cualquier cambio introducido en R<sub>0</sub> -a través de medidas políticas, sociales y sanitarias- no se refleja inmediatamente; en Ecuador es necesario contar las infecciones previas a la declaración de estado de excepción, y que aún no han superado el periodo de incubación. Se pretende actualizar este post conforme las incidencias diarias sean reportadas y reflejen, con optimismo, las medidas adoptadas.</p>
+</div>
+<div id="conclusiones" class="section level1">
+<h1><strong>Conclusiones</strong></h1>
+<p>En el presente trabajo se consideró lo que la literatura sobre el virus SARS-CoV-2 sugiere hasta el momento; si bien más investigaciones se encuentran en camino, los resultados ya han puesto en evidencia la amenaza que enfrentamos, si entendemos que la transmisión es más rápida que con otros coronavirus y pasa inadvertida -al ocurrir antes que los síntomas- en muchos casos.</p>
+<p>Una desventaja de esta caracterización es haber utilizado variables -la distribución del intervalo serial- estimadas en un contexto distinto. Como se mencionó en las definiciones, estas características de una epidemia dependen de factores que varían entre sociedades y escenarios de control; haría falta una estimación del SI con los datos observados en Ecuador. Con todo, el valor R<sub>0</sub> obtenido es congruente con lo observado en varios países alrededor del mundo, y el consenso parece ser que la epidemia del COVID-19 posee un ritmo reproductivo entre uno y dos. <span class="citation">(Du et al. <a href="#ref-covic" role="doc-biblioref">2020</a>)</span> han calculado R<sub>0</sub> = 1.32 para los casos en China, exceptuando aquellos de Wuhan. Adicionalmente, con el control adoptado en el país, el ritmo reproductivo parece haber decrecido un 25 % (gráfico <a href="#fig:project-075">7</a>).</p>
+<p>Como conclusión las proyecciones aquí presentadas son exploratorias; más que predecir lo que sucederá en los próximos días, se pretende explicar cuánto se ha reducido el avance de la epidemia hasta ahora. Sabemos que si R<sub>0</sub> &lt; 1 el total de casos confirmados detendrá su crecimiento exponencial (gráfico <a href="#fig:log-plot">4</a>), lo cual es crucial para no colapsar los servicios de salud. También podemos discernir cuándo el crecimiento dejará de ser exponencial, observando si los factores de crecimiento (gráfico <a href="#fig:dat-plot">3</a>) son menores que uno. Por último, una manera -no contemplada en esta caracterización- de analizar cuándo ocurrirá el pico de individuos infectados es aplicando un modelo compartimental SIR.</p>
+</div>
 <div id="referencias" class="section level1 unnumbered">
-<h1>Referencias</h1>
+<h1><strong>Referencias</strong></h1>
 <div id="refs" class="references">
-<div id="ref-covid">
-<p>Jiang, Xue, Yawei Niu, Xiong Li, Lin Li, Wenxiang Cai, Yucan Chen, Bo Liao, and Edwin Wang. 2020. “Is a 14-Day Quarantine Period Optimal for Effectively Controlling Coronavirus Disease 2019 (Covid-19)? (Preprint).” <a href="https://doi.org/10.1101/2020.03.15.20036533">https://doi.org/10.1101/2020.03.15.20036533</a>.</p>
-</div>
 <div id="ref-covic">
-<p>Nishiura, Hiroshi, Natalie Linton, and Andrei Akhmetzhanov. 2020. “Serial Interval of Novel Coronavirus (Covid-19) Infections (Preprint).” <a href="https://doi.org/10.1016/j.ijid.2020.02.060">https://doi.org/10.1016/j.ijid.2020.02.060</a>.</p>
-</div>
-<div id="ref-covib">
-<p>Zhao, Shi, Daozhou Gao, Zian Zhuang, Ka Chong, Yongli Cai, Jinjun Ran, Peihua Cao, et al. 2020. “Estimating the Serial Interval of the Novel Coronavirus Disease (Covid-19): A Statistical Analysis Using the Public Data in Hong Kong from January 16 to February 15, 2020 (Preprint).” <a href="https://doi.org/10.1101/2020.02.21.20026559">https://doi.org/10.1101/2020.02.21.20026559</a>.</p>
+<p>Du, Zhanwei, Lin Wang, Xiaoke Xu, Ye Wu, Benjamin Cowling, and Lauren Meyers. 2020. “Serial Interval of Covid-19 Among Publicly Reported Confirmed Cases.” <em>Emerging Infectious Diseases</em>. <a href="https://doi.org/10.3201/eid2606.200357">https://doi.org/10.3201/eid2606.200357</a>.</p>
 </div>
 <div id="ref-covia">
-<p>Zhao, Shi, Qianyin Lin, Jinjun Ran, Salihu Musa, Guangpu Yang, Weiming Wang, Yijun Lou, et al. 2020. “Preliminary Estimation of the Basic Reproduction Number of Novel Coronavirus (2019-nCoV) in China, from 2019 to 2020: A Data-Driven Analysis in the Early Phase of the Outbreak.” <em>International Journal of Infectious Diseases</em> 92 (January). <a href="https://doi.org/10.1016/j.ijid.2020.01.050">https://doi.org/10.1016/j.ijid.2020.01.050</a>.</p>
+<p>Fine, Paul. 2003. “The Interval Between Successive Cases of an Infectious Disease.” <em>American Journal of Epidemiology</em> 158 (December): 1039–47. <a href="https://doi.org/10.1093/aje/kwg251">https://doi.org/10.1093/aje/kwg251</a>.</p>
+</div>
+<div id="ref-covid">
+<p>Jiang, Xue, Yawei Niu, Xiong Li, Lin Li, Wenxiang Cai, Yucan Chen, Bo Liao, and Edwin Wang. 2020. “Is a 14-Day Quarantine Period Optimal for Effectively Controlling Coronavirus Disease 2019 (Covid-19)? (PREPRINT).” <a href="https://doi.org/10.1101/2020.03.15.20036533">https://doi.org/10.1101/2020.03.15.20036533</a>.</p>
+</div>
+<div id="ref-covib">
+<p>Nishiura, Hiroshi, Natalie Linton, and Andrei Akhmetzhanov. 2020. “Serial Interval of Novel Coronavirus (Covid-19) Infections.” <em>International Journal of Infectious Diseases</em> 93 (April): 284–86. <a href="https://doi.org/10.1016/j.ijid.2020.02.060">https://doi.org/10.1016/j.ijid.2020.02.060</a>.</p>
 </div>
 </div>
 </div>
