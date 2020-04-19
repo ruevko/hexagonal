@@ -10,10 +10,7 @@ languageCode = "es-es"
 relativeURLs = true
 canonifyurls = true
 enableEmoji = true
-paginate = 5
-
-[permalinks]
-  post = "/post/:year/:month/:slug/"
+paginate = 6
 
 [taxonomies]
   tag = "tags"

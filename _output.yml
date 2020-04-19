@@ -1,3 +1,0 @@
-blogdown::html_page:
-   highlight: "kate"
-   dev: "png"

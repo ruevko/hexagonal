@@ -1,5 +1,5 @@
 ---
-title: "{{ replace .TranslationBaseName "-" " " | title }}"
+title: {{ replace .TranslationBaseName "-" " " | title }}
 date: {{ .Date }}
 categories:
 - category
@@ -8,8 +8,20 @@ tags:
 - tag1
 - tag2
 keywords:
-- tech
-#thumbnailImage: //example.com/image.jpg
----
+- Translate those tags
 
-<!--more-->
+editor_options: 
+  chunk_output_type: console
+
+output:
+   blogdown::html_page:
+      highlight: kate
+      toc: true
+
+math: true
+link-citations: true
+bibliography: ../../babel.bib
+
+thumbnailImage: /octocat.png
+summary: Proudly hosted in [GitHub](https://github.com/)
+---
