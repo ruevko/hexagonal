@@ -315,7 +315,7 @@ code span.wa { color: #bf0303; } /* Warning */
 </ul>
 </div>
 
-<p><strong>Actualizado: 18 de abril, 2 PM</strong></p>
+<p><strong>Actualizado: 19 de abril, 1 PM</strong></p>
 <p>En atención a la emergencia en curso causada por el SARS-CoV-2 se presenta una caracterización de la epidemia en Ecuador. Se ha aplicado una metodología desarrollada por el R Epidemics Consortium <a href="https://www.repidemicsconsortium.org/">RECON</a> que permite estimar tempranamente una variable clave como lo es el ritmo reproductivo; dicha metodología requiere poseer conocimientos sobre el virus y datos sobre la incidencia diaria. Notar que se ha utilizado <code>library(tidyverse)</code> adicionalmente.</p>
 <div id="definiciones" class="section level1">
 <h1><strong>Definiciones</strong></h1>
@@ -348,7 +348,7 @@ Figure 2: Evento de transmisión con Intervalo Serial negativo
 </div>
 <div id="obtención-de-datos" class="section level1">
 <h1><strong>Obtención de Datos</strong></h1>
-<p>Los datos requeridos en esta metodología han sido recopilados de las infografías publicadas diariamente por el Servicio Nacional de Gestión de Riesgos <a href="https://twitter.com/Riesgos_Ec">SNGRE</a> en su cuenta oficial de Twitter. En Ecuador existen actualmente 9022 casos confirmados, de los cuales el 5.05 % han fallecido.</p>
+<p>Los datos requeridos en esta metodología han sido recopilados de las infografías publicadas diariamente por el Servicio Nacional de Gestión de Riesgos <a href="https://twitter.com/Riesgos_Ec">SNGRE</a> en su cuenta oficial de Twitter. En Ecuador existen actualmente 9468 casos confirmados, de los cuales el 5.01 % han fallecido.</p>
 <div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:232px; ">
 <table>
 <caption>
@@ -371,6 +371,20 @@ Personas Fallecidas
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://twitter.com/Riesgos_Ec/status/1251906978902872064"># 55</a>
+</td>
+<td style="text-align:left;">
+19 de abril
+</td>
+<td style="text-align:right;">
+9468
+</td>
+<td style="text-align:right;">
+474
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 <a href="https://twitter.com/Riesgos_Ec/status/1251544226292207617"># 54</a>
@@ -1043,7 +1057,7 @@ Figure 3: Total de casos COVID-19 confirmados en Ecuador, incluyendo tasas y fac
 <a class="sourceLine" id="cb2-5" title="5">Ec_data =<span class="st"> </span>Ec_data <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">mutate</span>(</a>
 <a class="sourceLine" id="cb2-6" title="6">   <span class="dt">conf.bef =</span> <span class="kw">exp</span>(<span class="kw">as.numeric</span>(day) <span class="op">*</span><span class="st"> </span><span class="kw">coef</span>(mod_bef)[<span class="dv">2</span>] <span class="op">+</span><span class="st"> </span><span class="kw">coef</span>(mod_bef)[<span class="dv">1</span>]),</a>
 <a class="sourceLine" id="cb2-7" title="7">   <span class="dt">conf.af =</span> <span class="kw">exp</span>(<span class="kw">as.numeric</span>(day) <span class="op">*</span><span class="st"> </span><span class="kw">coef</span>(mod_af)[<span class="dv">2</span>] <span class="op">+</span><span class="st"> </span><span class="kw">coef</span>(mod_af)[<span class="dv">1</span>]))</a></code></pre></div>
-<p>Se obtuvieron los coeficientes de determinación 0.9919 y 0.973, y las pendientes 0.4096 y 0.0886, para los modelos anterior y posterior respectivamente. Al interpretar la pendiente de un modelo exponencial es posible deducir la tasa de crecimiento más real; de esta manera se halló que, antes de hacer efecto las medidas, el total de casos confirmados creció un 50.62 % cada día. En cambio, después de las medidas y hasta la fecha, se ha observado un crecimiento del 9.27 % diario. El siguiente gráfico presenta el factor de crecimiento -el cual explica los saltos en los datos- junto con los dos modelos ajustados; la versión derecha, al poseer una escala logarítmica, permite apreciar con mayor claridad la diferencia en el patrón de crecimiento.</p>
+<p>Se obtuvieron los coeficientes de determinación 0.9919 y 0.971, y las pendientes 0.4096 y 0.0868, para los modelos anterior y posterior respectivamente. Al interpretar la pendiente de un modelo exponencial es posible deducir la tasa de crecimiento más real; de esta manera se halló que, antes de hacer efecto las medidas, el total de casos confirmados creció un 50.62 % cada día. En cambio, después de las medidas y hasta la fecha, se ha observado un crecimiento del 9.07 % diario. El siguiente gráfico presenta el factor de crecimiento -el cual explica los saltos en los datos- junto con los dos modelos ajustados; la versión derecha, al poseer una escala logarítmica, permite apreciar con mayor claridad la diferencia en el patrón de crecimiento.</p>
 <div class="figure"><span id="fig:log-plot"></span>
 <img src="../../../../post/2020/03/20-caracterizacion-covid-ecuador_files/figure-html/log-plot-1.svg" alt="Regresión antes (naranja) y después (morado) del 22 de marzo, incluyendo factores de crecimiento" width="672" />
 <p class="caption">
