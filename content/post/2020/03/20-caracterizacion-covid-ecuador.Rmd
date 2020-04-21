@@ -25,7 +25,7 @@ summary: Utilizando paquetes desarrollados por el R Epidemics Consortium, se est
 
 `r knitr::opts_chunk$set(echo = FALSE)`
 
-**Actualizado: 20 de abril, 1 PM**
+**Actualizado: 21 de abril, 12 PM**
 
 En atención a la emergencia en curso causada por el SARS-CoV-2 se presenta una caracterización de la epidemia en Ecuador. Se ha aplicado una metodología desarrollada por el R Epidemics Consortium [RECON](https://www.repidemicsconsortium.org/) que permite estimar tempranamente una variable clave como lo es el ritmo reproductivo; dicha metodología requiere poseer conocimientos sobre el virus y datos sobre la incidencia diaria. Notar que se ha utilizado `library(tidyverse)` adicionalmente.
 
@@ -150,7 +150,7 @@ my_plot = function(my_aes, my_dat = Ec_data[-{1:17}, ]){
    ggplot(my_dat, my_aes) + theme_light() +
       theme(axis.title.x = element_blank()) +
       scale_fill_viridis_c(option = "C", trans = "log10") +
-      scale_y_continuous("Casos Confirmados", 1e3 * 0:10, limits = c(0, 10350)) +
+      scale_y_continuous("Casos Confirmados", 1e3 * 0:10, limits = c(0, 106e2)) +
       scale_x_date(date_breaks = "4 days", date_labels = "%e %b")}
 
 my_plot(aes(day, conf, fill = Rate)) + geom_col(width = 1) +
@@ -188,7 +188,7 @@ gridExtra::grid.arrange(
    mod_plot + scale_y_log10(#coord_cartesian(ylim=c(NA,1e4))
       "Casos Confirmados (Logarítmico)",
       c(3, 1) * rep(10 ** {1:4}, each = 3),
-      limits = c(NA, 103e2)),
+      limits = c(NA, 106e2)),
    widths = c(1, 1.3))
 ```
 
@@ -306,7 +306,7 @@ my_plot(aes(day, conf)) + geom_col(width = 1, alpha = .75) +
 Supongamos finalmente que R0 se redujo a la mitad de su valor más probable original, es decir a `r round(.50 * R_get$R_ml, 2)`. Cada ocho individuos infectados habría aproximadamente siete casos nuevos, significando una reducción del avance de la epidemia. No obstante esto es una subestimación del escenario real, pues hasta la fecha se habrían confirmado solamente unos 3600 casos.
 
 ```{r project-050, fig.asp=.5, fig.cap=paste("Proyección de casos COVID-19 confirmados en Ecuador, si R0 =", round(.50 * R_get$R_ml, 2))}
-Ec_proj = project(Ec_inci[1:27], .50 * R_samp, R_get$si, n_days = 25, n_sim = 1e4) #+
+Ec_proj = project(Ec_inci[1:27], .50 * R_samp, R_get$si, n_days = 26, n_sim = 1e4) #+
 
 Ec_data = as_tibble(t(as.matrix(Ec_proj))) %>%
    summarise_all(list(pro.lo = ~quantile(., .025),
@@ -314,7 +314,7 @@ Ec_data = as_tibble(t(as.matrix(Ec_proj))) %>%
                       pro.hi = ~quantile(., .975))) %>%
    pivot_longer(names(.), names_to = c("day", "name"), names_sep = "_") %>%
    pivot_wider() %>% mutate_if(is.numeric, ~cumsum(.) + 1382) %>%
-   mutate_at("day", as.Date) %>% full_join(Ec_data[1:48, 1:10], .) #+
+   mutate_at("day", as.Date) %>% full_join(Ec_data[1:49, 1:10], .) #+
 
 # as.data.frame(Ec_data[c(1:4, 7, 9, 12)])
 
