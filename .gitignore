@@ -4,7 +4,6 @@
 .Ruserdata
 .Rproj.user
 octocat.png
-docs/post/page
 static/post
 static/rmarkdown-libs
 content/post/**/*.html

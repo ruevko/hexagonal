@@ -1,19 +1,16 @@
 ---
-title: readme
 author: Rafael Castro
 date: '2020-01-01'
-slug: readme
-categories: []
-tags: []
-comments: no
+slug: post/readme
 showMeta: no
-showActions: no
+summary: no
 ---
 
-> "El universo (que otros llaman la Biblioteca) se compone de un número indefinido, y tal vez infinito,
-> de galerías hexagonales, con vastos pozos de ventilación en el medio, cercados por barandas bajísimas.
-> Desde cualquier hexágono se ven los pisos inferiores y superiores: interminablemente."
->
+> "El universo (que otros llaman la Biblioteca) se compone de un número indefinido,
+> y tal vez infinito, de galerías hexagonales, con vastos pozos de ventilación en el medio,
+> cercados por barandas bajísimas. Desde cualquier hexágono se ven los pisos
+> inferiores y superiores: interminablemente."
+> 
 > **Jorge Luis Borges (1941)**
 
 # Acerca de...
@@ -22,7 +19,9 @@ Hay dos razones detrás del nombre de este blog. La primera es un tributo a la m
 
 La segunda razón se desprende de [cierta](http://hexb.in/) costumbre entre programadores, de diseñar logos hexagonales para software, proyectos, grupos, etc. En lenguaje R esta costumbre ha sido muy adoptada; y dado que aquí los análisis, las publicaciones y el blog mismo se construyen en R, la adoptamos igualmente. Además, esos logos resuenan bastante bien con las galerías de la biblioteca total.
 
-# Créditos
+[![ko-fi](https://www.ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/A0A61KV0W)
+
+# Créditos:
 
 - Louis Barranqueiro. [Tranquilpeak](https://louisbarranqueiro.github.io/hexo-theme-tranquilpeak/): tema web Hexo; Thibaud Leprêtre lo adaptó a Hugo.
 - Bjørn Erik Pedersen, Steve Francia, et al. [Hugo](https://gohugo.io/): generador de sitios web estáticos.
