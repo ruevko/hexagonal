@@ -25,7 +25,7 @@ summary: Utilizando paquetes desarrollados por el R Epidemics Consortium, se est
 
 `r knitr::opts_chunk$set(echo = FALSE)`
 
-**Actualizado: 21 de abril, 12 PM**
+**Actualizado: 22 de abril, 3 PM**
 
 En atención a la emergencia en curso causada por el SARS-CoV-2 se presenta una caracterización de la epidemia en Ecuador. Se ha aplicado una metodología desarrollada por el R Epidemics Consortium [RECON](https://www.repidemicsconsortium.org/) que permite estimar tempranamente una variable clave como lo es el ritmo reproductivo; dicha metodología requiere poseer conocimientos sobre el virus y datos sobre la incidencia diaria. Notar que se ha utilizado `library(tidyverse)` adicionalmente.
 
@@ -137,7 +137,7 @@ En el paso anterior se han unido las dos fuentes de datos y se han calculado nue
 
 Un hecho de las epidemias es que, incluso en el peor escenario, no pueden crecer indefinidamente pues se agotaría la población susceptible al contagio. Cuando la tasa de crecimiento -la cual define un crecimiento exponencial- se establezca definitivamente en su valor mínimo (que es uno), el total de casos confirmados se detendrá. Por otra parte, resulta interesante seguir los cambios en el factor de crecimiento: valores menores a uno indican una reducción del avance de la epidemia y viceversa, valores mayores a uno indican que el crecimiento exponencial continúa.
 
-En los siguientes gráficos se excluyen los datos previos al 21 de marzo, fecha en que se superó los 500 casos; las barras representan el total diario de casos confirmados, la guía de color representa la tasa de crecimiento, y el texto multiplicativo el factor de crecimiento.
+En los siguientes gráficos se excluyen los datos previos al 23 de marzo, fecha en que se alcanzó los mil casos; las barras representan el total diario de casos confirmados, la guía de color representa la tasa de crecimiento, y el texto multiplicativo el factor de crecimiento.
 
 ```{r dat-plot, fig.asp=.5, fig.cap="Total de casos COVID-19 confirmados en Ecuador, incluyendo tasas y factores de crecimiento"}
 Ec_data[34, "Rate"] = 1
@@ -146,15 +146,15 @@ Ec_data[1:2, c("Rate", "Factor")] = NA
 
 #`r shortcode("youtube", "Kas0tIxDvrg")`
 
-my_plot = function(my_aes, my_dat = Ec_data[-{1:17}, ]){
+my_plot = function(my_aes, my_dat = Ec_data[-{1:19}, ]){
    ggplot(my_dat, my_aes) + theme_light() +
       theme(axis.title.x = element_blank()) +
       scale_fill_viridis_c(option = "C", trans = "log10") +
-      scale_y_continuous("Casos Confirmados", 1e3 * 0:10, limits = c(0, 106e2)) +
+      scale_y_continuous("Casos Confirmados", 1e3 * 0:11, limits = c(0, 11e3)) +
       scale_x_date(date_breaks = "4 days", date_labels = "%e %b")}
 
-my_plot(aes(day, conf, fill = Rate)) + geom_col(width = 1) +
-   geom_text(aes(label = paste0("x", round(Factor, 1))), nudge_y = 200, size = 2)
+my_plot(aes(day, conf, fill = Rate)) + geom_col() + #width = 1
+   geom_text(aes(label = paste0("x", round(Factor, 1))), nudge_y = 150, size = 2)
 ```
 
 ## Ajuste de Regresión Exponencial
@@ -188,7 +188,7 @@ gridExtra::grid.arrange(
    mod_plot + scale_y_log10(#coord_cartesian(ylim=c(NA,1e4))
       "Casos Confirmados (Logarítmico)",
       c(3, 1) * rep(10 ** {1:4}, each = 3),
-      limits = c(NA, 106e2)),
+      limits = c(NA, 11e3)),
    widths = c(1, 1.3))
 ```
 
@@ -275,7 +275,7 @@ Ec_data = as_tibble(t(as.matrix(Ec_proj))) %>%
 Asumir que R~0~ mantiene su valor más probable al 100 % sugiere un escenario donde ninguna medida fue introducida para contener la epidemia. Ciertamente este no es el caso, razón por la cual no se ha proyectado este escenario más allá del 8 de abril, fecha en la cual hubiesen existido ya 9200 casos confirmados.
 
 ```{r project-100, fig.asp=.5, fig.cap=paste("Proyección de casos COVID-19 confirmados en Ecuador, si R0 =", round(R_get$R_ml, 2))}
-my_plot(aes(day, conf)) + geom_col(width = 1, alpha = .75) +
+my_plot(aes(day, conf)) + geom_col(alpha = .75) +
    geom_ribbon(aes(ymin = pro.lo, ymax = pro.hi), fill = "#0D088766") +
    geom_line(aes(y = pro.me), col = "#0D0887FF", size = 1)
 ```
@@ -295,7 +295,7 @@ Ec_data = as_tibble(t(as.matrix(Ec_proj))) %>%
    pivot_wider() %>% mutate_if(is.numeric, ~cumsum(.) + 1382) %>%
    mutate_at("day", as.Date) %>% full_join(Ec_data[1:10], .)
 
-my_plot(aes(day, conf)) + geom_col(width = 1, alpha = .75) +
+my_plot(aes(day, conf)) + geom_col(alpha = .75) +
    geom_ribbon(aes(ymin = pro.lo, ymax = pro.hi), fill = "#0D088766") +
    geom_line(aes(y = pro.me), col = "#0D0887FF", size = 1) +
    scale_y_continuous("Casos Confirmados", 2e3 * 0:10, limits = c(0, NA))
@@ -303,10 +303,10 @@ my_plot(aes(day, conf)) + geom_col(width = 1, alpha = .75) +
 
 ## Tercer escenario: R~0~ al 50 %
 
-Supongamos finalmente que R0 se redujo a la mitad de su valor más probable original, es decir a `r round(.50 * R_get$R_ml, 2)`. Cada ocho individuos infectados habría aproximadamente siete casos nuevos, significando una reducción del avance de la epidemia. No obstante esto es una subestimación del escenario real, pues hasta la fecha se habrían confirmado solamente unos 3600 casos.
+Supongamos finalmente que R0 se redujo a la mitad de su valor más probable original, es decir a `r round(.50 * R_get$R_ml, 2)`. Cada ocho individuos infectados habría aproximadamente siete casos nuevos, significando una reducción del avance de la epidemia. No obstante esto es una subestimación del escenario real, pues hasta la fecha se habrían confirmado solamente unos 3700 casos.
 
 ```{r project-050, fig.asp=.5, fig.cap=paste("Proyección de casos COVID-19 confirmados en Ecuador, si R0 =", round(.50 * R_get$R_ml, 2))}
-Ec_proj = project(Ec_inci[1:27], .50 * R_samp, R_get$si, n_days = 26, n_sim = 1e4) #+
+Ec_proj = project(Ec_inci[1:27], .50 * R_samp, R_get$si, n_days = 27, n_sim = 1e4) #+
 
 Ec_data = as_tibble(t(as.matrix(Ec_proj))) %>%
    summarise_all(list(pro.lo = ~quantile(., .025),
@@ -314,11 +314,11 @@ Ec_data = as_tibble(t(as.matrix(Ec_proj))) %>%
                       pro.hi = ~quantile(., .975))) %>%
    pivot_longer(names(.), names_to = c("day", "name"), names_sep = "_") %>%
    pivot_wider() %>% mutate_if(is.numeric, ~cumsum(.) + 1382) %>%
-   mutate_at("day", as.Date) %>% full_join(Ec_data[1:49, 1:10], .) #+
+   mutate_at("day", as.Date) %>% full_join(Ec_data[1:50, 1:10], .) #+
 
-# as.data.frame(Ec_data[c(1:4, 7, 9, 12)])
+#as.data.frame(Ec_data[c(1:4, 7, 9, 12)])
 
-my_plot(aes(day, conf)) + geom_col(width = 1, alpha = .75) +
+my_plot(aes(day, conf)) + geom_col(alpha = .75) +
    geom_ribbon(aes(ymin = pro.lo, ymax = pro.hi), fill = "#0D088766") +
    geom_line(aes(y = pro.me), col = "#0D0887FF", size = 1)
 ```

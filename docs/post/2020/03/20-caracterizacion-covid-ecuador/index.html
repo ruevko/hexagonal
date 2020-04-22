@@ -335,7 +335,7 @@ code span.wa { color: #bf0303; } /* Warning */
 </ul>
 </div>
 
-<p><strong>Actualizado: 21 de abril, 12 PM</strong></p>
+<p><strong>Actualizado: 22 de abril, 3 PM</strong></p>
 <p>En atención a la emergencia en curso causada por el SARS-CoV-2 se presenta una caracterización de la epidemia en Ecuador. Se ha aplicado una metodología desarrollada por el R Epidemics Consortium <a href="https://www.repidemicsconsortium.org/">RECON</a> que permite estimar tempranamente una variable clave como lo es el ritmo reproductivo; dicha metodología requiere poseer conocimientos sobre el virus y datos sobre la incidencia diaria. Notar que se ha utilizado <code>library(tidyverse)</code> adicionalmente.</p>
 <div id="definiciones" class="section level1">
 <h1><strong>Definiciones</strong></h1>
@@ -368,7 +368,7 @@ Figure 2: Evento de transmisión con Intervalo Serial negativo
 </div>
 <div id="obtención-de-datos" class="section level1">
 <h1><strong>Obtención de Datos</strong></h1>
-<p>Los datos requeridos en esta metodología han sido recopilados de las infografías publicadas diariamente por el Servicio Nacional de Gestión de Riesgos <a href="https://twitter.com/Riesgos_Ec">SNGRE</a> en su cuenta oficial de Twitter. En Ecuador existen actualmente 10398 casos confirmados, de los cuales el 5 % han fallecido.</p>
+<p>Los datos requeridos en esta metodología han sido recopilados de las infografías publicadas diariamente por el Servicio Nacional de Gestión de Riesgos <a href="https://twitter.com/Riesgos_Ec">SNGRE</a> en su cuenta oficial de Twitter. En Ecuador existen actualmente 10850 casos confirmados, de los cuales el 4.95 % han fallecido.</p>
 <div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:232px; ">
 <table>
 <caption>
@@ -391,6 +391,20 @@ Personas Fallecidas
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://twitter.com/Riesgos_Ec/status/1252993301030068224"># 58</a>
+</td>
+<td style="text-align:left;">
+22 de abril
+</td>
+<td style="text-align:right;">
+10850
+</td>
+<td style="text-align:right;">
+537
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 <a href="https://twitter.com/Riesgos_Ec/status/1252631526401073153"># 57</a>
@@ -1088,7 +1102,7 @@ Casos Confirmados
 <a class="sourceLine" id="cb1-6" title="6">          <span class="dt">Factor =</span> Change <span class="op">/</span><span class="st"> </span><span class="kw">lag</span>(Change, <span class="dv">1</span>, <span class="dv">0</span>))</a></code></pre></div>
 <p>En el paso anterior se han unido las dos fuentes de datos y se han calculado nuevas variables: la tasa de crecimiento (<em>Rate</em>) es la razón del total de casos confirmados en el país en cierto día, con respecto al día anterior; el cambio (<em>Change</em>) es la diferencia del total, los nuevos casos confirmados cada día; y el factor de crecimiento (<em>Factor</em>) es la razón del cambio, la división de los nuevos casos confirmados en cierto día, con respecto al día anterior.</p>
 <p>Un hecho de las epidemias es que, incluso en el peor escenario, no pueden crecer indefinidamente pues se agotaría la población susceptible al contagio. Cuando la tasa de crecimiento -la cual define un crecimiento exponencial- se establezca definitivamente en su valor mínimo (que es uno), el total de casos confirmados se detendrá. Por otra parte, resulta interesante seguir los cambios en el factor de crecimiento: valores menores a uno indican una reducción del avance de la epidemia y viceversa, valores mayores a uno indican que el crecimiento exponencial continúa.</p>
-<p>En los siguientes gráficos se excluyen los datos previos al 21 de marzo, fecha en que se superó los 500 casos; las barras representan el total diario de casos confirmados, la guía de color representa la tasa de crecimiento, y el texto multiplicativo el factor de crecimiento.</p>
+<p>En los siguientes gráficos se excluyen los datos previos al 23 de marzo, fecha en que se alcanzó los mil casos; las barras representan el total diario de casos confirmados, la guía de color representa la tasa de crecimiento, y el texto multiplicativo el factor de crecimiento.</p>
 <div class="figure"><span id="fig:dat-plot"></span>
 <img src="../../../../post/2020/03/20-caracterizacion-covid-ecuador_files/figure-html/dat-plot-1.png" alt="Total de casos COVID-19 confirmados en Ecuador, incluyendo tasas y factores de crecimiento" width="672" />
 <p class="caption">
@@ -1105,7 +1119,7 @@ Figure 3: Total de casos COVID-19 confirmados en Ecuador, incluyendo tasas y fac
 <a class="sourceLine" id="cb2-5" title="5">Ec_data =<span class="st"> </span>Ec_data <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">mutate</span>(</a>
 <a class="sourceLine" id="cb2-6" title="6">   <span class="dt">conf.bef =</span> <span class="kw">exp</span>(<span class="kw">as.numeric</span>(day) <span class="op">*</span><span class="st"> </span><span class="kw">coef</span>(mod_bef)[<span class="dv">2</span>] <span class="op">+</span><span class="st"> </span><span class="kw">coef</span>(mod_bef)[<span class="dv">1</span>]),</a>
 <a class="sourceLine" id="cb2-7" title="7">   <span class="dt">conf.af =</span> <span class="kw">exp</span>(<span class="kw">as.numeric</span>(day) <span class="op">*</span><span class="st"> </span><span class="kw">coef</span>(mod_af)[<span class="dv">2</span>] <span class="op">+</span><span class="st"> </span><span class="kw">coef</span>(mod_af)[<span class="dv">1</span>]))</a></code></pre></div>
-<p>Se obtuvieron los coeficientes de determinación 0.9919 y 0.9679, y las pendientes 0.4096 y 0.0835, para los modelos anterior y posterior respectivamente. Al interpretar la pendiente de un modelo exponencial es posible deducir la tasa de crecimiento más real; de esta manera se halló que, antes de hacer efecto las medidas, el total de casos confirmados creció un 50.62 % cada día. En cambio, después de las medidas y hasta la fecha, se ha observado un crecimiento del 8.71 % diario. El siguiente gráfico presenta el factor de crecimiento -el cual explica los saltos en los datos- junto con los dos modelos ajustados; la versión derecha, al poseer una escala logarítmica, permite apreciar con mayor claridad la diferencia en el patrón de crecimiento.</p>
+<p>Se obtuvieron los coeficientes de determinación 0.9919 y 0.9661, y las pendientes 0.4096 y 0.0818, para los modelos anterior y posterior respectivamente. Al interpretar la pendiente de un modelo exponencial es posible deducir la tasa de crecimiento más real; de esta manera se halló que, antes de hacer efecto las medidas, el total de casos confirmados creció un 50.62 % cada día. En cambio, después de las medidas y hasta la fecha, se ha observado un crecimiento del 8.53 % diario. El siguiente gráfico presenta el factor de crecimiento -el cual explica los saltos en los datos- junto con los dos modelos ajustados; la versión derecha, al poseer una escala logarítmica, permite apreciar con mayor claridad la diferencia en el patrón de crecimiento.</p>
 <div class="figure"><span id="fig:log-plot"></span>
 <img src="../../../../post/2020/03/20-caracterizacion-covid-ecuador_files/figure-html/log-plot-1.svg" alt="Regresión antes (naranja) y después (morado) del 22 de marzo, incluyendo factores de crecimiento" width="672" />
 <p class="caption">
@@ -1188,7 +1202,7 @@ Figure 7: Proyección de casos COVID-19 confirmados en Ecuador, si R0 = 1.31
 </div>
 <div id="tercer-escenario-r0-al-50" class="section level2">
 <h2>Tercer escenario: R<sub>0</sub> al 50 %</h2>
-<p>Supongamos finalmente que R0 se redujo a la mitad de su valor más probable original, es decir a 0.88. Cada ocho individuos infectados habría aproximadamente siete casos nuevos, significando una reducción del avance de la epidemia. No obstante esto es una subestimación del escenario real, pues hasta la fecha se habrían confirmado solamente unos 3600 casos.</p>
+<p>Supongamos finalmente que R0 se redujo a la mitad de su valor más probable original, es decir a 0.88. Cada ocho individuos infectados habría aproximadamente siete casos nuevos, significando una reducción del avance de la epidemia. No obstante esto es una subestimación del escenario real, pues hasta la fecha se habrían confirmado solamente unos 3700 casos.</p>
 <div class="figure"><span id="fig:project-050"></span>
 <img src="../../../../post/2020/03/20-caracterizacion-covid-ecuador_files/figure-html/project-050-1.png" alt="Proyección de casos COVID-19 confirmados en Ecuador, si R0 = 0.88" width="672" />
 <p class="caption">
