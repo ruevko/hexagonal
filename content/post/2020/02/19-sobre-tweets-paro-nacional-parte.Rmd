@@ -11,8 +11,12 @@ tags:
 keywords:
   - hashtags
   - national strike
-
-thumbnailImage: 'https://github.com/ruevko/hexagonal/raw/master/content/post/2020/02/cacerolazo.jpg'
+editor_options: 
+  chunk_output_type: console
+output:
+   blogdown::html_page:
+      highlight: kate
+thumbnailImage: https://github.com/ruevko/hexagonal/raw/master/content/post/2020/02/cacerolazo.jpg
 summary: Continúa la discusión de *tweets* publicados durante el paro de octubre, considerando ahora seis *hashtags* populares.
 ---
 

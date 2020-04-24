@@ -13,10 +13,14 @@ keywords:
   - nodes
   - choropleths
   - web scraping
-
+editor_options: 
+  chunk_output_type: console
+output:
+   blogdown::html_page:
+      highlight: kate
 link-citations: true
-bibliography: '../../babel.bib'
-thumbnailImage: 'https://ruevko.github.io/hexagonal/post/2020/01/07-estimando-nodos-openstreetmap-pais_files/figure-html/map-1.svg'
+bibliography: ../../babel.bib
+thumbnailImage: https://ruevko.github.io/hexagonal/post/2020/01/07-estimando-nodos-openstreetmap-pais_files/figure-html/map-1.svg
 summary: Se presenta una metodología basada en *web scraping* para generar un mapa coroplético del número de nodos acumulados en cada país.
 ---
 

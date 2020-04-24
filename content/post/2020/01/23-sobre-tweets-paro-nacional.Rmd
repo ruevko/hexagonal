@@ -11,8 +11,12 @@ tags:
 keywords:
   - hashtags
   - national strike
-
-thumbnailImage: 'https://pbs.twimg.com/media/ENzwak5XsAATLc0?format=jpg&name=small'
+editor_options: 
+  chunk_output_type: console
+output:
+   blogdown::html_page:
+      highlight: kate
+thumbnailImage: https://pbs.twimg.com/media/ENzwak5XsAATLc0?format=jpg&name=small
 summary: Una discusión de *tweets* publicados con tres *hashtags* populares durante el paro de octubre en Ecuador, y del inconveniente para recuperar esos datos hoy en día.
 ---
 

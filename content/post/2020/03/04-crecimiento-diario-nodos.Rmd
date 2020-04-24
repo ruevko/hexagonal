@@ -13,10 +13,14 @@ keywords:
   - nodes
   - choropleths
   - regression
-
+editor_options: 
+  chunk_output_type: console
+output:
+   blogdown::html_page:
+      highlight: kate
 link-citations: true
-bibliography: '../../babel.bib'
-thumbnailImage: 'https://ruevko.github.io/hexagonal/post/2020/03/04-crecimiento-diario-nodos_files/figure-html/model-low-1.png'
+bibliography: ../../babel.bib
+thumbnailImage: https://ruevko.github.io/hexagonal/post/2020/03/04-crecimiento-diario-nodos_files/figure-html/model-low-1.png
 summary: Se ajustó un modelo lineal por cada país, para conocer el crecimiento de OpenStreetMap en función de los nodos creados a diario.
 ---
 
