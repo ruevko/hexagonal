@@ -5,11 +5,13 @@
     // Author information
     .sidebar-profile {
         .sidebar-profile-picture {
-            width:          30px;
-            height:         30px;
-            line-height:    30px;
-            vertical-align: middle;
-            border-radius:  30px;
+            //width:          30px;
+              width:          52px;
+            //height:         30px;
+              height:         60px;
+            //line-height:    30px;
+            //vertical-align: middle;
+            //border-radius:  30px;
         }
         .sidebar-profile-name {
             display: none;
@@ -58,14 +60,17 @@
         padding-bottom: 7.5px;
 
         .sidebar-profile-picture {
-            width:         90px;
+            //width:         90px;
+              width:         78px;
             height:        90px;
-            border-radius: 90px;
+            //border-radius: 90px;
             margin-bottom: 5px;
         }
+/*
         .sidebar-profile-name {
             font-size: 1.6rem;
         }
+*/
     }
     // Buttons
     ul.sidebar-buttons {
@@ -131,9 +136,11 @@
         padding-bottom: 7.5px;
 
         .sidebar-profile-picture {
-            width:         90px;
-            height:        90px;
-            border-radius: 90px;
+            //width:         90px;
+              width:         104px;
+            //height:        90px;
+              height:        120px;
+            //border-radius: 90px;
             margin-bottom: 5px;
         }
         .sidebar-profile-bio,

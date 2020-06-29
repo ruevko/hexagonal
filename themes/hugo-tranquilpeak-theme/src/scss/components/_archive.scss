@@ -27,9 +27,13 @@
             }
             // Change styl of the list by adding font-awesome icon
             &::before {
+                content:   '\2022';
+                font-size: 2.6rem;
+/*
                 font-family: 'FontAwesome';
                 content:     '\f0da';
                 font-size:   map-get($font-size, small);
+*/
             }
         }
     }

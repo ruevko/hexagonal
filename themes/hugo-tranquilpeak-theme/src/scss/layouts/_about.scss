@@ -20,7 +20,7 @@
         background:    white;
         max-width:     400px;
         margin:        15px auto;
-        border-radius: 3px;
+        border-radius: 6px;
         padding:       30px 0;
         @include prefix(box-shadow, 0 0 5px rgba(0, 0, 0, 0.50), 'webkit' 'moz');
 
@@ -36,6 +36,8 @@
             }
         }
         #about-card-picture {
+                width:         143px;
+                height:        165px;
             margin-bottom: 15px;
         }
         #about-card-name {
@@ -50,7 +52,14 @@
         #about-card-location {
             display:        inline-block;
             vertical-align: top;
+                width:   calc((100% / 2) - 48px);
         }
+            #about-card-job {
+                padding: 0 15px 0 30px;
+            }
+            #about-card-location {
+                padding: 0 30px 0 15px;
+            }
         #about-card-job,
         #about-card-location,
         #about-card-bio {
@@ -67,7 +76,7 @@
     #about {
         #about-card {
             width: 90%;
-
+/*
             #about-card-job,
             #about-card-location {
                 display: block;
@@ -82,6 +91,7 @@
             #about-card-job {
                 margin-bottom: 15px;
             }
+*/
         }
     }
 }
@@ -91,6 +101,7 @@
     #about {
         #about-card {
             width: 80%;
+/*
             #about-card-picture {
                 width:         110px;
                 height:        110px;
@@ -108,6 +119,7 @@
             #about-card-location {
                 padding: 0 30px 0 15px;
             }
+*/
         }
     }
 }

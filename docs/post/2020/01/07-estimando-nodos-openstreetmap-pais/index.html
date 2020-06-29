@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="generator" content="Hugo 0.66.0 with theme Tranquilpeak 0.4.7-BETA">
+<meta name="generator" content="Hugo 0.73.0 with theme Tranquilpeak 0.4.8-BETA">
 <meta name="author" content="La Galería Hexagonal">
 <meta name="keywords" content="nodes, choropleths, web scraping, mapas, datos, análisis, maps, data, analytics">
 <meta name="description" content="Se presenta una metodología basada en web scraping para generar un mapa coroplético del número de nodos acumulados en cada país.">
@@ -79,7 +79,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/helpers/jquery.fancybox-thumbs.min.css" integrity="sha256-SEa4XYAHihTcEP1f5gARTB2K26Uk8PsndQYHQC1f4jU=" crossorigin="anonymous" />
     
     
-    <link rel="stylesheet" href="../../../../css/style-twzjdbqhmnnacqs0pwwdzcdbt8yhv8giawvjqjmyfoqnvazl0dalmnhdkvp7.min.css" />
+    <link rel="stylesheet" href="../../../../css/style-f0tv1cwycoa5ftsq82whodctjsdyzeuqreolcec1akajulp9ngvqzn9txzgl.min.css" />
     
     
 
@@ -243,10 +243,11 @@
           <div class="post-content markdown" itemprop="articleBody">
             <div class="main-content-wrap">
               
+<script src="../../../../rmarkdown-libs/accessible-code-block/empty-anchor.js"></script>
 <style type="text/css">
-a.sourceLine { display: inline-block; line-height: 1.25; }
-a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
-a.sourceLine:empty { height: 1.2em; }
+code.sourceCode > span { display: inline-block; line-height: 1.25; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode { white-space: pre; position: relative; }
 div.sourceCode { margin: 1em 0; }
@@ -256,14 +257,16 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 code.sourceCode { white-space: pre-wrap; }
-a.sourceLine { text-indent: -1em; padding-left: 1em; }
+code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
-pre.numberSource a.sourceLine
-  { position: relative; left: -4em; }
-pre.numberSource a.sourceLine::before
-  { content: attr(title);
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
     position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; pointer-events: all; display: inline-block;
+    border: none; display: inline-block;
     -webkit-touch-callout: none; -webkit-user-select: none;
     -khtml-user-select: none; -moz-user-select: none;
     -ms-user-select: none; user-select: none;
@@ -275,7 +278,7 @@ pre.numberSource { margin-left: 3em; border-left: 1px solid #a0a0a0;  padding-le
 div.sourceCode
   { color: #1f1c1b; background-color: #ffffff; }
 @media screen {
-a.sourceLine::before { text-decoration: underline; }
+code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 code span. { color: #1f1c1b; } /* Normal */
 code span.al { color: #bf0303; background-color: #f7e6e6; font-weight: bold; } /* Alert */
@@ -315,58 +318,48 @@ code span.wa { color: #bf0303; } /* Warning */
 <p>Desafortunadamente, la utilización de OpenStreetMap implica ciertos inconvenientes derivados de la naturaleza de su funcionamiento. Un inconveniente es conocer su estado actual: como la base de datos cambia constantemente -con adiciones y modificaciones de usuarios en todo el mundo- es complicado conocer, por ejemplo, cuántas calles existen hoy en toda el mapa. Con todo, <a href="https://wiki.openstreetmap.org/wiki/Stats">OpenStreetMap Wiki Stats</a> presenta diversos recursos -muchos actualizados diariamente- que permiten tener una idea del estado actual del proyecto.</p>
 <p>Mientras realizaba mi tesis de grado, en determinado momento necesité un recurso muy específico: un mapa coroplético de elementos en OpenStreetMap por país. Es decir, un mapa donde cada país está coloreado de acuerdo a cuántos elementos contiene. Para hacerse una idea, comparto un mapa genial de una de mis fuentes <span class="citation">(Jokar Arsanjani et al. <a href="#ref-introsm" role="doc-biblioref">2015</a>)</span>:</p>
 <div class="figure">
-<img src="https://www.researchgate.net/profile/Jamal_Jokar_Arsanjani/publication/301977390/figure/fig6/AS:668313206136842@1536349693729/A-world-map-of-the-total-created-nodes-in-October-2014.png" alt="Nodos OpenStreetMap creados por país en octubre de 2014; © 2015 Springer International Publishing" />
+<img src="https://www.researchgate.net/profile/Jamal_Jokar_Arsanjani/publication/301977390/figure/fig6/AS:668313206136842@1536349693729/A-world-map-of-the-total-created-nodes-in-October-2014.png" alt="" />
 <p class="caption">Nodos OpenStreetMap creados por país en octubre de 2014; © 2015 Springer International Publishing</p>
 </div>
 <p>A pesar de considerar únicamente los nodos acumulados en un mes, este mapa demuestra correctamente el panorama global de las contribuciones a OpenStreetMap: los países europeos poseen las comunidades más activas; Canadá, Estados Unidos, Brasil, Rusia y Australia reciben gran cantidad de contribuciones, acorde a sus extensos territorios; y los niveles de contribución varían considerablemente en Latinoamérica, África y Asia.</p>
 <p>Es importante tener presente que en OpenStreetMap existen tres elementos básicos: <em>nodes</em>, <em>ways</em>, <em>relations</em>. Pero tanto vías como relaciones se componen, en última instancia, de nodos; por eso un mapa que contabilice los nodos acumulados en el proyecto debería ofrecer una buena imagen de cómo se encuentran distribuidas las contribuciones. Una forma de obtener tal mapa es descargar todos los países -de <a href="http://download.geofabrik.de/">Geofabrik</a> por ejemplo- y contar los nodos en cada archivo, pero eso sería extenuante. Esa es la motivación detrás de la siguiente metodología para estimar el número de nodos por país aplicando <em>web scraping</em>, una técnica de minería de datos que consiste en utilizar software para extraer el contenido de páginas web.</p>
 <p>La fuente de datos es el sitio <a href="http://osmstats.neis-one.org/">OSMstats</a> desarrollado por Pascal Neis, cuyo trabajo fue clave en mi tesis <span class="citation">(Neis and Zipf <a href="#ref-neis12" role="doc-biblioref">2012</a>)</span> igualmente. Este sitio ofrece estadísticas sobre varios aspectos de OpenStreetMap, con periodicidad diaria desde el 1 de noviembre de 2011; la pestaña <em>Countries</em> presenta los miembros activos y los nodos creados/modificados/eliminados en cada país, cada día. Para comenzar, se diseña una función de extracción, con ayuda de los paquetes <code>httr</code>, <code>xml2</code> y <code>purrr</code>:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw">library</span>(purrr)</a>
-<a class="sourceLine" id="cb1-2" title="2"></a>
-<a class="sourceLine" id="cb1-3" title="3">get_day =<span class="st"> </span><span class="kw">possibly</span>(<span class="cf">function</span>(day, url){</a>
-<a class="sourceLine" id="cb1-4" title="4">   </a>
-<a class="sourceLine" id="cb1-5" title="5">   <span class="kw">message</span>(<span class="st">&quot;Day: &quot;</span>, day)</a>
-<a class="sourceLine" id="cb1-6" title="6">   </a>
-<a class="sourceLine" id="cb1-7" title="7">   df =<span class="st"> </span><span class="kw">paste0</span>(url, day) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb1-8" title="8"><span class="st">      </span>httr<span class="op">::</span><span class="kw">GET</span>() <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb1-9" title="9"><span class="st">      </span>httr<span class="op">::</span><span class="kw">content</span>(<span class="dt">encoding =</span> <span class="st">&quot;UTF-8&quot;</span>) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb1-10" title="10"><span class="st">      </span>xml2<span class="op">::</span><span class="kw">as_list</span>() <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb1-11" title="11"><span class="st">      </span><span class="kw">plucking</span>() <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb1-12" title="12"><span class="st">      </span><span class="kw">map</span>(framing) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb1-13" title="13"><span class="st">      </span><span class="kw">reduce</span>(rbind)</a>
-<a class="sourceLine" id="cb1-14" title="14">   </a>
-<a class="sourceLine" id="cb1-15" title="15">   df<span class="op">$</span>date =<span class="st"> </span>day</a>
-<a class="sourceLine" id="cb1-16" title="16">   </a>
-<a class="sourceLine" id="cb1-17" title="17">   <span class="kw">return</span>(df)}, <span class="ot">NULL</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw">library</span>(purrr)</span>
+<span id="cb1-2"><a href="#cb1-2"></a></span>
+<span id="cb1-3"><a href="#cb1-3"></a>get_day =<span class="st"> </span><span class="kw">possibly</span>(<span class="cf">function</span>(day, url){</span>
+<span id="cb1-4"><a href="#cb1-4"></a>   </span>
+<span id="cb1-5"><a href="#cb1-5"></a>   <span class="kw">message</span>(<span class="st">&quot;Day: &quot;</span>, day)</span>
+<span id="cb1-6"><a href="#cb1-6"></a>   </span>
+<span id="cb1-7"><a href="#cb1-7"></a>   df =<span class="st"> </span><span class="kw">paste0</span>(url, day) <span class="op">%&gt;%</span></span>
+<span id="cb1-8"><a href="#cb1-8"></a><span class="st">      </span>httr<span class="op">::</span><span class="kw">GET</span>() <span class="op">%&gt;%</span></span>
+<span id="cb1-9"><a href="#cb1-9"></a><span class="st">      </span>httr<span class="op">::</span><span class="kw">content</span>(<span class="dt">encoding =</span> <span class="st">&quot;UTF-8&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb1-10"><a href="#cb1-10"></a><span class="st">      </span>xml2<span class="op">::</span><span class="kw">as_list</span>() <span class="op">%&gt;%</span></span>
+<span id="cb1-11"><a href="#cb1-11"></a><span class="st">      </span><span class="kw">plucking</span>() <span class="op">%&gt;%</span></span>
+<span id="cb1-12"><a href="#cb1-12"></a><span class="st">      </span><span class="kw">map</span>(framing) <span class="op">%&gt;%</span></span>
+<span id="cb1-13"><a href="#cb1-13"></a><span class="st">      </span><span class="kw">reduce</span>(rbind)</span>
+<span id="cb1-14"><a href="#cb1-14"></a>   </span>
+<span id="cb1-15"><a href="#cb1-15"></a>   df<span class="op">$</span>date =<span class="st"> </span>day</span>
+<span id="cb1-16"><a href="#cb1-16"></a>   </span>
+<span id="cb1-17"><a href="#cb1-17"></a>   <span class="kw">return</span>(df)}, <span class="ot">NULL</span>)</span></code></pre></div>
 <p>Notar que <code>plucking()</code> y <code>framing()</code> son funciones declaradas previamente con el propósito de abstraer dos pasos: recortar y tabular los datos; los pasos cruciales se hallan entre <code>GET()</code> y <code>as_list()</code> pues es en ellos donde se obtiene y se transforma el contenido <em>XML</em> de una página. Además, la función de extracción fue insertada en <code>possibly()</code> con el propósito de evitar, al ser iterada, que la ejecución se detenga si una iteración falla. Lo siguiente sería una prueba:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1">neis =<span class="st"> &quot;https://osmstats.neis-one.org/?item=countries&amp;date=&quot;</span></a>
-<a class="sourceLine" id="cb2-2" title="2"></a>
-<a class="sourceLine" id="cb2-3" title="3">test =<span class="st"> </span><span class="kw">get_day</span>(<span class="st">&quot;2019-12-31&quot;</span>, <span class="dt">url =</span> neis)</a>
-<a class="sourceLine" id="cb2-4" title="4"></a>
-<a class="sourceLine" id="cb2-5" title="5">test[<span class="kw">as.integer</span>(test<span class="op">$</span>members) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">sort.list</span>(<span class="dt">decreasing =</span> <span class="ot">TRUE</span>), ] <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">head</span>(<span class="dv">10</span>)</a></code></pre></div>
-<pre><code>##            country members created deleted       date
-## 193        Germany     679   81769    7891 2019-12-31
-## 192  United States     667  258968   16367 2019-12-31
-## 191         France     335   55615    7871 2019-12-31
-## 190 United Kingdom     253   44646    4446 2019-12-31
-## 189      Indonesia     197   65942    2802 2019-12-31
-## 188         Russia     185   59591    5172 2019-12-31
-## 187         Brazil     169  207501    5528 2019-12-31
-## 186         Poland     165   51049    5055 2019-12-31
-## 185          Italy     148   25234    1534 2019-12-31
-## 184          Spain     140   50878    2711 2019-12-31</code></pre>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>neis =<span class="st"> &quot;https://osmstats.neis-one.org/?item=countries&amp;date=&quot;</span></span>
+<span id="cb2-2"><a href="#cb2-2"></a></span>
+<span id="cb2-3"><a href="#cb2-3"></a>test =<span class="st"> </span><span class="kw">get_day</span>(<span class="st">&quot;2019-12-31&quot;</span>, <span class="dt">url =</span> neis)</span>
+<span id="cb2-4"><a href="#cb2-4"></a></span>
+<span id="cb2-5"><a href="#cb2-5"></a>test[<span class="kw">as.integer</span>(test<span class="op">$</span>members) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">sort.list</span>(<span class="dt">decreasing =</span> <span class="ot">TRUE</span>), ] <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">head</span>(<span class="dv">10</span>)</span></code></pre></div>
+<pre><code>## NULL</code></pre>
 <p>Se trata de los diez países que tuvieron más miembros activos el último día de 2019, tal y como lo presenta <a href="http://osmstats.neis-one.org/?item=countries&amp;date=2019-12-31">esta</a> página específica. Ahora, la verdadera utilidad de la función aparecerá al iterarla en muchas fechas. Considerando que los datos empiezan el 1 de noviembre de 2011, se decidió iterar por 2923 días, hasta el 1 de noviembre de 2019; es decir, se va a contabilizar el crecimiento de OpenStreetMap en ocho años.</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" title="1">days =<span class="st"> </span><span class="kw">as.Date</span>(<span class="st">&quot;2011-11-1&quot;</span>) <span class="op">+</span><span class="st"> </span><span class="dv">0</span><span class="op">:</span><span class="dv">2922</span></a>
-<a class="sourceLine" id="cb4-2" title="2"></a>
-<a class="sourceLine" id="cb4-3" title="3">countries =<span class="st"> </span><span class="kw">map</span>(days, get_day, <span class="dt">url =</span> neis) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">reduce</span>(rbind)</a></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>days =<span class="st"> </span><span class="kw">as.Date</span>(<span class="st">&quot;2011-11-1&quot;</span>) <span class="op">+</span><span class="st"> </span><span class="dv">0</span><span class="op">:</span><span class="dv">2922</span></span>
+<span id="cb4-2"><a href="#cb4-2"></a></span>
+<span id="cb4-3"><a href="#cb4-3"></a>countries =<span class="st"> </span><span class="kw">map</span>(days, get_day, <span class="dt">url =</span> neis) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">reduce</span>(rbind)</span></code></pre></div>
 <p>Los datos consisten en 738001 observaciones, correspondientes a 253 países en 2917 días. Seis días en 2018 carecen de datos: 27 de julio, 3 y 24 de agosto, 10 y 29 de septiembre, y 22 de octubre; este hecho, cuya causa resulta desconocida, es comprobable en el sitio web. El siguiente paso consiste en sumar los nodos creados -restando al mismo tiempo los eliminados- en cada país; esto es posible implementando <code>dplyr</code>.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1"><span class="kw">library</span>(dplyr)</a>
-<a class="sourceLine" id="cb5-2" title="2"></a>
-<a class="sourceLine" id="cb5-3" title="3">countries_nodes =<span class="st"> </span><span class="kw">group_by</span>(countries, country) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb5-4" title="4"><span class="st">   </span><span class="kw">mutate_at</span>(<span class="kw">c</span>(<span class="st">&quot;created&quot;</span>, <span class="st">&quot;deleted&quot;</span>), as.double) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb5-5" title="5"><span class="st">   </span><span class="kw">summarise</span>(<span class="dt">nodes =</span> <span class="kw">sum</span>(created <span class="op">-</span><span class="st"> </span>deleted), <span class="dt">dates =</span> <span class="kw">n_distinct</span>(date))</a>
-<a class="sourceLine" id="cb5-6" title="6"></a>
-<a class="sourceLine" id="cb5-7" title="7"><span class="kw">summary</span>(countries_nodes)</a></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="kw">library</span>(dplyr)</span>
+<span id="cb5-2"><a href="#cb5-2"></a></span>
+<span id="cb5-3"><a href="#cb5-3"></a>countries_nodes =<span class="st"> </span><span class="kw">group_by</span>(countries, country) <span class="op">%&gt;%</span></span>
+<span id="cb5-4"><a href="#cb5-4"></a><span class="st">   </span><span class="kw">mutate_at</span>(<span class="kw">c</span>(<span class="st">&quot;created&quot;</span>, <span class="st">&quot;deleted&quot;</span>), as.double) <span class="op">%&gt;%</span></span>
+<span id="cb5-5"><a href="#cb5-5"></a><span class="st">   </span><span class="kw">summarise</span>(<span class="dt">nodes =</span> <span class="kw">sum</span>(created <span class="op">-</span><span class="st"> </span>deleted), <span class="dt">dates =</span> <span class="kw">n_distinct</span>(date))</span>
+<span id="cb5-6"><a href="#cb5-6"></a></span>
+<span id="cb5-7"><a href="#cb5-7"></a><span class="kw">summary</span>(countries_nodes)</span></code></pre></div>
 <pre><code>##    country              nodes               dates     
 ##  Length:253         Min.   :       -2   Min.   :2917  
 ##  Class :character   1st Qu.:   259873   1st Qu.:2917  
@@ -375,13 +368,13 @@ code span.wa { color: #bf0303; } /* Warning */
 ##                     3rd Qu.: 13561870   3rd Qu.:2917  
 ##                     Max.   :388753376   Max.   :2917</code></pre>
 <p>Finalmente, para generar el mapa, basta con unir los datos calculados en el paso anterior, a polígonos que representen los países. En este caso se han utilizado los polígonos disponibles en <code>tmap</code>; tratándose de un objeto de clase <code>sf</code>, el paquete homónimo debe ser incluido para garantizar una unión correcta. El mapa es generado vía <code>ggplot2</code>.</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1"><span class="kw">library</span>(sf)</a>
-<a class="sourceLine" id="cb7-2" title="2"><span class="kw">library</span>(ggplot2)</a>
-<a class="sourceLine" id="cb7-3" title="3"></a>
-<a class="sourceLine" id="cb7-4" title="4"><span class="kw">data</span>(<span class="st">&quot;World&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;tmap&quot;</span>)</a>
-<a class="sourceLine" id="cb7-5" title="5"></a>
-<a class="sourceLine" id="cb7-6" title="6"><span class="kw">left_join</span>(World, countries_nodes, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;name&quot;</span> =<span class="st"> &quot;country&quot;</span>)) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb7-7" title="7"><span class="st">   </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">fill =</span> nodes)) <span class="op">+</span><span class="st"> </span><span class="kw">geom_sf</span>(<span class="dt">color =</span> <span class="ot">NA</span>) <span class="op">+</span><span class="st"> </span><span class="kw">theme_minimal</span>()</a></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="kw">library</span>(sf)</span>
+<span id="cb7-2"><a href="#cb7-2"></a><span class="kw">library</span>(ggplot2)</span>
+<span id="cb7-3"><a href="#cb7-3"></a></span>
+<span id="cb7-4"><a href="#cb7-4"></a><span class="kw">data</span>(<span class="st">&quot;World&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;tmap&quot;</span>)</span>
+<span id="cb7-5"><a href="#cb7-5"></a></span>
+<span id="cb7-6"><a href="#cb7-6"></a><span class="kw">left_join</span>(World, countries_nodes, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;name&quot;</span> =<span class="st"> &quot;country&quot;</span>)) <span class="op">%&gt;%</span></span>
+<span id="cb7-7"><a href="#cb7-7"></a><span class="st">   </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">fill =</span> nodes)) <span class="op">+</span><span class="st"> </span><span class="kw">geom_sf</span>(<span class="dt">color =</span> <span class="ot">NA</span>) <span class="op">+</span><span class="st"> </span><span class="kw">theme_minimal</span>()</span></code></pre></div>
 <div class="figure"><span id="fig:map"></span>
 <img src="../../../../post/2020/01/07-estimando-nodos-openstreetmap-pais_files/figure-html/map-1.svg" alt="Primer intento de generar nuestro mapa" width="672" />
 <p class="caption">
@@ -399,31 +392,31 @@ Figure 1: Primer intento de generar nuestro mapa
 ## [22] &quot;Solomon Is.&quot;            &quot;Somaliland&quot;             &quot;Timor-Leste&quot;           
 ## [25] &quot;Tanzania&quot;</code></pre>
 <p>Entonces los nombres en los datos deben ser modificados para coincidir con estos nombres.</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1">countries_nodes =<span class="st"> </span><span class="kw">mutate_at</span>(countries_nodes, <span class="st">&quot;country&quot;</span>, <span class="op">~</span><span class="kw">case_when</span>(</a>
-<a class="sourceLine" id="cb9-2" title="2">   . <span class="op">==</span><span class="st"> &quot;Bosnia and Herzegovina&quot;</span>              <span class="op">~</span><span class="st"> &quot;Bosnia and Herz.&quot;</span>,</a>
-<a class="sourceLine" id="cb9-3" title="3">   . <span class="op">==</span><span class="st"> &quot;Central African Republic&quot;</span>            <span class="op">~</span><span class="st"> &quot;Central African Rep.&quot;</span>,</a>
-<a class="sourceLine" id="cb9-4" title="4">   . <span class="op">==</span><span class="st"> &quot;Congo-Brazzaville&quot;</span>                   <span class="op">~</span><span class="st"> &quot;Congo&quot;</span>,</a>
-<a class="sourceLine" id="cb9-5" title="5">   . <span class="op">==</span><span class="st"> &quot;Congo-Kinshasa&quot;</span>                      <span class="op">~</span><span class="st"> &quot;Dem. Rep. Congo&quot;</span>,</a>
-<a class="sourceLine" id="cb9-6" title="6">   . <span class="op">==</span><span class="st"> &quot;Czech Republic&quot;</span>                      <span class="op">~</span><span class="st"> &quot;Czech Rep.&quot;</span>,</a>
-<a class="sourceLine" id="cb9-7" title="7">   . <span class="op">==</span><span class="st"> &quot;Dominican Republic&quot;</span>                  <span class="op">~</span><span class="st"> &quot;Dominican Rep.&quot;</span>,</a>
-<a class="sourceLine" id="cb9-8" title="8">   . <span class="op">==</span><span class="st"> &quot;Equatorial Guinea&quot;</span>                   <span class="op">~</span><span class="st"> &quot;Eq. Guinea&quot;</span>,</a>
-<a class="sourceLine" id="cb9-9" title="9">   . <span class="op">==</span><span class="st"> &quot;Falkland Islands (Islas Malvinas)&quot;</span>   <span class="op">~</span><span class="st"> &quot;Falkland Is.&quot;</span>,</a>
-<a class="sourceLine" id="cb9-10" title="10">   . <span class="op">==</span><span class="st"> &quot;French Southern and Antarctic Lands&quot;</span> <span class="op">~</span><span class="st"> &quot;Fr. S. Antarctic Lands&quot;</span>,</a>
-<a class="sourceLine" id="cb9-11" title="11">   . <span class="op">==</span><span class="st"> &quot;Ivory Coast&quot;</span>                         <span class="op">~</span><span class="st"> &quot;Cote d&#39;Ivoire&quot;</span>,</a>
-<a class="sourceLine" id="cb9-12" title="12">   . <span class="op">==</span><span class="st"> &quot;Laos&quot;</span>                                <span class="op">~</span><span class="st"> &quot;Lao PDR&quot;</span>,</a>
-<a class="sourceLine" id="cb9-13" title="13">   . <span class="op">==</span><span class="st"> &quot;Myanmar (Burma)&quot;</span>                     <span class="op">~</span><span class="st"> &quot;Myanmar&quot;</span>,</a>
-<a class="sourceLine" id="cb9-14" title="14">   . <span class="op">==</span><span class="st"> &quot;North Korea&quot;</span>                         <span class="op">~</span><span class="st"> &quot;Dem. Rep. Korea&quot;</span>,</a>
-<a class="sourceLine" id="cb9-15" title="15">   . <span class="op">==</span><span class="st"> &quot;Republic of Kosovo&quot;</span>                  <span class="op">~</span><span class="st"> &quot;Kosovo&quot;</span>,</a>
-<a class="sourceLine" id="cb9-16" title="16">   . <span class="op">==</span><span class="st"> &quot;Solomon Islands&quot;</span>                     <span class="op">~</span><span class="st"> &quot;Solomon Is.&quot;</span>,</a>
-<a class="sourceLine" id="cb9-17" title="17">   . <span class="op">==</span><span class="st"> &quot;South Korea&quot;</span>                         <span class="op">~</span><span class="st"> &quot;Korea&quot;</span>,</a>
-<a class="sourceLine" id="cb9-18" title="18">   . <span class="op">==</span><span class="st"> &quot;South Sudan&quot;</span>                         <span class="op">~</span><span class="st"> &quot;S. Sudan&quot;</span>,</a>
-<a class="sourceLine" id="cb9-19" title="19">   . <span class="op">==</span><span class="st"> &quot;The Bahamas&quot;</span>                         <span class="op">~</span><span class="st"> &quot;Bahamas&quot;</span>,</a>
-<a class="sourceLine" id="cb9-20" title="20">   . <span class="op">==</span><span class="st"> &quot;The Gambia&quot;</span>                          <span class="op">~</span><span class="st"> &quot;Gambia&quot;</span>,</a>
-<a class="sourceLine" id="cb9-21" title="21">   . <span class="op">==</span><span class="st"> &quot;United Republic of Tanzania&quot;</span>         <span class="op">~</span><span class="st"> &quot;Tanzania&quot;</span>,</a>
-<a class="sourceLine" id="cb9-22" title="22">   . <span class="op">==</span><span class="st"> &quot;Western Sahara&quot;</span>                      <span class="op">~</span><span class="st"> &quot;W. Sahara&quot;</span>,</a>
-<a class="sourceLine" id="cb9-23" title="23">   <span class="ot">TRUE</span> <span class="op">~</span><span class="st"> </span>.))</a>
-<a class="sourceLine" id="cb9-24" title="24"></a>
-<a class="sourceLine" id="cb9-25" title="25"><span class="kw">setdiff</span>(World<span class="op">$</span>name, countries_nodes<span class="op">$</span>country)</a></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a>countries_nodes =<span class="st"> </span><span class="kw">mutate_at</span>(countries_nodes, <span class="st">&quot;country&quot;</span>, <span class="op">~</span><span class="kw">case_when</span>(</span>
+<span id="cb9-2"><a href="#cb9-2"></a>   . <span class="op">==</span><span class="st"> &quot;Bosnia and Herzegovina&quot;</span>              <span class="op">~</span><span class="st"> &quot;Bosnia and Herz.&quot;</span>,</span>
+<span id="cb9-3"><a href="#cb9-3"></a>   . <span class="op">==</span><span class="st"> &quot;Central African Republic&quot;</span>            <span class="op">~</span><span class="st"> &quot;Central African Rep.&quot;</span>,</span>
+<span id="cb9-4"><a href="#cb9-4"></a>   . <span class="op">==</span><span class="st"> &quot;Congo-Brazzaville&quot;</span>                   <span class="op">~</span><span class="st"> &quot;Congo&quot;</span>,</span>
+<span id="cb9-5"><a href="#cb9-5"></a>   . <span class="op">==</span><span class="st"> &quot;Congo-Kinshasa&quot;</span>                      <span class="op">~</span><span class="st"> &quot;Dem. Rep. Congo&quot;</span>,</span>
+<span id="cb9-6"><a href="#cb9-6"></a>   . <span class="op">==</span><span class="st"> &quot;Czech Republic&quot;</span>                      <span class="op">~</span><span class="st"> &quot;Czech Rep.&quot;</span>,</span>
+<span id="cb9-7"><a href="#cb9-7"></a>   . <span class="op">==</span><span class="st"> &quot;Dominican Republic&quot;</span>                  <span class="op">~</span><span class="st"> &quot;Dominican Rep.&quot;</span>,</span>
+<span id="cb9-8"><a href="#cb9-8"></a>   . <span class="op">==</span><span class="st"> &quot;Equatorial Guinea&quot;</span>                   <span class="op">~</span><span class="st"> &quot;Eq. Guinea&quot;</span>,</span>
+<span id="cb9-9"><a href="#cb9-9"></a>   . <span class="op">==</span><span class="st"> &quot;Falkland Islands (Islas Malvinas)&quot;</span>   <span class="op">~</span><span class="st"> &quot;Falkland Is.&quot;</span>,</span>
+<span id="cb9-10"><a href="#cb9-10"></a>   . <span class="op">==</span><span class="st"> &quot;French Southern and Antarctic Lands&quot;</span> <span class="op">~</span><span class="st"> &quot;Fr. S. Antarctic Lands&quot;</span>,</span>
+<span id="cb9-11"><a href="#cb9-11"></a>   . <span class="op">==</span><span class="st"> &quot;Ivory Coast&quot;</span>                         <span class="op">~</span><span class="st"> &quot;Cote d&#39;Ivoire&quot;</span>,</span>
+<span id="cb9-12"><a href="#cb9-12"></a>   . <span class="op">==</span><span class="st"> &quot;Laos&quot;</span>                                <span class="op">~</span><span class="st"> &quot;Lao PDR&quot;</span>,</span>
+<span id="cb9-13"><a href="#cb9-13"></a>   . <span class="op">==</span><span class="st"> &quot;Myanmar (Burma)&quot;</span>                     <span class="op">~</span><span class="st"> &quot;Myanmar&quot;</span>,</span>
+<span id="cb9-14"><a href="#cb9-14"></a>   . <span class="op">==</span><span class="st"> &quot;North Korea&quot;</span>                         <span class="op">~</span><span class="st"> &quot;Dem. Rep. Korea&quot;</span>,</span>
+<span id="cb9-15"><a href="#cb9-15"></a>   . <span class="op">==</span><span class="st"> &quot;Republic of Kosovo&quot;</span>                  <span class="op">~</span><span class="st"> &quot;Kosovo&quot;</span>,</span>
+<span id="cb9-16"><a href="#cb9-16"></a>   . <span class="op">==</span><span class="st"> &quot;Solomon Islands&quot;</span>                     <span class="op">~</span><span class="st"> &quot;Solomon Is.&quot;</span>,</span>
+<span id="cb9-17"><a href="#cb9-17"></a>   . <span class="op">==</span><span class="st"> &quot;South Korea&quot;</span>                         <span class="op">~</span><span class="st"> &quot;Korea&quot;</span>,</span>
+<span id="cb9-18"><a href="#cb9-18"></a>   . <span class="op">==</span><span class="st"> &quot;South Sudan&quot;</span>                         <span class="op">~</span><span class="st"> &quot;S. Sudan&quot;</span>,</span>
+<span id="cb9-19"><a href="#cb9-19"></a>   . <span class="op">==</span><span class="st"> &quot;The Bahamas&quot;</span>                         <span class="op">~</span><span class="st"> &quot;Bahamas&quot;</span>,</span>
+<span id="cb9-20"><a href="#cb9-20"></a>   . <span class="op">==</span><span class="st"> &quot;The Gambia&quot;</span>                          <span class="op">~</span><span class="st"> &quot;Gambia&quot;</span>,</span>
+<span id="cb9-21"><a href="#cb9-21"></a>   . <span class="op">==</span><span class="st"> &quot;United Republic of Tanzania&quot;</span>         <span class="op">~</span><span class="st"> &quot;Tanzania&quot;</span>,</span>
+<span id="cb9-22"><a href="#cb9-22"></a>   . <span class="op">==</span><span class="st"> &quot;Western Sahara&quot;</span>                      <span class="op">~</span><span class="st"> &quot;W. Sahara&quot;</span>,</span>
+<span id="cb9-23"><a href="#cb9-23"></a>   <span class="ot">TRUE</span> <span class="op">~</span><span class="st"> </span>.))</span>
+<span id="cb9-24"><a href="#cb9-24"></a></span>
+<span id="cb9-25"><a href="#cb9-25"></a><span class="kw">setdiff</span>(World<span class="op">$</span>name, countries_nodes<span class="op">$</span>country)</span></code></pre></div>
 <pre><code>## [1] &quot;N. Cyprus&quot;   &quot;Palestine&quot;   &quot;Somaliland&quot;  &quot;Timor-Leste&quot;</code></pre>
 <p>Chipre del Norte, Palestina, Somalilandia y Timor Oriental son países -¿con reconocimiento limitado?- que no figuran en la fuente de datos, y por ende persistirán vacíos en el mapa. Por otra parte un total de 80 países o territorios están en la fuente, pero son demasiado pequeños para aparecer en el mapa: Andorra, Singapur y las Antillas Menores, por citar ejemplos. Efectivamente, del total de 4197.32 millones de nodos, en el mapa se encuentran 4180.61 millones; esto es el 99.6 %. Con estas aclaraciones, solo falta unir los datos nuevamente y generar el mapa con un par de mejoras.</p>
 <div class="figure"><span id="fig:finalmap"></span>
@@ -541,7 +534,10 @@ Figure 2: Segundo intento de generar nuestro mapa 🎉
         </article>
         <footer id="footer" class="main-content-wrap">
   <span class="copyrights">
-    <i class="fab fa-creative-commons"></i><i class="fab fa-creative-commons-by"></i><i class="fab fa-creative-commons-sa"></i> 2020 (CC-BY-SA-4.0)<br>by Rafael Castro <i class="fas fa-lg fa-crow"></i>  
+     <i class="fab fa-creative-commons"></i>
+     <i class="fab fa-creative-commons-by"></i>
+     <i class="fab fa-creative-commons-sa"></i>
+     2020 (CC-BY-SA-4.0)<br>by Rafael Castro <i class="fas fa-lg fa-crow"></i>  
   </span>
 </footer>
 
@@ -670,7 +666,7 @@ Figure 2: Segundo intento de generar nuestro mapa 🎉
 <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.7/js/jquery.fancybox.min.js" integrity="sha256-GEAnjcTqVP+vBp3SSc8bEDQqvWAZMiHyUSIorrWwH50=" crossorigin="anonymous"></script>
 
 
-<script src="../../../../js/script-pcw6v3xilnxydl1vddzazdverrnn9ctynvnxgwho987mfyqkuylcb1nlt.min.js"></script>
+<script src="../../../../js/script-cguihh0eqcqkmammkosznwf1ib9pqkba6p43eagsjkep5tgaasqrgn671.min.js"></script>
 
 
 <script lang="javascript">

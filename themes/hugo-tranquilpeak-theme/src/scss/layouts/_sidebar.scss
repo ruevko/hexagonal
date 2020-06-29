@@ -29,7 +29,8 @@
             margin:  0 auto;
         }
         .sidebar-profile-name {
-            font-size: 1.1em;
+            //font-size: 1.1em;
+              font-size: 2rem;
             color:     map-get($sidebar, color);
         }
     }

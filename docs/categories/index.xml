@@ -6,19 +6,10 @@
     <description>Recent content in Categories on La Galería Hexagonal</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>es-es</language>
-    <lastBuildDate>Fri, 20 Mar 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 04 Mar 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://ruevko.github.io/hexagonal/categories/index.xml" rel="self" type="application/rss+xml" />
     
-    
-    <item>
-      <title>Reportes</title>
-      <link>https://ruevko.github.io/hexagonal/categories/reportes/</link>
-      <pubDate>Fri, 20 Mar 2020 00:00:00 +0000</pubDate>
-      
-      <guid>https://ruevko.github.io/hexagonal/categories/reportes/</guid>
-      <description></description>
-    </item>
     
     <item>
       <title>OpenStreetMap</title>

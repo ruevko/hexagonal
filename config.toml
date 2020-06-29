@@ -1,3 +1,7 @@
+# Tranquilpeak
+# Version : 0.4.8-BETA
+# Author : Thibaud Leprêtre
+
 ignoreFiles = ["\\.bib$", "\\.csv$", "\\.jpg$", "\\.RDS$", "\\.Rmd$", "_files$", "_cache$"]
 
 publishDir = "docs"
@@ -107,6 +111,13 @@ paginate = 6
   clearReading = true
   sidebarBehavior = 1
 
+  # Header configuration. The link at the right of the header is customizable
+  # You can add a link (as icon) at the right of header instead of author's picture.
+  # By default, author's gravatar or author's picture is displayed.
+  #     url: /#search
+  #     icon: search
+  #     class: st-search-show-outputs
+
   [[params.sharingOptions]]
     name = "Twitter"
     icon = "fa-twitter"
@@ -118,6 +129,5 @@ paginate = 6
     url = "https://www.facebook.com/sharer/sharer.php?u=%s"
 
 [params.footer]
-  copyright = "<i class=\"fab fa-creative-commons\"></i><i class=\"fab fa-creative-commons-by\"></i><i class=\"fab fa-creative-commons-sa\"></i> 2020 (CC-BY-SA-4.0)<br>by Rafael Castro <i class=\"fas fa-lg fa-crow\"></i>"
+  copyright = "(CC-BY-SA-4.0)<br>by Rafael Castro <i class=\"fas fa-lg fa-crow\"></i>"
 #<br>Puedes apoyarme en <a href=\"https://ko-fi.com/A0A61KV0W\">Ko-fi</a> <i class=\"fas fa-lg fa-coffee\"></i>
-#&copy; {{ now.Format "2006" }} footer.html

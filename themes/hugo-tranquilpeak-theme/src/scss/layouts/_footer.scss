@@ -1,6 +1,7 @@
 #footer {
     color:      map-get($colors, light);
-    font-size:  map-get($font-size, medium);
+    //font-size:  map-get($font-size, medium);
+      line-height: 1.6em;
     text-align: center;
     margin-top: 70px;
     height:     auto;
