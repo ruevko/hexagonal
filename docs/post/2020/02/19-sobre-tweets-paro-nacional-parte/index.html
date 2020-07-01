@@ -77,7 +77,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/helpers/jquery.fancybox-thumbs.min.css" integrity="sha256-SEa4XYAHihTcEP1f5gARTB2K26Uk8PsndQYHQC1f4jU=" crossorigin="anonymous" />
     
     
-    <link rel="stylesheet" href="../../../../css/style-f0tv1cwycoa5ftsq82whodctjsdyzeuqreolcec1akajulp9ngvqzn9txzgl.min.css" />
+    <link rel="stylesheet" href="../../../../css/style-jcr3nl6mgr3qqmxembc28fbfck3mzqitueehk5k6hhz642qgc5brz2f2oxt.min.css" />
     
     
 
@@ -347,7 +347,7 @@ Figure 2: Boxplots de favorites y retweets por hashtag
 </p>
 </div>
 <p>A pesar de que #ParoNacionalEC apareció en más publicaciones, #EcuadorPaisDePaz fue el <em>hashtag</em> más popular en cuanto a favoritos y RTs, con varios valores atípicos. Es un hecho lamentable, pues refleja cierta simpatía -al menos en Twitter- que la ciudadanía tuvo hacia el discurso del estado. La popularidad de #ElParoNoPara o #ElParoSigue poseyó valores más regulares. Para observar los datos de una manera distinta, la siguiente tabla resume los niveles de RTs y las razones de contribución (<em>tweets</em> promedio por usuario).</p>
-<div style="border: 1px solid #ddd; padding: 5px; overflow-x: scroll; width:100%; ">
+<div style="border: 1px solid #ddd; padding: 5px; margin-bottom:2rem;overflow-x: scroll; width:auto; ">
 <table>
 <caption>
 <span id="tab:table">Table 1: </span>Resumen de todos los tweets y retweets
@@ -526,13 +526,13 @@ RTsTotal
 <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 </p>
 <p>Un detalle que no se debe pasar por alto es el hecho de que, unas pocas veces, los <em>hashtags</em> estudiados fueron utilizados en combinación. Esto ocurrió solamente en 44 <em>tweets</em>, lo cual no arroja luz adicional para discernir la intención del usuario; con todo, la combinación de #ParoNacionalEcuador y #ElParoSigue fue la más frecuente. La manera de averiguar esto es “ensanchar” los datos, nuevamente vía <code>tidyr</code>:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>df_wide =<span class="st"> </span><span class="kw">transmute</span>(df_all, <span class="dt">id =</span> id, <span class="dt">us =</span> user, <span class="dt">name =</span> ht, <span class="dt">value =</span> <span class="st">&quot;\U2713&quot;</span>) <span class="op">%&gt;%</span></span>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>df_wide =<span class="st"> </span><span class="kw">transmute</span>(df_all, <span class="dt">id =</span> id, <span class="dt">us =</span> user, <span class="dt">name =</span> ht, <span class="dt">value =</span> <span class="st">&quot;X&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="co">#\U2713</span></span>
 <span id="cb4-2"><a href="#cb4-2"></a><span class="st">   </span><span class="kw">pivot_wider</span>(<span class="dt">values_fill =</span> <span class="kw">list</span>(<span class="dt">value =</span> <span class="st">&quot; &quot;</span>)) <span class="op">%&gt;%</span></span>
 <span id="cb4-3"><a href="#cb4-3"></a><span class="st">   </span><span class="kw">group_by_at</span>(<span class="kw">vars</span>(<span class="op">-</span>id, <span class="op">-</span>us)) <span class="op">%&gt;%</span></span>
 <span id="cb4-4"><a href="#cb4-4"></a><span class="st">   </span><span class="kw">summarise</span>(<span class="dt">Tweets =</span> <span class="kw">n_distinct</span>(id), <span class="dt">Usuarios =</span> <span class="kw">n_distinct</span>(us)) <span class="op">%&gt;%</span></span>
 <span id="cb4-5"><a href="#cb4-5"></a><span class="st">   </span><span class="kw">rename_at</span>(<span class="kw">vars</span>(<span class="op">-</span>Tweets, <span class="op">-</span>Usuarios), <span class="op">~</span><span class="kw">gsub</span>(<span class="st">&quot;[[:lower:]]&quot;</span>, <span class="st">&quot;&quot;</span>, .))</span></code></pre></div>
 <p>La siguiente tabla presenta las combinaciones de <em>hashtags</em> -mostrando solo iniciales- que aparecieron.</p>
-<div style="border: 1px solid #ddd; padding: 5px; overflow-x: scroll; width:100%; ">
+<div style="border: 1px solid #ddd; padding: 5px; margin-bottom:2rem;overflow-x: scroll; width:auto; ">
 <table>
 <caption>
 <span id="tab:help2">Table 2: </span>Resumen de los tweets con hashtags combinados
@@ -576,10 +576,10 @@ Usuarios
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
-&lt;U+2713&gt;
+X
 </td>
 <td style="text-align:center;">
-&lt;U+2713&gt;
+X
 </td>
 <td style="text-align:right;">
 6
@@ -596,12 +596,12 @@ Usuarios
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
-&lt;U+2713&gt;
+X
 </td>
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
-&lt;U+2713&gt;
+X
 </td>
 <td style="text-align:right;">
 14
@@ -618,10 +618,10 @@ Usuarios
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
-&lt;U+2713&gt;
+X
 </td>
 <td style="text-align:center;">
-&lt;U+2713&gt;
+X
 </td>
 <td style="text-align:center;">
 </td>
@@ -640,13 +640,13 @@ Usuarios
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
-&lt;U+2713&gt;
+X
 </td>
 <td style="text-align:center;">
-&lt;U+2713&gt;
+X
 </td>
 <td style="text-align:center;">
-&lt;U+2713&gt;
+X
 </td>
 <td style="text-align:right;">
 1
@@ -661,14 +661,14 @@ Usuarios
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
-&lt;U+2713&gt;
+X
 </td>
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
-&lt;U+2713&gt;
+X
 </td>
 <td style="text-align:right;">
 6
@@ -683,12 +683,12 @@ Usuarios
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
-&lt;U+2713&gt;
+X
 </td>
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
-&lt;U+2713&gt;
+X
 </td>
 <td style="text-align:center;">
 </td>
@@ -705,10 +705,10 @@ Usuarios
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
-&lt;U+2713&gt;
+X
 </td>
 <td style="text-align:center;">
-&lt;U+2713&gt;
+X
 </td>
 <td style="text-align:center;">
 </td>
@@ -725,10 +725,10 @@ Usuarios
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
-&lt;U+2713&gt;
+X
 </td>
 <td style="text-align:center;">
-&lt;U+2713&gt;
+X
 </td>
 <td style="text-align:center;">
 </td>
@@ -745,10 +745,10 @@ Usuarios
 </tr>
 <tr>
 <td style="text-align:center;">
-&lt;U+2713&gt;
+X
 </td>
 <td style="text-align:center;">
-&lt;U+2713&gt;
+X
 </td>
 <td style="text-align:center;">
 </td>
@@ -828,21 +828,19 @@ Figure 4: Tiempo de publicación de los tweets por hashtag
       </nav>
     <ul class="post-actions post-action-share" >
       
-        <li class="post-action hide-lg hide-md hide-sm">
-          <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions">
-            <i class="fa fa-share-alt"></i>
-          </a>
-        </li>
         
-          <li class="post-action hide-xs">
+        
+          
+          <li class="post-action">
             <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://ruevko.github.io/hexagonal/post/2020/02/19-sobre-tweets-paro-nacional-parte/">
               <i class="fab fa-twitter"></i>
             </a>
           </li>
         
-          <li class="post-action hide-xs">
+          
+          <li class="post-action">
             <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://ruevko.github.io/hexagonal/post/2020/02/19-sobre-tweets-paro-nacional-parte/">
-              <i class="fab fa-facebook-f"></i>
+              <i class="fab fa-facebook"></i>
             </a>
           </li>
         
@@ -901,21 +899,19 @@ Figure 4: Tiempo de publicación de los tweets por hashtag
       </nav>
     <ul class="post-actions post-action-share" >
       
-        <li class="post-action hide-lg hide-md hide-sm">
-          <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions">
-            <i class="fa fa-share-alt"></i>
-          </a>
-        </li>
         
-          <li class="post-action hide-xs">
+        
+          
+          <li class="post-action">
             <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://ruevko.github.io/hexagonal/post/2020/02/19-sobre-tweets-paro-nacional-parte/">
               <i class="fab fa-twitter"></i>
             </a>
           </li>
         
-          <li class="post-action hide-xs">
+          
+          <li class="post-action">
             <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://ruevko.github.io/hexagonal/post/2020/02/19-sobre-tweets-paro-nacional-parte/">
-              <i class="fab fa-facebook-f"></i>
+              <i class="fab fa-facebook"></i>
             </a>
           </li>
         
@@ -933,25 +929,7 @@ Figure 4: Tiempo de publicación de los tweets por hashtag
 </div>
 
       </div>
-      <div id="share-options-bar" class="share-options-bar" data-behavior="4">
-  <i id="btn-close-shareoptions" class="fa fa-close"></i>
-  <ul class="share-options">
-    
-      <li class="share-option">
-        <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=https%3A%2F%2Fruevko.github.io%2Fhexagonal%2Fpost%2F2020%2F02%2F19-sobre-tweets-paro-nacional-parte%2F">
-          <i class="fab fa-twitter"></i><span>Compartir en Twitter</span>
-        </a>
-      </li>
-    
-      <li class="share-option">
-        <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fruevko.github.io%2Fhexagonal%2Fpost%2F2020%2F02%2F19-sobre-tweets-paro-nacional-parte%2F">
-          <i class="fab fa-facebook-f"></i><span>Compartir en Facebook</span>
-        </a>
-      </li>
-    
-  </ul>
-</div>
-<div id="share-options-mask" class="share-options-mask"></div>
+      
 
     </div>
     
@@ -998,7 +976,7 @@ Figure 4: Tiempo de publicación de los tweets por hashtag
 <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.7/js/jquery.fancybox.min.js" integrity="sha256-GEAnjcTqVP+vBp3SSc8bEDQqvWAZMiHyUSIorrWwH50=" crossorigin="anonymous"></script>
 
 
-<script src="../../../../js/script-cguihh0eqcqkmammkosznwf1ib9pqkba6p43eagsjkep5tgaasqrgn671.min.js"></script>
+<script src="../../../../js/script-cmchtwcmwiftzzo8e1ozozb6x6l0xignsq00w6gkyr1eirobvnbd9spnq.min.js"></script>
 
 
 <script lang="javascript">

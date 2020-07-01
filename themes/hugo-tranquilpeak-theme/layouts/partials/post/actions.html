@@ -49,13 +49,14 @@
       </nav>
     <ul class="post-actions post-action-share" >
       {{ if (not (eq .Params.showSocial false)) }}
-        <li class="post-action hide-lg hide-md hide-sm">
+        <!-- li class="post-action hide-lg hide-md hide-sm">
           <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions">
             <i class="fa fa-share-alt"></i>
           </a>
-        </li>
+        </li -->
         {{ range .Site.Params.sharingOptions }}
-          <li class="post-action hide-xs">
+          <!-- li class="post-action hide-xs" -->
+          <li class="post-action">
             <a class="post-action-btn btn btn--default" target="new" href="{{ printf .url $.Permalink }}">
               <i class="fab {{ .icon }}"></i>
             </a>

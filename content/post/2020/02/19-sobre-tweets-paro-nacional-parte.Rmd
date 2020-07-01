@@ -60,11 +60,12 @@ A pesar de que #ParoNacionalEC apareció en más publicaciones, #EcuadorPaisDePa
 ```{r table, echo=FALSE}
 library(kableExtra)
 
-filter(df_long, name=="retweets") %>% rename(Hashtag=ht) %>% group_by(Hashtag) %>%
-   summarise(Tweets=n_distinct(id), Usuarios=n_distinct(user), Razón=n_distinct(id)/n_distinct(user),
-             RTsMedio=mean(value), RTsMax=max(value), RTsTotal=sum(value)) %>%
+filter(df_long, name == "retweets") %>% rename(Hashtag = ht) %>% group_by(Hashtag) %>%
+   summarise(Tweets = n_distinct(id), Usuarios = n_distinct(user),
+             Razón = n_distinct(id) / n_distinct(user),
+             RTsMedio = mean(value), RTsMax = max(value), RTsTotal = sum(value)) %>%
    kable(digits = 2, caption = "Resumen de todos los tweets y retweets") %>%
-   scroll_box(width = "100%")
+   scroll_box(width = "auto", extra_css = "margin-bottom:2rem;")
    
 ```
 
@@ -75,7 +76,7 @@ Mientras que el discurso malintencionado del estado -en la forma de #EcuadorPaí
 Un detalle que no se debe pasar por alto es el hecho de que, unas pocas veces, los *hashtags* estudiados fueron utilizados en combinación. Esto ocurrió solamente en 44 *tweets*, lo cual no arroja luz adicional para discernir la intención del usuario; con todo, la combinación de #ParoNacionalEcuador y #ElParoSigue fue la más frecuente. La manera de averiguar esto es "ensanchar" los datos, nuevamente vía `tidyr`:
 
 ```{r help1}
-df_wide = transmute(df_all, id = id, us = user, name = ht, value = "\U2713") %>%
+df_wide = transmute(df_all, id = id, us = user, name = ht, value = "X") %>% #\U2713
    pivot_wider(values_fill = list(value = " ")) %>%
    group_by_at(vars(-id, -us)) %>%
    summarise(Tweets = n_distinct(id), Usuarios = n_distinct(us)) %>%
@@ -93,9 +94,9 @@ df_all = mutate_at(df_all, "ht", ~case_when(
    . == "#ParoNacionalEC"      ~ scale_fill_hue()$palette(6)[1],
    . == "#ParoNacionalEcuador" ~ scale_fill_hue()$palette(6)[3]))
 
-df_wide[rowSums(df_wide[grep("#", names(df_wide))] == "\U2713") > 1, ] %>%
+df_wide[rowSums(df_wide[grep("#", names(df_wide))] == "X") > 1, ] %>%
    kable(align = "ccccccrr", caption = "Resumen de los tweets con hashtags combinados") %>%
-   scroll_box(width = "100%")
+   scroll_box(width = "auto", extra_css = "margin-bottom:2rem;")
 ```
 
 Habiendo analizado todo esto, ¿quiénes utilizaron en mayor cantidad cada *hashtag*? Este gráfico -que conserva la legenda de color del gráfico \@ref(fig:plot1)- recoge solamente los usuarios con diez o más publicaciones. Se demuestra cómo en las cuentas de ejército, policía y presidente -los responsables de la violencia que sufrieron los manifestantes- abundaron los mensajes de paz, alcanzando una cantidad ridícula con la secretaría general de comunicación de la presidencia. Mientras tanto se evidenciaron los mensajes de respaldo al paro desde el KolectiVOZ y la CONAIE, y de reportaje en Pichincha Comunicaciones y Wambra.

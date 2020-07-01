@@ -125,7 +125,7 @@ paginate = 6
 
   [[params.sharingOptions]]
     name = "Facebook"
-    icon = "fa-facebook-f"
+    icon = "fa-facebook"
     url = "https://www.facebook.com/sharer/sharer.php?u=%s"
 
 [params.footer]

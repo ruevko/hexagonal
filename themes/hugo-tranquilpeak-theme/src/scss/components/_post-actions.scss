@@ -45,7 +45,8 @@
         li.post-action {
             float: right;
 
-            &:nth-child(n + 3) {
+            //&:nth-child(n + 3) {
+              &:nth-child(n + 2) {
                 .post-action-btn {
                     margin-right: 15px;
                 }

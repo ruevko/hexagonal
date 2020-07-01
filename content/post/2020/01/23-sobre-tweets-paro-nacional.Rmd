@@ -83,6 +83,7 @@ data.frame(v0 = c("[#ParoNacionalEcuador ](https://twitter.com/search?q=%23ParoN
    mutate(v0 = paste0(v0, "%20since%3A2019-10-01%20until%3A2019-10-10)")) %>%
    knitr::kable(col.names = c("hashtag", "tweets (1)", "tweets únicos (2)",
                               "porcentaje (2÷1)", "usuarios (3)", "razón (1÷3)"))
+#kableExtra::scroll_box(width = "auto", extra_css = "margin-bottom:2rem;")
 ```
 
 Un par de ideas se derivan de este conteo. La inclusión de #EcuadorPaisDePaz se relaciona con un desprecio por las protestas, pero también se relaciona con el porcentaje más bajo de *tweets* únicos y la razón más alta de *tweets* por cuenta. Aunque los números no son atípicos, estas son las características del *spam*. En contraposición, el uso de #ParoNacionalEcuador demuestra el porcentaje más alto de publicaciones útiles, y la tasa más baja de contribución por usuario; este *hashtag* fue comúnmente utilizado para reportar con fotos y videos las situaciones violentas y la represión ejecutada por los aparatos del estado.
