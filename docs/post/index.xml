@@ -6,10 +6,19 @@
     <description>Recent content in Posts on La Galería Hexagonal</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>es-es</language>
-    <lastBuildDate>Wed, 04 Mar 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 01 Jul 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://ruevko.github.io/hexagonal/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Cordones y Coordenadas</title>
+      <link>https://ruevko.github.io/hexagonal/post/2020/07/01-cordones-coordenadas/</link>
+      <pubDate>Wed, 01 Jul 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://ruevko.github.io/hexagonal/post/2020/07/01-cordones-coordenadas/</guid>
+      <description>Este primer post sobre matemáticas presenta una demostración de la fórmula &lt;em&gt;shoelace&lt;/em&gt;, utilizada para calcular áreas y centroides de polígonos.</description>
+    </item>
     
     <item>
       <title>La tasa de crecimiento diaria</title>

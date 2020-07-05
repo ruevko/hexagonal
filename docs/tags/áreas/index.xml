@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>áreas on La Galería Hexagonal</title>
+    <link>https://ruevko.github.io/hexagonal/tags/%C3%A1reas/</link>
+    <description>Recent content in áreas on La Galería Hexagonal</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>es-es</language>
+    <lastBuildDate>Wed, 01 Jul 2020 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://ruevko.github.io/hexagonal/tags/%C3%A1reas/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Cordones y Coordenadas</title>
+      <link>https://ruevko.github.io/hexagonal/post/2020/07/01-cordones-coordenadas/</link>
+      <pubDate>Wed, 01 Jul 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://ruevko.github.io/hexagonal/post/2020/07/01-cordones-coordenadas/</guid>
+      <description>Este primer post sobre matemáticas presenta una demostración de la fórmula &lt;em&gt;shoelace&lt;/em&gt;, utilizada para calcular áreas y centroides de polígonos.</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -2,7 +2,7 @@
 # Version : 0.4.8-BETA
 # Author : Thibaud Leprêtre
 
-ignoreFiles = ["\\.bib$", "\\.csv$", "\\.jpg$", "\\.RDS$", "\\.Rmd$", "_files$", "_cache$"]
+ignoreFiles = ["\\.bib$", "\\.csv$", "\\.jpg$", "\\.shp$", "\\.shx$", "\\.RDS$", "\\.Rmd$", "_files$", "_cache$"]
 
 publishDir = "docs"
 title = "La Galería Hexagonal"

@@ -1,0 +1,314 @@
+---
+title: Cordones y Coordenadas
+author: Rafael Castro
+date: '2020-07-01'
+slug: 01-cordones-coordenadas
+categories:
+  - Matemáticas
+tags:
+  - áreas
+  - centroides
+keywords:
+  - areas
+  - centroids
+editor_options:
+  chunk_output_type: console
+output:
+  blogdown::html_page:
+    highlight: kate
+math: yes
+thumbnailImage: https://ruevko.github.io/hexagonal/post/2020/07/01-cordones-coordenadas_files/figure-html/example-1-1.gif
+summary: Este primer post sobre matemáticas presenta una demostración de la fórmula *shoelace*, utilizada para calcular áreas y centroides de polígonos.
+---
+`r knitr::opts_chunk$set(dev = "svg", echo=FALSE, fig.height = 3, fig.width = 4.5)`
+
+El Ecuador continental^[En los libros aparece la cifra de 256370 km^2^ para todo el Ecuador; a ello hay que restar no solo las Galápagos, también las islas frente al litoral, como Puná o La Plata.] posee una extensión un poco mayor a 246 mil km^2^. Verificar este dato, con cartografía oficial, es sencillo; en este procedimiento, `sf::st_area()` es la función clave:
+
+```{r ecuador-area, echo=TRUE}
+library(sf)
+library(units)
+
+Ecuador_sf = read_sf("boundaryl.shp")$geometry %>% # fuente: http://www.igm.gob.ec/
+   st_set_crs(32717) %>% # proyección oficial: UTM zona 17S
+   st_cast("POLYGON")
+
+set_units(st_area(Ecuador_sf), "km^2")
+```
+
+Resulta trivial calcular cantidades como áreas o distancias, pero aprender la lógica detrás de tales operaciones no deja de ser interesante. En este post revisaremos un acercamiento al problema de calcular el área de un polígono: la *shoelace formula*^[También conocida como la fórmula del área de Gauss; no obstante, parece que el primero en describirla fue [Albrecht Ludwig Friedrich Meister](https://www.deutsche-biographie.de/sfz60150.html). En cualquier caso, fue descrita por un matemático alemán.]. Este curioso nombre, como se verá, se relaciona con la forma como se construye la fórmula.
+
+Plantear dicho problema supone conocer las coordenadas $P_{i} = x_{i},\ y_{i};\ i = 1, 2, ... n$ de los vértices del polígono, donde $n$ es el número de vértices (que también es el número lados). Es un requisito que estos vértices se encuentren ordenados alrededor del límite; dicho de otra manera, que el polígono se trace "uniendo los puntos". Tomemos el siguiente gráfico; el área del triángulo $A = \triangle P_{1}P_{2}P_{3}$ es la interrogante.
+
+```{r example-1}
+library(gganimate)
+library(ggforce)
+
+recpal = ggthemes::stata_pal()(4)[c(4, 2, 3, 1)]
+
+shoeplot = function(data) ggplot(data, aes(x, y, label = p)) +
+   coord_fixed() + theme_light() +
+   theme(legend.title = element_blank()) +
+   scale_color_manual(values = recpal) +
+   scale_fill_manual(values = paste0(recpal, "80")) +
+   scale_x_unit(breaks = 0:9, minor_breaks = NULL, limits = c(0, 9.4)) +
+   scale_y_unit(breaks = 0:9, minor_breaks = NULL, limits = c(0, NA))
+
+shoeplot2 = function(data) shoeplot(data) +
+   geom_polygon(aes(color = t, fill = t), size = .8) +
+   geom_point(data = data[1:3, ], size = 1.6) +
+   geom_text(hjust = 0, nudge_x = .2)
+
+rectan = data.frame(
+   p = c("P1", "P2", "P3", rep(NA, 9)),
+   t = rep(c("A", "B", "C", "D"), each = 3),
+   x = set_units(c(8, 9, 1, 8, 9, 9, 9, 9, 1, 8, 1, 1), "m"),
+   y = set_units(c(2, 6, 7, 2, 6, 2, 7, 6, 7, 2, 2, 7), "m"))
+
+shoeplot2(rectan)
+```
+
+El rectángulo $E = A + B + C + D$ se traza de manera que contenga al triángulo $A$, su área sea mínima, y sus lados paralelos a los ejes. En este caso^[Al menos un vértice del triángulo coincidirá con uno del rectángulo. También puede suceder que dos (o los tres) vértices del triángulo coincidan; se invita a demostrar la ecuación \@ref(eq:triangle) en esos dos casos.] es sencillo calcular el área de $E$ y de los triángulos $B, C, D$ con fórmulas geométricas elementales: $bh$ y $\frac{1}{2} bh$ respectivamente.
+
+$$E = (x_{2} - x_{3})(y_{3} - y_{1})$$
+$$D = \frac{1}{2} (x_{1} - x_{3})(y_{3} - y_{1})$$
+$$C = \frac{1}{2} (x_{2} - x_{3})(y_{3} - y_{2})$$
+$$B = \frac{1}{2} (x_{2} - x_{1})(y_{2} - y_{1})$$
+
+Ahora, es evidente que el área buscada se puede hallar por diferencia: $A = E - B - C - D$. Reemplazando y simplificando se obtiene:
+
+$$
+\begin{equation}
+A = \frac{1}{2} (x_{1}y_{2} - x_{2}y_{1} + x_{2}y_{3} - x_{3}y_{2} + x_{3}y_{1} - x_{1}y_{3})
+(\#eq:triangle)
+\end{equation}
+$$
+
+En este ejemplo:
+
+$$
+\begin{equation}
+A = \frac{1}{2} (8\cdot6 - 9\cdot2 + 9\cdot7 - 1\cdot6 + 1\cdot2 - 8\cdot7) = 16.5
+\end{equation}
+$$
+
+De manera que el problema está resuelto, al menos cuando el polígono es un triángulo. Con todo, revisemos que sucede si variamos este ejemplo, intercambiando las posiciones de $P_{2}$ y $P_{3}$.
+
+```{r example-2}
+rectan2 = data.frame(
+   p = c("P1", "P2", "P3", rep(NA, 9)),
+   t = rep(c("A", "D", "C", "B"), each = 3),
+   x = set_units(c(8, 1, 9, 8, 9, 9, 9, 9, 1, 8, 1, 1), "m"),
+   y = set_units(c(2, 7, 6, 2, 6, 2, 7, 6, 7, 2, 2, 7), "m"))
+
+shoeplot2(rectan2)
+```
+
+Según la ecuación \@ref(eq:triangle):
+
+$$
+\begin{equation}
+A = \frac{1}{2} (8\cdot7 - 1\cdot2 + 1\cdot6 - 9\cdot7 + 9\cdot2 - 8\cdot6) = -16.5
+\end{equation}
+$$
+
+Es un resultado importante pues, mientras el valor absoluto del área sigue siendo correcto, el hecho de que haya cambiado de signo resultará crucial más tarde. La regla es la siguiente: si los vértices se encuentran ordenados en sentido anti horario, se calcula un área positiva; si el orden es horario, el área negativa.
+
+Revisemos una variación más, reemplazando $P_{3}$ por $P_{0} = 0,\ 0$.
+
+```{r example-3}
+rectan2 = data.frame(
+   p = c("P0", "P1", "P2", rep(NA, 9)),
+   t = rep(c("A", "B", "C", "D"), each = 3),
+   x = set_units(c(0, 8, 1, 0, 8, 8, 8, 8, 1, 0, 0, 1), "m"),
+   y = set_units(c(0, 2, 7, 0, 2, 0, 7, 2, 7, 0, 7, 7), "m"))
+
+shoeplot2(rectan2)
+```
+
+Cuando uno de los vértices es el origen, es posible reducir \@ref(eq:triangle):
+
+$$
+\begin{equation}
+A = \frac{1}{2} (x_{1}y_{2} - x_{2}y_{1} + x_{2}\cdot0 - 0\cdot y_{2} + 0\cdot y_{1} - x_{1}\cdot0) = \frac{1}{2} (x_{1}y_{2} - x_{2}y_{1})
+(\#eq:origin)
+\end{equation}
+$$
+
+En este ejemplo:
+
+$$
+\begin{equation}
+A = \frac{1}{2} (8\cdot7 - 1\cdot2) = 27
+\end{equation}
+$$
+
+Se verifica que el área es positiva porque los vértices están en sentido anti horario. La ecuación \@ref(eq:origin) puede ser generalizada a:
+
+$$
+\begin{equation}
+\triangle P_{0}P_{i}P_{i+1} = \frac{1}{2} (x_{i}y_{i+1} - x_{i+1}y_{i});\ i = 1, 2, ... n
+\end{equation}
+$$
+
+Esta forma es aplicable en cada uno de los $n$ lados, observando que el vértice $P_{n+1}$ equivale a $P_{1}$ (pues el polígono se encuentra cerrado). ¿Cuál es el propósito de generalizar esta ecuación? Observen lo que sucede al iterarla en el triángulo $A$ del primer ejemplo; en estas animaciones, los triángulos de borde rojo poseen área positiva; los de borde azul, negativa.
+
+```{r animation-1}
+options(gganimate.renderer = magick_renderer())
+
+shoelace = function(df){
+   x = df[c(2:nrow(df), 1), "x"]
+   y = df[c(2:nrow(df), 1), "y"]
+   df$s = cumsum(df$x * y - x * df$y) / 2
+   return(df)
+}
+
+shoeanim = function(vertex, x0 = 0, y0 = 0, paths = TRUE, texts = TRUE){
+   
+   n = nrow(vertex)
+   
+   vertex = rbind(vertex, data.frame(p = "P0", x = x0, y = y0))
+   
+   index = Reduce(c, lapply(1:n, function(i) c(n + 1, i, i + 1, n + 1)))
+   
+   index[4 * n - 1] = 1
+   
+   triangles = vertex[index, ]
+   
+   index = split(triangles, rep(1:n, each = 4)) %>%
+      lapply(function(i) shoelace(i)$s[4] ) %>%
+      Reduce(c, .)
+   
+   triangles$col = rep(ifelse(as.double(index) > 0, recpal[2], recpal[4]), each = 4)
+   
+   index = suppressWarnings(sapply(cumsum(index), capture.output))
+
+   triangles$id = rep(index, each = 4)
+   
+   shoeplot(triangles) +
+      scale_color_identity() +
+      geom_polygon(alpha = .5) +
+      geom_point(data = vertex, size = 1.6) +
+      {if(texts) geom_text(data = vertex, hjust = 0, nudge_x = .2)} +
+      {if(paths) geom_path(aes(color = col), size = .8)} +
+      transition_manual(factor(id, index), cumulative = TRUE) +
+      ggtitle("Area Sum: {current_frame}", "Progress: {frame} / {nframes}")
+}
+
+animate(shoeanim(rectan[1:3, -2]), 5, 1, end_pause = 2, height = 3.6, width = 4)
+```
+
+El hecho de que esta fórmula devuelva resultados positivos y negativos resuelve el problema del área para cualquier polígono $P_{1}P_{2}...P_{n}$; calculándola en todos los lados, se generan triángulos cuyas áreas, sumadas, producen el polígono buscado. Existe, sin embargo, la restricción de que el polígono sea simple (no se debe intersecar a sí mismo).
+
+$$
+\begin{equation}
+A_{P_{1}P_{2}...P_{n}} = \triangle P_{0}P_{1}P_{2} +\triangle P_{0}P_{2}P_{3} +\ ...\ \triangle P_{0}P_{n}P_{1}
+\end{equation}
+$$
+
+$$
+\begin{equation}
+A_{P_{1}P_{2}...P_{n}} = \sum_{i=1}^{n} \triangle P_{0}P_{i}P_{i+1} = \frac{1}{2} \sum_{i=1}^{n} (x_{i}y_{i+1} - x_{i+1}y_{i});\ P_{n+1} = P_{1}
+(\#eq:shoelace)
+\end{equation}
+$$
+
+Y esta es la *shoelace formula*. Su construcción, multiplicando de manera cruzada las coordenadas de un vértice con el siguiente, se asemeja a insertar los cordones en un zapato. Compliquemos un poco nuestro ejemplo, añadiendo dos vértices:
+
+```{r animation-2}
+pentagon = data.frame(
+   p = c("P1", "P2", "P3", "P4", "P5"),
+   x = set_units(c(8, 9, 1, 3, 4), "m"),
+   y = set_units(c(2, 6, 7, 0, 5), "m"))
+
+animate(shoeanim(pentagon), 7 , 1, end_pause = 2, height = 3.6, width = 4)
+```
+
+Otro nombre que se le ha otorgado es *surveyor's formula* pues su utilidad en topografía salta a la vista; en esta aplicación, un paso previo era transformar las coordenadas polares, del teodolito, a rectangulares. Imaginémonos al topógrafo levantando vértices en $P_{0}$, pero este punto no necesariamente tiene que ser el origen:
+
+```{r animation-3}
+animate(shoeanim(pentagon, 5, 2), 7 , 1, end_pause = 2, height = 3.6, width = 4)
+```
+
+La fórmula encuentra una aplicación más en el cálculo del centroide, el centro de masa de un polígono. Si $A$ es el área calculada con la *shoelace formula* (ya sea positiva o negativa), las coordenadas del centroide $P_{c} = x_{c},\ y_{c}$ se hallan con el siguiente par de fórmulas:
+
+$$
+\begin{equation}
+x_{c} = \frac{1}{6A} \sum_{i=1}^{n} (x_{i} + x_{i+1}) (x_{i}y_{i+1} - x_{i+1}y_{i})
+(\#eq:centroidx)
+\end{equation}
+$$
+
+$$
+\begin{equation}
+y_{c} = \frac{1}{6A} \sum_{i=1}^{n} (y_{i} + y_{i+1}) (x_{i}y_{i+1} - x_{i+1}y_{i})
+(\#eq:centroidy)
+\end{equation}
+$$
+
+Nuevamente, calcular el centroide de un polígono es algo trivial; en el caso del Ecuador continental, por ejemplo, podemos ejecutar `sf::st_centroid(Ecuador_sf)`, obteniendo como resultado:
+
+```{r ecuador-cent, message=TRUE}
+st_centroid(Ecuador_sf)[[1]]
+```
+
+Con todo, ahora estamos en capacidad de replicar esas funciones `sf`. El primer paso es transformar los datos espaciales en una matriz de coordenadas.
+
+```{r ecuador-df, echo=TRUE}
+Ecuador_df = st_cast(Ecuador_sf, "POINT")[-1] %>%
+   lapply(as.double) %>%
+   Reduce(rbind, .) %>%
+   set_units("m")
+
+colnames(Ecuador_df) = c("x", "y")
+
+rownames(Ecuador_df) = NULL
+
+head(Ecuador_df)
+```
+
+El segundo paso es escribir una función que reciba la matriz y aplique las ecuaciones \@ref(eq:shoelace) \@ref(eq:centroidx) \@ref(eq:centroidy).
+
+```{r shoelace, echo=TRUE}
+shoelace = function(vertices){
+   x0 = vertices[, "x"]
+   x1 = x0[c(2 : length(x0), 1)]
+   
+   y0 = vertices[, "y"]
+   y1 = y0[c(2 : length(y0), 1)]
+   
+   area = sum(x0 * y1 - x1 * y0) / 2
+   
+   message("Area:"); print(set_units(area, "km^2"))
+   
+   xc = sum((x0 + x1) * (x0 * y1 - x1 * y0)) / area / 6
+   yc = sum((y0 + y1) * (x0 * y1 - x1 * y0)) / area / 6
+   
+   message("Centroid:"); c(East = xc, North = yc)
+}
+```
+
+El último paso es ejecutar `sholace(Ecuador_df)`; este es el resultado:
+
+```{r ecuador, message=TRUE}
+shoelace(Ecuador_df)
+```
+
+¡Hemos hallado los resultados correctos! Aquí termina la revisión de la *shoelace formula*, con una última observación: es cierto que la fórmula se ejecuta en un solo paso, pero estas animaciones^[La última animación fue generada con una versión simplificada del límite ecuatoriano; por esta razón la extensión calculada difiere de la correcta.] progresivas se ven muy bien.
+
+```{r ecuador-gif, eval=FALSE}
+Ecuador_gif = {st_cast(st_simplify(Ecuador_sf, dTolerance = 5e3), "POINT") %>%
+   lapply(as.double) %>% Reduce(rbind, .) %>% set_units("km") %>% #1e4c(45:2,71:46)
+   as.data.frame()}[c(80:35,30:26,21:19,15:7,5:4,1,122:118,112:111,104:99,93:81),]/1e3
+
+colnames(Ecuador_gif) = c("x", "y")
+
+Ecuador_gif$p = paste0("P", 1:nrow(Ecuador_gif))
+
+Ecuador_gif = shoeanim(Ecuador_gif, 1100, 9500, texts = FALSE) +
+   scale_y_unit("North", 100 * 95:101, "km", NULL) +
+   scale_x_unit("East", 100 * 5:11, "km", NULL)
+
+animate(Ecuador_gif, 108, 4, end_pause = 16, height = 5, width = 4.5)
+```
+
+![](https://res.cloudinary.com/dodnzqhiz/image/upload/v1593884075/2020post/ecuador-shoelace-gif_xav1ma.gif)
