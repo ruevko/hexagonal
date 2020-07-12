@@ -5,7 +5,8 @@
     background:                  map-get($header, background);
     position:                    fixed;
     top:                         0;
-    border:                      map-get($header, border);
+    //border:                      map-get($header, border);
+      border-bottom:               map-get($header, border);
     color:                       map-get($header, color);
     // used to animate the header on small screen with javascript
     //@include prefix(transition, top 0.25s ease-in-out, 'webkit' 'moz' 'ms' 'o');

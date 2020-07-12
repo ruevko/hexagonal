@@ -4,7 +4,8 @@
     .postShorten {
         // Space between 2 shorten post
         margin-top:    15px;
-        border-bottom: 1px solid #eef2f8;
+        //border-bottom: 1px solid #eef2f8;
+          border-bottom: map-get($header, border);
     }
 }
 
@@ -70,9 +71,14 @@
     }
     .postShorten-excerpt {
         margin-top: 15px;
+        p {
+            margin: 0 0 1rem 0;
+        }
+/*
         p:nth-child(1) {
             margin: 0
         }
+*/
     }
     .postShorten-content {
         margin-top: 25px;

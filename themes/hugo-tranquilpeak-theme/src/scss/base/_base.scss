@@ -116,10 +116,12 @@ table {
 }
 */
 hr {
-    margin:     1.5em 0 0;
+    //margin:     1.5em 0 0;
+      margin:     1.5rem 0;
     outline:    none;
     border:     none;
-    border-top: 1px solid #eef2f8;
+    //border-top: 1px solid #eef2f8;
+      border-bottom: map-get($header, border);
 }
 
 dl {
@@ -143,13 +145,14 @@ pre > code {
     // To override cursor attribute of `.tag` components
     cursor:      text;
     overflow-x:  auto;
-    line-height: map-get($highlight, line-height) + 0.4rem;
-    font-size:   map-get($highlight, font-size);
+    line-height: map-get($highlight, line-height);
+    //font-size:   map-get($highlight, font-size);
 }
 
 // inline code
 code {
-    font-size:        map-get($font-size, medium);
+    //font-size:        map-get($font-size, medium);
+      font-size:        map-get($font-size, small) + 0.1rem;
     display:          inline-block;
     font-family:      map-get($font-families, 'code');
     font-weight:      400;
@@ -176,9 +179,11 @@ blockquote {
 
 // Reduce global font-size base and headings font size on small screen and down
 @media #{$small-and-down} {
+/*
     code {
         font-size: map-get($font-size, medium) - $font-size-base-sm-screen-reduction-factor;
     }
+*/
     @each $key, $value in $headings-font-size {
         #{$key} {
             font-size: $value - $headings-font-size-sm-screen-reduction-factor;
@@ -194,4 +199,3 @@ blockquote {
         }
     }
 }
-
