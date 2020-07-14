@@ -1,9 +1,10 @@
 .form-control {
-    background: transparent;
-    width:      100%;
-    border:     none;
-    outline:    none;
-    color:      map-get($colors, base);
+    background:  transparent;
+    width:       100%;
+    border:      none;
+    outline:     none;
+    //color:     map-get($colors, base);
+      color:     map-get($colors, light);
     font-weight: 300;
 
     &:hover,
@@ -12,6 +13,9 @@
     }
 }
 
+  ::placeholder {
+      color:     map-get($colors, light);
+  }
 
 // Input size variant
 .input--large {

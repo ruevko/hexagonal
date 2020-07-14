@@ -55,6 +55,11 @@
                 &:active {
                     text-decoration: none;
                     color:           lighten(map-get($sidebar, color), 35);
+
+                      .sidebar-button-desc {
+                          font-weight: 700;
+                      }
+
                 }
             }
         }

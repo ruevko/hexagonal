@@ -5,7 +5,7 @@
           {{ if .Site.Params.swapPaginator }}
             <li class="post-action">
               {{ with .PrevInSection }}
-                <a class="post-action-btn btn btn--default tooltip--top" href="{{ .RelPermalink }}" data-tooltip="{{ .Title }}">
+                <a class="post-action-btn btn btn--default tooltip-big" href="{{ .RelPermalink }}" data-tooltip="{{ .Title }}">
               {{ else }}
                 <a class="post-action-btn btn btn--disabled">
               {{ end }}
@@ -15,7 +15,7 @@
             </li>
             <li class="post-action">
               {{ with .NextInSection }}
-                <a class="post-action-btn btn btn--default tooltip--top" href="{{ .RelPermalink }}" data-tooltip="{{ .Title }}">
+                <a class="post-action-btn btn btn--default tooltip-big" href="{{ .RelPermalink }}" data-tooltip="{{ .Title }}">
               {{ else }}
                 <a class="post-action-btn btn btn--disabled">
               {{ end }}
@@ -26,7 +26,7 @@
           {{ else }}
             <li class="post-action">
               {{ with .NextInSection }}
-                <a class="post-action-btn btn btn--default tooltip--top" href="{{ .RelPermalink }}" data-tooltip="{{ .Title }}">
+                <a class="post-action-btn btn btn--default tooltip-big" href="{{ .RelPermalink }}" data-tooltip="{{ .Title }}">
               {{ else }}
                 <a class="post-action-btn btn btn--disabled">
               {{ end }}
@@ -36,7 +36,7 @@
             </li>
             <li class="post-action">
               {{ with .PrevInSection }}
-                <a class="post-action-btn btn btn--default tooltip--top" href="{{ .RelPermalink }}" data-tooltip="{{ .Title }}">
+                <a class="post-action-btn btn btn--default tooltip-big" href="{{ .RelPermalink }}" data-tooltip="{{ .Title }}">
               {{ else }}
                 <a class="post-action-btn btn btn--disabled">
               {{ end }}
@@ -57,7 +57,7 @@
         {{ range .Site.Params.sharingOptions }}
           <!-- li class="post-action hide-xs" -->
           <li class="post-action">
-            <a class="post-action-btn btn btn--default" target="new" href="{{ printf .url $.Permalink }}">
+            <a class="post-action-btn btn btn--default" target="new" href="{{ printf .url $.Permalink }}" data-tooltip="Compartir en {{ .name }}">
               <i class="fab {{ .icon }}"></i>
             </a>
           </li>
@@ -74,7 +74,7 @@
         {{ if findRE "<!--\\s*[t|T][o|O][c|C]\\s*-->" .Content }}
           <a class="post-action-btn btn btn--default" href="#table-of-contents">
         {{ else }}
-          <a class="post-action-btn btn btn--default" href="#">
+          <a class="post-action-btn btn btn--default" href="#" data-tooltip="Regresar al inicio">
         {{ end }}
           <i class="fa fa-angle-double-up"></i>
         </a>
