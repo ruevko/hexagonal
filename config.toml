@@ -71,26 +71,26 @@ paginate = 6
     #pre = "<i class=\"sidebar-button-icon fas fa-lg fa-coffee\"></i>"
     #url = "https://ko-fi.com/ruevko"
   #[[menu.links]]
-    #weight = 1
+    #weight = 4
     #identifier = "researchgate"
     #name = "RGate"
     #pre = "<i class=\"sidebar-button-icon fab fa-lg fa-researchgate\"></i>"
     #url = "https://www.researchgate.net/profile/Roger_Rafael_Castro_Zambrano"
   #[[menu.links]]
-    #weight = 2
+    #weight = 5
     #identifier = "linkedin"
     #name = "LinkedIn"
     #pre = "<i class=\"sidebar-button-icon fab fa-lg fa-linkedin\"></i>"
     #url = "https://www.linkedin.com/in/roger-rafael-castro-zambrano-143738188"
   #[[menu.links]]
-    #weight = 3
+    #weight = 6
     #identifier = "instagram"
     #name = "Instagram"
     #pre = "<i class=\"sidebar-button-icon fab fa-lg fa-instagram\"></i>"
     #url = "https://instagram.com/ruevko"
 
   [[menu.misc]]
-    weight = 5
+    weight = 1
     identifier = "readme"
     name = "Acerca de..."
     pre = "<i class=\"sidebar-button-icon far fa-lg fa-compass\"></i>" #fas-map-signs
@@ -111,13 +111,6 @@ paginate = 6
   clearReading = true
   sidebarBehavior = 1
 
-  # Header configuration. The link at the right of the header is customizable
-  # You can add a link (as icon) at the right of header instead of author's picture.
-  # By default, author's gravatar or author's picture is displayed.
-  #     url: /#search
-  #     icon: search
-  #     class: st-search-show-outputs
-
   [[params.sharingOptions]]
     name = "Twitter"
     icon = "fa-twitter"
@@ -127,6 +120,14 @@ paginate = 6
     name = "Facebook"
     icon = "fa-facebook"
     url = "https://www.facebook.com/sharer/sharer.php?u=%s"
+
+# Header configuration. The link at the right of the header is customizable
+# You can add a link (as icon) at the right of header instead of author's picture.
+# By default, author's gravatar or author's picture is displayed.
+#[params.header.rightLink]
+  #class = ""      #class: st-search-show-outputs
+  #icon = ""       #icon: search
+  #url = "/#about" #url: /#search
 
 [params.footer]
   copyright = "(CC-BY-SA-4.0)<br>by Rafael Castro <i class=\"fas fa-lg fa-crow\"></i>"

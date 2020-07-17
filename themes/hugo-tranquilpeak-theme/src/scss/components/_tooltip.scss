@@ -63,7 +63,8 @@
     }
     &:after {
         // Center tooltip with his arrow
-        margin-left: -#{(map-get($tooltip, min-width) / 2) + 1};
+        //margin-left: -#{(map-get($tooltip, min-width) / 2) + 1};
+          margin-left: -#{(map-get($tooltip, min-width) / 2) + 20};
     }
     &:before,
     &:after {
@@ -170,6 +171,6 @@
 .tooltip-big {
     &:after {
         min-width: map-get($tooltip, min-width) + 50px;
-        margin-left: -#{(map-get($tooltip, min-width) / 2) + 26};
+        margin-left: -#{(map-get($tooltip, min-width) / 2) + 5};
     }
 }

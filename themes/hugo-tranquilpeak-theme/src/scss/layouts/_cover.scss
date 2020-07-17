@@ -1,6 +1,7 @@
 #cover {
     position:          fixed;
-    width:             100%;
+    //width:             100%;
+      width:             100vw;
     height:            100%;
     background-repeat: no-repeat;
     background-size:   cover;
@@ -9,3 +10,9 @@
     // position the cover below the whole blog
     z-index:           map-get($z-indexes, l-cover);
 }
+
+  @media #{$small-and-down} {
+      #cover {
+          height: 658px;
+      }
+  }
