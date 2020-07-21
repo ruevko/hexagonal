@@ -1,0 +1,358 @@
+---
+title: Caracterización del COVID-19 en Ecuador
+author: Rafael Castro
+date: '2020-03-20'
+slug: 20-caracterizacion-covid-ecuador
+#categories:
+#  - Reportes
+tags:
+#  - coronavirus
+  - regresión
+keywords:
+#  - coronavirus
+  - regression
+editor_options: 
+  chunk_output_type: console
+output:
+   blogdown::html_page:
+      highlight: kate
+      toc: true
+link-citations: true
+bibliography: ../../babel.bib
+coverImage: https://res.cloudinary.com/dodnzqhiz/image/upload/v1595302810/2020post/ecuador-covid19-april23_pnwcqe.jpg
+summary: Utilizando paquetes desarrollados por el R Epidemics Consortium se estima el ritmo reproductivo básico, así como tres escenarios de crecimiento para los casos confirmados.
+---
+
+`r knitr::opts_chunk$set(echo = FALSE)`
+
+**Actualizado: 23 de abril, 13 PM**
+
+En atención a la emergencia en curso causada por el SARS-CoV-2 se presenta una caracterización de la epidemia en Ecuador. Se aplicó una metodología sugerida por el R Epidemics Consortium [RECON](https://www.repidemicsconsortium.org/) que permite estimar tempranamente una variable clave como lo es el ritmo reproductivo; dicha metodología requiere conocer ciertas características del virus, y poseer datos de la incidencia diaria. Adicionalmente se ha utilizado `library(tidyverse)`.
+
+# **Definiciones**
+
+Para aplicar la presente metodología es necesario familiarizarse con las siguientes definiciones [@covia], relacionadas con la transmisión de un virus:
+
+* El ritmo reproductivo básico (*Basic Reproduction Number*, R~0~) es la media de transmisiones por caso; es decir, la cantidad esperada de casos nuevos que un determinado caso generará.
+
+* El intervalo serial (*Serial Interval*, SI) es el tiempo transcurrido entre la aparición de síntomas en dos casos sucesivos; comúnmente se caracteriza al SI a través de su media y desviación estándar en días; no se debe confundir SI con:
+
+    + El periodo de incubación, entre una infección y la aparición de sus síntomas.
+
+    + El periodo latente, entre una infección y el comienzo del periodo infeccioso.
+
+    + En el periodo infeccioso, una persona infectada puede causar nuevas infecciones.
+
+Es crucial entender que tanto el R~0~ como el SI no son constantes biológicas de un virus, pues son afectados por factores internos -como la vulnerabilidad- y externos -como el ambiente, el contacto social o el tratamiento médico- del individuo infectado. El siguiente gráfico permite visualizar la relación existente entre el SI y los periodos mencionados:
+
+```{r period-a, fig.dim=c(9,3), fig.cap="Evento de transmisión con Intervalo Serial positivo"}
+library(tidyverse)
+
+dfd = data.frame(d = c(0, 4, 6, 8, 12, 14, 16), v0 = 0, v1 = 6, v2 = c(
+   "A infecta a B", "B se vuelve\ninfeccioso", "B presenta\nsíntomas", "B infecta a C",
+   "C se vuelve\ninfeccioso", "C presenta\nsíntomas", "B ya no es\ninfeccioso"))
+
+dfp = data.frame(x0 = c(3,2,0,0,4,4,6), x1 = c(7,8,2,3,7,6,10), y0 = c(4,1,1,3,3,2,2), y2 = c(
+   "Intervalo\nSerial de B a C", "Periodo\nInfeccioso de B", "Periodo\nLatente de B",
+   "Periodo de\nIncubación de B", "Periodo de\nIncubación de C", "Periodo\nLatente de C",
+   "Periodo\nInfeccioso de C"), z = as.character(c(1:4,4:2)))
+
+dfg = function(df1, df2){
+   
+   df2 = mutate(df2, y1 = y0, x0 = 2*x0, x1 = 2*x1, x2 = (x0+x1)/2)
+   
+   ggplot(df1, aes(d, v1, ymin=v0, ymax=v1, label=v2)) + coord_cartesian(c(-1,18), expand=0) +
+      theme(axis.title.y=element_blank(), panel.background=element_blank(), legend.position="none") +
+      scale_y_continuous(breaks = NULL) + scale_x_continuous("Días", 0:17) +
+      geom_hline(yintercept=0, size=2.5) + geom_linerange() +
+      geom_point(aes(y = v0), size=4) + geom_point(size=2) +
+      geom_text(hjust=0, vjust=1, nudge_x=.2, nudge_y=.2, size=3) +
+      geom_text(aes(x2, y0, label=y2, col=z), df2, inherit.aes=0, fontface=2, size=3) +
+      geom_segment(aes(x0, y0, xend=x1, yend=y1, col=z), df2, inherit.aes=0, size=1, arrow=arrow(15)) +
+      scale_color_manual(values=c("#0D0887", "#CC4678", "#F89441", "#7E03A8"))}
+
+dfg(dfd, dfp)
+```
+
+Como lo sugiere el gráfico, el periodo latente puede ser menor que el de incubación, en cuyo caso el individuo infectado se vuelve infeccioso antes de presentar síntomas. En el caso del SARS-CoV-2, se ha observado que en algunos casos el periodo infeccioso empieza un día antes que los síntomas; además, se observó que el periodo de incubación posee una mediana de siete días [@covid].
+
+Por otra parte, debido a la variabilidad del periodo de incubación, es posible que en una transmisión el individuo infectado presente síntomas antes que el causante de su infección. En este caso el SI se vuelve negativo, tal y como lo presenta el siguiente gráfico:
+
+```{r period-b, fig.dim=c(9,3), fig.cap="Evento de transmisión con Intervalo Serial negativo"}
+COVID19_Riesgos_Ec = {read_csv("COVID19_Riesgos_Ec.csv", col_types = "ccT__ii") %>%
+   rename(id = sitrep, day = corte, conf = confirmado)}[-c(2, 5, 7, 8+2*1:4, 18+2*1:9), ]
+
+COVID19_Salud_Ec = read_csv("COVID19_Salud_Ec.csv", col_types = "cTi") %>%
+   rename(id = status, day = corte, conf = confirmado)
+
+dfd = dfd[-4, ]; dfd[2, "v2"] = "B se vuelve\ninfeccioso e\ninfecta a C"; dfd[3:5, "d"] = c(14,8,10)
+dfp[c(1,5:7), "x0"] = c(7,2,2,4); dfp[c(1,4:6), "x1"] = c(5,7,5,4); dfp[2:7, "y0"] = c(.8,.8,3.2,2.4,1.6,1.6)
+
+dfg(dfd, dfp)
+```
+
+@covic han hallado un porcentaje considerable de SI negativos en eventos de transmisión estudiados. Sin duda la posibilidad de transmitir el virus antes de presentar síntomas -los mismos que pueden ser leves o incluso inexistentes- es un factor que ha contribuido a la propagación descontrolada del SARS-CoV-2.
+
+# **Obtención de Datos**
+
+Los datos requeridos en esta metodología fueron recopilados de infografías publicadas diariamente por el Servicio Nacional de Gestión de Riesgos [SNGRE](https://twitter.com/Riesgos_Ec) en su cuenta oficial de Twitter. Hasta la fecha (23 de abril), en Ecuador existen `r max(COVID19_Riesgos_Ec$conf)` casos confirmados, de los cuales el `r round(100 * max(COVID19_Riesgos_Ec$fallecido) / max(COVID19_Riesgos_Ec$conf), 2)` % han fallecido.
+
+```{r riesgo}
+library(kableExtra)
+
+COVID19_Riesgos_Ec[nrow(COVID19_Riesgos_Ec):1, ] %>% transmute(
+   id = paste0("[# ", id, "](https://twitter.com/Riesgos_Ec/status/", status, ")"),
+   day = as.character(day, "%e de %B"), conf = conf, fallecido = fallecido) %>%
+   kable(col.names = c("Infografía", "Fecha", "Casos Confirmados", "Personas Fallecidas"),
+         caption = "Datos recopilados de infografías del SNGRE") %>%
+   scroll_box("264px", extra_css = "margin-bottom:2rem;") #26 + 34 (rows + 1)
+```
+
+Ciertos días fueron publicadas dos infografías, en cuyo caso se ha escogido la matutina; los datos completos se encuentran en [este](https://github.com/ruevko/hexagonal/blob/master/content/post/2020/03/COVID19_Riesgos_Ec.csv) enlace. Mientras que la primera infografía corresponde al 13 de marzo, el primer caso ecuatoriano fue anunciado el 29 de febrero; por esto, también se recopilaron comunicados del Ministerio de Salud Pública [MSP](https://twitter.com/Salud_Ec) anteriores a las infografías. Cabe mencionar que, durante dichos comunicados, aún no existían fallecidos por COVID-19 en el país.
+
+```{r salud}
+COVID19_Salud_Ec[9:1, ] %>% mutate(
+   id = paste0("[link](https://twitter.com/Salud_Ec/status/", id, ")"),
+   day = as.character(day, "%e de %B, %l %p")) %>%
+   kable(col.names = c("Comunicado", "Fecha y Hora de Corte", "Casos Confirmados"),
+         caption = "Datos recopilados de comunicados del MSP") %>%
+   scroll_box("196px", extra_css = "margin-bottom:2rem;")
+```
+
+# **Modelamiento de Datos**
+
+El principal insumo para estimar R~0~ es la incidencia diaria: la cantidad de casos que presentan síntomas de infección por primera vez (y luego son confirmados) por cada día. Debido a limitaciones de los datos, sin embargo, se ha utilizado en cambio la cantidad de casos confirmados cada día. Esto supone una aproximación a la incidencia pues, desde que un individuo presenta síntomas, hasta que confirman o descartan su infección, puede transcurrir un tiempo considerable. También es cierto que los datos oficiales son limitados, en el sentido de que algunos casos no fueron reportados o fueron asintomáticos.
+
+```{r dat-bind, echo=TRUE}
+Ec_data = mutate(COVID19_Salud_Ec, id = NA) %>%
+   bind_rows(COVID19_Riesgos_Ec[c(1, 3, 4)]) %>%
+   mutate(day = as.Date(day),
+          Rate = conf / lag(conf, 1, 0),
+          Change = conf - lag(conf, 1, 0),
+          Factor = Change / lag(Change, 1, 0))
+```
+
+En el paso anterior se han unido las dos fuentes de datos y se han calculado nuevas variables: la tasa de crecimiento (*Rate*) es la razón del total de casos confirmados en el país en cierto día, con respecto al día anterior; el cambio (*Change*) es la diferencia del total, los nuevos casos confirmados cada día; y el factor de crecimiento (*Factor*) es también una razón, pero del cambio: la división de los nuevos casos confirmados en cierto día, con respecto al día anterior.
+
+Un hecho de las epidemias es que, incluso en el peor escenario, no pueden crecer indefinidamente pues se agotaría la población susceptible al contagio. Cuando la tasa de crecimiento -la cual define un crecimiento exponencial- se establezca definitivamente en su valor mínimo (que es uno), los casos confirmados detendrán su incremento. Por otra parte, resulta útil vigilar los cambios en el factor de crecimiento: valores menores a uno indican una reducción del avance de la epidemia y viceversa, valores mayores a uno indican que el crecimiento exponencial continúa.
+
+En los siguientes gráficos se excluyen los datos previos al 24 de marzo, fecha en que se superó los mil casos; el color representa la tasa de crecimiento, y el multiplicador el factor de crecimiento.
+
+```{r dat-plot, fig.asp=.5, fig.cap="Total de casos COVID-19 confirmados en Ecuador, incluyendo tasas y factores de crecimiento"}
+Ec_data[34, "Rate"] = 1
+Ec_data[1:2, c("Rate", "Factor")] = NA
+
+#`r shortcode("youtube", "Kas0tIxDvrg")`
+#devtools::install_github("reconhub/earlyR")
+
+my_plot = function(my_aes, my_dat = Ec_data[-{1:20}, ]){
+   ggplot(my_dat, my_aes) + theme_light() +
+      theme(axis.title.x = element_blank()) +
+      scale_fill_viridis_c(option = "C", trans = "log10") +
+      scale_y_continuous("Casos Confirmados", 1e3 * 0:11, limits = c(0, 112e2)) +
+      scale_x_date(date_breaks = "4 days", date_labels = "%e %b")}
+
+my_plot(aes(day, conf, fill = Rate)) + geom_point(shape = 21, size = 3) +
+   geom_text(aes(label = paste0("x", round(Factor, 1))), nudge_y = -400, size = 2)
+```
+
+## Ajuste de Regresión Exponencial
+
+```{r log-test, eval=FALSE}
+map(6:14, function(x){
+   df = Ec_data[10:37, ]
+   m1 = lm(log(conf) ~ day, df[1:x, ])
+   m2 = lm(log(conf) ~ day, df[-{1:x}, ])
+   r = c(rs1 = summary(m1)$r.squared, rs2 = summary(m2)$r.squared) #sigma
+   x = c(as.character(x), day = as.character(df$day[x]), con = df$conf[x])
+   c(x, round(r, 4), rsm = round(mean(r), 4))} )
+```
+
+Debido a la variación en el cambio del total de casos confirmados, el ajuste de una única regresión exponencial no parece explicar completamente el crecimiento de la epidemia en Ecuador. Al parecer existen tres patrones de crecimiento, con fechas de separación del 22 de marzo y 9 de abril; ambas fechas fueron escogidas de manera que maximicen -en función del coeficiente de determinación- el ajuste de los modelos. Lo que es más importante, la primera fecha es congruente con las medidas de control adoptadas el 17 de marzo -una semana antes del 23 de marzo- en Ecuador, que incluyen: toque de queda, prohibición de reuniones sociales, restricción del tránsito vehicular, entre otros.
+
+```{r log-model, echo=TRUE}
+mod1 = lm(log(conf) ~ day, Ec_data[10:19, ]) # hasta el 22 de marzo
+
+mod2 = lm(log(conf) ~ day, Ec_data[20:37, ]) # del 23 de marzo al 9 de abril
+
+mod3 = lm(log(conf) ~ day, Ec_data[-{1:37}, ]) # desde el 10 de abril
+```
+
+```{r log-table}
+Ec_data = Ec_data %>% mutate(
+   conf.1 = exp(as.numeric(day) * coef(mod1)[2] + coef(mod1)[1]),
+   conf.2 = exp(as.numeric(day) * coef(mod2)[2] + coef(mod2)[1]),
+   conf.3 = exp(as.numeric(day) * coef(mod3)[2] + coef(mod3)[1]))
+
+tibble(mdl = list(mod1, mod2, mod3)) %>%
+   transmute(Regresion = c("1°", "2°", "3°"),
+             Inicio = c("13 de marzo", "23 de marzo", "10 de abril"),
+             Fin = c("22 de marzo", "9 de abril", "..."),
+             Coeficiente = map_dbl(mdl, ~summary(.)[["r.squared"]]) %>% round(4),
+             Pendiente = map_dbl(mdl, ~coefficients(.)["day"]) %>% round(4),
+             Crecimiento = round(100 * exp(Pendiente) - 100, 2) %>% paste("%")) %>%
+   kable(caption = "Resumen de regresiones exponenciales ajustadas", align = "lccrrr") %>%
+   scroll_box(width = "100%", extra_css = "margin-bottom:2rem;")
+```
+
+En función de la pendiente del modelo exponencial se calcula la tasa de crecimiento más ajustada a la realidad; de esta manera se halló que, antes de surtir efecto las medidas, los casos confirmados crecieron un `r round(100 * {coef(mod1)[2] %>% exp() - 1}, 2)` % cada día. Después de las medidas se observó un crecimiento del `r round(100 * {coef(mod2)[2] %>% exp() - 1}, 2)` % diario; finalmente y hasta la fecha, el crecimiento es del `r round(100 * {coef(mod3)[2] %>% exp() - 1}, 2)` %. A continuación se presenta en dos gráficos los modelos ajustados; la versión de la derecha, al poseer una escala logarítmica, permite apreciar con mayor claridad la diferencia en el patrón de crecimiento.
+
+```{r log-plot, fig.asp=.4, fig.cap="Primera (naranja), segunda (rosada) y tercera (morada) regresión exponencial ajustada"}
+Ec_data[1:9, c("conf.1", "conf.2", "conf.3")] = NA
+
+mod_plot = my_plot(aes(day, conf), Ec_data[-{1:9}, ]) +
+   geom_line(aes(y = conf.1), size = 1, col = "#F89441") +
+   geom_line(aes(y = conf.2), size = 1, col = "#CC4678") +
+   geom_line(aes(y = conf.3), size = 1, col = "#7E03A8") +
+   scale_x_date(date_breaks = "8 days", date_labels = "%e %b") +
+   geom_point(alpha = .7, shape = 16)
+
+gridExtra::grid.arrange(nrow = 1, mod_plot, mod_plot + scale_y_log10(
+   "Casos Confirmados (log)", c(3, 1) * rep(10 ** {1:4}, each = 3), limits = c(NA, 112e2)))
+```
+
+## Estimación del Ritmo Reproductivo
+
+Independientemente de haber hallado un buen ajuste a través de tres regresiones, la metodología requiere estimar un único R~0~ utilizando `incidence()`; es importante introducir en esta función todos los datos disponibles, incluso si existen días sin datos (como ocurre en comunicados del MSP).
+
+```{r incidence, echo=TRUE}
+library(incidence)
+
+Ec_inci = rep(Ec_data$day, Ec_data$Change) %>% incidence()
+```
+
+```{r incidence-cover, eval = FALSE}
+ggsave("ecuador-covid19-april23.jpg", dpi = "screen", width = 16, height = 7.925, plot = plot(Ec_inci[-{1:12}]) +
+          scale_y_continuous(breaks = c(1e2 * 1:9)) + coord_cartesian(ylim = c(0, 1e3)) +
+          scale_x_date(date_breaks = "4 days", date_labels = "%e %b") + theme_minimal() +
+          theme(plot.background = element_rect(fill = "grey15"), panel.grid = element_line("grey20"),
+                axis.text = element_text(size = 20, color = "grey25"), title = element_blank()))
+```
+
+El objeto generado por `incidence()` contiene la incidencia diaria necesaria para la estimación; no obstante, hace falta conocer el SI característico de la epidemia. En este contexto, lo recomendable es obtener la media y desviación estándar del SI a partir de la literatura; una estimación temprana es recomendable, pues utilizar los datos de una epidemia avanzada incluiría los efectos de las medidas de control, subestimando de esta manera el SI [@covia].
+
+Se ha considerado dos artículos recientes que calculan el SI del SARS-CoV-2. @covib han obtenido una media de 4.7 y una desviación estándar de 2.9 días a partir de 28 casos, ajustándose a una distribución *lognormal*. Se trata de un SI notablemente más corto que el otros coronavirus (se ha calculado para el SARS, por ejemplo, una media de 8.4 días), lo cual indica una velocidad superior de transmisión. Por otra parte, @covic usaron 468 casos en sus cálculos, 59 de ellos con SI negativo (como el ejemplificado en el gráfico \@ref(fig:period-b)); debido a los valores negativos, la distribución *normal* generó el mejor ajuste, con una media de 3.96 y una desviación estándar de 4.75 días.
+
+Con el propósito de escoger una distribución del SI, se ha iterado el cálculo de R~0~ -con ayuda de la función `get_R()` aquí definida- variando la fecha final de los datos introducidos, y utilizando cada vez las distribuciones sugeridas en los dos artículos.
+
+```{r num-get, echo=TRUE}
+library(earlyR)
+
+my_getr = function(i, mn = 3.96, sd = 4.75){
+   
+   if(i < 14) return(NA)
+   
+   ml = get_R(Ec_inci[1:i], si_mean = mn, si_sd = sd, days = 0)$R_ml
+   
+   if(length(ml) == 1) return(ml)
+   
+   else return(0)}
+
+Ec_data = Ec_data %>% mutate(
+   Nishiura = map_dbl(4 + row_number(), my_getr, mn = 4.7, sd = 2.9),
+   Du_et_al = map_dbl(4 + row_number(), my_getr))
+```
+
+```{r num-plot, dev="svg", fig.asp=.4, fig.cap="Ritmo reproductivo estimado según distribuciones SI de dos artículos, incluyendo tasas de crecimiento"}
+pivot_longer(Ec_data, c("Nishiura", "Du_et_al"), names_to = "Paper")[19:74, ] %>%
+   my_plot(aes(day, value, shape = Paper, fill = Rate), .) +
+   geom_point(size = 3) + scale_shape_manual(values = 23:22) +
+   scale_y_continuous("Ritmo Reproductivo Estimado", 0:4)
+```
+
+En este gráfico R~0~ = 0 quiere decir que falló el cálculo de esta variable, lo cual sucede al introducir todos los datos hasta el 3 de abril (y en adelante). Es evidente que, independientemente del artículo considerado, R~0~ incrementa junto con la tasa de crecimiento; de manera que la estimación depende mucho de los datos disponibles. Adicionalmente, si bien la diferencia no es grande, la estimación de acuerdo a @covic siempre es mayor.
+
+En este punto hay que reconocer que se ignora si la metodología RECON solo admite distribuciones positivas, como la *lognormal*. En consecuencia, se decidió utilizar la distribución según @covib y los datos hasta el 26 de marzo, presentándose alrededor de esta fecha la mayor estabilidad en los R~0~ estimados. De esta manera, se obtuvo un intervalo de confianza (CI) al 95 % de 1.66 a 1.84.
+
+```{r num-final, echo=TRUE}
+R_get = get_R(Ec_inci[1:27], si_mean = 4.7, si_sd = 2.9, days = 0)
+
+R_sam = sample_R(R_get, 1e4)
+
+quantile(R_sam, c(.025, .5, .975))
+```
+
+# **Proyecciones**
+
+La función `project()` permite utilizar una muestra de valores R~0~ probables y proyectar el número esperado de casos confirmados en los próximos días. A continuación se proponen tres escenarios diferentes, reduciendo cada vez el valor R~0~ más probable; cada escenario se proyecta a partir del 27 de marzo (dado que R~0~ fue estimado hasta el 26). En los gráficos, la región sombreada representa el 95 % CI de la proyección.
+
+## Primer escenario: R~0~ al 100 %
+
+De acuerdo a la estimación de R~0~ su valor más probable es `r round(R_get$R_ml, 2)` lo cual quiere decir que, cada cuatro individuos infectados, se han infectado siete más en promedio. El cálculo de la proyección y su CI se realiza como sigue:
+
+```{r project, echo=TRUE}
+library(projections)
+
+Ec_proj = project(Ec_inci[1:27], R_sam, R_get$si, n_days = 13) # hasta 8 de abril
+
+Ec_data = as_tibble(t(as.matrix(Ec_proj))) %>%
+   summarise(across(.fns = list(
+      pro.low = ~quantile(., .025),
+      pro.hig = ~quantile(., .975),
+      pro.med = median))) %>%
+   pivot_longer(everything(), names_to = c("day", "name"), names_sep = "_") %>%
+   pivot_wider() %>%
+   mutate(across(where(is.numeric), ~cumsum(.) + 1382), across(day, as.Date)) %>%
+   full_join(Ec_data, .)
+```
+
+Asumir que R~0~ mantiene su valor más probable al 100 % representa un escenario donde ninguna medida fue introducida para contener la epidemia. Ciertamente este no es el caso, razón por la cual no se ha proyectado este escenario más allá del 8 de abril, fecha en la cual hubiesen existido ya nueve mil casos confirmados.
+
+```{r project-100, fig.asp=.5, fig.cap=paste("Proyección de casos COVID-19 confirmados en Ecuador, si R0 =", round(R_get$R_ml, 2))}
+my_new_plot = function() my_plot(aes(day, conf)) +
+   geom_point(alpha = .7, shape = 16, size = 3) +
+   geom_ribbon(aes(ymin = pro.low, ymax = pro.hig), fill = "#0D088766") +
+   geom_line(aes(y = pro.med), col = "#0D0887FF", size = 1)
+
+my_new_plot()
+```
+
+## Segundo escenario: R~0~ al 75 %
+
+Supongamos que, a través de las medidas adoptadas en Ecuador, el ritmo reproductivo se redujo progresivamente hasta alcanzar el 75 % de su valor más probable original, esto es `r round(.750 * R_get$R_ml, 2)`. Significaría que, cada tres individuos infectados, habría aproximadamente cuatro casos nuevos. De acuerdo al gráfico, parecería ser el escenario más cercano a la realidad hasta ahora; si fuera así, el 1 de mayo se alcanzaría los 24 mil casos confirmados.
+
+```{r project-075, fig.asp=.5, fig.cap=paste("Proyección de casos COVID-19 confirmados en Ecuador, si R0 =", round(.750 * R_get$R_ml, 2))}
+Ec_proj = project(Ec_inci[1:27], .750 * R_sam, R_get$si, n_days = 36) # hasta 1 de mayo
+
+Ec_data = as_tibble(t(as.matrix(Ec_proj))) %>%
+   summarise(across(.fns = list(
+      pro.low = ~quantile(., .025),
+      pro.hig = ~quantile(., .975),
+      pro.med = median))) %>%
+   pivot_longer(everything(), names_to = c("day", "name"), names_sep = "_") %>%
+   pivot_wider() %>%
+   mutate(across(where(is.numeric), ~cumsum(.) + 1382), across(day, as.Date)) %>%
+   full_join(Ec_data[1:10], .)
+
+my_new_plot() + scale_y_continuous("Casos Confirmados", 2e3 * 0:14, limits = c(0, NA))
+```
+
+## Tercer escenario: R~0~ al 50 %
+
+Supongamos finalmente que R0 se redujo a la mitad de su valor más probable original, es decir a `r round(.50 * R_get$R_ml, 2)`. Cada ocho individuos infectados habría aproximadamente siete casos nuevos, significando una reducción del avance de la epidemia. No obstante esto es una subestimación del escenario real, pues hasta la fecha se habrían confirmado solamente unos 3800 casos.
+
+```{r project-050, fig.asp=.5, fig.cap=paste("Proyección de casos COVID-19 confirmados en Ecuador, si R0 =", round(.50 * R_get$R_ml, 2))}
+Ec_proj = project(Ec_inci[1:27], .50 * R_sam, R_get$si, n_days = 28) # hasta 23 de abril
+
+Ec_data = as_tibble(t(as.matrix(Ec_proj))) %>%
+   summarise(across(.fns = list(
+      pro.low = ~quantile(., .025),
+      pro.hig = ~quantile(., .975),
+      pro.med = median))) %>%
+   pivot_longer(everything(), names_to = c("day", "name"), names_sep = "_") %>%
+   pivot_wider() %>%
+   mutate(across(where(is.numeric), ~cumsum(.) + 1382), across(day, as.Date)) %>%
+   full_join(Ec_data[1:51, 1:10], .)
+
+my_new_plot() #as.data.frame(Ec_data[c(1:4, 7, 9, 12)])
+```
+
+# **Conclusiones**
+
+Este análisis consideró lo que la literatura sobre el virus SARS-CoV-2 sugiere hasta el momento. Si bien más investigaciones se encuentran en camino, los resultados ya han demostrado la magnitud de la amenaza que enfrentamos; recordemos que la transmisión es más rápida comparada con otros coronavirus, y puede pasar inadvertida -si ocurre antes que el inicio de síntomas- en muchos casos.
+
+Una desventaja de esta caracterización es que utilizó estimaciones -concretamente la distribución del intervalo serial- realizadas en un contexto distinto. Como se mencionó en las definiciones, estas características epidemiológicas dependen de factores que varían entre sociedades y escenarios de control; hace falta una estimación del SI con los datos observados en Ecuador. Con todo, el valor R~0~ obtenido es congruente con lo observado en varios países alrededor del mundo, y el consenso parece ser que la epidemia del COVID-19 posee un ritmo reproductivo entre uno y dos. [@covic] han calculado R~0~ = 1.32 para casos chinos fuera de Wuhan. Con el control adoptado en Ecuador, el ritmo reproductivo parece haber decrecido entre un 25 (gráfico \@ref(fig:project-075)) y un 50 %.
+
+Como conclusión las proyecciones aquí presentadas son exploratorias; en vez de predecir lo que sucederá en los próximos días, se pretende explicar cuánto se ha reducido el avance de la epidemia hasta ahora. Sabemos que si R~0~ < 1 los casos confirmados detendrán su crecimiento exponencial (gráfico \@ref(fig:log-plot)), lo cual es crucial para no colapsar los servicios de salud. También podríamos discernir si el crecimiento dejará de ser exponencial, observando cuándo los factores de crecimiento (gráfico \@ref(fig:dat-plot)) son menores que uno. Por último, aunque no se lo ha hecho aquí, mencionar que es posible generar un modelo compartimental SIR, para analizar cuándo ocurrirá el pico de individuos infectados.
+
+# **Referencias**

@@ -1,0 +1,1554 @@
+<!DOCTYPE html>
+<html lang="es-es">
+  <head>
+    
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="generator" content="Hugo 0.73.0 with theme Tranquilpeak 0.4.8-BETA">
+<meta name="author" content="La Galería Hexagonal">
+<meta name="keywords" content="regression, mapas, datos, análisis, maps, data, analytics">
+<meta name="description" content="Utilizando paquetes desarrollados por el R Epidemics Consortium se estima el ritmo reproductivo básico, así como tres escenarios de crecimiento para los casos confirmados.">
+
+
+<meta property="og:description" content="Utilizando paquetes desarrollados por el R Epidemics Consortium se estima el ritmo reproductivo básico, así como tres escenarios de crecimiento para los casos confirmados.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Caracterización del COVID-19 en Ecuador">
+<meta name="twitter:title" content="Caracterización del COVID-19 en Ecuador">
+<meta property="og:url" content="https://ruevko.github.io/hexagonal/post/2020/03/20-caracterizacion-covid-ecuador/">
+<meta property="twitter:url" content="https://ruevko.github.io/hexagonal/post/2020/03/20-caracterizacion-covid-ecuador/">
+<meta property="og:site_name" content="La Galería Hexagonal">
+<meta property="og:description" content="Utilizando paquetes desarrollados por el R Epidemics Consortium se estima el ritmo reproductivo básico, así como tres escenarios de crecimiento para los casos confirmados.">
+<meta name="twitter:description" content="Utilizando paquetes desarrollados por el R Epidemics Consortium se estima el ritmo reproductivo básico, así como tres escenarios de crecimiento para los casos confirmados.">
+<meta property="og:locale" content="es-es">
+
+  
+    <meta property="article:published_time" content="2020-03-20T00:00:00">
+  
+  
+    <meta property="article:modified_time" content="2020-03-20T00:00:00">
+  
+  
+  
+  
+    
+      <meta property="article:tag" content="regresión">
+    
+  
+
+
+<meta name="twitter:card" content="summary">
+
+
+
+
+
+
+
+
+  <meta property="og:image" content="https://res.cloudinary.com/dodnzqhiz/image/upload/v1595302810/2020post/ecuador-covid19-april23_pnwcqe.jpg">
+  <meta property="twitter:image" content="https://res.cloudinary.com/dodnzqhiz/image/upload/v1595302810/2020post/ecuador-covid19-april23_pnwcqe.jpg">
+
+
+
+
+  <meta property="og:image" content="https://ruevko.github.io/hexagonal/logo.png">
+  <meta property="twitter:image" content="https://ruevko.github.io/hexagonal/logo.png">
+
+
+    <title>Caracterización del COVID-19 en Ecuador</title>
+
+    <link rel="icon" href="../../../../favicon.png">
+    
+
+    
+
+    <link rel="canonical" href="https://ruevko.github.io/hexagonal/post/2020/03/20-caracterizacion-covid-ecuador/">
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" integrity="sha256-+N4/V/SbAFiW1MPBCXnfnP9QSN3+Keu+NlB+0ev/YKQ=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/jquery.fancybox.min.css" integrity="sha256-vuXZ9LGmmwtjqFX1F+EKin1ThZMub58gKULUyf0qECk=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/helpers/jquery.fancybox-thumbs.min.css" integrity="sha256-SEa4XYAHihTcEP1f5gARTB2K26Uk8PsndQYHQC1f4jU=" crossorigin="anonymous" />
+    
+    
+    <link rel="stylesheet" href="../../../../css/style-7x73dw24ckyl0xlyrgrookevcdyn0snmotvjhpjhrksdyhlnyeufngdoci.min.css" />
+    
+    
+
+    
+      
+    
+    
+  </head>
+
+  <body>
+    <div id="blog">
+      <header id="header" data-behavior="4">
+  <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+  <div class="header-title">
+    <a class="header-title-link" href="../../../../">La Galería Hexagonal</a>
+  </div>
+  
+</header>
+
+      <nav id="sidebar" data-behavior="4">
+  <div class="sidebar-container">
+    
+      <div class="sidebar-profile">
+        <a href="../../../../#about">
+          <img class="sidebar-profile-picture" src="https://ruevko.github.io/hexagonal/logo.png" alt="Foto de autor" />
+        </a>
+        <h4 class="sidebar-profile-name">La Galería Hexagonal</h4>
+
+      </div>
+    
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="../../../../">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-globe-americas"></i>
+      
+      <span class="sidebar-button-desc">Inicio</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="../../../../categories">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-map-marked-alt"></i>
+      
+      <span class="sidebar-button-desc">Categorías</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="../../../../tags">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-map-marker-alt"></i>
+      
+      <span class="sidebar-button-desc">Etiquetas</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="../../../../archives">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-search-location"></i>
+      
+      <span class="sidebar-button-desc">Archivo</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://github.com/ruevko" target="_blank" rel="noopener">
+    
+      <i class="sidebar-button-icon fab fa-lg fa-github-alt"></i>
+      
+      <span class="sidebar-button-desc">GitHub</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://twitter.com/ruevko" target="_blank" rel="noopener">
+    
+      <i class="sidebar-button-icon fab fa-lg fa-twitter"></i>
+      
+      <span class="sidebar-button-desc">Twitter</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="../../../../post/readme">
+    
+      <i class="sidebar-button-icon far fa-lg fa-compass"></i>
+      
+      <span class="sidebar-button-desc">Acerca de...</span>
+    </a>
+  </li>
+
+
+    </ul>
+  </div>
+</nav>
+
+      
+  <div class="post-header-cover
+              text-left
+              "
+       style="background-image:url('https://res.cloudinary.com/dodnzqhiz/image/upload/v1595302810/2020post/ecuador-covid19-april23_pnwcqe.jpg')"
+       data-behavior="4">
+    
+      <div class="post-header main-content-wrap text-left">
+  
+    <h1 class="post-title" itemprop="headline">
+      Caracterización del COVID-19 en Ecuador
+    </h1>
+  
+  
+  <div class="postShorten-meta post-meta">
+    
+      <time itemprop="datePublished" datetime="2020-03-20T00:00:00Z">
+        
+  
+  
+  
+  
+    20 de Marzo de 2020
+  
+
+      </time>
+    
+    
+  </div>
+
+</div>
+    
+  </div>
+
+
+
+      
+
+      <div id="main" data-behavior="4"
+        class="hasCover
+               hasCoverMetaIn
+               ">
+        <article class="post" itemscope itemType="http://schema.org/BlogPosting">
+          
+          
+          <div class="post-content markdown" itemprop="articleBody">
+            <div class="main-content-wrap">
+              
+<script src="../../../../rmarkdown-libs/accessible-code-block/empty-anchor.js"></script>
+<script src="../../../../rmarkdown-libs/kePrint/kePrint.js"></script>
+<style type="text/css">
+code.sourceCode > span { display: inline-block; line-height: 1.25; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+code.sourceCode > span:empty { height: 1.2em; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    background-color: #ffffff;
+    color: #a0a0a0;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #a0a0a0;  padding-left: 4px; }
+div.sourceCode
+  { color: #1f1c1b; background-color: #ffffff; }
+@media screen {
+code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span. { color: #1f1c1b; } /* Normal */
+code span.al { color: #bf0303; background-color: #f7e6e6; font-weight: bold; } /* Alert */
+code span.an { color: #ca60ca; } /* Annotation */
+code span.at { color: #0057ae; } /* Attribute */
+code span.bn { color: #b08000; } /* BaseN */
+code span.bu { color: #644a9b; font-weight: bold; } /* BuiltIn */
+code span.cf { color: #1f1c1b; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #924c9d; } /* Char */
+code span.cn { color: #aa5500; } /* Constant */
+code span.co { color: #898887; } /* Comment */
+code span.cv { color: #0095ff; } /* CommentVar */
+code span.do { color: #607880; } /* Documentation */
+code span.dt { color: #0057ae; } /* DataType */
+code span.dv { color: #b08000; } /* DecVal */
+code span.er { color: #bf0303; text-decoration: underline; } /* Error */
+code span.ex { color: #0095ff; font-weight: bold; } /* Extension */
+code span.fl { color: #b08000; } /* Float */
+code span.fu { color: #644a9b; } /* Function */
+code span.im { color: #ff5500; } /* Import */
+code span.in { color: #b08000; } /* Information */
+code span.kw { color: #1f1c1b; font-weight: bold; } /* Keyword */
+code span.op { color: #1f1c1b; } /* Operator */
+code span.ot { color: #006e28; } /* Other */
+code span.pp { color: #006e28; } /* Preprocessor */
+code span.re { color: #0057ae; background-color: #e0e9f8; } /* RegionMarker */
+code span.sc { color: #3daee9; } /* SpecialChar */
+code span.ss { color: #ff5500; } /* SpecialString */
+code span.st { color: #bf0303; } /* String */
+code span.va { color: #0057ae; } /* Variable */
+code span.vs { color: #bf0303; } /* VerbatimString */
+code span.wa { color: #bf0303; } /* Warning */
+</style>
+
+<div id="TOC">
+<ul>
+<li><a href="#definiciones"><strong>Definiciones</strong></a></li>
+<li><a href="#obtención-de-datos"><strong>Obtención de Datos</strong></a></li>
+<li><a href="#modelamiento-de-datos"><strong>Modelamiento de Datos</strong></a><ul>
+<li><a href="#ajuste-de-regresión-exponencial">Ajuste de Regresión Exponencial</a></li>
+<li><a href="#estimación-del-ritmo-reproductivo">Estimación del Ritmo Reproductivo</a></li>
+</ul></li>
+<li><a href="#proyecciones"><strong>Proyecciones</strong></a><ul>
+<li><a href="#primer-escenario-r0-al-100">Primer escenario: R<sub>0</sub> al 100 %</a></li>
+<li><a href="#segundo-escenario-r0-al-75">Segundo escenario: R<sub>0</sub> al 75 %</a></li>
+<li><a href="#tercer-escenario-r0-al-50">Tercer escenario: R<sub>0</sub> al 50 %</a></li>
+</ul></li>
+<li><a href="#conclusiones"><strong>Conclusiones</strong></a></li>
+<li><a href="#referencias"><strong>Referencias</strong></a></li>
+</ul>
+</div>
+
+<p><strong>Actualizado: 23 de abril, 13 PM</strong></p>
+<p>En atención a la emergencia en curso causada por el SARS-CoV-2 se presenta una caracterización de la epidemia en Ecuador. Se aplicó una metodología sugerida por el R Epidemics Consortium <a href="https://www.repidemicsconsortium.org/">RECON</a> que permite estimar tempranamente una variable clave como lo es el ritmo reproductivo; dicha metodología requiere conocer ciertas características del virus, y poseer datos de la incidencia diaria. Adicionalmente se ha utilizado <code>library(tidyverse)</code>.</p>
+<div id="definiciones" class="section level1">
+<h1><strong>Definiciones</strong></h1>
+<p>Para aplicar la presente metodología es necesario familiarizarse con las siguientes definiciones <span class="citation">(Fine <a href="#ref-covia" role="doc-biblioref">2003</a>)</span>, relacionadas con la transmisión de un virus:</p>
+<ul>
+<li><p>El ritmo reproductivo básico (<em>Basic Reproduction Number</em>, R<sub>0</sub>) es la media de transmisiones por caso; es decir, la cantidad esperada de casos nuevos que un determinado caso generará.</p></li>
+<li><p>El intervalo serial (<em>Serial Interval</em>, SI) es el tiempo transcurrido entre la aparición de síntomas en dos casos sucesivos; comúnmente se caracteriza al SI a través de su media y desviación estándar en días; no se debe confundir SI con:</p>
+<ul>
+<li><p>El periodo de incubación, entre una infección y la aparición de sus síntomas.</p></li>
+<li><p>El periodo latente, entre una infección y el comienzo del periodo infeccioso.</p></li>
+<li><p>En el periodo infeccioso, una persona infectada puede causar nuevas infecciones.</p></li>
+</ul></li>
+</ul>
+<p>Es crucial entender que tanto el R<sub>0</sub> como el SI no son constantes biológicas de un virus, pues son afectados por factores internos -como la vulnerabilidad- y externos -como el ambiente, el contacto social o el tratamiento médico- del individuo infectado. El siguiente gráfico permite visualizar la relación existente entre el SI y los periodos mencionados:</p>
+<div class="figure"><span id="fig:period-a"></span>
+<img src="../../../../post/2020/03/20-caracterizacion-covid-ecuador_files/figure-html/period-a-1.png" alt="Evento de transmisión con Intervalo Serial positivo" width="864" />
+<p class="caption">
+Figure 1: Evento de transmisión con Intervalo Serial positivo
+</p>
+</div>
+<p>Como lo sugiere el gráfico, el periodo latente puede ser menor que el de incubación, en cuyo caso el individuo infectado se vuelve infeccioso antes de presentar síntomas. En el caso del SARS-CoV-2, se ha observado que en algunos casos el periodo infeccioso empieza un día antes que los síntomas; además, se observó que el periodo de incubación posee una mediana de siete días <span class="citation">(Jiang et al. <a href="#ref-covid" role="doc-biblioref">2020</a>)</span>.</p>
+<p>Por otra parte, debido a la variabilidad del periodo de incubación, es posible que en una transmisión el individuo infectado presente síntomas antes que el causante de su infección. En este caso el SI se vuelve negativo, tal y como lo presenta el siguiente gráfico:</p>
+<div class="figure"><span id="fig:period-b"></span>
+<img src="../../../../post/2020/03/20-caracterizacion-covid-ecuador_files/figure-html/period-b-1.png" alt="Evento de transmisión con Intervalo Serial negativo" width="864" />
+<p class="caption">
+Figure 2: Evento de transmisión con Intervalo Serial negativo
+</p>
+</div>
+<p><span class="citation">Du et al. (<a href="#ref-covic" role="doc-biblioref">2020</a>)</span> han hallado un porcentaje considerable de SI negativos en eventos de transmisión estudiados. Sin duda la posibilidad de transmitir el virus antes de presentar síntomas -los mismos que pueden ser leves o incluso inexistentes- es un factor que ha contribuido a la propagación descontrolada del SARS-CoV-2.</p>
+</div>
+<div id="obtención-de-datos" class="section level1">
+<h1><strong>Obtención de Datos</strong></h1>
+<p>Los datos requeridos en esta metodología fueron recopilados de infografías publicadas diariamente por el Servicio Nacional de Gestión de Riesgos <a href="https://twitter.com/Riesgos_Ec">SNGRE</a> en su cuenta oficial de Twitter. Hasta la fecha (23 de abril), en Ecuador existen 11183 casos confirmados, de los cuales el 5.01 % han fallecido.</p>
+<div style="border: 1px solid #ddd; padding: 0px; margin-bottom:2rem;overflow-y: scroll; height:264px; ">
+<table>
+<caption>
+<span id="tab:riesgo">Table 1: </span>Datos recopilados de infografías del SNGRE
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+Infografía
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+Fecha
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Casos Confirmados
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Personas Fallecidas
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://twitter.com/Riesgos_Ec/status/1253357043085443072"># 59</a>
+</td>
+<td style="text-align:left;">
+23 de abril
+</td>
+<td style="text-align:right;">
+11183
+</td>
+<td style="text-align:right;">
+560
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://twitter.com/Riesgos_Ec/status/1252993301030068224"># 58</a>
+</td>
+<td style="text-align:left;">
+22 de abril
+</td>
+<td style="text-align:right;">
+10850
+</td>
+<td style="text-align:right;">
+537
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://twitter.com/Riesgos_Ec/status/1252631526401073153"># 57</a>
+</td>
+<td style="text-align:left;">
+21 de abril
+</td>
+<td style="text-align:right;">
+10398
+</td>
+<td style="text-align:right;">
+520
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://twitter.com/Riesgos_Ec/status/1252268383766302722"># 56</a>
+</td>
+<td style="text-align:left;">
+20 de abril
+</td>
+<td style="text-align:right;">
+10128
+</td>
+<td style="text-align:right;">
+507
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://twitter.com/Riesgos_Ec/status/1251906978902872064"># 55</a>
+</td>
+<td style="text-align:left;">
+19 de abril
+</td>
+<td style="text-align:right;">
+9468
+</td>
+<td style="text-align:right;">
+474
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://twitter.com/Riesgos_Ec/status/1251544226292207617"># 54</a>
+</td>
+<td style="text-align:left;">
+18 de abril
+</td>
+<td style="text-align:right;">
+9022
+</td>
+<td style="text-align:right;">
+456
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://twitter.com/Riesgos_Ec/status/1251188955317506050"># 53</a>
+</td>
+<td style="text-align:left;">
+17 de abril
+</td>
+<td style="text-align:right;">
+8450
+</td>
+<td style="text-align:right;">
+421
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://twitter.com/Riesgos_Ec/status/1250823734535114753"># 52</a>
+</td>
+<td style="text-align:left;">
+16 de abril
+</td>
+<td style="text-align:right;">
+8225
+</td>
+<td style="text-align:right;">
+403
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://twitter.com/Riesgos_Ec/status/1250456890250858497"># 51</a>
+</td>
+<td style="text-align:left;">
+15 de abril
+</td>
+<td style="text-align:right;">
+7858
+</td>
+<td style="text-align:right;">
+388
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://twitter.com/Riesgos_Ec/status/1250094201418797064"># 50</a>
+</td>
+<td style="text-align:left;">
+14 de abril
+</td>
+<td style="text-align:right;">
+7603
+</td>
+<td style="text-align:right;">
+369
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://twitter.com/Riesgos_Ec/status/1249732582897524737"># 49</a>
+</td>
+<td style="text-align:left;">
+13 de abril
+</td>
+<td style="text-align:right;">
+7529
+</td>
+<td style="text-align:right;">
+355
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://twitter.com/Riesgos_Ec/status/1249374576653619201"># 48</a>
+</td>
+<td style="text-align:left;">
+12 de abril
+</td>
+<td style="text-align:right;">
+7466
+</td>
+<td style="text-align:right;">
+333
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://twitter.com/Riesgos_Ec/status/1249006909488803842"># 47</a>
+</td>
+<td style="text-align:left;">
+11 de abril
+</td>
+<td style="text-align:right;">
+7257
+</td>
+<td style="text-align:right;">
+315
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://twitter.com/Riesgos_Ec/status/1248646235063533570"># 46</a>
+</td>
+<td style="text-align:left;">
+10 de abril
+</td>
+<td style="text-align:right;">
+7161
+</td>
+<td style="text-align:right;">
+297
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://twitter.com/Riesgos_Ec/status/1248275329371770880"># 45</a>
+</td>
+<td style="text-align:left;">
+9 de abril
+</td>
+<td style="text-align:right;">
+4965
+</td>
+<td style="text-align:right;">
+272
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://twitter.com/Riesgos_Ec/status/1247923136265359361"># 44</a>
+</td>
+<td style="text-align:left;">
+8 de abril
+</td>
+<td style="text-align:right;">
+4450
+</td>
+<td style="text-align:right;">
+242
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://twitter.com/Riesgos_Ec/status/1247666860025413633"># 43</a>
+</td>
+<td style="text-align:left;">
+7 de abril
+</td>
+<td style="text-align:right;">
+3995
+</td>
+<td style="text-align:right;">
+220
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://twitter.com/Riesgos_Ec/status/1247193694056448000"># 42</a>
+</td>
+<td style="text-align:left;">
+6 de abril
+</td>
+<td style="text-align:right;">
+3747
+</td>
+<td style="text-align:right;">
+191
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://twitter.com/Riesgos_Ec/status/1246834245731078148"># 41</a>
+</td>
+<td style="text-align:left;">
+5 de abril
+</td>
+<td style="text-align:right;">
+3646
+</td>
+<td style="text-align:right;">
+180
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://twitter.com/Riesgos_Ec/status/1246481814962737153"># 40</a>
+</td>
+<td style="text-align:left;">
+4 de abril
+</td>
+<td style="text-align:right;">
+3465
+</td>
+<td style="text-align:right;">
+172
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://twitter.com/Riesgos_Ec/status/1246107728558395392"># 39</a>
+</td>
+<td style="text-align:left;">
+3 de abril
+</td>
+<td style="text-align:right;">
+3368
+</td>
+<td style="text-align:right;">
+145
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://twitter.com/Riesgos_Ec/status/1245744381564510211"># 38</a>
+</td>
+<td style="text-align:left;">
+2 de abril
+</td>
+<td style="text-align:right;">
+3163
+</td>
+<td style="text-align:right;">
+120
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://twitter.com/Riesgos_Ec/status/1245382824431104002"># 36</a>
+</td>
+<td style="text-align:left;">
+1 de abril
+</td>
+<td style="text-align:right;">
+2748
+</td>
+<td style="text-align:right;">
+93
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://twitter.com/Riesgos_Ec/status/1245022617700098049"># 34</a>
+</td>
+<td style="text-align:left;">
+31 de marzo
+</td>
+<td style="text-align:right;">
+2240
+</td>
+<td style="text-align:right;">
+75
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://twitter.com/Riesgos_Ec/status/1244658363570556930"># 32</a>
+</td>
+<td style="text-align:left;">
+30 de marzo
+</td>
+<td style="text-align:right;">
+1962
+</td>
+<td style="text-align:right;">
+60
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://twitter.com/Riesgos_Ec/status/1244295121069395970"># 30</a>
+</td>
+<td style="text-align:left;">
+29 de marzo
+</td>
+<td style="text-align:right;">
+1890
+</td>
+<td style="text-align:right;">
+57
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://twitter.com/Riesgos_Ec/status/1243933711172874241"># 28</a>
+</td>
+<td style="text-align:left;">
+28 de marzo
+</td>
+<td style="text-align:right;">
+1823
+</td>
+<td style="text-align:right;">
+48
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://twitter.com/Riesgos_Ec/status/1243571908878180354"># 26</a>
+</td>
+<td style="text-align:left;">
+27 de marzo
+</td>
+<td style="text-align:right;">
+1595
+</td>
+<td style="text-align:right;">
+36
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://twitter.com/Riesgos_Ec/status/1243194238269034497"># 24</a>
+</td>
+<td style="text-align:left;">
+26 de marzo
+</td>
+<td style="text-align:right;">
+1382
+</td>
+<td style="text-align:right;">
+34
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://twitter.com/Riesgos_Ec/status/1242834504324128775"># 22</a>
+</td>
+<td style="text-align:left;">
+25 de marzo
+</td>
+<td style="text-align:right;">
+1173
+</td>
+<td style="text-align:right;">
+28
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://twitter.com/Riesgos_Ec/status/1242467589147758592"># 20</a>
+</td>
+<td style="text-align:left;">
+24 de marzo
+</td>
+<td style="text-align:right;">
+1049
+</td>
+<td style="text-align:right;">
+27
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://twitter.com/Riesgos_Ec/status/1242105767366406150"># 19</a>
+</td>
+<td style="text-align:left;">
+23 de marzo
+</td>
+<td style="text-align:right;">
+981
+</td>
+<td style="text-align:right;">
+18
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://twitter.com/Riesgos_Ec/status/1241761146643853313"># 18</a>
+</td>
+<td style="text-align:left;">
+22 de marzo
+</td>
+<td style="text-align:right;">
+789
+</td>
+<td style="text-align:right;">
+14
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://twitter.com/Riesgos_Ec/status/1241379969797967883"># 16</a>
+</td>
+<td style="text-align:left;">
+21 de marzo
+</td>
+<td style="text-align:right;">
+506
+</td>
+<td style="text-align:right;">
+7
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://twitter.com/Riesgos_Ec/status/1241018222079610881"># 14</a>
+</td>
+<td style="text-align:left;">
+20 de marzo
+</td>
+<td style="text-align:right;">
+367
+</td>
+<td style="text-align:right;">
+5
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://twitter.com/Riesgos_Ec/status/1240655168158515200"># 12</a>
+</td>
+<td style="text-align:left;">
+19 de marzo
+</td>
+<td style="text-align:right;">
+199
+</td>
+<td style="text-align:right;">
+3
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://twitter.com/Riesgos_Ec/status/1240250490912374785"># 10</a>
+</td>
+<td style="text-align:left;">
+18 de marzo
+</td>
+<td style="text-align:right;">
+155
+</td>
+<td style="text-align:right;">
+2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://twitter.com/Riesgos_Ec/status/1239948244878348288"># 8</a>
+</td>
+<td style="text-align:left;">
+17 de marzo
+</td>
+<td style="text-align:right;">
+111
+</td>
+<td style="text-align:right;">
+2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://twitter.com/Riesgos_Ec/status/1239581710729326595"># 6</a>
+</td>
+<td style="text-align:left;">
+16 de marzo
+</td>
+<td style="text-align:right;">
+58
+</td>
+<td style="text-align:right;">
+2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://twitter.com/Riesgos_Ec/status/1239228487673810948"># 4</a>
+</td>
+<td style="text-align:left;">
+15 de marzo
+</td>
+<td style="text-align:right;">
+37
+</td>
+<td style="text-align:right;">
+2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://twitter.com/Riesgos_Ec/status/1238941268098592775"># 3</a>
+</td>
+<td style="text-align:left;">
+14 de marzo
+</td>
+<td style="text-align:right;">
+28
+</td>
+<td style="text-align:right;">
+2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://twitter.com/Riesgos_Ec/status/1238572655269330946"># 1</a>
+</td>
+<td style="text-align:left;">
+13 de marzo
+</td>
+<td style="text-align:right;">
+23
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Ciertos días fueron publicadas dos infografías, en cuyo caso se ha escogido la matutina; los datos completos se encuentran en <a href="https://github.com/ruevko/hexagonal/blob/master/content/post/2020/03/COVID19_Riesgos_Ec.csv">este</a> enlace. Mientras que la primera infografía corresponde al 13 de marzo, el primer caso ecuatoriano fue anunciado el 29 de febrero; por esto, también se recopilaron comunicados del Ministerio de Salud Pública <a href="https://twitter.com/Salud_Ec">MSP</a> anteriores a las infografías. Cabe mencionar que, durante dichos comunicados, aún no existían fallecidos por COVID-19 en el país.</p>
+<div style="border: 1px solid #ddd; padding: 0px; margin-bottom:2rem;overflow-y: scroll; height:196px; ">
+<table>
+<caption>
+<span id="tab:salud">Table 2: </span>Datos recopilados de comunicados del MSP
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+Comunicado
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+Fecha y Hora de Corte
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Casos Confirmados
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://twitter.com/Salud_Ec/status/1238238472563032067">link</a>
+</td>
+<td style="text-align:left;">
+12 de marzo, 6 p. m.
+</td>
+<td style="text-align:right;">
+19
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://twitter.com/Salud_Ec/status/1237506194740109313">link</a>
+</td>
+<td style="text-align:left;">
+10 de marzo, 4 p. m.
+</td>
+<td style="text-align:right;">
+17
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://twitter.com/Salud_Ec/status/1236830188102733828">link</a>
+</td>
+<td style="text-align:left;">
+8 de marzo, 9 p. m.
+</td>
+<td style="text-align:right;">
+15
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://twitter.com/Salud_Ec/status/1236101438834696195">link</a>
+</td>
+<td style="text-align:left;">
+6 de marzo, 8 p. m.
+</td>
+<td style="text-align:right;">
+14
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://twitter.com/Salud_Ec/status/1235576943967449088">link</a>
+</td>
+<td style="text-align:left;">
+5 de marzo, 9 a. m.
+</td>
+<td style="text-align:right;">
+13
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://twitter.com/Salud_Ec/status/1235224139348271105">link</a>
+</td>
+<td style="text-align:left;">
+4 de marzo, 10 a. m.
+</td>
+<td style="text-align:right;">
+10
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://twitter.com/Salud_Ec/status/1234670644878462980">link</a>
+</td>
+<td style="text-align:left;">
+2 de marzo, 10 p. m.
+</td>
+<td style="text-align:right;">
+7
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://twitter.com/Salud_Ec/status/1234331734889697281">link</a>
+</td>
+<td style="text-align:left;">
+1 de marzo, 11 p. m.
+</td>
+<td style="text-align:right;">
+6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://twitter.com/Salud_Ec/status/1233774191326957575">link</a>
+</td>
+<td style="text-align:left;">
+29 de febrero, 10 a. m.
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="modelamiento-de-datos" class="section level1">
+<h1><strong>Modelamiento de Datos</strong></h1>
+<p>El principal insumo para estimar R<sub>0</sub> es la incidencia diaria: la cantidad de casos que presentan síntomas de infección por primera vez (y luego son confirmados) por cada día. Debido a limitaciones de los datos, sin embargo, se ha utilizado en cambio la cantidad de casos confirmados cada día. Esto supone una aproximación a la incidencia pues, desde que un individuo presenta síntomas, hasta que confirman o descartan su infección, puede transcurrir un tiempo considerable. También es cierto que los datos oficiales son limitados, en el sentido de que algunos casos no fueron reportados o fueron asintomáticos.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a>Ec_data =<span class="st"> </span><span class="kw">mutate</span>(COVID19_Salud_Ec, <span class="dt">id =</span> <span class="ot">NA</span>) <span class="op">%&gt;%</span></span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="st">   </span><span class="kw">bind_rows</span>(COVID19_Riesgos_Ec[<span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">4</span>)]) <span class="op">%&gt;%</span></span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="st">   </span><span class="kw">mutate</span>(<span class="dt">day =</span> <span class="kw">as.Date</span>(day),</span>
+<span id="cb1-4"><a href="#cb1-4"></a>          <span class="dt">Rate =</span> conf <span class="op">/</span><span class="st"> </span><span class="kw">lag</span>(conf, <span class="dv">1</span>, <span class="dv">0</span>),</span>
+<span id="cb1-5"><a href="#cb1-5"></a>          <span class="dt">Change =</span> conf <span class="op">-</span><span class="st"> </span><span class="kw">lag</span>(conf, <span class="dv">1</span>, <span class="dv">0</span>),</span>
+<span id="cb1-6"><a href="#cb1-6"></a>          <span class="dt">Factor =</span> Change <span class="op">/</span><span class="st"> </span><span class="kw">lag</span>(Change, <span class="dv">1</span>, <span class="dv">0</span>))</span></code></pre></div>
+<p>En el paso anterior se han unido las dos fuentes de datos y se han calculado nuevas variables: la tasa de crecimiento (<em>Rate</em>) es la razón del total de casos confirmados en el país en cierto día, con respecto al día anterior; el cambio (<em>Change</em>) es la diferencia del total, los nuevos casos confirmados cada día; y el factor de crecimiento (<em>Factor</em>) es también una razón, pero del cambio: la división de los nuevos casos confirmados en cierto día, con respecto al día anterior.</p>
+<p>Un hecho de las epidemias es que, incluso en el peor escenario, no pueden crecer indefinidamente pues se agotaría la población susceptible al contagio. Cuando la tasa de crecimiento -la cual define un crecimiento exponencial- se establezca definitivamente en su valor mínimo (que es uno), los casos confirmados detendrán su incremento. Por otra parte, resulta útil vigilar los cambios en el factor de crecimiento: valores menores a uno indican una reducción del avance de la epidemia y viceversa, valores mayores a uno indican que el crecimiento exponencial continúa.</p>
+<p>En los siguientes gráficos se excluyen los datos previos al 24 de marzo, fecha en que se superó los mil casos; el color representa la tasa de crecimiento, y el multiplicador el factor de crecimiento.</p>
+<div class="figure"><span id="fig:dat-plot"></span>
+<img src="../../../../post/2020/03/20-caracterizacion-covid-ecuador_files/figure-html/dat-plot-1.png" alt="Total de casos COVID-19 confirmados en Ecuador, incluyendo tasas y factores de crecimiento" width="672" />
+<p class="caption">
+Figure 3: Total de casos COVID-19 confirmados en Ecuador, incluyendo tasas y factores de crecimiento
+</p>
+</div>
+<div id="ajuste-de-regresión-exponencial" class="section level2">
+<h2>Ajuste de Regresión Exponencial</h2>
+<p>Debido a la variación en el cambio del total de casos confirmados, el ajuste de una única regresión exponencial no parece explicar completamente el crecimiento de la epidemia en Ecuador. Al parecer existen tres patrones de crecimiento, con fechas de separación del 22 de marzo y 9 de abril; ambas fechas fueron escogidas de manera que maximicen -en función del coeficiente de determinación- el ajuste de los modelos. Lo que es más importante, la primera fecha es congruente con las medidas de control adoptadas el 17 de marzo -una semana antes del 23 de marzo- en Ecuador, que incluyen: toque de queda, prohibición de reuniones sociales, restricción del tránsito vehicular, entre otros.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>mod1 =<span class="st"> </span><span class="kw">lm</span>(<span class="kw">log</span>(conf) <span class="op">~</span><span class="st"> </span>day, Ec_data[<span class="dv">10</span><span class="op">:</span><span class="dv">19</span>, ]) <span class="co"># hasta el 22 de marzo</span></span>
+<span id="cb2-2"><a href="#cb2-2"></a></span>
+<span id="cb2-3"><a href="#cb2-3"></a>mod2 =<span class="st"> </span><span class="kw">lm</span>(<span class="kw">log</span>(conf) <span class="op">~</span><span class="st"> </span>day, Ec_data[<span class="dv">20</span><span class="op">:</span><span class="dv">37</span>, ]) <span class="co"># del 23 de marzo al 9 de abril</span></span>
+<span id="cb2-4"><a href="#cb2-4"></a></span>
+<span id="cb2-5"><a href="#cb2-5"></a>mod3 =<span class="st"> </span><span class="kw">lm</span>(<span class="kw">log</span>(conf) <span class="op">~</span><span class="st"> </span>day, Ec_data[<span class="op">-</span>{<span class="dv">1</span><span class="op">:</span><span class="dv">37</span>}, ]) <span class="co"># desde el 10 de abril</span></span></code></pre></div>
+<div style="border: 1px solid #ddd; padding: 5px; margin-bottom:2rem;overflow-x: scroll; width:100%; ">
+<table>
+<caption>
+<span id="tab:log-table">Table 3: </span>Resumen de regresiones exponenciales ajustadas
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+Regresion
+</th>
+<th style="text-align:center;">
+Inicio
+</th>
+<th style="text-align:center;">
+Fin
+</th>
+<th style="text-align:right;">
+Coeficiente
+</th>
+<th style="text-align:right;">
+Pendiente
+</th>
+<th style="text-align:right;">
+Crecimiento
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+1°
+</td>
+<td style="text-align:center;">
+13 de marzo
+</td>
+<td style="text-align:center;">
+22 de marzo
+</td>
+<td style="text-align:right;">
+0.9919
+</td>
+<td style="text-align:right;">
+0.4096
+</td>
+<td style="text-align:right;">
+50.62 %
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+2°
+</td>
+<td style="text-align:center;">
+23 de marzo
+</td>
+<td style="text-align:center;">
+9 de abril
+</td>
+<td style="text-align:right;">
+0.9774
+</td>
+<td style="text-align:right;">
+0.0956
+</td>
+<td style="text-align:right;">
+10.03 %
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+3°
+</td>
+<td style="text-align:center;">
+10 de abril
+</td>
+<td style="text-align:center;">
+…
+</td>
+<td style="text-align:right;">
+0.9636
+</td>
+<td style="text-align:right;">
+0.0370
+</td>
+<td style="text-align:right;">
+3.77 %
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>En función de la pendiente del modelo exponencial se calcula la tasa de crecimiento más ajustada a la realidad; de esta manera se halló que, antes de surtir efecto las medidas, los casos confirmados crecieron un 50.62 % cada día. Después de las medidas se observó un crecimiento del 10.03 % diario; finalmente y hasta la fecha, el crecimiento es del 3.76 %. A continuación se presenta en dos gráficos los modelos ajustados; la versión de la derecha, al poseer una escala logarítmica, permite apreciar con mayor claridad la diferencia en el patrón de crecimiento.</p>
+<div class="figure"><span id="fig:log-plot"></span>
+<img src="../../../../post/2020/03/20-caracterizacion-covid-ecuador_files/figure-html/log-plot-1.png" alt="Primera (naranja), segunda (rosada) y tercera (morada) regresión exponencial ajustada" width="672" />
+<p class="caption">
+Figure 4: Primera (naranja), segunda (rosada) y tercera (morada) regresión exponencial ajustada
+</p>
+</div>
+</div>
+<div id="estimación-del-ritmo-reproductivo" class="section level2">
+<h2>Estimación del Ritmo Reproductivo</h2>
+<p>Independientemente de haber hallado un buen ajuste a través de tres regresiones, la metodología requiere estimar un único R<sub>0</sub> utilizando <code>incidence()</code>; es importante introducir en esta función todos los datos disponibles, incluso si existen días sin datos (como ocurre en comunicados del MSP).</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="kw">library</span>(incidence)</span>
+<span id="cb3-2"><a href="#cb3-2"></a></span>
+<span id="cb3-3"><a href="#cb3-3"></a>Ec_inci =<span class="st"> </span><span class="kw">rep</span>(Ec_data<span class="op">$</span>day, Ec_data<span class="op">$</span>Change) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">incidence</span>()</span></code></pre></div>
+<p>El objeto generado por <code>incidence()</code> contiene la incidencia diaria necesaria para la estimación; no obstante, hace falta conocer el SI característico de la epidemia. En este contexto, lo recomendable es obtener la media y desviación estándar del SI a partir de la literatura; una estimación temprana es recomendable, pues utilizar los datos de una epidemia avanzada incluiría los efectos de las medidas de control, subestimando de esta manera el SI <span class="citation">(Fine <a href="#ref-covia" role="doc-biblioref">2003</a>)</span>.</p>
+<p>Se ha considerado dos artículos recientes que calculan el SI del SARS-CoV-2. <span class="citation">Nishiura, Linton, and Akhmetzhanov (<a href="#ref-covib" role="doc-biblioref">2020</a>)</span> han obtenido una media de 4.7 y una desviación estándar de 2.9 días a partir de 28 casos, ajustándose a una distribución <em>lognormal</em>. Se trata de un SI notablemente más corto que el otros coronavirus (se ha calculado para el SARS, por ejemplo, una media de 8.4 días), lo cual indica una velocidad superior de transmisión. Por otra parte, <span class="citation">Du et al. (<a href="#ref-covic" role="doc-biblioref">2020</a>)</span> usaron 468 casos en sus cálculos, 59 de ellos con SI negativo (como el ejemplificado en el gráfico <a href="#fig:period-b">2</a>); debido a los valores negativos, la distribución <em>normal</em> generó el mejor ajuste, con una media de 3.96 y una desviación estándar de 4.75 días.</p>
+<p>Con el propósito de escoger una distribución del SI, se ha iterado el cálculo de R<sub>0</sub> -con ayuda de la función <code>get_R()</code> aquí definida- variando la fecha final de los datos introducidos, y utilizando cada vez las distribuciones sugeridas en los dos artículos.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="kw">library</span>(earlyR)</span>
+<span id="cb4-2"><a href="#cb4-2"></a></span>
+<span id="cb4-3"><a href="#cb4-3"></a>my_getr =<span class="st"> </span><span class="cf">function</span>(i, <span class="dt">mn =</span> <span class="fl">3.96</span>, <span class="dt">sd =</span> <span class="fl">4.75</span>){</span>
+<span id="cb4-4"><a href="#cb4-4"></a>   </span>
+<span id="cb4-5"><a href="#cb4-5"></a>   <span class="cf">if</span>(i <span class="op">&lt;</span><span class="st"> </span><span class="dv">14</span>) <span class="kw">return</span>(<span class="ot">NA</span>)</span>
+<span id="cb4-6"><a href="#cb4-6"></a>   </span>
+<span id="cb4-7"><a href="#cb4-7"></a>   ml =<span class="st"> </span><span class="kw">get_R</span>(Ec_inci[<span class="dv">1</span><span class="op">:</span>i], <span class="dt">si_mean =</span> mn, <span class="dt">si_sd =</span> sd, <span class="dt">days =</span> <span class="dv">0</span>)<span class="op">$</span>R_ml</span>
+<span id="cb4-8"><a href="#cb4-8"></a>   </span>
+<span id="cb4-9"><a href="#cb4-9"></a>   <span class="cf">if</span>(<span class="kw">length</span>(ml) <span class="op">==</span><span class="st"> </span><span class="dv">1</span>) <span class="kw">return</span>(ml)</span>
+<span id="cb4-10"><a href="#cb4-10"></a>   </span>
+<span id="cb4-11"><a href="#cb4-11"></a>   <span class="cf">else</span> <span class="kw">return</span>(<span class="dv">0</span>)}</span>
+<span id="cb4-12"><a href="#cb4-12"></a></span>
+<span id="cb4-13"><a href="#cb4-13"></a>Ec_data =<span class="st"> </span>Ec_data <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">mutate</span>(</span>
+<span id="cb4-14"><a href="#cb4-14"></a>   <span class="dt">Nishiura =</span> <span class="kw">map_dbl</span>(<span class="dv">4</span> <span class="op">+</span><span class="st"> </span><span class="kw">row_number</span>(), my_getr, <span class="dt">mn =</span> <span class="fl">4.7</span>, <span class="dt">sd =</span> <span class="fl">2.9</span>),</span>
+<span id="cb4-15"><a href="#cb4-15"></a>   <span class="dt">Du_et_al =</span> <span class="kw">map_dbl</span>(<span class="dv">4</span> <span class="op">+</span><span class="st"> </span><span class="kw">row_number</span>(), my_getr))</span></code></pre></div>
+<div class="figure"><span id="fig:num-plot"></span>
+<img src="../../../../post/2020/03/20-caracterizacion-covid-ecuador_files/figure-html/num-plot-1.svg" alt="Ritmo reproductivo estimado según distribuciones SI de dos artículos, incluyendo tasas de crecimiento" width="672" />
+<p class="caption">
+Figure 5: Ritmo reproductivo estimado según distribuciones SI de dos artículos, incluyendo tasas de crecimiento
+</p>
+</div>
+<p>En este gráfico R<sub>0</sub> = 0 quiere decir que falló el cálculo de esta variable, lo cual sucede al introducir todos los datos hasta el 3 de abril (y en adelante). Es evidente que, independientemente del artículo considerado, R<sub>0</sub> incrementa junto con la tasa de crecimiento; de manera que la estimación depende mucho de los datos disponibles. Adicionalmente, si bien la diferencia no es grande, la estimación de acuerdo a <span class="citation">Du et al. (<a href="#ref-covic" role="doc-biblioref">2020</a>)</span> siempre es mayor.</p>
+<p>En este punto hay que reconocer que se ignora si la metodología RECON solo admite distribuciones positivas, como la <em>lognormal</em>. En consecuencia, se decidió utilizar la distribución según <span class="citation">Nishiura, Linton, and Akhmetzhanov (<a href="#ref-covib" role="doc-biblioref">2020</a>)</span> y los datos hasta el 26 de marzo, presentándose alrededor de esta fecha la mayor estabilidad en los R<sub>0</sub> estimados. De esta manera, se obtuvo un intervalo de confianza (CI) al 95 % de 1.66 a 1.84.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>R_get =<span class="st"> </span><span class="kw">get_R</span>(Ec_inci[<span class="dv">1</span><span class="op">:</span><span class="dv">27</span>], <span class="dt">si_mean =</span> <span class="fl">4.7</span>, <span class="dt">si_sd =</span> <span class="fl">2.9</span>, <span class="dt">days =</span> <span class="dv">0</span>)</span>
+<span id="cb5-2"><a href="#cb5-2"></a></span>
+<span id="cb5-3"><a href="#cb5-3"></a>R_sam =<span class="st"> </span><span class="kw">sample_R</span>(R_get, <span class="fl">1e4</span>)</span>
+<span id="cb5-4"><a href="#cb5-4"></a></span>
+<span id="cb5-5"><a href="#cb5-5"></a><span class="kw">quantile</span>(R_sam, <span class="kw">c</span>(.<span class="dv">025</span>, <span class="fl">.5</span>, <span class="fl">.975</span>))</span></code></pre></div>
+<pre><code>##     2.5%      50%    97.5% 
+## 1.661662 1.751752 1.841842</code></pre>
+</div>
+</div>
+<div id="proyecciones" class="section level1">
+<h1><strong>Proyecciones</strong></h1>
+<p>La función <code>project()</code> permite utilizar una muestra de valores R<sub>0</sub> probables y proyectar el número esperado de casos confirmados en los próximos días. A continuación se proponen tres escenarios diferentes, reduciendo cada vez el valor R<sub>0</sub> más probable; cada escenario se proyecta a partir del 27 de marzo (dado que R<sub>0</sub> fue estimado hasta el 26). En los gráficos, la región sombreada representa el 95 % CI de la proyección.</p>
+<div id="primer-escenario-r0-al-100" class="section level2">
+<h2>Primer escenario: R<sub>0</sub> al 100 %</h2>
+<p>De acuerdo a la estimación de R<sub>0</sub> su valor más probable es 1.75 lo cual quiere decir que, cada cuatro individuos infectados, se han infectado siete más en promedio. El cálculo de la proyección y su CI se realiza como sigue:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="kw">library</span>(projections)</span>
+<span id="cb7-2"><a href="#cb7-2"></a></span>
+<span id="cb7-3"><a href="#cb7-3"></a>Ec_proj =<span class="st"> </span><span class="kw">project</span>(Ec_inci[<span class="dv">1</span><span class="op">:</span><span class="dv">27</span>], R_sam, R_get<span class="op">$</span>si, <span class="dt">n_days =</span> <span class="dv">13</span>) <span class="co"># hasta 8 de abril</span></span>
+<span id="cb7-4"><a href="#cb7-4"></a></span>
+<span id="cb7-5"><a href="#cb7-5"></a>Ec_data =<span class="st"> </span><span class="kw">as_tibble</span>(<span class="kw">t</span>(<span class="kw">as.matrix</span>(Ec_proj))) <span class="op">%&gt;%</span></span>
+<span id="cb7-6"><a href="#cb7-6"></a><span class="st">   </span><span class="kw">summarise</span>(<span class="kw">across</span>(<span class="dt">.fns =</span> <span class="kw">list</span>(</span>
+<span id="cb7-7"><a href="#cb7-7"></a>      <span class="dt">pro.low =</span> <span class="op">~</span><span class="kw">quantile</span>(., <span class="fl">.025</span>),</span>
+<span id="cb7-8"><a href="#cb7-8"></a>      <span class="dt">pro.hig =</span> <span class="op">~</span><span class="kw">quantile</span>(., <span class="fl">.975</span>),</span>
+<span id="cb7-9"><a href="#cb7-9"></a>      <span class="dt">pro.med =</span> median))) <span class="op">%&gt;%</span></span>
+<span id="cb7-10"><a href="#cb7-10"></a><span class="st">   </span><span class="kw">pivot_longer</span>(<span class="kw">everything</span>(), <span class="dt">names_to =</span> <span class="kw">c</span>(<span class="st">&quot;day&quot;</span>, <span class="st">&quot;name&quot;</span>), <span class="dt">names_sep =</span> <span class="st">&quot;_&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb7-11"><a href="#cb7-11"></a><span class="st">   </span><span class="kw">pivot_wider</span>() <span class="op">%&gt;%</span></span>
+<span id="cb7-12"><a href="#cb7-12"></a><span class="st">   </span><span class="kw">mutate</span>(<span class="kw">across</span>(<span class="kw">where</span>(is.numeric), <span class="op">~</span><span class="kw">cumsum</span>(.) <span class="op">+</span><span class="st"> </span><span class="dv">1382</span>), <span class="kw">across</span>(day, as.Date)) <span class="op">%&gt;%</span></span>
+<span id="cb7-13"><a href="#cb7-13"></a><span class="st">   </span><span class="kw">full_join</span>(Ec_data, .)</span></code></pre></div>
+<p>Asumir que R<sub>0</sub> mantiene su valor más probable al 100 % representa un escenario donde ninguna medida fue introducida para contener la epidemia. Ciertamente este no es el caso, razón por la cual no se ha proyectado este escenario más allá del 8 de abril, fecha en la cual hubiesen existido ya nueve mil casos confirmados.</p>
+<div class="figure"><span id="fig:project-100"></span>
+<img src="../../../../post/2020/03/20-caracterizacion-covid-ecuador_files/figure-html/project-100-1.png" alt="Proyección de casos COVID-19 confirmados en Ecuador, si R0 = 1.75" width="672" />
+<p class="caption">
+Figure 6: Proyección de casos COVID-19 confirmados en Ecuador, si R0 = 1.75
+</p>
+</div>
+</div>
+<div id="segundo-escenario-r0-al-75" class="section level2">
+<h2>Segundo escenario: R<sub>0</sub> al 75 %</h2>
+<p>Supongamos que, a través de las medidas adoptadas en Ecuador, el ritmo reproductivo se redujo progresivamente hasta alcanzar el 75 % de su valor más probable original, esto es 1.31. Significaría que, cada tres individuos infectados, habría aproximadamente cuatro casos nuevos. De acuerdo al gráfico, parecería ser el escenario más cercano a la realidad hasta ahora; si fuera así, el 1 de mayo se alcanzaría los 24 mil casos confirmados.</p>
+<div class="figure"><span id="fig:project-075"></span>
+<img src="../../../../post/2020/03/20-caracterizacion-covid-ecuador_files/figure-html/project-075-1.png" alt="Proyección de casos COVID-19 confirmados en Ecuador, si R0 = 1.31" width="672" />
+<p class="caption">
+Figure 7: Proyección de casos COVID-19 confirmados en Ecuador, si R0 = 1.31
+</p>
+</div>
+</div>
+<div id="tercer-escenario-r0-al-50" class="section level2">
+<h2>Tercer escenario: R<sub>0</sub> al 50 %</h2>
+<p>Supongamos finalmente que R0 se redujo a la mitad de su valor más probable original, es decir a 0.88. Cada ocho individuos infectados habría aproximadamente siete casos nuevos, significando una reducción del avance de la epidemia. No obstante esto es una subestimación del escenario real, pues hasta la fecha se habrían confirmado solamente unos 3800 casos.</p>
+<div class="figure"><span id="fig:project-050"></span>
+<img src="../../../../post/2020/03/20-caracterizacion-covid-ecuador_files/figure-html/project-050-1.png" alt="Proyección de casos COVID-19 confirmados en Ecuador, si R0 = 0.88" width="672" />
+<p class="caption">
+Figure 8: Proyección de casos COVID-19 confirmados en Ecuador, si R0 = 0.88
+</p>
+</div>
+</div>
+</div>
+<div id="conclusiones" class="section level1">
+<h1><strong>Conclusiones</strong></h1>
+<p>Este análisis consideró lo que la literatura sobre el virus SARS-CoV-2 sugiere hasta el momento. Si bien más investigaciones se encuentran en camino, los resultados ya han demostrado la magnitud de la amenaza que enfrentamos; recordemos que la transmisión es más rápida comparada con otros coronavirus, y puede pasar inadvertida -si ocurre antes que el inicio de síntomas- en muchos casos.</p>
+<p>Una desventaja de esta caracterización es que utilizó estimaciones -concretamente la distribución del intervalo serial- realizadas en un contexto distinto. Como se mencionó en las definiciones, estas características epidemiológicas dependen de factores que varían entre sociedades y escenarios de control; hace falta una estimación del SI con los datos observados en Ecuador. Con todo, el valor R<sub>0</sub> obtenido es congruente con lo observado en varios países alrededor del mundo, y el consenso parece ser que la epidemia del COVID-19 posee un ritmo reproductivo entre uno y dos. <span class="citation">(Du et al. <a href="#ref-covic" role="doc-biblioref">2020</a>)</span> han calculado R<sub>0</sub> = 1.32 para casos chinos fuera de Wuhan. Con el control adoptado en Ecuador, el ritmo reproductivo parece haber decrecido entre un 25 (gráfico <a href="#fig:project-075">7</a>) y un 50 %.</p>
+<p>Como conclusión las proyecciones aquí presentadas son exploratorias; en vez de predecir lo que sucederá en los próximos días, se pretende explicar cuánto se ha reducido el avance de la epidemia hasta ahora. Sabemos que si R<sub>0</sub> &lt; 1 los casos confirmados detendrán su crecimiento exponencial (gráfico <a href="#fig:log-plot">4</a>), lo cual es crucial para no colapsar los servicios de salud. También podríamos discernir si el crecimiento dejará de ser exponencial, observando cuándo los factores de crecimiento (gráfico <a href="#fig:dat-plot">3</a>) son menores que uno. Por último, aunque no se lo ha hecho aquí, mencionar que es posible generar un modelo compartimental SIR, para analizar cuándo ocurrirá el pico de individuos infectados.</p>
+</div>
+<div id="referencias" class="section level1 unnumbered">
+<h1><strong>Referencias</strong></h1>
+<div id="refs" class="references">
+<div id="ref-covic">
+<p>Du, Zhanwei, Lin Wang, Xiaoke Xu, Ye Wu, Benjamin Cowling, and Lauren Meyers. 2020. “Serial Interval of Covid-19 Among Publicly Reported Confirmed Cases.” <em>Emerging Infectious Diseases</em>. <a href="https://doi.org/10.3201/eid2606.200357">https://doi.org/10.3201/eid2606.200357</a>.</p>
+</div>
+<div id="ref-covia">
+<p>Fine, Paul. 2003. “The Interval Between Successive Cases of an Infectious Disease.” <em>American Journal of Epidemiology</em> 158 (December): 1039–47. <a href="https://doi.org/10.1093/aje/kwg251">https://doi.org/10.1093/aje/kwg251</a>.</p>
+</div>
+<div id="ref-covid">
+<p>Jiang, Xue, Yawei Niu, Xiong Li, Lin Li, Wenxiang Cai, Yucan Chen, Bo Liao, and Edwin Wang. 2020. “Is a 14-Day Quarantine Period Optimal for Effectively Controlling Coronavirus Disease 2019 (Covid-19)? (PREPRINT).” <a href="https://doi.org/10.1101/2020.03.15.20036533">https://doi.org/10.1101/2020.03.15.20036533</a>.</p>
+</div>
+<div id="ref-covib">
+<p>Nishiura, Hiroshi, Natalie Linton, and Andrei Akhmetzhanov. 2020. “Serial Interval of Novel Coronavirus (Covid-19) Infections.” <em>International Journal of Infectious Diseases</em> 93 (April): 284–86. <a href="https://doi.org/10.1016/j.ijid.2020.02.060">https://doi.org/10.1016/j.ijid.2020.02.060</a>.</p>
+</div>
+</div>
+</div>
+
+              
+            </div>
+          </div>
+          <div id="post-footer" class="post-footer main-content-wrap">
+            
+              
+                
+                
+                  <div class="post-footer-tags">
+                    <span class="text-color-light text-small">Etiquetado en</span><br/>
+                    
+  <a class="tag tag--primary tag--small" href="../../../../tags/regresi%C3%B3n/">regresión</a>
+
+                  </div>
+                
+              
+            
+            <div class="post-actions-wrap">
+  
+      <nav >
+        <ul class="post-actions post-action-nav">
+          
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip-big" href="../../../../post/2020/07/01-cordones-coordenadas/" data-tooltip="Cordones y Coordenadas">
+              
+                  <i class="fa fa-angle-left"></i>
+                  <span class="hide-xs hide-sm text-small icon-ml">Siguiente</span>
+                </a>
+            </li>
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip-big" href="../../../../post/2020/03/04-crecimiento-diario-nodos/" data-tooltip="La tasa de crecimiento diaria">
+              
+                  <span class="hide-xs hide-sm text-small icon-mr">Anterior</span>
+                  <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+          
+        </ul>
+      </nav>
+    <ul class="post-actions post-action-share" >
+      
+        
+        
+          
+          <li class="post-action">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://ruevko.github.io/hexagonal/post/2020/03/20-caracterizacion-covid-ecuador/" data-tooltip="Compartir en Twitter">
+              <i class="fab fa-twitter"></i>
+            </a>
+          </li>
+        
+          
+          <li class="post-action">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://ruevko.github.io/hexagonal/post/2020/03/20-caracterizacion-covid-ecuador/" data-tooltip="Compartir en Facebook">
+              <i class="fab fa-facebook"></i>
+            </a>
+          </li>
+        
+      
+      
+      <li class="post-action">
+        
+          <a class="post-action-btn btn btn--default" href="#" data-tooltip="Regresar al inicio">
+        
+          <i class="fa fa-angle-double-up"></i>
+        </a>
+      </li>
+    </ul>
+  
+</div>
+
+            
+              
+            
+          </div>
+        </article>
+        <footer id="footer" class="main-content-wrap">
+  <span class="copyrights">
+     <i class="fab fa-creative-commons"></i>
+     <i class="fab fa-creative-commons-by"></i>
+     <i class="fab fa-creative-commons-sa"></i>
+     2020 (CC-BY-SA-4.0)<br>by Rafael Castro <i class="fas fa-lg fa-crow"></i>  
+  </span>
+</footer>
+
+      </div>
+      <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+        <div class="post-actions-wrap">
+  
+      <nav >
+        <ul class="post-actions post-action-nav">
+          
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip-big" href="../../../../post/2020/07/01-cordones-coordenadas/" data-tooltip="Cordones y Coordenadas">
+              
+                  <i class="fa fa-angle-left"></i>
+                  <span class="hide-xs hide-sm text-small icon-ml">Siguiente</span>
+                </a>
+            </li>
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip-big" href="../../../../post/2020/03/04-crecimiento-diario-nodos/" data-tooltip="La tasa de crecimiento diaria">
+              
+                  <span class="hide-xs hide-sm text-small icon-mr">Anterior</span>
+                  <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+          
+        </ul>
+      </nav>
+    <ul class="post-actions post-action-share" >
+      
+        
+        
+          
+          <li class="post-action">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://ruevko.github.io/hexagonal/post/2020/03/20-caracterizacion-covid-ecuador/" data-tooltip="Compartir en Twitter">
+              <i class="fab fa-twitter"></i>
+            </a>
+          </li>
+        
+          
+          <li class="post-action">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://ruevko.github.io/hexagonal/post/2020/03/20-caracterizacion-covid-ecuador/" data-tooltip="Compartir en Facebook">
+              <i class="fab fa-facebook"></i>
+            </a>
+          </li>
+        
+      
+      
+      <li class="post-action">
+        
+          <a class="post-action-btn btn btn--default" href="#" data-tooltip="Regresar al inicio">
+        
+          <i class="fa fa-angle-double-up"></i>
+        </a>
+      </li>
+    </ul>
+  
+</div>
+
+      </div>
+      
+
+    </div>
+    
+    <div id="about">
+  <div id="about-card">
+    <div id="about-btn-close">
+      <i class="fas fa-times"></i>
+    </div>
+    
+      <img id="about-card-picture" src="https://ruevko.github.io/hexagonal/logo.png" alt="Foto de autor" />
+    
+    <h4 id="about-card-name">La Galería Hexagonal</h4>
+    
+      <div id="about-card-bio">Este es el blog de Rafael Castro, orientado a Cartografía y Data Analytics.</div>
+    
+    
+      <div id="about-card-job">
+        <i class="fas fa-graduation-cap"></i>
+        <br/>
+        Geógrafo
+      </div>
+    
+    
+      <div id="about-card-location">
+        <i class="fas fa-home"></i>
+        <br/>
+        Ecuador
+      </div>
+    
+  </div>
+</div>
+
+    
+
+    
+  
+    <div id="cover" style="background-image:url('https://res.cloudinary.com/dodnzqhiz/image/upload/v1577918037/crv.png');"></div>
+  
+
+
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.7/js/jquery.fancybox.min.js" integrity="sha256-GEAnjcTqVP+vBp3SSc8bEDQqvWAZMiHyUSIorrWwH50=" crossorigin="anonymous"></script>
+
+
+<script src="../../../../js/script-7hx2cpgtcylepsregwhdvs6ty8aksei6fkqvecilv039vd5l1rij948pep.min.js"></script>
+
+
+<script lang="javascript">
+window.onload = updateMinWidth;
+window.onresize = updateMinWidth;
+document.getElementById("sidebar").addEventListener("transitionend", updateMinWidth);
+function updateMinWidth() {
+  var sidebar = document.getElementById("sidebar");
+  var main = document.getElementById("main");
+  main.style.minWidth = "";
+  var w1 = getComputedStyle(main).getPropertyValue("min-width");
+  var w2 = getComputedStyle(sidebar).getPropertyValue("width");
+  var w3 = getComputedStyle(sidebar).getPropertyValue("left");
+  main.style.minWidth = `calc(${w1} - ${w2} - ${w3})`;
+}
+</script>
+
+
+  
+    
+  
+
+
+
+
+    
+  </body>
+</html>
+

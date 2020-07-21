@@ -6,10 +6,19 @@
     <description>Recent content in regresión on La Galería Hexagonal</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>es-es</language>
-    <lastBuildDate>Wed, 04 Mar 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 20 Mar 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://ruevko.github.io/hexagonal/tags/regresi%C3%B3n/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Caracterización del COVID-19 en Ecuador</title>
+      <link>https://ruevko.github.io/hexagonal/post/2020/03/20-caracterizacion-covid-ecuador/</link>
+      <pubDate>Fri, 20 Mar 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://ruevko.github.io/hexagonal/post/2020/03/20-caracterizacion-covid-ecuador/</guid>
+      <description>Utilizando paquetes desarrollados por el R Epidemics Consortium se estima el ritmo reproductivo básico, así como tres escenarios de crecimiento para los casos confirmados.</description>
+    </item>
     
     <item>
       <title>La tasa de crecimiento diaria</title>
