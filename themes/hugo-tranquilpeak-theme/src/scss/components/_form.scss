@@ -5,6 +5,7 @@
     outline:     none;
     //color:     map-get($colors, base);
       color:     map-get($colors, light);
+      font-family: $font-family-base;
     font-weight: 300;
 
     &:hover,

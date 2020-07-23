@@ -1,5 +1,6 @@
 // Group of `.box`
 // Add margin when `.box` are in `.box-group`
+/*
 .boxes {
     margin-top: 20px;
 
@@ -7,8 +8,9 @@
         margin-top: 20px;
     }
 }
-
+*/
 // Box
 .box {
-    border-bottom: 1px solid #eef2f8;
+    //border-bottom: 1px solid #eef2f8;
+      border-bottom: 1.5px solid #eef2f8;
 }

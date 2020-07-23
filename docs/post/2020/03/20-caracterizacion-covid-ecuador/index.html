@@ -306,27 +306,28 @@ code span.wa { color: #bf0303; } /* Warning */
 </style>
 
 <div id="TOC">
+<h1 style="margin: -8px 0px 16px 0px;">Contenido</h1>
 <ul>
-<li><a href="#definiciones"><strong>Definiciones</strong></a></li>
-<li><a href="#obtención-de-datos"><strong>Obtención de Datos</strong></a></li>
-<li><a href="#modelamiento-de-datos"><strong>Modelamiento de Datos</strong></a><ul>
+<li><a href="#definiciones">Definiciones</a></li>
+<li><a href="#obtención-de-datos">Obtención de Datos</a></li>
+<li><a href="#modelamiento-de-datos">Modelamiento de Datos</a><ul>
 <li><a href="#ajuste-de-regresión-exponencial">Ajuste de Regresión Exponencial</a></li>
 <li><a href="#estimación-del-ritmo-reproductivo">Estimación del Ritmo Reproductivo</a></li>
 </ul></li>
-<li><a href="#proyecciones"><strong>Proyecciones</strong></a><ul>
+<li><a href="#proyecciones">Proyecciones</a><ul>
 <li><a href="#primer-escenario-r0-al-100">Primer escenario: R<sub>0</sub> al 100 %</a></li>
 <li><a href="#segundo-escenario-r0-al-75">Segundo escenario: R<sub>0</sub> al 75 %</a></li>
 <li><a href="#tercer-escenario-r0-al-50">Tercer escenario: R<sub>0</sub> al 50 %</a></li>
 </ul></li>
-<li><a href="#conclusiones"><strong>Conclusiones</strong></a></li>
-<li><a href="#referencias"><strong>Referencias</strong></a></li>
+<li><a href="#conclusiones">Conclusiones</a></li>
+<li><a href="#referencias">Referencias</a></li>
 </ul>
 </div>
 
 <p><strong>Actualizado: 23 de abril, 13 PM</strong></p>
 <p>En atención a la emergencia en curso causada por el SARS-CoV-2 se presenta una caracterización de la epidemia en Ecuador. Se aplicó una metodología sugerida por el R Epidemics Consortium <a href="https://www.repidemicsconsortium.org/">RECON</a> que permite estimar tempranamente una variable clave como lo es el ritmo reproductivo; dicha metodología requiere conocer ciertas características del virus, y poseer datos de la incidencia diaria. Adicionalmente se ha utilizado <code>library(tidyverse)</code>.</p>
 <div id="definiciones" class="section level1">
-<h1><strong>Definiciones</strong></h1>
+<h1>Definiciones</h1>
 <p>Para aplicar la presente metodología es necesario familiarizarse con las siguientes definiciones <span class="citation">(Fine <a href="#ref-covia" role="doc-biblioref">2003</a>)</span>, relacionadas con la transmisión de un virus:</p>
 <ul>
 <li><p>El ritmo reproductivo básico (<em>Basic Reproduction Number</em>, R<sub>0</sub>) es la media de transmisiones por caso; es decir, la cantidad esperada de casos nuevos que un determinado caso generará.</p></li>
@@ -355,7 +356,7 @@ Figure 2: Evento de transmisión con Intervalo Serial negativo
 <p><span class="citation">Du et al. (<a href="#ref-covic" role="doc-biblioref">2020</a>)</span> han hallado un porcentaje considerable de SI negativos en eventos de transmisión estudiados. Sin duda la posibilidad de transmitir el virus antes de presentar síntomas -los mismos que pueden ser leves o incluso inexistentes- es un factor que ha contribuido a la propagación descontrolada del SARS-CoV-2.</p>
 </div>
 <div id="obtención-de-datos" class="section level1">
-<h1><strong>Obtención de Datos</strong></h1>
+<h1>Obtención de Datos</h1>
 <p>Los datos requeridos en esta metodología fueron recopilados de infografías publicadas diariamente por el Servicio Nacional de Gestión de Riesgos <a href="https://twitter.com/Riesgos_Ec">SNGRE</a> en su cuenta oficial de Twitter. Hasta la fecha (23 de abril), en Ecuador existen 11183 casos confirmados, de los cuales el 5.01 % han fallecido.</p>
 <div style="border: 1px solid #ddd; padding: 0px; margin-bottom:2rem;overflow-y: scroll; height:264px; ">
 <table>
@@ -1094,7 +1095,7 @@ Casos Confirmados
 </div>
 </div>
 <div id="modelamiento-de-datos" class="section level1">
-<h1><strong>Modelamiento de Datos</strong></h1>
+<h1>Modelamiento de Datos</h1>
 <p>El principal insumo para estimar R<sub>0</sub> es la incidencia diaria: la cantidad de casos que presentan síntomas de infección por primera vez (y luego son confirmados) por cada día. Debido a limitaciones de los datos, sin embargo, se ha utilizado en cambio la cantidad de casos confirmados cada día. Esto supone una aproximación a la incidencia pues, desde que un individuo presenta síntomas, hasta que confirman o descartan su infección, puede transcurrir un tiempo considerable. También es cierto que los datos oficiales son limitados, en el sentido de que algunos casos no fueron reportados o fueron asintomáticos.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a>Ec_data =<span class="st"> </span><span class="kw">mutate</span>(COVID19_Salud_Ec, <span class="dt">id =</span> <span class="ot">NA</span>) <span class="op">%&gt;%</span></span>
 <span id="cb1-2"><a href="#cb1-2"></a><span class="st">   </span><span class="kw">bind_rows</span>(COVID19_Riesgos_Ec[<span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">4</span>)]) <span class="op">%&gt;%</span></span>
@@ -1255,12 +1256,12 @@ Figure 5: Ritmo reproductivo estimado según distribuciones SI de dos artículos
 <span id="cb5-3"><a href="#cb5-3"></a>R_sam =<span class="st"> </span><span class="kw">sample_R</span>(R_get, <span class="fl">1e4</span>)</span>
 <span id="cb5-4"><a href="#cb5-4"></a></span>
 <span id="cb5-5"><a href="#cb5-5"></a><span class="kw">quantile</span>(R_sam, <span class="kw">c</span>(.<span class="dv">025</span>, <span class="fl">.5</span>, <span class="fl">.975</span>))</span></code></pre></div>
-<pre><code>##     2.5%      50%    97.5% 
+<pre><code>##     2.5%      50%    97.5%
 ## 1.661662 1.751752 1.841842</code></pre>
 </div>
 </div>
 <div id="proyecciones" class="section level1">
-<h1><strong>Proyecciones</strong></h1>
+<h1>Proyecciones</h1>
 <p>La función <code>project()</code> permite utilizar una muestra de valores R<sub>0</sub> probables y proyectar el número esperado de casos confirmados en los próximos días. A continuación se proponen tres escenarios diferentes, reduciendo cada vez el valor R<sub>0</sub> más probable; cada escenario se proyecta a partir del 27 de marzo (dado que R<sub>0</sub> fue estimado hasta el 26). En los gráficos, la región sombreada representa el 95 % CI de la proyección.</p>
 <div id="primer-escenario-r0-al-100" class="section level2">
 <h2>Primer escenario: R<sub>0</sub> al 100 %</h2>
@@ -1308,13 +1309,13 @@ Figure 8: Proyección de casos COVID-19 confirmados en Ecuador, si R0 = 0.88
 </div>
 </div>
 <div id="conclusiones" class="section level1">
-<h1><strong>Conclusiones</strong></h1>
+<h1>Conclusiones</h1>
 <p>Este análisis consideró lo que la literatura sobre el virus SARS-CoV-2 sugiere hasta el momento. Si bien más investigaciones se encuentran en camino, los resultados ya han demostrado la magnitud de la amenaza que enfrentamos; recordemos que la transmisión es más rápida comparada con otros coronavirus, y puede pasar inadvertida -si ocurre antes que el inicio de síntomas- en muchos casos.</p>
 <p>Una desventaja de esta caracterización es que utilizó estimaciones -concretamente la distribución del intervalo serial- realizadas en un contexto distinto. Como se mencionó en las definiciones, estas características epidemiológicas dependen de factores que varían entre sociedades y escenarios de control; hace falta una estimación del SI con los datos observados en Ecuador. Con todo, el valor R<sub>0</sub> obtenido es congruente con lo observado en varios países alrededor del mundo, y el consenso parece ser que la epidemia del COVID-19 posee un ritmo reproductivo entre uno y dos. <span class="citation">(Du et al. <a href="#ref-covic" role="doc-biblioref">2020</a>)</span> han calculado R<sub>0</sub> = 1.32 para casos chinos fuera de Wuhan. Con el control adoptado en Ecuador, el ritmo reproductivo parece haber decrecido entre un 25 (gráfico <a href="#fig:project-075">7</a>) y un 50 %.</p>
 <p>Como conclusión las proyecciones aquí presentadas son exploratorias; en vez de predecir lo que sucederá en los próximos días, se pretende explicar cuánto se ha reducido el avance de la epidemia hasta ahora. Sabemos que si R<sub>0</sub> &lt; 1 los casos confirmados detendrán su crecimiento exponencial (gráfico <a href="#fig:log-plot">4</a>), lo cual es crucial para no colapsar los servicios de salud. También podríamos discernir si el crecimiento dejará de ser exponencial, observando cuándo los factores de crecimiento (gráfico <a href="#fig:dat-plot">3</a>) son menores que uno. Por último, aunque no se lo ha hecho aquí, mencionar que es posible generar un modelo compartimental SIR, para analizar cuándo ocurrirá el pico de individuos infectados.</p>
 </div>
 <div id="referencias" class="section level1 unnumbered">
-<h1><strong>Referencias</strong></h1>
+<h1>Referencias</h1>
 <div id="refs" class="references">
 <div id="ref-covic">
 <p>Du, Zhanwei, Lin Wang, Xiaoke Xu, Ye Wu, Benjamin Cowling, and Lauren Meyers. 2020. “Serial Interval of Covid-19 Among Publicly Reported Confirmed Cases.” <em>Emerging Infectious Diseases</em>. <a href="https://doi.org/10.3201/eid2606.200357">https://doi.org/10.3201/eid2606.200357</a>.</p>
@@ -1394,7 +1395,7 @@ Figure 8: Proyección de casos COVID-19 confirmados en Ecuador, si R0 = 0.88
       
       <li class="post-action">
         
-          <a class="post-action-btn btn btn--default" href="#" data-tooltip="Regresar al inicio">
+          <a class="post-action-btn btn btn--default" href="#TOC" data-tooltip="Regresar al contenido">
         
           <i class="fa fa-angle-double-up"></i>
         </a>
@@ -1465,7 +1466,7 @@ Figure 8: Proyección de casos COVID-19 confirmados en Ecuador, si R0 = 0.88
       
       <li class="post-action">
         
-          <a class="post-action-btn btn btn--default" href="#" data-tooltip="Regresar al inicio">
+          <a class="post-action-btn btn btn--default" href="#TOC" data-tooltip="Regresar al contenido">
         
           <i class="fa fa-angle-double-up"></i>
         </a>

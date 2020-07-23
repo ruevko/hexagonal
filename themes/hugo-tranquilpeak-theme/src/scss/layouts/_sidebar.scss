@@ -1,7 +1,8 @@
 // Global CSS rules for all screen size
 #sidebar {
     font-family:        map-get($font-families, 'sidebar');
-    height:             100%;
+    //height:           100%;
+      height:           100vh;
     position:           fixed;
     top:                0;
     background:         map-get($sidebar, background);

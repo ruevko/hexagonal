@@ -71,8 +71,8 @@
         </li>
       {{ end }}
       <li class="post-action">
-        {{ if findRE "<!--\\s*[t|T][o|O][c|C]\\s*-->" .Content }}
-          <a class="post-action-btn btn btn--default" href="#table-of-contents">
+        {{ if findRE "id=\"TOC\"" .Content }}
+          <a class="post-action-btn btn btn--default" href="#TOC" data-tooltip="Regresar al contenido">
         {{ else }}
           <a class="post-action-btn btn btn--default" href="#" data-tooltip="Regresar al inicio">
         {{ end }}

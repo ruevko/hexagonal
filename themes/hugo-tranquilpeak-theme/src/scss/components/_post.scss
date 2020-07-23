@@ -50,6 +50,16 @@
             }
         }
 */
+          h2, h3, h4, h5, h6 {
+              font-weight: 400;
+              margin: 1em 0 0.4em 0;
+          }
+          #TOC {
+              margin-bottom: 16px;
+              a {
+                  color: map-get($colors, base);
+              }
+        }
     }
     .post-footer {
         margin-top: 20px;

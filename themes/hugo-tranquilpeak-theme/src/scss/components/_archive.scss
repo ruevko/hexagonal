@@ -1,5 +1,6 @@
 .archive-result {
     display: none;
+      font-weight: 400;
       color: map-get($colors, light);
 }
 
@@ -13,6 +14,7 @@
     }
     .archive-posts {
         list-style: none;
+          margin:   8px 0;
 
         .archive-post {
             .archive-post-title {

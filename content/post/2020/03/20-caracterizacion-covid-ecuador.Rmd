@@ -29,7 +29,7 @@ summary: Utilizando paquetes desarrollados por el R Epidemics Consortium se esti
 
 En atención a la emergencia en curso causada por el SARS-CoV-2 se presenta una caracterización de la epidemia en Ecuador. Se aplicó una metodología sugerida por el R Epidemics Consortium [RECON](https://www.repidemicsconsortium.org/) que permite estimar tempranamente una variable clave como lo es el ritmo reproductivo; dicha metodología requiere conocer ciertas características del virus, y poseer datos de la incidencia diaria. Adicionalmente se ha utilizado `library(tidyverse)`.
 
-# **Definiciones**
+# Definiciones
 
 Para aplicar la presente metodología es necesario familiarizarse con las siguientes definiciones [@covia], relacionadas con la transmisión de un virus:
 
@@ -93,7 +93,7 @@ dfg(dfd, dfp)
 
 @covic han hallado un porcentaje considerable de SI negativos en eventos de transmisión estudiados. Sin duda la posibilidad de transmitir el virus antes de presentar síntomas -los mismos que pueden ser leves o incluso inexistentes- es un factor que ha contribuido a la propagación descontrolada del SARS-CoV-2.
 
-# **Obtención de Datos**
+# Obtención de Datos
 
 Los datos requeridos en esta metodología fueron recopilados de infografías publicadas diariamente por el Servicio Nacional de Gestión de Riesgos [SNGRE](https://twitter.com/Riesgos_Ec) en su cuenta oficial de Twitter. Hasta la fecha (23 de abril), en Ecuador existen `r max(COVID19_Riesgos_Ec$conf)` casos confirmados, de los cuales el `r round(100 * max(COVID19_Riesgos_Ec$fallecido) / max(COVID19_Riesgos_Ec$conf), 2)` % han fallecido.
 
@@ -119,7 +119,7 @@ COVID19_Salud_Ec[9:1, ] %>% mutate(
    scroll_box("196px", extra_css = "margin-bottom:2rem;")
 ```
 
-# **Modelamiento de Datos**
+# Modelamiento de Datos
 
 El principal insumo para estimar R~0~ es la incidencia diaria: la cantidad de casos que presentan síntomas de infección por primera vez (y luego son confirmados) por cada día. Debido a limitaciones de los datos, sin embargo, se ha utilizado en cambio la cantidad de casos confirmados cada día. Esto supone una aproximación a la incidencia pues, desde que un individuo presenta síntomas, hasta que confirman o descartan su infección, puede transcurrir un tiempo considerable. También es cierto que los datos oficiales son limitados, en el sentido de que algunos casos no fueron reportados o fueron asintomáticos.
 
@@ -272,7 +272,7 @@ R_sam = sample_R(R_get, 1e4)
 quantile(R_sam, c(.025, .5, .975))
 ```
 
-# **Proyecciones**
+# Proyecciones
 
 La función `project()` permite utilizar una muestra de valores R~0~ probables y proyectar el número esperado de casos confirmados en los próximos días. A continuación se proponen tres escenarios diferentes, reduciendo cada vez el valor R~0~ más probable; cada escenario se proyecta a partir del 27 de marzo (dado que R~0~ fue estimado hasta el 26). En los gráficos, la región sombreada representa el 95 % CI de la proyección.
 
@@ -347,7 +347,7 @@ Ec_data = as_tibble(t(as.matrix(Ec_proj))) %>%
 my_new_plot() #as.data.frame(Ec_data[c(1:4, 7, 9, 12)])
 ```
 
-# **Conclusiones**
+# Conclusiones
 
 Este análisis consideró lo que la literatura sobre el virus SARS-CoV-2 sugiere hasta el momento. Si bien más investigaciones se encuentran en camino, los resultados ya han demostrado la magnitud de la amenaza que enfrentamos; recordemos que la transmisión es más rápida comparada con otros coronavirus, y puede pasar inadvertida -si ocurre antes que el inicio de síntomas- en muchos casos.
 
@@ -355,4 +355,4 @@ Una desventaja de esta caracterización es que utilizó estimaciones -concretame
 
 Como conclusión las proyecciones aquí presentadas son exploratorias; en vez de predecir lo que sucederá en los próximos días, se pretende explicar cuánto se ha reducido el avance de la epidemia hasta ahora. Sabemos que si R~0~ < 1 los casos confirmados detendrán su crecimiento exponencial (gráfico \@ref(fig:log-plot)), lo cual es crucial para no colapsar los servicios de salud. También podríamos discernir si el crecimiento dejará de ser exponencial, observando cuándo los factores de crecimiento (gráfico \@ref(fig:dat-plot)) son menores que uno. Por último, aunque no se lo ha hecho aquí, mencionar que es posible generar un modelo compartimental SIR, para analizar cuándo ocurrirá el pico de individuos infectados.
 
-# **Referencias**
+# Referencias
