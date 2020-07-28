@@ -13,6 +13,10 @@
     transition:         transform .25s ease-in-out;
     -webkit-transition: -webkit-transform .25s ease-in-out;
 
+      .post-actions-wrap {
+          margin: 5px 0px;
+      }
+
     min-width: $main-width - 15px * 2;
     @media only screen and (max-width: $main-width - 15px * 2) {
         min-width: calc(100% - 15px * 2);

@@ -10,7 +10,7 @@
                 <a class="post-action-btn btn btn--disabled">
               {{ end }}
                   <i class="fa fa-angle-left"></i>
-                  <span class="hide-xs hide-sm text-small icon-ml">{{ i18n "pagination.previous" }}</span>
+                  <span class="hide-xs text-small icon-ml">{{ i18n "pagination.previous" }}</span>
                 </a>
             </li>
             <li class="post-action">
@@ -19,7 +19,7 @@
               {{ else }}
                 <a class="post-action-btn btn btn--disabled">
               {{ end }}
-                  <span class="hide-xs hide-sm text-small icon-mr">{{ i18n "pagination.next" }}</span>
+                  <span class="hide-xs text-small icon-mr" style="margin-left: 9.4px;">{{ i18n "pagination.next" }}</span>
                   <i class="fa fa-angle-right"></i>
                 </a>
             </li>
@@ -31,7 +31,7 @@
                 <a class="post-action-btn btn btn--disabled">
               {{ end }}
                   <i class="fa fa-angle-left"></i>
-                  <span class="hide-xs hide-sm text-small icon-ml">{{ i18n "pagination.next" }}</span>
+                  <span class="hide-xs text-small icon-ml">{{ i18n "pagination.next" }}</span>
                 </a>
             </li>
             <li class="post-action">
@@ -40,7 +40,7 @@
               {{ else }}
                 <a class="post-action-btn btn btn--disabled">
               {{ end }}
-                  <span class="hide-xs hide-sm text-small icon-mr">{{ i18n "pagination.previous" }}</span>
+                  <span class="hide-xs text-small icon-mr" style="margin-left: 9.4px;">{{ i18n "pagination.previous" }}</span>
                   <i class="fa fa-angle-right"></i>
                 </a>
             </li>
@@ -70,13 +70,18 @@
           </a>
         </li>
       {{ end }}
-      <li class="post-action">
+      <!-- li class="post-action">
         {{ if findRE "id=\"TOC\"" .Content }}
           <a class="post-action-btn btn btn--default" href="#TOC" data-tooltip="Regresar al contenido">
         {{ else }}
           <a class="post-action-btn btn btn--default" href="#" data-tooltip="Regresar al inicio">
         {{ end }}
           <i class="fa fa-angle-double-up"></i>
+        </a>
+      </li -->
+      <li class="post-action">
+        <a class="post-action-btn btn btn--default" href="#main" data-tooltip="Regresar al inicio">
+          <i class="fa fa-chevron-up"></i>
         </a>
       </li>
     </ul>

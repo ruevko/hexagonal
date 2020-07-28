@@ -113,12 +113,19 @@ table {
         }
     }
 }
-/*
-.kable {
-    width:         auto;
-    margin-bottom: 2rem;
+
+sub {
+    vertical-align: bottom;
+    position:     relative;
+    top:             0.4em;
 }
-*/
+
+sup {
+    vertical-align: top;
+    position:  relative;
+    bottom:       0.4em;
+}
+
 hr {
     //margin:     1.5em 0 0;
       margin:     1.5rem 0;

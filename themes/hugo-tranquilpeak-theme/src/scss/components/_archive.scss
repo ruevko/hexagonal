@@ -22,8 +22,10 @@
                 color:       $font-color-base;
 
                 &:hover {
-                    text-decoration: underline;
+                    //text-decoration: underline;
+                      text-decoration: none;
                 }
+
             }
             .archive-post-date {
                 color: map-get($colors, light);

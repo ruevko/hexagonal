@@ -6,7 +6,8 @@
     {{ with ($.Scratch.Get "authorPicture") }}
       <img id="about-card-picture" src="{{ . }}{{ if in . "//www.gravatar.com/avatar/" }}?s=110{{ end }}" alt="{{ i18n "global.author_picture" }}" />
     {{ end }}
-    <h4 id="about-card-name">{{ .Site.Author.name }}</h4>
+    <!-- h4 id="about-card-name">{{ .Site.Author.name }}</h4 -->
+    <h4 id="about-card-name">{{ .Site.Title }}</h4>
     {{ with .Site.Author.bio }}
       <div id="about-card-bio">{{ . | markdownify }}</div>
     {{ end }}

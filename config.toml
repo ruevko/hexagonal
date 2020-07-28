@@ -2,7 +2,7 @@
 # Version : 0.4.8-BETA
 # Author : Thibaud Leprêtre
 
-ignoreFiles = ["\\.bib$", "\\.csv$", "\\.jpg$", "\\.shp$", "\\.shx$", "\\.RDS$", "\\.Rmd$", "_files$", "_cache$"]
+ignoreFiles = ["\\.bib$", "\\.csv$", "\\.shp$", "\\.shx$", "\\.RDS$", "\\.Rmd$", "_files$", "_cache$"]
 
 publishDir = "docs"
 title = "La Galería Hexagonal"
@@ -21,57 +21,57 @@ paginate = 6
   archive = "archives"
 
 [author]
-  name = "La Galería Hexagonal"
+  name = "Roger Rafael Castro Zambrano"
   picture = "/hexagonal/logo.png"
   location = "Ecuador"
   job = "Geógrafo"
   bio = "Este es el blog de Rafael Castro, orientado a Cartografía y Data Analytics."
 
-  [[menu.main]]
-    weight = 1
-    identifier = "home"
-    name = "Home"
-    pre = "<i class=\"sidebar-button-icon fa fa-lg fa-globe-americas\"></i>" #-americas
-    url = "/"
+  #[[menu.main]]
+    #weight = 1
+    #identifier = "home"
+    #name = "Home"
+    #pre = "<i class=\"sidebar-button-icon fas fa-lg fa-atlas\"></i>"
+    #url = "/"
   [[menu.main]]
     weight = 2
-    identifier = "categories"
-    name = "Categories"
-    pre = "<i class=\"sidebar-button-icon fa fa-lg fa-map-marked-alt\"></i>" #-marked-alt
-    url = "/categories"
-  [[menu.main]]
-    weight = 3
-    identifier = "tags"
-    name = "Tags"
-    pre = "<i class=\"sidebar-button-icon fa fa-lg fa-map-marker-alt\"></i>" #fas-atlas
-    url = "/tags"
-  [[menu.main]]
-    weight = 4
     identifier = "archives"
     name = "Archives"
-    pre = "<i class=\"sidebar-button-icon fa fa-lg fa-search-location\"></i>"
+    pre = "<i class=\"sidebar-button-icon fas fa-lg fa-globe-americas\"></i>" #fa-globe
     url = "/archives"
+  [[menu.main]]
+    weight = 3
+    identifier = "categories"
+    name = "Categories"
+    pre = "<i class=\"sidebar-button-icon fas fa-lg fa-map-marked-alt\"></i>" #fa-map
+    url = "/categories"
+  [[menu.main]]
+    weight = 4
+    identifier = "tags"
+    name = "Tags"
+    pre = "<i class=\"sidebar-button-icon fas fa-lg fa-map-marker-alt\"></i>"
+    url = "/tags"
 
   [[menu.links]]
-    weight = 1
+    weight = 2
     identifier = "github"
     name = "GitHub"
     pre = "<i class=\"sidebar-button-icon fab fa-lg fa-github-alt\"></i>"
     url = "https://github.com/ruevko"
   [[menu.links]]
-    weight = 2
+    weight = 3
     identifier = "twitter"
     name = "Twitter"
     pre = "<i class=\"sidebar-button-icon fab fa-lg fa-twitter\"></i>"
     url = "https://twitter.com/ruevko"
+  [[menu.links]]
+    weight = 4
+    identifier = "kofi"
+    name = "Ko-fi"
+    pre = "<i class=\"sidebar-button-icon fas fa-lg fa-coffee\"></i>"
+    url = "https://ko-fi.com/ruevko"
   #[[menu.links]]
-    #weight = 3
-    #identifier = "kofi"
-    #name = "Ko-fi"
-    #pre = "<i class=\"sidebar-button-icon fas fa-lg fa-coffee\"></i>"
-    #url = "https://ko-fi.com/ruevko"
-  #[[menu.links]]
-    #weight = 4
+    #weight = 1
     #identifier = "researchgate"
     #name = "RGate"
     #pre = "<i class=\"sidebar-button-icon fab fa-lg fa-researchgate\"></i>"
@@ -90,11 +90,17 @@ paginate = 6
     #url = "https://instagram.com/ruevko"
 
   [[menu.misc]]
-    weight = 1
+    weight = 5
     identifier = "readme"
     name = "Acerca de..."
-    pre = "<i class=\"sidebar-button-icon far fa-lg fa-compass\"></i>" #fas-map-signs
+    pre = "<i class=\"sidebar-button-icon fas fa-lg fa-compass\"></i>"
     url = "/post/readme"
+  #[[menu.misc]]
+    #weight = 6
+    #identifier = "english"
+    #name = "English blog..."
+    #pre = "<i class=\"sidebar-button-icon fas fa-lg fa-map-signs\"></i>"
+    #url = "/post/readme"
 
 [params]
 
@@ -121,14 +127,10 @@ paginate = 6
     icon = "fa-facebook"
     url = "https://www.facebook.com/sharer/sharer.php?u=%s"
 
-# Header configuration. The link at the right of the header is customizable
-# You can add a link (as icon) at the right of header instead of author's picture.
-# By default, author's gravatar or author's picture is displayed.
-#[params.header.rightLink]
-  #class = ""      #class: st-search-show-outputs
-  #icon = ""       #icon: search
-  #url = "/#about" #url: /#search
+[params.header.rightLink]
+  icon = "chevron-down"
+  url = "#footer"
 
 [params.footer]
-  copyright = "(CC-BY-SA-4.0)<br>by Rafael Castro <i class=\"fas fa-lg fa-crow\"></i>"
-#<br>Puedes apoyarme en <a href=\"https://ko-fi.com/A0A61KV0W\">Ko-fi</a> <i class=\"fas fa-lg fa-coffee\"></i>
+  copyright = "by Rafael Castro <i class=\"fas fa-lg fa-crow\"></i>"
+#"<br><a href=\"https://ko-fi.com/A0A61KV0W\">KO-FI</a> <i class=\"fas fa-lg fa-coffee\"></i>"

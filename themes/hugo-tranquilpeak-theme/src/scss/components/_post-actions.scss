@@ -34,6 +34,17 @@
                     margin-left: 15px;
                 }
             }
+
+            a.post-action-btn {
+                i {
+                    margin: 0px 2px;
+                }
+                span {
+                    position: relative;
+                    bottom: 1px;
+                }
+            }
+
         }
     }
     // Post's share options
@@ -62,11 +73,13 @@
     .post-actions-wrap {
         ul.post-action-nav {
             // Best width for responsive post's navigation panel on small screen
-            width: 25%;
+            //width: 25%;
+              width: 60%;
         }
         ul.post-action-share {
             // Best width for responsive post's share panel on small screen
-            width: 75%;
+            //width: 75%;
+              width: 40%;
         }
     }
 }

@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="generator" content="Hugo 0.73.0 with theme Tranquilpeak 0.4.8-BETA">
-<meta name="author" content="La Galería Hexagonal">
+<meta name="author" content="Roger Rafael Castro Zambrano">
 <meta name="keywords" content="regression, mapas, datos, análisis, maps, data, analytics">
 <meta name="description" content="Utilizando paquetes desarrollados por el R Epidemics Consortium se estima el ritmo reproductivo básico, así como tres escenarios de crecimiento para los casos confirmados.">
 
@@ -89,6 +89,16 @@
     <a class="header-title-link" href="../../../../">La Galería Hexagonal</a>
   </div>
   
+    
+      <a class="header-right-icon "
+         href="#footer">
+    
+    
+      <i class="fa fa-lg fa-chevron-down"></i>
+    
+    
+    </a>
+  
 </header>
 
       <nav id="sidebar" data-behavior="4">
@@ -98,7 +108,7 @@
         <a href="../../../../#about">
           <img class="sidebar-profile-picture" src="https://ruevko.github.io/hexagonal/logo.png" alt="Foto de autor" />
         </a>
-        <h4 class="sidebar-profile-name">La Galería Hexagonal</h4>
+        <a class="sidebar-profile-name" href="../../../../">La Galería Hexagonal</a>
 
       </div>
     
@@ -106,11 +116,11 @@
       
   <li class="sidebar-button">
     
-      <a class="sidebar-button-link " href="../../../../">
+      <a class="sidebar-button-link " href="../../../../archives">
     
-      <i class="sidebar-button-icon fa fa-lg fa-globe-americas"></i>
+      <i class="sidebar-button-icon fas fa-lg fa-globe-americas"></i>
       
-      <span class="sidebar-button-desc">Inicio</span>
+      <span class="sidebar-button-desc">Archivo</span>
     </a>
   </li>
 
@@ -118,7 +128,7 @@
     
       <a class="sidebar-button-link " href="../../../../categories">
     
-      <i class="sidebar-button-icon fa fa-lg fa-map-marked-alt"></i>
+      <i class="sidebar-button-icon fas fa-lg fa-map-marked-alt"></i>
       
       <span class="sidebar-button-desc">Categorías</span>
     </a>
@@ -128,19 +138,9 @@
     
       <a class="sidebar-button-link " href="../../../../tags">
     
-      <i class="sidebar-button-icon fa fa-lg fa-map-marker-alt"></i>
+      <i class="sidebar-button-icon fas fa-lg fa-map-marker-alt"></i>
       
       <span class="sidebar-button-desc">Etiquetas</span>
-    </a>
-  </li>
-
-  <li class="sidebar-button">
-    
-      <a class="sidebar-button-link " href="../../../../archives">
-    
-      <i class="sidebar-button-icon fa fa-lg fa-search-location"></i>
-      
-      <span class="sidebar-button-desc">Archivo</span>
     </a>
   </li>
 
@@ -168,6 +168,16 @@
     </a>
   </li>
 
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://ko-fi.com/ruevko" target="_blank" rel="noopener">
+    
+      <i class="sidebar-button-icon fas fa-lg fa-coffee"></i>
+      
+      <span class="sidebar-button-desc">Ko-fi</span>
+    </a>
+  </li>
+
 
     </ul>
     <ul class="sidebar-buttons">
@@ -176,7 +186,7 @@
     
       <a class="sidebar-button-link " href="../../../../post/readme">
     
-      <i class="sidebar-button-icon far fa-lg fa-compass"></i>
+      <i class="sidebar-button-icon fas fa-lg fa-compass"></i>
       
       <span class="sidebar-button-desc">Acerca de...</span>
     </a>
@@ -305,8 +315,8 @@ code span.vs { color: #bf0303; } /* VerbatimString */
 code span.wa { color: #bf0303; } /* Warning */
 </style>
 
-<div id="TOC">
-<h1 style="margin: -8px 0px 16px 0px;">Contenido</h1>
+<div id="TOC"><h1 style="margin: 8px 0px;">Contenido</h1>
+
 <ul>
 <li><a href="#definiciones">Definiciones</a></li>
 <li><a href="#obtención-de-datos">Obtención de Datos</a></li>
@@ -1359,14 +1369,14 @@ Figure 8: Proyección de casos COVID-19 confirmados en Ecuador, si R0 = 0.88
                 <a class="post-action-btn btn btn--default tooltip-big" href="../../../../post/2020/07/01-cordones-coordenadas/" data-tooltip="Cordones y Coordenadas">
               
                   <i class="fa fa-angle-left"></i>
-                  <span class="hide-xs hide-sm text-small icon-ml">Siguiente</span>
+                  <span class="hide-xs text-small icon-ml">Siguiente</span>
                 </a>
             </li>
             <li class="post-action">
               
                 <a class="post-action-btn btn btn--default tooltip-big" href="../../../../post/2020/03/04-crecimiento-diario-nodos/" data-tooltip="La tasa de crecimiento diaria">
               
-                  <span class="hide-xs hide-sm text-small icon-mr">Anterior</span>
+                  <span class="hide-xs text-small icon-mr" style="margin-left: 9.4px;">Anterior</span>
                   <i class="fa fa-angle-right"></i>
                 </a>
             </li>
@@ -1393,11 +1403,10 @@ Figure 8: Proyección de casos COVID-19 confirmados en Ecuador, si R0 = 0.88
         
       
       
+      
       <li class="post-action">
-        
-          <a class="post-action-btn btn btn--default" href="#TOC" data-tooltip="Regresar al contenido">
-        
-          <i class="fa fa-angle-double-up"></i>
+        <a class="post-action-btn btn btn--default" href="#main" data-tooltip="Regresar al inicio">
+          <i class="fa fa-chevron-up"></i>
         </a>
       </li>
     </ul>
@@ -1411,10 +1420,15 @@ Figure 8: Proyección de casos COVID-19 confirmados en Ecuador, si R0 = 0.88
         </article>
         <footer id="footer" class="main-content-wrap">
   <span class="copyrights">
-     <i class="fab fa-creative-commons"></i>
-     <i class="fab fa-creative-commons-by"></i>
-     <i class="fab fa-creative-commons-sa"></i>
-     2020 (CC-BY-SA-4.0)<br>by Rafael Castro <i class="fas fa-lg fa-crow"></i>  
+    <i class="fab fa-creative-commons"></i>
+    <i class="fab fa-creative-commons-by"></i>
+    <i class="fab fa-creative-commons-sa"></i>
+    2020
+    (CC-BY-SA-4.0)
+    <br>
+    
+      by Rafael Castro <i class="fas fa-lg fa-crow"></i>
+    
   </span>
 </footer>
 
@@ -1430,14 +1444,14 @@ Figure 8: Proyección de casos COVID-19 confirmados en Ecuador, si R0 = 0.88
                 <a class="post-action-btn btn btn--default tooltip-big" href="../../../../post/2020/07/01-cordones-coordenadas/" data-tooltip="Cordones y Coordenadas">
               
                   <i class="fa fa-angle-left"></i>
-                  <span class="hide-xs hide-sm text-small icon-ml">Siguiente</span>
+                  <span class="hide-xs text-small icon-ml">Siguiente</span>
                 </a>
             </li>
             <li class="post-action">
               
                 <a class="post-action-btn btn btn--default tooltip-big" href="../../../../post/2020/03/04-crecimiento-diario-nodos/" data-tooltip="La tasa de crecimiento diaria">
               
-                  <span class="hide-xs hide-sm text-small icon-mr">Anterior</span>
+                  <span class="hide-xs text-small icon-mr" style="margin-left: 9.4px;">Anterior</span>
                   <i class="fa fa-angle-right"></i>
                 </a>
             </li>
@@ -1464,11 +1478,10 @@ Figure 8: Proyección de casos COVID-19 confirmados en Ecuador, si R0 = 0.88
         
       
       
+      
       <li class="post-action">
-        
-          <a class="post-action-btn btn btn--default" href="#TOC" data-tooltip="Regresar al contenido">
-        
-          <i class="fa fa-angle-double-up"></i>
+        <a class="post-action-btn btn btn--default" href="#main" data-tooltip="Regresar al inicio">
+          <i class="fa fa-chevron-up"></i>
         </a>
       </li>
     </ul>
@@ -1487,6 +1500,7 @@ Figure 8: Proyección de casos COVID-19 confirmados en Ecuador, si R0 = 0.88
     </div>
     
       <img id="about-card-picture" src="https://ruevko.github.io/hexagonal/logo.png" alt="Foto de autor" />
+    
     
     <h4 id="about-card-name">La Galería Hexagonal</h4>
     

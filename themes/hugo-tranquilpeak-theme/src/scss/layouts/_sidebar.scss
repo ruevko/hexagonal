@@ -30,9 +30,16 @@
             margin:  0 auto;
         }
         .sidebar-profile-name {
-            //font-size: 1.1em;
-              font-size: 2rem;
-            color:     map-get($sidebar, color);
+            //font-size:   1.1em;
+              font-size:   2rem;
+              letter-spacing: -.04em;
+            color:         map-get($sidebar, color);
+              &:hover,
+              &:active {
+                  text-decoration: none;
+                  color:           #fff;
+                  font-weight:     700;
+              }
         }
     }
     // Sidebar's buttons
@@ -48,9 +55,13 @@
             line-height: 45px;
 
             .sidebar-button-link {
-                color:   map-get($sidebar, color);
+                color:   #d2d2d2;
                 display: block;
                 height:  100%;
+
+                  .sidebar-button-desc {
+                    color:   map-get($sidebar, color);
+                  }
 
                 &:hover,
                 &:active {
@@ -59,6 +70,7 @@
 
                       .sidebar-button-desc {
                           font-weight: 700;
+                          color:       lighten(map-get($sidebar, color), 35);
                       }
 
                 }

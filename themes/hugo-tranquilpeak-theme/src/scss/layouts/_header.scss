@@ -7,7 +7,8 @@
     top:                         0;
     //border:                      map-get($header, border);
       border-bottom:               map-get($header, border);
-    color:                       map-get($header, color);
+    //color:                       map-get($header, color);
+      color:                       map-get($colors, light);
     // used to animate the header on small screen with javascript
     //@include prefix(transition, top 0.25s ease-in-out, 'webkit' 'moz' 'ms' 'o');
     z-index:                     map-get($z-indexes, l-header);
@@ -30,6 +31,10 @@
         top:      20px;
         left:     20px;
         cursor:   pointer;
+          &:hover,
+          &:active {
+              color: darken(map-get($colors, light), 15);
+          }
     }
     .header-right-picture {
         position: absolute;
@@ -53,7 +58,13 @@
         // vertical center
         top:      12.5px;
         right:    20px;
-        color:    map-get($header, color);
+        //color:  map-get($header, color);
+          color:  map-get($colors, light);
+
+          &:hover,
+          &:active {
+              color: darken(map-get($colors, light), 15);
+          }
     }
     .header-title {
         text-align:  center;
@@ -62,12 +73,15 @@
         margin:      0;
 
         .header-title-link {
-            color:       map-get($header, color);
+            //color:     map-get($header, color);
+              color:     darken(map-get($colors, light), 10);
             font-weight: normal;
 
             &:hover,
             &:active {
-                color:           darken(map-get($header, color), 10);
+                //color: darken(map-get($header, color), 10);
+                  color: darken(map-get($colors, light), 15);
+                  font-weight:   700;
                 text-decoration: none;
             }
         }

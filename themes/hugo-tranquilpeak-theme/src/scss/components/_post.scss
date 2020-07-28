@@ -39,9 +39,11 @@
         @include prefix('hypens', 'auto', 'webkit' 'moz');
 
         img {
-            display:   block;
-            width:     auto;
-            max-width: 100%;
+            display:     block;
+            //width:     auto;
+            //max-width: 100%;
+              max-width: 80%;
+              margin:    0 auto;
         }
 /*
         :not(blockquote):not(.alert) {
@@ -108,10 +110,24 @@
 }
 */
 @media #{$small-and-down} {
-    .post-content {
-        font-size: map-get($font-size, medium);
+    .post {
+        .post-content {
+            font-size: map-get($font-size, medium);
+            img {
+                max-width: calc(89 * (10vw - 48px) / 18 + 440px);
+            }
+        }
+        code {
+            font-size: map-get($font-size, small);
+        }
     }
-    code {
-        font-size: map-get($font-size, small);
+}
+@media #{$xsmall-and-down} {
+    .post {
+        .post-content {
+            img {
+                max-width: 100%;
+            }
+        }
     }
 }
