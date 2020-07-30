@@ -16,7 +16,7 @@ editor_options:
 output:
    blogdown::html_page:
       highlight: kate
-thumbnailImage: https://pbs.twimg.com/media/ENzwak5XsAATLc0?format=jpg&name=small
+thumbnailImage: https://res.cloudinary.com/dodnzqhiz/image/upload/v1595302847/2020post/cacerolazo_ndaaxl.jpg
 summary: Una discusión de *tweets* publicados con tres *hashtags* populares durante el paro de octubre en Ecuador, y del inconveniente para recuperar esos datos hoy en día.
 ---
 

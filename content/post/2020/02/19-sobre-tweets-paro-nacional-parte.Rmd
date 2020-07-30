@@ -16,7 +16,7 @@ editor_options:
 output:
    blogdown::html_page:
       highlight: kate
-thumbnailImage: https://github.com/ruevko/hexagonal/raw/master/content/post/2020/02/cacerolazo.jpg
+thumbnailImage: https://res.cloudinary.com/dodnzqhiz/image/upload/v1595302847/2020post/cacerolazo_ndaaxl.jpg
 summary: Continúa la discusión de *tweets* publicados durante el paro de octubre, considerando ahora seis *hashtags* populares.
 ---
 
