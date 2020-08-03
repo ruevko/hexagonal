@@ -25,7 +25,6 @@ paginate = 6
   picture = "/hexagonal/logo.png"
   location = "Ecuador"
   job = "Geógrafo"
-  twitter = "ruevko"
   bio = "Este es el blog de Rafael Castro, orientado a Cartografía y Data Analytics."
 
   #[[menu.main]]
