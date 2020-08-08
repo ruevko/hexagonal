@@ -2,6 +2,9 @@
 - id: "global.home"
   translation: "Inicio"
 
+- id: "global.posts"
+  translation: "Artículos"
+
 - id: "global.categories"
   translation: "Categorías"
 

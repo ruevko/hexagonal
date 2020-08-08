@@ -26,17 +26,23 @@
   <head>
     {{ partial "head_start.html" . }}
     {{ partial "meta.html" . }}
-    <title>{{ with .Title }}{{ . }}{{ else }}{{ .Site.Title }}{{ end }}</title>
+    <title>
+      {{ if i18n (print "global." (lower .Title))}}
+        {{ print (i18n (print "global." (lower .Title))) " | " .Site.Title }}
+      {{ else if not (eq .Title .Site.Title) }}
+        {{ print .Title " | " .Site.Title }}
+      {{ else }}
+        {{ print (i18n "global.home") " | " .Site.Title }}
+      {{ end }}
+    </title>
 
     <link rel="icon" href="{{ with .Site.Params.favicon }}{{ . }}{{ else }}/favicon.png{{ end }}">
     {{ with .OutputFormats.Get "RSS" }}
       <link rel="alternate" type="application/rss+xml" title="RSS" href="{{ .RelPermalink }}">
     {{ end }}
-
     {{ with .Site.Author.googleplus }}
       <link rel="publisher" href="https://plus.google.com/{{ . | urlize }}">
     {{ end }}
-
     <link rel="canonical" href="{{ .Permalink }}">
 
     <!--EXTERNAL STYLES-->

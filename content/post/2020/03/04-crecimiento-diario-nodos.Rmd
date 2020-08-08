@@ -1,5 +1,5 @@
 ---
-title: La tasa de crecimiento diaria
+title: El crecimiento diario de los nodos OSM
 author: Rafael Castro
 date: '2020-03-04'
 slug: 04-crecimiento-diario-nodos
