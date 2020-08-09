@@ -29,6 +29,9 @@
 - id: "global.author_picture"
   translation: "Foto de autor"
 
+- id: "global.back_to_top"
+  translation: "Regresar al inicio"
+
 - id: "global.share_on"
   translation: "Compartir en %s"
 

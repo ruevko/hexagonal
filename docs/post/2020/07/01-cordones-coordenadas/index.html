@@ -7,7 +7,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="generator" content="Hugo 0.73.0 with theme Tranquilpeak 0.4.8-BETA">
 <meta name="author" content="Roger Rafael Castro Zambrano">
-<meta name="keywords" content="areas, centroids, mapas, datos, análisis, maps, data, analytics">
+<meta name="keywords" content="calcular áreas, centroides, análisis, cartografía, datos, mapas">
 <meta name="description" content="Este primer post sobre matemáticas presenta una demostración de la fórmula shoelace, utilizada para calcular áreas y centroides de polígonos.">
 
 
@@ -42,7 +42,7 @@
   
   
     
-      <meta property="article:tag" content="áreas">
+      <meta property="article:tag" content="calcular áreas">
     
       <meta property="article:tag" content="centroides">
     
@@ -314,7 +314,7 @@ code span.wa { color: #bf0303; } /* Warning */
 </style>
 
 
-<p>El Ecuador continental<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> posee una extensión un poco mayor a 246 mil km<sup>2</sup>. Verificar este dato, con cartografía oficial, es sencillo; en este procedimiento, <code>sf::st_area()</code> es la función clave:</p>
+<p>El Ecuador continental<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> posee una extensión un poco mayor a 246 mil km<sup>2</sup>. Es sencillo verificar este dato, si uno cuenta con la cartografía oficial; en esta tarea, <code>sf::st_area()</code> es la función clave:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw">library</span>(sf)</span>
 <span id="cb1-2"><a href="#cb1-2"></a><span class="kw">library</span>(units)</span>
 <span id="cb1-3"><a href="#cb1-3"></a></span>
@@ -324,10 +324,10 @@ code span.wa { color: #bf0303; } /* Warning */
 <span id="cb1-7"><a href="#cb1-7"></a></span>
 <span id="cb1-8"><a href="#cb1-8"></a><span class="kw">set_units</span>(<span class="kw">st_area</span>(Ecuador_sf), <span class="st">&quot;km^2&quot;</span>)</span></code></pre></div>
 <pre><code>## 246039.9 [km^2]</code></pre>
-<p>Resulta trivial calcular cantidades como áreas o distancias, pero aprender la lógica detrás de tales operaciones no deja de ser interesante. En este post revisaremos un acercamiento al problema de calcular el área de un polígono: la <em>shoelace formula</em><a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>. Este curioso nombre, como se verá, se relaciona con la forma como se construye la fórmula.</p>
-<p>Plantear dicho problema supone conocer las coordenadas <span class="math inline">\(P_{i} = x_{i},\ y_{i};\ i = 1, 2, ... n\)</span> de los vértices del polígono, donde <span class="math inline">\(n\)</span> es el número de vértices (que también es el número lados). Es un requisito que estos vértices se encuentren ordenados alrededor del límite; dicho de otra manera, que el polígono se trace “uniendo los puntos”. Tomemos el siguiente gráfico; el área del triángulo <span class="math inline">\(A = \triangle P_{1}P_{2}P_{3}\)</span> es la interrogante.</p>
+<p>Resulta trivial calcular cantidades como áreas o distancias, pero aprender la lógica detrás de tales operaciones no deja de ser interesante. En este post revisaremos un acercamiento al problema de calcular el área de un polígono: la <em>shoelace formula</em><a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>. Este curioso nombre, como se verá, proviene de la forma como se construye la fórmula.</p>
+<p>Plantear dicho problema supone conocer las coordenadas <span class="math inline">\(P_{i} = x_{i},\ y_{i};\ i = 1, 2, ... n\)</span> de los vértices del polígono, donde <span class="math inline">\(n\)</span> es el número de vértices (que también es el número lados). Es un requisito que estos vértices se encuentren ordenados alrededor del límite; dicho de otra manera, que el polígono se trace “uniendo los puntos” en orden. Tomemos el siguiente gráfico; en este ejemplo, el área del triángulo <span class="math inline">\(A = \triangle P_{1}P_{2}P_{3}\)</span> será la interrogante.</p>
 <p><img src="../../../../post/2020/07/01-cordones-coordenadas_files/figure-html/example-1-1.svg" width="432" /></p>
-<p>El rectángulo <span class="math inline">\(E = A + B + C + D\)</span> se traza de manera que contenga al triángulo <span class="math inline">\(A\)</span>, su área sea mínima, y sus lados paralelos a los ejes. En este caso<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a> es sencillo calcular el área de <span class="math inline">\(E\)</span> y de los triángulos <span class="math inline">\(B, C, D\)</span> con fórmulas geométricas elementales: <span class="math inline">\(bh\)</span> y <span class="math inline">\(\frac{1}{2} bh\)</span> respectivamente.</p>
+<p>El rectángulo <span class="math inline">\(E = A + B + C + D\)</span> se traza de manera que contenga al triángulo <span class="math inline">\(A\)</span>, su área sea mínima, y sus lados sean paralelos a los ejes. En este caso<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a> es sencillo calcular el área de <span class="math inline">\(E\)</span> y de los triángulos <span class="math inline">\(B, C, D\)</span> con fórmulas geométricas elementales: <span class="math inline">\(bh\)</span> y <span class="math inline">\(\frac{1}{2} bh\)</span> respectivamente.</p>
 <p><span class="math display">\[E = (x_{2} - x_{3})(y_{3} - y_{1})\]</span>
 <span class="math display">\[D = \frac{1}{2} (x_{1} - x_{3})(y_{3} - y_{1})\]</span>
 <span class="math display">\[C = \frac{1}{2} (x_{2} - x_{3})(y_{3} - y_{2})\]</span>
@@ -353,7 +353,7 @@ A = \frac{1}{2} (8\cdot6 - 9\cdot2 + 9\cdot7 - 1\cdot6 + 1\cdot2 - 8\cdot7) = 16
 A = \frac{1}{2} (8\cdot7 - 1\cdot2 + 1\cdot6 - 9\cdot7 + 9\cdot2 - 8\cdot6) = -16.5
 \end{equation}
 \]</span></p>
-<p>Es un resultado importante pues, mientras el valor absoluto del área sigue siendo correcto, el hecho de que haya cambiado de signo resultará crucial más tarde. La regla es la siguiente: si los vértices se encuentran ordenados en sentido anti horario, se calcula un área positiva; si el orden es horario, el área negativa.</p>
+<p>Es un resultado importante pues, mientras el valor absoluto del área sigue siendo correcto, el hecho de que haya cambiado de signo resultará crucial más tarde. La regla es la siguiente: si los vértices se encuentran ordenados en sentido antihorario, se calcula un área positiva; si el orden es horario, se calcula un área negativa.</p>
 <p>Revisemos una variación más, reemplazando <span class="math inline">\(P_{3}\)</span> por <span class="math inline">\(P_{0} = 0,\ 0\)</span>.</p>
 <p><img src="../../../../post/2020/07/01-cordones-coordenadas_files/figure-html/example-3-1.svg" width="432" /></p>
 <p>Cuando uno de los vértices es el origen, es posible reducir <a href="#eq:triangle">(1)</a>:</p>
@@ -369,13 +369,13 @@ A = \frac{1}{2} (x_{1}y_{2} - x_{2}y_{1} + x_{2}\cdot0 - 0\cdot y_{2} + 0\cdot y
 A = \frac{1}{2} (8\cdot7 - 1\cdot2) = 27
 \end{equation}
 \]</span></p>
-<p>Se verifica que el área es positiva porque los vértices están en sentido anti horario. La ecuación <a href="#eq:origin">(2)</a> puede ser generalizada a:</p>
+<p>Ahora podemos verificar que se calcula un área positiva, pues los vértices se encuentran en sentido antihorario. La ecuación <a href="#eq:origin">(2)</a> puede ser generalizada a:</p>
 <p><span class="math display">\[
 \begin{equation}
 \triangle P_{0}P_{i}P_{i+1} = \frac{1}{2} (x_{i}y_{i+1} - x_{i+1}y_{i});\ i = 1, 2, ... n
 \end{equation}
 \]</span></p>
-<p>Esta forma es aplicable en cada uno de los <span class="math inline">\(n\)</span> lados, observando que el vértice <span class="math inline">\(P_{n+1}\)</span> equivale a <span class="math inline">\(P_{1}\)</span> (pues el polígono se encuentra cerrado). ¿Cuál es el propósito de generalizar esta ecuación? Observen lo que sucede al iterarla en el triángulo <span class="math inline">\(A\)</span> del primer ejemplo; en estas animaciones, los triángulos de borde rojo poseen área positiva; los de borde azul, negativa.</p>
+<p>Esta forma es aplicable en cada uno de los <span class="math inline">\(n\)</span> lados, observando que el vértice <span class="math inline">\(P_{n+1}\)</span> equivale a <span class="math inline">\(P_{1}\)</span> (pues el polígono se encuentra cerrado). Pero ¿cuál es el propósito de generalizar esta ecuación? Observen lo que sucede al iterarla en el triángulo <span class="math inline">\(A\)</span> del primer ejemplo; en estas animaciones, los triángulos de borde rojo poseen área positiva; los de borde azul, negativa.</p>
 <p><img src="../../../../post/2020/07/01-cordones-coordenadas_files/figure-html/animation-1-1.gif" /><!-- --></p>
 <p>El hecho de que esta fórmula devuelva resultados positivos y negativos resuelve el problema del área para cualquier polígono <span class="math inline">\(P_{1}P_{2}...P_{n}\)</span>; calculándola en todos los lados, se generan triángulos cuyas áreas, sumadas, producen el polígono buscado. Existe, sin embargo, la restricción de que el polígono sea simple (no se debe intersecar a sí mismo).</p>
 <p><span class="math display">\[
@@ -391,7 +391,7 @@ A_{P_{1}P_{2}...P_{n}} = \sum_{i=1}^{n} \triangle P_{0}P_{i}P_{i+1} = \frac{1}{2
 \]</span></p>
 <p>Y esta es la <em>shoelace formula</em>. Su construcción, multiplicando de manera cruzada las coordenadas de un vértice con el siguiente, se asemeja a insertar los cordones en un zapato. Compliquemos un poco nuestro ejemplo, añadiendo dos vértices:</p>
 <p><img src="../../../../post/2020/07/01-cordones-coordenadas_files/figure-html/animation-2-1.gif" /><!-- --></p>
-<p>Otro nombre que se le ha otorgado es <em>surveyor’s formula</em> pues su utilidad en topografía salta a la vista; en esta aplicación, un paso previo era transformar las coordenadas polares, del teodolito, a rectangulares. Imaginémonos al topógrafo levantando vértices en <span class="math inline">\(P_{0}\)</span>, pero este punto no necesariamente tiene que ser el origen:</p>
+<p>Otro nombre que se le ha otorgado es <em>surveyor’s formula</em> pues su utilidad en topografía salta a la vista; en esta aplicación, un paso previo era transformar las coordenadas polares, del teodolito, a rectangulares. <span class="math inline">\(P_{0}\)</span> representaría la ubicación del topógrafo, y este punto no tiene que ser el origen necesariamente; reutilizando <a href="#eq:triangle">(1)</a> es posible desplazarlo a cualquier ubicación.</p>
 <p><img src="../../../../post/2020/07/01-cordones-coordenadas_files/figure-html/animation-3-1.gif" /><!-- --></p>
 <p>La fórmula encuentra una aplicación más en el cálculo del centroide, el centro de masa de un polígono. Si <span class="math inline">\(A\)</span> es el área calculada con la <em>shoelace formula</em> (ya sea positiva o negativa), las coordenadas del centroide <span class="math inline">\(P_{c} = x_{c},\ y_{c}\)</span> se hallan con el siguiente par de fórmulas:</p>
 <p><span class="math display" id="eq:centroidx">\[
@@ -474,7 +474,7 @@ y_{c} = \frac{1}{6A} \sum_{i=1}^{n} (y_{i} + y_{i+1}) (x_{i}y_{i+1} - x_{i+1}y_{
                   <div class="post-footer-tags">
                     <span class="text-color-light text-small">Etiquetado en</span><br/>
                     
-  <a class="tag tag--primary tag--small" href="../../../../tags/%C3%A1reas/">áreas</a>
+  <a class="tag tag--primary tag--small" href="../../../../tags/calcular-%C3%A1reas/">calcular áreas</a>
 
   <a class="tag tag--primary tag--small" href="../../../../tags/centroides/">centroides</a>
 
@@ -627,7 +627,7 @@ y_{c} = \frac{1}{6A} \sum_{i=1}^{n} (y_{i} + y_{i+1}) (x_{i}y_{i+1} - x_{i+1}y_{
     
     <h4 id="about-card-name">La Galería Hexagonal</h4>
     
-      <div id="about-card-bio">Este es el blog de Rafael Castro, orientado a Cartografía y Data Analytics.</div>
+      <div id="about-card-bio">El blog de Rafael Castro, orientado a Cartografía y Análisis de Datos</div>
     
     
       <div id="about-card-job">

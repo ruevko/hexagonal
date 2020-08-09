@@ -2,7 +2,7 @@
 # Version : 0.4.8-BETA
 # Author : Thibaud Leprêtre
 
-ignoreFiles = ["\\.bib$", "\\.csv$", "\\.shp$", "\\.shx$", "\\.RDS$", "\\.Rmd$", "_files$", "_cache$"]
+ignoreFiles = ["\\.csv$", "\\.shp$", "\\.shx$", "\\.RDS$", "\\.Rmd$", "_files$", "_cache$"]
 
 publishDir = "docs"
 title = "La Galería Hexagonal"
@@ -25,7 +25,7 @@ paginate = 6
   picture = "/hexagonal/logo.png"
   location = "Ecuador"
   job = "Geógrafo"
-  bio = "Este es el blog de Rafael Castro, orientado a Cartografía y Data Analytics."
+  bio = "El blog de Rafael Castro, orientado a Cartografía y Análisis de Datos"
 
   #[[menu.main]]
     #weight = 1
@@ -106,8 +106,8 @@ paginate = 6
 
   favicon = "/favicon.png"
   dateFormat = "2 de January de 2006"
-  keywords = ["mapas", "datos", "análisis", "maps", "data", "analytics"]
-  description = "La Galería Hexagonal es el blog de Rafael Castro, orientado a Cartografía y Data Analytics."
+  keywords = ["análisis", "cartografía", "datos", "mapas"]
+  description = "El blog de Rafael Castro, orientado a Cartografía y Análisis de Datos"
   coverImage = "https://res.cloudinary.com/dodnzqhiz/image/upload/v1577918037/crv.png"
   thumbnailImagePosition = "right"
   thumbnailImage = true
@@ -133,4 +133,4 @@ paginate = 6
 
 [params.footer]
   copyright = "by Rafael Castro <i class=\"fas fa-lg fa-crow\"></i>"
-#"<br><a href=\"https://ko-fi.com/A0A61KV0W\">KO-FI</a> <i class=\"fas fa-lg fa-coffee\"></i>"
+#"<br><a href=\"https://ko-fi.com/A0A61KV0W\"></a> <i class=\"fas fa-lg fa-coffee\"></i>"

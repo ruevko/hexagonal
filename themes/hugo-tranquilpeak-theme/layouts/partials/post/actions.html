@@ -57,7 +57,7 @@
         {{ range .Site.Params.sharingOptions }}
           <!-- li class="post-action hide-xs" -->
           <li class="post-action">
-            <a class="post-action-btn btn btn--default" target="new" href="{{ printf .url $.Permalink }}" data-tooltip="Compartir en {{ .name }}">
+            <a class="post-action-btn btn btn--default" target="new" href="{{ printf .url $.Permalink }}" data-tooltip="{{ printf (i18n "global.share_on") .name }}">
               <i class="fab {{ .icon }}"></i>
             </a>
           </li>
@@ -72,15 +72,15 @@
       {{ end }}
       <!-- li class="post-action">
         {{ if findRE "id=\"TOC\"" .Content }}
-          <a class="post-action-btn btn btn--default" href="#TOC" data-tooltip="Regresar al contenido">
+          <a class="post-action-btn btn btn--default" href="#TOC" data-tooltip="Back to content">
         {{ else }}
-          <a class="post-action-btn btn btn--default" href="#" data-tooltip="Regresar al inicio">
+          <a class="post-action-btn btn btn--default" href="#" data-tooltip="Back to top">
         {{ end }}
           <i class="fa fa-angle-double-up"></i>
         </a>
       </li -->
       <li class="post-action">
-        <a class="post-action-btn btn btn--default" href="#main" data-tooltip="Regresar al inicio">
+        <a class="post-action-btn btn btn--default" href="#main" data-tooltip="{{ i18n "global.back_to_top" }}">
           <i class="fa fa-chevron-up"></i>
         </a>
       </li>

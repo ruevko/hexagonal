@@ -7,3 +7,4 @@ octocat.png
 static/post
 static/rmarkdown-libs
 content/post/**/*.html
+docs/post/babel.bib

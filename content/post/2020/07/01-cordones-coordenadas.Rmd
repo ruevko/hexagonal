@@ -1,16 +1,16 @@
 ---
 title: Cordones y Coordenadas
-author: Rafael Castro
+author: Roger Rafael Castro Zambrano
 date: '2020-07-01'
 slug: 01-cordones-coordenadas
 categories:
   - Matemáticas
 tags:
-  - áreas
+  - calcular áreas
   - centroides
 keywords:
-  - areas
-  - centroids
+  - calcular áreas
+  - centroides
 editor_options:
   chunk_output_type: console
 output:
@@ -22,7 +22,7 @@ summary: Este primer post sobre matemáticas presenta una demostración de la f�
 ---
 `r knitr::opts_chunk$set(dev = "svg", echo=FALSE, fig.height = 3, fig.width = 4.5)`
 
-El Ecuador continental^[En los libros aparece la cifra de 256370 km^2^ para todo el Ecuador; a ello hay que restar no solo las Galápagos, también las islas frente al litoral, como Puná o La Plata.] posee una extensión un poco mayor a 246 mil km^2^. Verificar este dato, con cartografía oficial, es sencillo; en este procedimiento, `sf::st_area()` es la función clave:
+El Ecuador continental^[En los libros aparece la cifra de 256370 km^2^ para todo el Ecuador; a ello hay que restar no solo las Galápagos, también las islas frente al litoral, como Puná o La Plata.] posee una extensión un poco mayor a 246 mil km^2^. Es sencillo verificar este dato, si uno cuenta con la cartografía oficial; en esta tarea,  `sf::st_area()` es la función clave:
 
 ```{r ecuador-area, echo=TRUE}
 library(sf)
@@ -35,9 +35,9 @@ Ecuador_sf = read_sf("boundaryl.shp")$geometry %>% # fuente: http://www.igm.gob.
 set_units(st_area(Ecuador_sf), "km^2")
 ```
 
-Resulta trivial calcular cantidades como áreas o distancias, pero aprender la lógica detrás de tales operaciones no deja de ser interesante. En este post revisaremos un acercamiento al problema de calcular el área de un polígono: la *shoelace formula*^[También conocida como la fórmula del área de Gauss; no obstante, parece que el primero en describirla fue [Albrecht Ludwig Friedrich Meister](https://www.deutsche-biographie.de/sfz60150.html). En cualquier caso, fue descrita por un matemático alemán.]. Este curioso nombre, como se verá, se relaciona con la forma como se construye la fórmula.
+Resulta trivial calcular cantidades como áreas o distancias, pero aprender la lógica detrás de tales operaciones no deja de ser interesante. En este post revisaremos un acercamiento al problema de calcular el área de un polígono: la *shoelace formula*^[También conocida como la fórmula del área de Gauss; no obstante, parece que el primero en describirla fue [Albrecht Ludwig Friedrich Meister](https://www.deutsche-biographie.de/sfz60150.html). En cualquier caso, fue descrita por un matemático alemán.]. Este curioso nombre, como se verá, proviene de la forma como se construye la fórmula.
 
-Plantear dicho problema supone conocer las coordenadas $P_{i} = x_{i},\ y_{i};\ i = 1, 2, ... n$ de los vértices del polígono, donde $n$ es el número de vértices (que también es el número lados). Es un requisito que estos vértices se encuentren ordenados alrededor del límite; dicho de otra manera, que el polígono se trace "uniendo los puntos". Tomemos el siguiente gráfico; el área del triángulo $A = \triangle P_{1}P_{2}P_{3}$ es la interrogante.
+Plantear dicho problema supone conocer las coordenadas $P_{i} = x_{i},\ y_{i};\ i = 1, 2, ... n$ de los vértices del polígono, donde $n$ es el número de vértices (que también es el número lados). Es un requisito que estos vértices se encuentren ordenados alrededor del límite; dicho de otra manera, que el polígono se trace “uniendo los puntos” en orden. Tomemos el siguiente gráfico; en este ejemplo, el área del triángulo $A = \triangle P_{1}P_{2}P_{3}$ será la interrogante.
 
 ```{r example-1}
 library(gganimate)
@@ -67,7 +67,7 @@ rectan = data.frame(
 shoeplot2(rectan)
 ```
 
-El rectángulo $E = A + B + C + D$ se traza de manera que contenga al triángulo $A$, su área sea mínima, y sus lados paralelos a los ejes. En este caso^[Al menos un vértice del triángulo coincidirá con uno del rectángulo. También puede suceder que dos (o los tres) vértices del triángulo coincidan; se invita a demostrar la ecuación \@ref(eq:triangle) en esos dos casos.] es sencillo calcular el área de $E$ y de los triángulos $B, C, D$ con fórmulas geométricas elementales: $bh$ y $\frac{1}{2} bh$ respectivamente.
+El rectángulo $E = A + B + C + D$ se traza de manera que contenga al triángulo $A$, su área sea mínima, y sus lados sean paralelos a los ejes. En este caso^[Al menos un vértice del triángulo coincidirá con uno del rectángulo. También puede suceder que dos (o los tres) vértices del triángulo coincidan; se invita a demostrar la ecuación \@ref(eq:triangle) en esos dos casos.] es sencillo calcular el área de $E$ y de los triángulos $B, C, D$ con fórmulas geométricas elementales: $bh$ y $\frac{1}{2} bh$ respectivamente.
 
 $$E = (x_{2} - x_{3})(y_{3} - y_{1})$$
 $$D = \frac{1}{2} (x_{1} - x_{3})(y_{3} - y_{1})$$
@@ -111,7 +111,7 @@ A = \frac{1}{2} (8\cdot7 - 1\cdot2 + 1\cdot6 - 9\cdot7 + 9\cdot2 - 8\cdot6) = -1
 \end{equation}
 $$
 
-Es un resultado importante pues, mientras el valor absoluto del área sigue siendo correcto, el hecho de que haya cambiado de signo resultará crucial más tarde. La regla es la siguiente: si los vértices se encuentran ordenados en sentido anti horario, se calcula un área positiva; si el orden es horario, el área negativa.
+Es un resultado importante pues, mientras el valor absoluto del área sigue siendo correcto, el hecho de que haya cambiado de signo resultará crucial más tarde. La regla es la siguiente: si los vértices se encuentran ordenados en sentido antihorario, se calcula un área positiva; si el orden es horario, se calcula un área negativa.
 
 Revisemos una variación más, reemplazando $P_{3}$ por $P_{0} = 0,\ 0$.
 
@@ -142,7 +142,7 @@ A = \frac{1}{2} (8\cdot7 - 1\cdot2) = 27
 \end{equation}
 $$
 
-Se verifica que el área es positiva porque los vértices están en sentido anti horario. La ecuación \@ref(eq:origin) puede ser generalizada a:
+Ahora podemos verificar que se calcula un área positiva, pues los vértices se encuentran en sentido antihorario. La ecuación \@ref(eq:origin) puede ser generalizada a:
 
 $$
 \begin{equation}
@@ -150,7 +150,7 @@ $$
 \end{equation}
 $$
 
-Esta forma es aplicable en cada uno de los $n$ lados, observando que el vértice $P_{n+1}$ equivale a $P_{1}$ (pues el polígono se encuentra cerrado). ¿Cuál es el propósito de generalizar esta ecuación? Observen lo que sucede al iterarla en el triángulo $A$ del primer ejemplo; en estas animaciones, los triángulos de borde rojo poseen área positiva; los de borde azul, negativa.
+Esta forma es aplicable en cada uno de los $n$ lados, observando que el vértice $P_{n+1}$ equivale a $P_{1}$ (pues el polígono se encuentra cerrado). Pero ¿cuál es el propósito de generalizar esta ecuación? Observen lo que sucede al iterarla en el triángulo $A$ del primer ejemplo; en estas animaciones, los triángulos de borde rojo poseen área positiva; los de borde azul, negativa.
 
 ```{r animation-1}
 options(gganimate.renderer = magick_renderer())
@@ -194,7 +194,7 @@ shoeanim = function(vertex, x0 = 0, y0 = 0, paths = TRUE, texts = TRUE){
       ggtitle("Area Sum: {current_frame}", "Progress: {frame} / {nframes}")
 }
 
-animate(shoeanim(rectan[1:3, -2]), 5, 1, end_pause = 2, height = 3.6, width = 4)
+animate(shoeanim(rectan[1:3, -2]), 5, 1, end_pause = 2, height = 4, width = 4)
 ```
 
 El hecho de que esta fórmula devuelva resultados positivos y negativos resuelve el problema del área para cualquier polígono $P_{1}P_{2}...P_{n}$; calculándola en todos los lados, se generan triángulos cuyas áreas, sumadas, producen el polígono buscado. Existe, sin embargo, la restricción de que el polígono sea simple (no se debe intersecar a sí mismo).
@@ -223,7 +223,7 @@ pentagon = data.frame(
 animate(shoeanim(pentagon), 7 , 1, end_pause = 2, height = 3.6, width = 4)
 ```
 
-Otro nombre que se le ha otorgado es *surveyor's formula* pues su utilidad en topografía salta a la vista; en esta aplicación, un paso previo era transformar las coordenadas polares, del teodolito, a rectangulares. Imaginémonos al topógrafo levantando vértices en $P_{0}$, pero este punto no necesariamente tiene que ser el origen:
+Otro nombre que se le ha otorgado es *surveyor's formula* pues su utilidad en topografía salta a la vista; en esta aplicación, un paso previo era transformar las coordenadas polares, del teodolito, a rectangulares. $P_{0}$ representaría la ubicación del topógrafo, y este punto no tiene que ser el origen necesariamente; reutilizando \@ref(eq:triangle) es posible desplazarlo a cualquier ubicación.
 
 ```{r animation-3}
 animate(shoeanim(pentagon, 5, 2), 7 , 1, end_pause = 2, height = 3.6, width = 4)
