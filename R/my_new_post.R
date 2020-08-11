@@ -1,10 +1,10 @@
-my_post_filename = function (title, subdir, ext, date, lang = "",
-                             bundle = getOption("blogdown.new_bundle", FALSE)){
+my_post_filename = function (title, subdir, ext, date, lang = "", bundle = FALSE){
 
    file = tolower(title)
 
-   bad = c("[[:digit:]]|[[:punct:]]", "\\b[[:alpha:]]{1,3}\\b", "\\s+", "^-|-$",
-           "\U00F1", "\U00E1", "\U00E9", "\U00ED", "\U00F3", "\U00FA")
+   bad = c("[[:digit:]]|[[:punct:]]", "\\b[[:alpha:]]{1,3}\\b", "\\s+", "^-|-$")
+
+   bad = c(bad, "\U00F1", "\U00E1", "\U00E9", "\U00ED", "\U00F3", "\U00FA")
 
    good = c(" ", " ", "-", "", "n", "a", "e", "i", "o", "u")
 
@@ -12,22 +12,22 @@ my_post_filename = function (title, subdir, ext, date, lang = "",
 
    file = paste0(as.character(date, "%d-"), file)
 
-   if (is.null(lang))
-      lang = ""
-   #file = dash_filename(title)
+   if (is.null(lang)) lang = ""
+
    d = dirname(file)
+
    f = basename(file)
-   if (is.null(subdir) || subdir == "")
-      subdir = "."
-   d = if (d == ".")
-      subdir
-   else file.path(subdir, d)
+
+   if (is.null(subdir) || subdir == "") subdir = "."
+
+   d = if (d == ".") subdir else file.path(subdir, d)
+
    d = gsub("/+$", "", d)
-   #f = date_filename(f, date)
+
    f = gsub("^([.]/)+", "", file.path(d, f))
-   paste0(f, if (bundle)
-      "/index", if (lang != "")
-         ".", lang, ext)
+
+   paste0(f, if (bundle) "/index", if (lang != "") ".", lang, ext)
+
 }
 
 # Just tweaking your addin, Yihui, thank you!
@@ -35,56 +35,38 @@ my_post_filename = function (title, subdir, ext, date, lang = "",
 xfun::in_dir(blogdown:::site_root(), local({
   tags = htmltools::tags
   txt_input = function(..., width = '100%') shiny::textInput(..., width = width)
-  sel_input = function(...) shiny::selectizeInput(
-    ..., width = '98%', multiple = TRUE, options = list(create = TRUE)
-  )
+  sel_input = function(...) shiny::selectizeInput(..., width = '98%', options = list(create = TRUE))
   meta = blogdown:::collect_yaml()
-  lang = blogdown:::check_lang()
+  lang = NULL #blogdown:::check_lang()
   adir = blogdown:::theme_flag()
   adir = if (length(adir) == 4) file.path(adir[2], adir[4], 'archetypes')
   adir = c('archetypes', adir)
   shiny::runGadget(
     miniUI::miniPage(miniUI::miniContentPanel(
-      txt_input('title', 'Title', placeholder = 'Post Title'),
+      txt_input('title', 'Title'),
+      shiny::fillRow(
+        sel_input('cat', 'Categories', c('', meta$categories)),
+        sel_input('tag', 'Tags', meta$tags, multiple = TRUE),
+        shiny::selectInput('kind', 'Archetype', xfun::sans_ext(rev(dir(adir))), width = '98%'),
+        height = '70px'
+      ),
       shiny::fillRow(
         txt_input('author', 'Author', getOption('blogdown.author', ''), width = '98%'),
         shiny::dateInput('date', 'Date', Sys.Date(), width = '98%'),
-        txt_input(
-          'subdir', 'Subdirectory', getOption('blogdown.subdir', 'post'),
-          '(optional)', width = '98%'
-        ),
+        txt_input('subdir', 'Subdirectory', getOption('blogdown.subdir', 'post'), width = '98%'),
         height = '70px'
       ),
-      shiny::fillRow(
-        sel_input('cat', 'Categories', meta$categories),
-        sel_input('tag', 'Tags', meta$tags),
-        shiny::selectInput(
-          'kind', 'Archetype', width = '98%',
-          choices = unique(c('', xfun::sans_ext(dir(adir))))
-        ),
-        height = '70px'
-      ),
-      shiny::fillRow(
-        txt_input('file', 'Filename', '', 'automatically generated (edit if you want)'),
-        height = '70px'
-      ),
+      shiny::fillRow(txt_input('file', 'Filename', '', 'automatically generated'), height = '70px'),
       if (is.null(lang)) {
-        shiny::fillRow(txt_input('slug', 'Slug', '', '(optional)'), height = '70px')
+        shiny::fillRow(txt_input('slug', 'Slug', '', 'automatically generated'), height = '70px')
       } else {
         shiny::fillRow(
-          txt_input('slug', 'Slug', '', '(optional)', width = '98%'),
+          txt_input('slug', 'Slug', '', 'automatically generated', width = '98%'),
           txt_input('lang', 'Language', lang, width = '98%'),
           height = '70px'
         )
       },
-      shiny::fillRow(
-        shiny::radioButtons(
-          'format', 'Format', inline = TRUE,
-          c('Markdown' = '.md', 'R Markdown (.Rmd)' = '.Rmd', 'R Markdown (.Rmarkdown)' = '.Rmarkdown'),
-          selected = getOption('blogdown.ext', '.md')
-        ),
-        height = '70px'
-      ),
+      shiny::radioButtons('format', '', c('Markdown' = '.md', 'R Markdown' = '.Rmd'), '.Rmd', TRUE),
       miniUI::gadgetTitleBar(NULL)
     )),
     server = function(input, output, session) {
@@ -113,9 +95,7 @@ xfun::in_dir(blogdown:::site_root(), local({
         )
       }, ignoreInit = TRUE)
       shiny::observeEvent(input$done, {
-        if (grepl('^\\s*$', input$file)) return(
-          warning('The filename is empty!', call. = FALSE)
-        )
+        if (grepl('^\\s*$', input$file)) return(warning('The filename is empty!', call. = FALSE))
         if (is.null(getOption('blogdown.author'))) options(blogdown.author = input$author)
         blogdown::new_post(
           input$title, author = input$author, ext = input$format,

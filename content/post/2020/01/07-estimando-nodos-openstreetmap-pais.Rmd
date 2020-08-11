@@ -1,6 +1,6 @@
 ---
 title: Estimando nodos OpenStreetMap por país
-author: Rafael Castro
+author: Roger Rafael Castro Zambrano
 date: '2020-01-07'
 slug: 07-estimando-nodos-openstreetmap-pais
 categories:
@@ -10,8 +10,8 @@ tags:
   - coropletas
   - web scraping
 keywords:
-  - nodes
-  - choropleths
+  - nodos
+  - coropletas
   - web scraping
 editor_options: 
   chunk_output_type: console

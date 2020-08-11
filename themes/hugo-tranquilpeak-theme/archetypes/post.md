@@ -8,7 +8,7 @@ tags:
 - tag1
 - tag2
 keywords:
-- Translate those tags
+- copy tags
 
 editor_options: 
   chunk_output_type: console
@@ -16,12 +16,12 @@ editor_options:
 output:
    blogdown::html_page:
       highlight: kate
-      toc: true
+      toc: true               # remove if no content
 
-math: true
-link-citations: true
-bibliography: ../../babel.bib
+math: true                    # remove if no equations
+link-citations: true          # remove if no citations
+bibliography: ../../babel.bib # remove if no citations
 
 thumbnailImage: /octocat.png
-summary: Proudly hosted in [GitHub](https://github.com/)
+summary: Proudly hosted in [GitHub Pages](https://pages.github.com/)
 ---

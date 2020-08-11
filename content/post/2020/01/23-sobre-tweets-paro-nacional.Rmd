@@ -1,6 +1,6 @@
 ---
 title: Sobre los Tweets en el Paro Nacional
-author: Rafael Castro
+author: Roger Rafael Castro Zambrano
 date: '2020-01-23'
 slug: 23-sobre-tweets-paro-nacional
 categories:
@@ -10,7 +10,7 @@ tags:
   - paro nacional
 keywords:
   - hashtags
-  - national strike
+  - paro nacional
 editor_options: 
   chunk_output_type: console
 output:

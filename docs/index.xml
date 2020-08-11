@@ -30,7 +30,7 @@
     </item>
     
     <item>
-      <title>La tasa de crecimiento diaria</title>
+      <title>El crecimiento diario de los nodos OSM</title>
       <link>https://ruevko.github.io/hexagonal/post/2020/03/04-crecimiento-diario-nodos/</link>
       <pubDate>Wed, 04 Mar 2020 00:00:00 +0000</pubDate>
       
@@ -63,15 +63,6 @@
       
       <guid>https://ruevko.github.io/hexagonal/post/2020/01/07-estimando-nodos-openstreetmap-pais/</guid>
       <description>Se presenta una metodología basada en &lt;em&gt;web scraping&lt;/em&gt; para generar un mapa coroplético del número de nodos acumulados en cada país.</description>
-    </item>
-    
-    <item>
-      <title></title>
-      <link>https://ruevko.github.io/hexagonal/post/readme/</link>
-      <pubDate>Wed, 01 Jan 2020 00:00:00 +0000</pubDate>
-      
-      <guid>https://ruevko.github.io/hexagonal/post/readme/</guid>
-      <description>false</description>
     </item>
     
   </channel>

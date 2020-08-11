@@ -1,6 +1,6 @@
 ---
 title: El crecimiento diario de los nodos OSM
-author: Rafael Castro
+author: Roger Rafael Castro Zambrano
 date: '2020-03-04'
 slug: 04-crecimiento-diario-nodos
 categories:
@@ -10,9 +10,9 @@ tags:
   - coropletas
   - regresión
 keywords:
-  - nodes
-  - choropleths
-  - regression
+  - nodos
+  - coropletas
+  - regresión
 editor_options: 
   chunk_output_type: console
 output:

@@ -1,6 +1,6 @@
 ---
 title: Caracterización del COVID-19 en Ecuador
-author: Rafael Castro
+author: Roger Rafael Castro Zambrano
 date: '2020-03-20'
 slug: 20-caracterizacion-covid-ecuador
 #categories:
@@ -10,7 +10,7 @@ tags:
   - regresión
 keywords:
 #  - coronavirus
-  - regression
+  - regresión
 editor_options: 
   chunk_output_type: console
 output:
