@@ -1,32 +1,32 @@
 my_post_filename = function (title, subdir, ext, date, lang = "", bundle = FALSE){
 
-   file = tolower(title)
+  file = tolower(title)
 
-   bad = c("[[:digit:]]|[[:punct:]]", "\\b[[:alpha:]]{1,3}\\b", "\\s+", "^-|-$")
+  bad = c("[[:digit:]]|[[:punct:]]", "\\b[[:alpha:]]{1,3}\\b", "\\s+", "^-|-$")
 
-   bad = c(bad, "\U00F1", "\U00E1", "\U00E9", "\U00ED", "\U00F3", "\U00FA")
+  bad = c(bad, "\U00F1", "\U00E1", "\U00E9", "\U00ED", "\U00F3", "\U00FA")
 
-   good = c(" ", " ", "-", "", "n", "a", "e", "i", "o", "u")
+  good = c(" ", " ", "-", "", "n", "a", "e", "i", "o", "u")
 
-   for(i in 1:10) file = gsub(bad[i], good[i], file)
+  for(i in 1:10) file = gsub(bad[i], good[i], file)
 
-   file = paste0(as.character(date, "%d-"), file)
+  file = paste0(as.character(date, "%d-"), file)
 
-   if (is.null(lang)) lang = ""
+  if (is.null(lang)) lang = ""
 
-   d = dirname(file)
+  d = dirname(file)
 
-   f = basename(file)
+  f = basename(file)
 
-   if (is.null(subdir) || subdir == "") subdir = "."
+  if (is.null(subdir) || subdir == "") subdir = "."
 
-   d = if (d == ".") subdir else file.path(subdir, d)
+  d = if (d == ".") subdir else file.path(subdir, d)
 
-   d = gsub("/+$", "", d)
+  d = gsub("/+$", "", d)
 
-   f = gsub("^([.]/)+", "", file.path(d, f))
+  f = gsub("^([.]/)+", "", file.path(d, f))
 
-   paste0(f, if (bundle) "/index", if (lang != "") ".", lang, ext)
+  paste0(f, if (bundle) "/index", if (lang != "") ".", lang, ext)
 
 }
 
@@ -72,11 +72,6 @@ xfun::in_dir(blogdown:::site_root(), local({
     server = function(input, output, session) {
       empty_title = shiny::reactive(grepl('^\\s*$', input$title))
       shiny::observe({
-        # update subdir in according to the title
-        if (is.function(subdir_fun <- getOption('blogdown.subdir_fun'))) shiny::updateTextInput(
-          session, 'subdir', value = subdir_fun(input$title)
-        )
-        # calculate file path
         if (!empty_title()) shiny::updateTextInput(
           session, 'file', value = my_post_filename(
             input$title, input$subdir, shiny::isolate(input$format), input$date, input$lang
@@ -85,23 +80,27 @@ xfun::in_dir(blogdown:::site_root(), local({
       })
       shiny::observe({
         if (!grepl('^\\s*$', input$file)) shiny::updateTextInput(
-          session, 'slug', placeholder = blogdown:::post_slug(input$file)
+          session, 'slug', value = blogdown:::post_slug(input$file)
         )
       })
+      shiny::observeEvent(input$date, {
+        shiny::updateTextInput(
+          session, "subdir", value = as.character(input$date, "post/%Y/%m")
+        )
+      }, ignoreInit = TRUE)
       shiny::observeEvent(input$format, {
-        f = input$file
-        if (f != '') shiny::updateTextInput(
-          session, 'file', value = xfun::with_ext(f, input$format)
+        if (input$file != '') shiny::updateTextInput(
+          session, 'file', value = xfun::with_ext(input$file, input$format)
         )
       }, ignoreInit = TRUE)
       shiny::observeEvent(input$done, {
         if (grepl('^\\s*$', input$file)) return(warning('The filename is empty!', call. = FALSE))
         if (is.null(getOption('blogdown.author'))) options(blogdown.author = input$author)
         blogdown::new_post(
-          input$title, author = input$author, ext = input$format,
+          title = input$title, author = input$author,
           categories = input$cat, tags = input$tag,
-          file = gsub('[-[:space:]]+', '-', input$file),
-          slug = if (input$slug != '') input$slug, subdir = input$subdir,
+          file = input$file, subdir = input$subdir,
+          slug = input$slug, ext = input$format,
           date = input$date, kind = input$kind
         )
         shiny::stopApp()
