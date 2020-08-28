@@ -17,7 +17,7 @@ output:
    blogdown::html_page:
       highlight: kate
 thumbnailImage: https://res.cloudinary.com/dodnzqhiz/image/upload/v1595302847/2020post/cacerolazo_ndaaxl.jpg
-summary: Una discusión de *tweets* publicados con tres *hashtags* populares durante el paro de octubre en Ecuador, y del inconveniente para recuperar esos datos hoy en día.
+summary: Una discusión sobre *tweets* publicados con tres *hashtags* populares del paro de octubre en Ecuador, y una alternativa para recuperar esos datos hoy en día.
 ---
 
 Los últimos meses del año pasado fueron escenario de varias movilizaciones alrededor del mundo, en respuesta a acciones gubernamentales de diversas índoles. En Ecuador, las protestas de octubre fueron detonadas por las medidas económicas anunciadas por la presidencia, en el contexto del cumplimiento de una agenda acordada con el Fondo Monetario Internacional.

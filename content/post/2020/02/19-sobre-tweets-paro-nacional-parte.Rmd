@@ -17,7 +17,7 @@ output:
    blogdown::html_page:
       highlight: kate
 thumbnailImage: https://res.cloudinary.com/dodnzqhiz/image/upload/v1595302847/2020post/cacerolazo_ndaaxl.jpg
-summary: Continúa la discusión de *tweets* publicados durante el paro de octubre, considerando ahora seis *hashtags* populares.
+summary: Continúa la discusión sobre *tweets* publicados durante el paro de octubre, esta vez considerando seis *hashtags* populares.
 ---
 
 `r library(dplyr); df_all=readRDS("hashtags_ParoNacionalEcuador.RDS")`
