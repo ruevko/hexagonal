@@ -11,12 +11,12 @@ tags:
 keywords:
 #  - coronavirus
   - regresión
-editor_options: 
+editor_options:
   chunk_output_type: console
 output:
-   blogdown::html_page:
-      highlight: kate
-      toc: true
+  blogdown::html_page:
+    highlight: kate
+    toc: true
 link-citations: true
 bibliography: ../../babel.bib
 coverImage: https://res.cloudinary.com/dodnzqhiz/image/upload/v1595302810/2020post/ecuador-covid19-april23_pnwcqe.jpg

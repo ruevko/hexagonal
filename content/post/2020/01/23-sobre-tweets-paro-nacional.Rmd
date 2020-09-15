@@ -11,11 +11,11 @@ tags:
 keywords:
   - hashtags
   - paro nacional
-editor_options: 
+editor_options:
   chunk_output_type: console
 output:
-   blogdown::html_page:
-      highlight: kate
+  blogdown::html_page:
+    highlight: kate
 thumbnailImage: https://res.cloudinary.com/dodnzqhiz/image/upload/v1595302847/2020post/cacerolazo_ndaaxl.jpg
 summary: Una discusión sobre *tweets* publicados con tres *hashtags* populares del paro de octubre en Ecuador, y una alternativa para recuperar esos datos hoy en día.
 ---
