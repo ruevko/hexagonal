@@ -3,17 +3,21 @@
 # Author : Thibaud Leprêtre
 
 ignoreFiles = ["\\.csv$", "\\.shp$", "\\.shx$", "\\.RDS$", "\\.Rmd$", "_files$", "_cache$"]
-
-publishDir = "docs"
+ignoreErrors = ["error-output-taxonomy"]
 title = "La Galería Hexagonal"
 baseURL = "https://ruevko.github.io/hexagonal/"
 theme = "hugo-tranquilpeak-theme"
 defaultContentLanguage = "es-es"
 languageCode = "es-es"
+publishDir = "docs"
 relativeURLs = true
 canonifyurls = true
 enableEmoji = true
 paginate = 6
+
+[outputs]
+  section = "HTML"
+  taxonomy = "HTML"
 
 [taxonomies]
   tag = "tags"
