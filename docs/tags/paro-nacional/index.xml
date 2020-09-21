@@ -1,21 +1,19 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>paro nacional on La Galería Hexagonal</title>
+    <title>paro nacional en La Galería Hexagonal</title>
     <link>https://ruevko.github.io/hexagonal/tags/paro-nacional/</link>
-    <description>Recent content in paro nacional on La Galería Hexagonal</description>
+    <description>Artículos sobre paro nacional en La Galería Hexagonal</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>es-es</language>
-    <lastBuildDate>Wed, 19 Feb 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 19 Feb 2020</lastBuildDate>
     
-	<atom:link href="https://ruevko.github.io/hexagonal/tags/paro-nacional/index.xml" rel="self" type="application/rss+xml" />
-    
+    <atom:link href="https://ruevko.github.io/hexagonal/tags/paro-nacional/index.xml" rel="self" type="application/rss+xml"/>
     
     <item>
       <title>Sobre los Tweets en el Paro Nacional, segunda parte</title>
       <link>https://ruevko.github.io/hexagonal/post/2020/02/19-sobre-tweets-paro-nacional-parte/</link>
-      <pubDate>Wed, 19 Feb 2020 00:00:00 +0000</pubDate>
-      
+      <pubDate>Wed, 19 Feb 2020</pubDate>
       <guid>https://ruevko.github.io/hexagonal/post/2020/02/19-sobre-tweets-paro-nacional-parte/</guid>
       <description>Continúa la discusión sobre &lt;em&gt;tweets&lt;/em&gt; publicados durante el paro de octubre, esta vez considerando seis &lt;em&gt;hashtags&lt;/em&gt; populares.</description>
     </item>
@@ -23,8 +21,7 @@
     <item>
       <title>Sobre los Tweets en el Paro Nacional</title>
       <link>https://ruevko.github.io/hexagonal/post/2020/01/23-sobre-tweets-paro-nacional/</link>
-      <pubDate>Thu, 23 Jan 2020 00:00:00 +0000</pubDate>
-      
+      <pubDate>Thu, 23 Jan 2020</pubDate>
       <guid>https://ruevko.github.io/hexagonal/post/2020/01/23-sobre-tweets-paro-nacional/</guid>
       <description>Una discusión sobre &lt;em&gt;tweets&lt;/em&gt; publicados con tres &lt;em&gt;hashtags&lt;/em&gt; populares del paro de octubre en Ecuador, y una alternativa para recuperar esos datos hoy en día.</description>
     </item>

@@ -15,19 +15,19 @@
   translation: "Tag"
 
 - id: "global.archives"
-  translation: "Archives"
+  translation: "Archive"
 
-- id: "global.search"
-  translation: "Search"
+- id: "global.posts"
+  translation: "Posts"
 
 - id: "global.about"
-  translation: "About"
+  translation: "about"
 
 - id: "global.author_picture"
   translation: "Author's picture"
 
-- id: "global.share_on"
-  translation: "Share on %s"
+- id: "global.back_to_top"
+  translation: "Back to the top"
 
 - id: "global.mail"
   translation: "Mail"
@@ -46,7 +46,7 @@
 
 ## GLOBAL.POST_FOUND ##
 - id: "global.posts_found.zero"
-  translation: "no post found"
+  translation: "No posts found"
 
 - id: "global.posts_found.one"
   translation: "1 post found"
@@ -56,17 +56,17 @@
 
 ## GLOBAL.CATEGORIES_FOUND ##
 - id: "global.categories_found.zero"
-  translation: "no category found"
+  translation: "No categories found"
 
 - id: "global.categories_found.one"
-  translation: "1 cartegory found"
+  translation: "1 category found"
 
 - id: "global.categories_found.other"
   translation: "{n} categories found"
 
 ## GLOBAL.TAGS_FOUND ##
 - id: "global.tags_found.zero"
-  translation: "no tag found"
+  translation: "No tags found"
 
 - id: "global.tags_found.one"
   translation: "1 tag found"
@@ -76,38 +76,38 @@
 
 ## PAGINATION ##
 - id: "pagination.page"
-  translation: "page {{ .Paginator.PageNumber }}"
+  translation: "Page {{ .Paginator.PageNumber }}"
 
 - id: "pagination.of"
   translation: "of {{ .Paginator.TotalPages }}"
 
 - id: "pagination.newer_posts"
-  translation: "NEWER POSTS"
+  translation: "Previous posts"
 
 - id: "pagination.older_posts"
-  translation: "OLDER POSTS"
+  translation: "Next posts"
 
 - id: "pagination.previous"
-  translation: "PREVIOUS"
+  translation: "Previous"
 
 - id: "pagination.next"
-  translation: "NEXT"
+  translation: "Next"
 
 ## POST ##
 - id: "post.no_title"
-  translation: "no title"
+  translation: "No title"
 
 - id: "post.categorized_in"
   translation: "in"
 
 - id: "post.tagged_in"
-  translation: "TAGGED IN"
+  translation: "Tagged in"
 
 - id: "post.toc"
-  translation: "Table of Contents"
+  translation: "Table of contents"
 
 - id: "post.read_more"
-  translation: "Continue reading"
+  translation: "Read more"
 
 - id: "post.go_to_website"
   translation: "Go to website"

@@ -1,21 +1,19 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>nodos on La Galería Hexagonal</title>
+    <title>nodos en La Galería Hexagonal</title>
     <link>https://ruevko.github.io/hexagonal/tags/nodos/</link>
-    <description>Recent content in nodos on La Galería Hexagonal</description>
+    <description>Artículos sobre nodos en La Galería Hexagonal</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>es-es</language>
-    <lastBuildDate>Wed, 04 Mar 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 04 Mar 2020</lastBuildDate>
     
-	<atom:link href="https://ruevko.github.io/hexagonal/tags/nodos/index.xml" rel="self" type="application/rss+xml" />
-    
+    <atom:link href="https://ruevko.github.io/hexagonal/tags/nodos/index.xml" rel="self" type="application/rss+xml"/>
     
     <item>
       <title>El crecimiento diario de los nodos OSM</title>
       <link>https://ruevko.github.io/hexagonal/post/2020/03/04-crecimiento-diario-nodos/</link>
-      <pubDate>Wed, 04 Mar 2020 00:00:00 +0000</pubDate>
-      
+      <pubDate>Wed, 04 Mar 2020</pubDate>
       <guid>https://ruevko.github.io/hexagonal/post/2020/03/04-crecimiento-diario-nodos/</guid>
       <description>Se ha ajustado un modelo lineal para cada país, demostrando el crecimiento de OpenStreetMap en función de los nodos creados a diario.</description>
     </item>
@@ -23,8 +21,7 @@
     <item>
       <title>Estimando nodos OpenStreetMap por país</title>
       <link>https://ruevko.github.io/hexagonal/post/2020/01/07-estimando-nodos-openstreetmap-pais/</link>
-      <pubDate>Tue, 07 Jan 2020 00:00:00 +0000</pubDate>
-      
+      <pubDate>Tue, 07 Jan 2020</pubDate>
       <guid>https://ruevko.github.io/hexagonal/post/2020/01/07-estimando-nodos-openstreetmap-pais/</guid>
       <description>Se presenta una metodología basada en &lt;em&gt;web scraping&lt;/em&gt; para generar un mapa coroplético del número de nodos acumulados en cada país.</description>
     </item>

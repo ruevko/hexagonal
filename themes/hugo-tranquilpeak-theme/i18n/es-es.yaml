@@ -2,9 +2,6 @@
 - id: "global.home"
   translation: "Inicio"
 
-- id: "global.posts"
-  translation: "Artículos"
-
 - id: "global.categories"
   translation: "Categorías"
 
@@ -20,20 +17,17 @@
 - id: "global.archives"
   translation: "Archivo"
 
-- id: "global.search"
-  translation: "Buscar"
+- id: "global.posts"
+  translation: "Artículos"
 
 - id: "global.about"
-  translation: "Acerca de"
+  translation: "sobre"
 
 - id: "global.author_picture"
   translation: "Foto de autor"
 
 - id: "global.back_to_top"
   translation: "Regresar al inicio"
-
-- id: "global.share_on"
-  translation: "Compartir en %s"
 
 - id: "global.mail"
   translation: "Correo"
@@ -48,7 +42,7 @@
   translation: "Buscar etiqueta"
 
 - id: "global.search_date"
-  translation: "Buscar fecha (YYYY/MM/DD)"
+  translation: "Buscar fecha (AAAA/MM/DD)"
 
 ## GLOBAL.POSTS_FOUND ##
 - id: "global.posts_found.zero"
@@ -103,7 +97,7 @@
 - id: "post.no_title"
   translation: "Sin título"
 
-- id: "post.categorized_in"
+- id: "post.in"
   translation: "en"
 
 - id: "post.tagged_in"

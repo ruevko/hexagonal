@@ -3,19 +3,17 @@
   <channel>
     <title>La Galería Hexagonal</title>
     <link>https://ruevko.github.io/hexagonal/</link>
-    <description>Recent content on La Galería Hexagonal</description>
+    <description>Artículos en La Galería Hexagonal</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>es-es</language>
-    <lastBuildDate>Wed, 01 Jul 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 01 Jul 2020</lastBuildDate>
     
-	<atom:link href="https://ruevko.github.io/hexagonal/index.xml" rel="self" type="application/rss+xml" />
-    
+    <atom:link href="https://ruevko.github.io/hexagonal/index.xml" rel="self" type="application/rss+xml"/>
     
     <item>
       <title>Cordones y Coordenadas</title>
       <link>https://ruevko.github.io/hexagonal/post/2020/07/01-cordones-coordenadas/</link>
-      <pubDate>Wed, 01 Jul 2020 00:00:00 +0000</pubDate>
-      
+      <pubDate>Wed, 01 Jul 2020</pubDate>
       <guid>https://ruevko.github.io/hexagonal/post/2020/07/01-cordones-coordenadas/</guid>
       <description>Este primer post sobre matemáticas presenta una demostración de la fórmula &lt;em&gt;shoelace&lt;/em&gt;, utilizada para calcular áreas y centroides de polígonos.</description>
     </item>
@@ -23,8 +21,7 @@
     <item>
       <title>Caracterización del COVID-19 en Ecuador</title>
       <link>https://ruevko.github.io/hexagonal/post/2020/03/20-caracterizacion-covid-ecuador/</link>
-      <pubDate>Fri, 20 Mar 2020 00:00:00 +0000</pubDate>
-      
+      <pubDate>Fri, 20 Mar 2020</pubDate>
       <guid>https://ruevko.github.io/hexagonal/post/2020/03/20-caracterizacion-covid-ecuador/</guid>
       <description>Utilizando paquetes desarrollados por el R Epidemics Consortium se estima el ritmo reproductivo básico, así como tres escenarios de crecimiento para los casos confirmados.</description>
     </item>
@@ -32,8 +29,7 @@
     <item>
       <title>El crecimiento diario de los nodos OSM</title>
       <link>https://ruevko.github.io/hexagonal/post/2020/03/04-crecimiento-diario-nodos/</link>
-      <pubDate>Wed, 04 Mar 2020 00:00:00 +0000</pubDate>
-      
+      <pubDate>Wed, 04 Mar 2020</pubDate>
       <guid>https://ruevko.github.io/hexagonal/post/2020/03/04-crecimiento-diario-nodos/</guid>
       <description>Se ha ajustado un modelo lineal para cada país, demostrando el crecimiento de OpenStreetMap en función de los nodos creados a diario.</description>
     </item>
@@ -41,8 +37,7 @@
     <item>
       <title>Sobre los Tweets en el Paro Nacional, segunda parte</title>
       <link>https://ruevko.github.io/hexagonal/post/2020/02/19-sobre-tweets-paro-nacional-parte/</link>
-      <pubDate>Wed, 19 Feb 2020 00:00:00 +0000</pubDate>
-      
+      <pubDate>Wed, 19 Feb 2020</pubDate>
       <guid>https://ruevko.github.io/hexagonal/post/2020/02/19-sobre-tweets-paro-nacional-parte/</guid>
       <description>Continúa la discusión sobre &lt;em&gt;tweets&lt;/em&gt; publicados durante el paro de octubre, esta vez considerando seis &lt;em&gt;hashtags&lt;/em&gt; populares.</description>
     </item>
@@ -50,8 +45,7 @@
     <item>
       <title>Sobre los Tweets en el Paro Nacional</title>
       <link>https://ruevko.github.io/hexagonal/post/2020/01/23-sobre-tweets-paro-nacional/</link>
-      <pubDate>Thu, 23 Jan 2020 00:00:00 +0000</pubDate>
-      
+      <pubDate>Thu, 23 Jan 2020</pubDate>
       <guid>https://ruevko.github.io/hexagonal/post/2020/01/23-sobre-tweets-paro-nacional/</guid>
       <description>Una discusión sobre &lt;em&gt;tweets&lt;/em&gt; publicados con tres &lt;em&gt;hashtags&lt;/em&gt; populares del paro de octubre en Ecuador, y una alternativa para recuperar esos datos hoy en día.</description>
     </item>
@@ -59,8 +53,7 @@
     <item>
       <title>Estimando nodos OpenStreetMap por país</title>
       <link>https://ruevko.github.io/hexagonal/post/2020/01/07-estimando-nodos-openstreetmap-pais/</link>
-      <pubDate>Tue, 07 Jan 2020 00:00:00 +0000</pubDate>
-      
+      <pubDate>Tue, 07 Jan 2020</pubDate>
       <guid>https://ruevko.github.io/hexagonal/post/2020/01/07-estimando-nodos-openstreetmap-pais/</guid>
       <description>Se presenta una metodología basada en &lt;em&gt;web scraping&lt;/em&gt; para generar un mapa coroplético del número de nodos acumulados en cada país.</description>
     </item>
