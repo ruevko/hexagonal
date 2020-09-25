@@ -35,75 +35,75 @@ paginate = 6
     #weight = 1
     #identifier = "home"
     #name = "Home"
-    #pre = "<i class=\"sidebar-button-icon fas fa-lg fa-atlas\"></i>"
+    #pre = "fas fa-atlas"
     #url = "/"
   [[menu.main]]
     weight = 2
     identifier = "archives"
     name = "Archives"
-    pre = "<i class=\"sidebar-button-icon fas fa-lg fa-globe-americas\"></i>" #fa-globe
+    pre = "fas fa-globe-americas" #fa-globe
     url = "/archives"
   [[menu.main]]
     weight = 3
     identifier = "categories"
     name = "Categories"
-    pre = "<i class=\"sidebar-button-icon fas fa-lg fa-map-marked-alt\"></i>" #fa-map
+    pre = "fas fa-map-marked-alt" #fa-map
     url = "/categories"
   [[menu.main]]
     weight = 4
     identifier = "tags"
     name = "Tags"
-    pre = "<i class=\"sidebar-button-icon fas fa-lg fa-map-marker-alt\"></i>"
+    pre = "fas fa-map-marker-alt"
     url = "/tags"
 
   [[menu.links]]
     weight = 2
     identifier = "github"
     name = "GitHub"
-    pre = "<i class=\"sidebar-button-icon fab fa-lg fa-github-alt\"></i>"
+    pre = "fab fa-github-alt"
     url = "https://github.com/ruevko"
   [[menu.links]]
     weight = 3
     identifier = "twitter"
     name = "Twitter"
-    pre = "<i class=\"sidebar-button-icon fab fa-lg fa-twitter\"></i>"
+    pre = "fab fa-twitter"
     url = "https://twitter.com/ruevko"
   [[menu.links]]
     weight = 4
     identifier = "kofi"
     name = "Ko-fi"
-    pre = "<i class=\"sidebar-button-icon fas fa-lg fa-coffee\"></i>"
+    pre = "fas fa-coffee"
     url = "https://ko-fi.com/ruevko"
   #[[menu.links]]
     #weight = 1
     #identifier = "researchgate"
     #name = "RGate"
-    #pre = "<i class=\"sidebar-button-icon fab fa-lg fa-researchgate\"></i>"
+    #pre = "fab fa-researchgate"
     #url = "https://www.researchgate.net/profile/Roger_Rafael_Castro_Zambrano"
   #[[menu.links]]
     #weight = 5
     #identifier = "linkedin"
     #name = "LinkedIn"
-    #pre = "<i class=\"sidebar-button-icon fab fa-lg fa-linkedin\"></i>"
+    #pre = "fab fa-linkedin"
     #url = "https://www.linkedin.com/in/roger-rafael-castro-zambrano-143738188"
   #[[menu.links]]
     #weight = 6
     #identifier = "instagram"
     #name = "Instagram"
-    #pre = "<i class=\"sidebar-button-icon fab fa-lg fa-instagram\"></i>"
+    #pre = "fab fa-instagram"
     #url = "https://instagram.com/ruevko"
 
   [[menu.misc]]
     weight = 5
     identifier = "readme"
     name = "Acerca de..."
-    pre = "<i class=\"sidebar-button-icon fas fa-lg fa-compass\"></i>"
+    pre = "fas fa-compass"
     url = "/post/readme"
   #[[menu.misc]]
     #weight = 6
     #identifier = "english"
     #name = "English blog..."
-    #pre = "<i class=\"sidebar-button-icon fas fa-lg fa-map-signs\"></i>"
+    #pre = "fas fa-map-signs"
     #url = "/post/readme"
 
 [params]
