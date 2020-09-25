@@ -82,22 +82,22 @@
   translation: "of {{ .Paginator.TotalPages }}"
 
 - id: "pagination.newer_posts"
-  translation: "Previous posts"
-
-- id: "pagination.older_posts"
   translation: "Next posts"
 
+- id: "pagination.older_posts"
+  translation: "Prev posts"
+
 - id: "pagination.previous"
-  translation: "Previous"
+  translation: "Prev post"
 
 - id: "pagination.next"
-  translation: "Next"
+  translation: "Next post"
 
 ## POST ##
 - id: "post.no_title"
   translation: "No title"
 
-- id: "post.categorized_in"
+- id: "post.in"
   translation: "in"
 
 - id: "post.tagged_in"
