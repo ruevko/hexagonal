@@ -358,12 +358,12 @@ code span.wa { color: #bf0303; } /* Warning */
 <span id="cb5-5"><a href="#cb5-5"></a><span class="st">   </span><span class="kw">summarise</span>(<span class="dt">nodes =</span> <span class="kw">sum</span>(created <span class="op">-</span><span class="st"> </span>deleted), <span class="dt">dates =</span> <span class="kw">n_distinct</span>(date))</span>
 <span id="cb5-6"><a href="#cb5-6"></a></span>
 <span id="cb5-7"><a href="#cb5-7"></a><span class="kw">summary</span>(countries_nodes)</span></code></pre></div>
-<pre><code>##    country              nodes               dates
-##  Length:253         Min.   :       -2   Min.   :2917
-##  Class :character   1st Qu.:   259873   1st Qu.:2917
-##  Mode  :character   Median :  2756173   Median :2917
-##                     Mean   : 16590188   Mean   :2917
-##                     3rd Qu.: 13561870   3rd Qu.:2917
+<pre><code>##    country              nodes               dates     
+##  Length:253         Min.   :       -2   Min.   :2917  
+##  Class :character   1st Qu.:   259873   1st Qu.:2917  
+##  Mode  :character   Median :  2756173   Median :2917  
+##                     Mean   : 16590188   Mean   :2917  
+##                     3rd Qu.: 13561870   3rd Qu.:2917  
 ##                     Max.   :388753376   Max.   :2917</code></pre>
 <p>Finalmente, para generar el mapa, basta con unir los datos calculados en el paso anterior, a polígonos que representen los países. En este caso se han utilizado los polígonos disponibles en <code>tmap</code>; tratándose de un objeto de clase <code>sf</code>, el paquete homónimo debe ser incluido para garantizar una unión correcta. El mapa es generado vía <code>ggplot2</code>.</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="kw">library</span>(sf)</span>
@@ -380,14 +380,14 @@ Figure 1: Primer intento de generar nuestro mapa
 </p>
 </div>
 <p>El mapa se encuentra casi listo; el inconveniente restante es que algunos países aparecen sin datos, como las dos Koreas y los dos Congos. El problema se desprende de los diferentes nombres con que estos países figuran en los datos y en los polígonos; es necesesario averiguar cuáles son estos nombres: <code>setdiff(World$name, countries_nodes$country)</code></p>
-<pre><code>##  [1] &quot;Fr. S. Antarctic Lands&quot; &quot;Bahamas&quot;                &quot;Bosnia and Herz.&quot;
-##  [4] &quot;Central African Rep.&quot;   &quot;Cote d&#39;Ivoire&quot;          &quot;Dem. Rep. Congo&quot;
-##  [7] &quot;Congo&quot;                  &quot;N. Cyprus&quot;              &quot;Czech Rep.&quot;
-## [10] &quot;Dominican Rep.&quot;         &quot;Falkland Is.&quot;           &quot;Gambia&quot;
-## [13] &quot;Eq. Guinea&quot;             &quot;Korea&quot;                  &quot;Kosovo&quot;
-## [16] &quot;Lao PDR&quot;                &quot;Myanmar&quot;                &quot;Dem. Rep. Korea&quot;
-## [19] &quot;Palestine&quot;              &quot;W. Sahara&quot;              &quot;S. Sudan&quot;
-## [22] &quot;Solomon Is.&quot;            &quot;Somaliland&quot;             &quot;Timor-Leste&quot;
+<pre><code>##  [1] &quot;Fr. S. Antarctic Lands&quot; &quot;Bahamas&quot;                &quot;Bosnia and Herz.&quot;      
+##  [4] &quot;Central African Rep.&quot;   &quot;Cote d&#39;Ivoire&quot;          &quot;Dem. Rep. Congo&quot;       
+##  [7] &quot;Congo&quot;                  &quot;N. Cyprus&quot;              &quot;Czech Rep.&quot;            
+## [10] &quot;Dominican Rep.&quot;         &quot;Falkland Is.&quot;           &quot;Gambia&quot;                
+## [13] &quot;Eq. Guinea&quot;             &quot;Korea&quot;                  &quot;Kosovo&quot;                
+## [16] &quot;Lao PDR&quot;                &quot;Myanmar&quot;                &quot;Dem. Rep. Korea&quot;       
+## [19] &quot;Palestine&quot;              &quot;W. Sahara&quot;              &quot;S. Sudan&quot;              
+## [22] &quot;Solomon Is.&quot;            &quot;Somaliland&quot;             &quot;Timor-Leste&quot;           
 ## [25] &quot;Tanzania&quot;</code></pre>
 <p>Entonces los nombres en los datos deben ser modificados para coincidir con estos nombres.</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a>countries_nodes =<span class="st"> </span><span class="kw">mutate_at</span>(countries_nodes, <span class="st">&quot;country&quot;</span>, <span class="op">~</span><span class="kw">case_when</span>(</span>
@@ -494,19 +494,39 @@ Figure 2: Segundo intento de generar nuestro mapa 🎉
       </nav>
     <ul class="post-actions post-action-share" >
       
+        <li class="post-action hide-lg hide-md">
+          <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions">
+            <i class="fa fa-share-alt"></i>
+          </a>
+        </li>
         
+          <li class="post-action hide-sm hide-xs">
+            <a class="post-action-btn btn btn--default" href=
+            
+              "https://www.facebook.com/sharer.php?u=https://ruevko.github.io/hexagonal/post/2020/01/07-estimando-nodos-openstreetmap-pais/" target="_blank"
+            
+            data-tooltip="Compartir en Facebook">
+              <i class="fab fa-facebook"></i>
+            </a>
+          </li>
         
-          
-          <li class="post-action">
-            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://ruevko.github.io/hexagonal/post/2020/01/07-estimando-nodos-openstreetmap-pais/" data-tooltip="Compartir en Twitter">
+          <li class="post-action hide-sm hide-xs">
+            <a class="post-action-btn btn btn--default" href=
+            
+              "https://twitter.com/intent/tweet?url=https://ruevko.github.io/hexagonal/post/2020/01/07-estimando-nodos-openstreetmap-pais/" target="_blank"
+            
+            data-tooltip="Compartir en Twitter">
               <i class="fab fa-twitter"></i>
             </a>
           </li>
         
-          
-          <li class="post-action">
-            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://ruevko.github.io/hexagonal/post/2020/01/07-estimando-nodos-openstreetmap-pais/" data-tooltip="Compartir en Facebook">
-              <i class="fab fa-facebook"></i>
+          <li class="post-action hide-sm hide-xs">
+            <a class="post-action-btn btn btn--default" href=
+            
+              "https://github.com/ruevko/hexagonal/blob/master/content/post/2020/01/07-estimando-nodos-openstreetmap-pais.Rmd"
+            
+            data-tooltip="Ver código en Github">
+              <i class="fab fa-github-alt"></i>
             </a>
           </li>
         
@@ -514,7 +534,7 @@ Figure 2: Segundo intento de generar nuestro mapa 🎉
       
       
       <li class="post-action">
-        <a class="post-action-btn btn btn--default" href="#main" data-tooltip="Regresar al inicio">
+        <a class="btn btn--default" href="#main" data-tooltip="Regresar al inicio">
           <i class="fa fa-chevron-up"></i>
         </a>
       </li>
@@ -569,19 +589,39 @@ Figure 2: Segundo intento de generar nuestro mapa 🎉
       </nav>
     <ul class="post-actions post-action-share" >
       
+        <li class="post-action hide-lg hide-md">
+          <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions">
+            <i class="fa fa-share-alt"></i>
+          </a>
+        </li>
         
+          <li class="post-action hide-sm hide-xs">
+            <a class="post-action-btn btn btn--default" href=
+            
+              "https://www.facebook.com/sharer.php?u=https://ruevko.github.io/hexagonal/post/2020/01/07-estimando-nodos-openstreetmap-pais/" target="_blank"
+            
+            data-tooltip="Compartir en Facebook">
+              <i class="fab fa-facebook"></i>
+            </a>
+          </li>
         
-          
-          <li class="post-action">
-            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://ruevko.github.io/hexagonal/post/2020/01/07-estimando-nodos-openstreetmap-pais/" data-tooltip="Compartir en Twitter">
+          <li class="post-action hide-sm hide-xs">
+            <a class="post-action-btn btn btn--default" href=
+            
+              "https://twitter.com/intent/tweet?url=https://ruevko.github.io/hexagonal/post/2020/01/07-estimando-nodos-openstreetmap-pais/" target="_blank"
+            
+            data-tooltip="Compartir en Twitter">
               <i class="fab fa-twitter"></i>
             </a>
           </li>
         
-          
-          <li class="post-action">
-            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://ruevko.github.io/hexagonal/post/2020/01/07-estimando-nodos-openstreetmap-pais/" data-tooltip="Compartir en Facebook">
-              <i class="fab fa-facebook"></i>
+          <li class="post-action hide-sm hide-xs">
+            <a class="post-action-btn btn btn--default" href=
+            
+              "https://github.com/ruevko/hexagonal/blob/master/content/post/2020/01/07-estimando-nodos-openstreetmap-pais.Rmd"
+            
+            data-tooltip="Ver código en Github">
+              <i class="fab fa-github-alt"></i>
             </a>
           </li>
         
@@ -589,7 +629,7 @@ Figure 2: Segundo intento de generar nuestro mapa 🎉
       
       
       <li class="post-action">
-        <a class="post-action-btn btn btn--default" href="#main" data-tooltip="Regresar al inicio">
+        <a class="btn btn--default" href="#main" data-tooltip="Regresar al inicio">
           <i class="fa fa-chevron-up"></i>
         </a>
       </li>
@@ -598,7 +638,46 @@ Figure 2: Segundo intento de generar nuestro mapa 🎉
 </div>
 
       </div>
-      
+      <div id="share-options-bar" class="share-options-bar" data-behavior="4">
+  <i id="btn-close-shareoptions" class="fas fa-times"></i>
+  <ul class="share-options">
+    
+      <li class="share-option">
+            <a class="share-option-btn" href=
+            
+              "https://www.facebook.com/sharer.php?u=https://ruevko.github.io/hexagonal/post/2020/01/07-estimando-nodos-openstreetmap-pais/" target="_blank"
+            
+            >
+              <span>Compartir en Facebook</span>
+              <i class="fab fa-facebook"></i>
+            </a>
+      </li>
+    
+      <li class="share-option">
+            <a class="share-option-btn" href=
+            
+              "https://twitter.com/intent/tweet?url=https://ruevko.github.io/hexagonal/post/2020/01/07-estimando-nodos-openstreetmap-pais/" target="_blank"
+            
+            >
+              <span>Compartir en Twitter</span>
+              <i class="fab fa-twitter"></i>
+            </a>
+      </li>
+    
+      <li class="share-option">
+            <a class="share-option-btn" href=
+            
+              "https://github.com/ruevko/hexagonal/blob/master/content/post/2020/01/07-estimando-nodos-openstreetmap-pais.Rmd"
+            
+            >
+              <span>Ver código en Github</span>
+              <i class="fab fa-github-alt"></i>
+            </a>
+      </li>
+    
+  </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
 
     </div>
     

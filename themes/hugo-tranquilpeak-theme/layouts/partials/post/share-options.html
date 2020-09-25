@@ -1,13 +1,20 @@
-<!-- div id="share-options-bar" class="share-options-bar" data-behavior="{{ .Scratch.Get "sidebarBehavior" }}">
+<div id="share-options-bar" class="share-options-bar" data-behavior="{{ .Scratch.Get "sidebarBehavior" }}">
   <i id="btn-close-shareoptions" class="fas fa-times"></i>
   <ul class="share-options">
     {{ range .Site.Params.sharingOptions }}
       <li class="share-option">
-        <a class="share-option-btn" target="new" href="{{ printf .url (substr (querify "x" $.Permalink) 2) }}">
-          <span>{{ printf (i18n "global.share_on") .name }}</span><i class="fab {{ .icon }}"></i>
-        </a>
+            <a class="share-option-btn" href=
+            {{ if eq .icon "fab fa-github-alt" }}
+              "{{ printf .url ( replace $.File.Dir "\\" "/" ) $.Params.slug }}"
+            {{ else }}
+              "{{ printf .url $.Permalink }}" target="_blank"
+            {{ end }}
+            >
+              <span>{{ .name }}</span>
+              <i class="{{ .icon }}"></i>
+            </a>
       </li>
     {{ end }}
   </ul>
 </div>
-<div id="share-options-mask" class="share-options-mask"></div -->
+<div id="share-options-mask" class="share-options-mask"></div>

@@ -41,13 +41,13 @@
                 }
             }
             .share-option-btn {
-                color:   #6e7681;
+                  color: map-get($colors, base);
                 display: block;
                 width:   100%;
                 padding: 10px 0 10px 0;
-
+                  text-decoration: none;
                 .fab {
-                    margin-left: 16px;
+                    margin-left: 10px;
                 }
             }
         }
@@ -59,7 +59,7 @@
     top:       15px;
     right:     15px;
     font-size: 20px;
-    color:     map-get($colors, 'base');
+    color:     map-get($colors, light);
     cursor:    pointer;
 }
 

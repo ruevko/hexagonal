@@ -49,16 +49,21 @@
       </nav>
     <ul class="post-actions post-action-share" >
       {{ if (not (eq .Params.showSocial false)) }}
-        <!-- li class="post-action hide-lg hide-md hide-sm">
+        <li class="post-action hide-lg hide-md">
           <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions">
             <i class="fa fa-share-alt"></i>
           </a>
-        </li -->
+        </li>
         {{ range .Site.Params.sharingOptions }}
-          <!-- li class="post-action hide-xs" -->
-          <li class="post-action">
-            <a class="post-action-btn btn btn--default" target="new" href="{{ printf .url $.Permalink }}" data-tooltip="{{ printf (i18n "global.share_on") .name }}">
-              <i class="fab {{ .icon }}"></i>
+          <li class="post-action hide-sm hide-xs">
+            <a class="post-action-btn btn btn--default" href=
+            {{ if eq .icon "fab fa-github-alt" }}
+              "{{ printf .url ( replace $.File.Dir "\\" "/" ) $.Params.slug }}"
+            {{ else }}
+              "{{ printf .url $.Permalink }}" target="_blank"
+            {{ end }}
+            data-tooltip="{{ .name }}">
+              <i class="{{ .icon }}"></i>
             </a>
           </li>
         {{ end }}
@@ -80,7 +85,7 @@
         </a>
       </li -->
       <li class="post-action">
-        <a class="post-action-btn btn btn--default" href="#main" data-tooltip="{{ i18n "global.back_to_top" }}">
+        <a class="btn btn--default" href="#main" data-tooltip="{{ i18n "global.back_to_top" }}">
           <i class="fa fa-chevron-up"></i>
         </a>
       </li>
