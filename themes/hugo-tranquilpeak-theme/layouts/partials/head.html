@@ -24,7 +24,6 @@
 <!DOCTYPE html>
 <html lang="{{ .Site.LanguageCode }}">
   <head>
-    {{ partial "head_start.html" . }}
     {{ partial "meta.html" . }}
     <title>
       {{ if i18n (print "global." (lower .Title))}}
@@ -66,5 +65,4 @@
     {{ else }}
       {{ template "_internal/google_analytics.html" . }}
     {{ end }}
-    {{ partial "head_end.html" . }}
   </head>
