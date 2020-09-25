@@ -80,18 +80,6 @@ paginate = 6
     #name = "RGate"
     #pre = "fab fa-researchgate"
     #url = "https://www.researchgate.net/profile/Roger_Rafael_Castro_Zambrano"
-  #[[menu.links]]
-    #weight = 5
-    #identifier = "linkedin"
-    #name = "LinkedIn"
-    #pre = "fab fa-linkedin"
-    #url = "https://www.linkedin.com/in/roger-rafael-castro-zambrano-143738188"
-  #[[menu.links]]
-    #weight = 6
-    #identifier = "instagram"
-    #name = "Instagram"
-    #pre = "fab fa-instagram"
-    #url = "https://instagram.com/ruevko"
 
   [[menu.misc]]
     weight = 5
@@ -135,6 +123,16 @@ paginate = 6
     name = "Ver código en Github"
     icon = "fab fa-github-alt"
     url = "https://github.com/ruevko/hexagonal/blob/master/content/%s%s.Rmd"
+
+  #[[params.sharingOptions]]
+    #name = "Enviar con Telegram"
+    #icon = "fab fa-telegram-plane"
+    #url = "https://t.me/share/url?url=%s"
+
+  #[[params.sharingOptions]]
+    #name = "Enviar con WhatsApp"
+    #icon = "fab fa-whatsapp"
+    #url = "https://api.whatsapp.com/send?text=%s"
 
 [params.header.rightLink]
   icon = "chevron-down"

@@ -21,7 +21,7 @@
     ul.post-action-nav {
         // Best width for responsive post's navigation panel on small screen and up
         //width:   35%;
-          width:   57%;
+          width:   55%;
         // On very small screen `.post-actions-nav` will be above `.post-actions-share`
         z-index: map-get($z-indexes, c-post-bottom-bar) + 2;
 
@@ -53,7 +53,7 @@
         // 100% minus width of `.post-action-nav`,
         // best width for responsive post's share panel on small screen and up
         //width:   65%;
-          width:   43%;
+          width:   45%;
         // On very small screen `.post-actions-nav` will be above `.post-actions-share`
         z-index: map-get($z-indexes, c-post-bottom-bar) + 1;
 

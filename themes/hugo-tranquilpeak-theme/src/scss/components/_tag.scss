@@ -41,5 +41,5 @@ a.tag--default,
 
 a.tag--small,
 .tag--small {
-    @include tag-size-variant(map-get($font-size, small), 2px 10px);
+    @include tag-size-variant(map-get($font-size, small), 0px 10px 2px 10px);
 }
