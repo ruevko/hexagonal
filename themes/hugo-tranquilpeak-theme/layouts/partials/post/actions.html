@@ -60,7 +60,7 @@
             {{ if eq .icon "fab fa-github-alt" }}
               "{{ printf .url ( replace $.File.Dir "\\" "/" ) $.Params.slug }}"
             {{ else }}
-              "{{ printf .url $.Permalink }}" target="_blank"
+              "{{ printf .url $.Site.Params.sharingMessage $.Permalink }}" target="_blank"
             {{ end }}
             data-tooltip="{{ .name }}">
               <i class="{{ .icon }}"></i>

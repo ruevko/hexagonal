@@ -2,7 +2,7 @@
 # Version : 0.4.8-BETA
 # Author : Thibaud Leprêtre
 
-ignoreFiles = ["\\.csv$", "\\.shp$", "\\.shx$", "\\.RDS$", "\\.Rmd$", "_files$", "_cache$"]
+ignoreFiles = ["\\.csv$", "\\.sh.$", "\\.RDS$", "\\.Rmd$", "_files$", "_cache$"]
 ignoreErrors = ["error-output-taxonomy"]
 title = "La Galería Hexagonal"
 baseURL = "https://ruevko.github.io/hexagonal/"
@@ -101,6 +101,7 @@ paginate = 6
   keywords = ["análisis", "cartografía", "datos", "mapas"]
   description = "El blog de Rafael Castro, orientado a Cartografía y Análisis de Datos"
   coverImage = "https://res.cloudinary.com/dodnzqhiz/image/upload/v1577918037/crv.png"
+  sharingMessage = "Este artículo fue publicado en el blog La Galería Hexagonal"
   thumbnailImagePosition = "right"
   hierarchicalCategories = false
   autoThumbnailImage = true
@@ -112,27 +113,27 @@ paginate = 6
   [[params.sharingOptions]]
     name = "Compartir en Facebook"
     icon = "fab fa-facebook"
-    url = "https://www.facebook.com/sharer.php?u=%s"
+    url = "https://www.facebook.com/sharer.php?t=%s&u=%s"
 
   [[params.sharingOptions]]
     name = "Compartir en Twitter"
     icon = "fab fa-twitter"
-    url = "https://twitter.com/intent/tweet?url=%s"
+    url = "https://twitter.com/intent/tweet?text=%s&url=%s"
 
   [[params.sharingOptions]]
     name = "Ver código en Github"
     icon = "fab fa-github-alt"
     url = "https://github.com/ruevko/hexagonal/blob/master/content/%s%s.Rmd"
 
-  #[[params.sharingOptions]]
-    #name = "Enviar con Telegram"
-    #icon = "fab fa-telegram-plane"
-    #url = "https://t.me/share/url?url=%s"
+  [[params.sharingOptions]]
+    name = "Enviar con Telegram"
+    icon = "fab fa-telegram-plane"
+    url = "https://t.me/share/url?text=%s&url=%s"
 
-  #[[params.sharingOptions]]
-    #name = "Enviar con WhatsApp"
-    #icon = "fab fa-whatsapp"
-    #url = "https://api.whatsapp.com/send?text=%s"
+  [[params.sharingOptions]]
+    name = "Enviar con WhatsApp"
+    icon = "fab fa-whatsapp"
+    url = "https://api.whatsapp.com/send?text=%s %s"
 
 [params.header.rightLink]
   icon = "chevron-down"
