@@ -53,7 +53,7 @@
       
     </title>
 
-    <link rel="icon" href="../../../../favicon.png">
+    <link rel="icon" href="https://ruevko.github.io/hexagonal/favicon.png">
     
     
     <link rel="canonical" href="https://ruevko.github.io/hexagonal/post/2020/07/01-cordones-coordenadas/">
@@ -64,7 +64,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/helpers/jquery.fancybox-thumbs.min.css" integrity="sha256-SEa4XYAHihTcEP1f5gARTB2K26Uk8PsndQYHQC1f4jU=" crossorigin="anonymous" />
     
     
-    <link rel="stylesheet" href="../../../../css/style-7x73dw24ckyl0xlyrgrookevcdyn0snmotvjhpjhrksdyhlnyeufngdoci.min.css" />
+    <link rel="stylesheet" href="https://ruevko.github.io/hexagonal/css/style-7x73dw24ckyl0xlyrgrookevcdyn0snmotvjhpjhrksdyhlnyeufngdoci.min.css" />
     
     
 
@@ -77,7 +77,7 @@
       <header id="header" data-behavior="4">
   <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
   <div class="header-title">
-    <a class="header-title-link" href="../../../../">La Galería Hexagonal</a>
+    <a class="header-title-link" href="https://ruevko.github.io/hexagonal/">La Galería Hexagonal</a>
   </div>
   
     
@@ -95,10 +95,10 @@
   <div class="sidebar-container">
     
       <div class="sidebar-profile">
-        <a href="../../../../#about">
+        <a href="https://ruevko.github.io/hexagonal/#about">
           <img class="sidebar-profile-picture" src="https://ruevko.github.io/hexagonal/logo.png" alt="Foto de autor" />
         </a>
-        <a class="sidebar-profile-name" href="../../../../">La Galería Hexagonal</a>
+        <a class="sidebar-profile-name" href="https://ruevko.github.io/hexagonal/">La Galería Hexagonal</a>
 
       </div>
     
@@ -106,7 +106,7 @@
       
   <li class="sidebar-button">
     
-      <a class="sidebar-button-link " href="../../../../archives">
+      <a class="sidebar-button-link " href="https://ruevko.github.io/hexagonal/archives">
     
       <i class="sidebar-button-icon fas fa-globe-americas fa-lg"></i>
       
@@ -116,7 +116,7 @@
 
   <li class="sidebar-button">
     
-      <a class="sidebar-button-link " href="../../../../categories">
+      <a class="sidebar-button-link " href="https://ruevko.github.io/hexagonal/categories">
     
       <i class="sidebar-button-icon fas fa-map-marked-alt fa-lg"></i>
       
@@ -126,7 +126,7 @@
 
   <li class="sidebar-button">
     
-      <a class="sidebar-button-link " href="../../../../tags">
+      <a class="sidebar-button-link " href="https://ruevko.github.io/hexagonal/tags">
     
       <i class="sidebar-button-icon fas fa-map-marker-alt fa-lg"></i>
       
@@ -172,7 +172,7 @@
       
   <li class="sidebar-button">
     
-      <a class="sidebar-button-link " href="../../../../post/readme">
+      <a class="sidebar-button-link " href="https://ruevko.github.io/hexagonal/post/readme">
     
       <i class="sidebar-button-icon fas fa-compass fa-lg"></i>
       
@@ -221,7 +221,7 @@
   
     <span>en</span>
     
-      <a class="category-link" href="../../../../categories/matem%c3%a1ticas">Matemáticas</a>
+      <a class="category-link" href="https://ruevko.github.io/hexagonal/categories/matem%c3%a1ticas">Matemáticas</a>
     
   
 
@@ -232,7 +232,7 @@
           <div class="post-content markdown" itemprop="articleBody">
             <div class="main-content-wrap">
               
-<script src="../../../../rmarkdown-libs/accessible-code-block/empty-anchor.js"></script>
+<script src="https://ruevko.github.io/hexagonal/rmarkdown-libs/accessible-code-block/empty-anchor.js"></script>
 <style type="text/css">
 code.sourceCode > span { display: inline-block; line-height: 1.25; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -314,7 +314,7 @@ code span.wa { color: #bf0303; } /* Warning */
 <pre><code>## 246039.9 [km^2]</code></pre>
 <p>Resulta trivial calcular cantidades como áreas o distancias, pero aprender la lógica detrás de tales operaciones no deja de ser interesante. En este post revisaremos un acercamiento al problema de calcular el área de un polígono: la <em>shoelace formula</em><a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>. Este curioso nombre, como se verá, proviene de la forma como se construye la fórmula.</p>
 <p>Plantear dicho problema supone conocer las coordenadas <span class="math inline">\(P_{i} = x_{i},\ y_{i};\ i = 1, 2, ... n\)</span> de los vértices del polígono, donde <span class="math inline">\(n\)</span> es el número de vértices (que también es el número lados). Es un requisito que estos vértices se encuentren ordenados alrededor del límite; dicho de otra manera, que el polígono se trace “uniendo los puntos” en orden. Tomemos el siguiente gráfico; en este ejemplo, el área del triángulo <span class="math inline">\(A = \triangle P_{1}P_{2}P_{3}\)</span> será la interrogante.</p>
-<p><img src="../../../../post/2020/07/01-cordones-coordenadas_files/figure-html/example-1-1.svg" width="432" /></p>
+<p><img src="https://ruevko.github.io/hexagonal/post/2020/07/01-cordones-coordenadas_files/figure-html/example-1-1.svg" width="432" /></p>
 <p>El rectángulo <span class="math inline">\(E = A + B + C + D\)</span> se traza de manera que contenga al triángulo <span class="math inline">\(A\)</span>, su área sea mínima, y sus lados sean paralelos a los ejes. En este caso<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a> es sencillo calcular el área de <span class="math inline">\(E\)</span> y de los triángulos <span class="math inline">\(B, C, D\)</span> con fórmulas geométricas elementales: <span class="math inline">\(bh\)</span> y <span class="math inline">\(\frac{1}{2} bh\)</span> respectivamente.</p>
 <p><span class="math display">\[E = (x_{2} - x_{3})(y_{3} - y_{1})\]</span>
 <span class="math display">\[D = \frac{1}{2} (x_{1} - x_{3})(y_{3} - y_{1})\]</span>
@@ -334,7 +334,7 @@ A = \frac{1}{2} (8\cdot6 - 9\cdot2 + 9\cdot7 - 1\cdot6 + 1\cdot2 - 8\cdot7) = 16
 \end{equation}
 \]</span></p>
 <p>De manera que el problema está resuelto, al menos cuando el polígono es un triángulo. Con todo, revisemos que sucede si variamos este ejemplo, intercambiando las posiciones de <span class="math inline">\(P_{2}\)</span> y <span class="math inline">\(P_{3}\)</span>.</p>
-<p><img src="../../../../post/2020/07/01-cordones-coordenadas_files/figure-html/example-2-1.svg" width="432" /></p>
+<p><img src="https://ruevko.github.io/hexagonal/post/2020/07/01-cordones-coordenadas_files/figure-html/example-2-1.svg" width="432" /></p>
 <p>Según la ecuación <a href="#eq:triangle">(1)</a>:</p>
 <p><span class="math display">\[
 \begin{equation}
@@ -343,7 +343,7 @@ A = \frac{1}{2} (8\cdot7 - 1\cdot2 + 1\cdot6 - 9\cdot7 + 9\cdot2 - 8\cdot6) = -1
 \]</span></p>
 <p>Es un resultado importante pues, mientras el valor absoluto del área sigue siendo correcto, el hecho de que haya cambiado de signo resultará crucial más tarde. La regla es la siguiente: si los vértices se encuentran ordenados en sentido antihorario, se calcula un área positiva; si el orden es horario, se calcula un área negativa.</p>
 <p>Revisemos una variación más, reemplazando <span class="math inline">\(P_{3}\)</span> por <span class="math inline">\(P_{0} = 0,\ 0\)</span>.</p>
-<p><img src="../../../../post/2020/07/01-cordones-coordenadas_files/figure-html/example-3-1.svg" width="432" /></p>
+<p><img src="https://ruevko.github.io/hexagonal/post/2020/07/01-cordones-coordenadas_files/figure-html/example-3-1.svg" width="432" /></p>
 <p>Cuando uno de los vértices es el origen, es posible reducir <a href="#eq:triangle">(1)</a>:</p>
 <p><span class="math display" id="eq:origin">\[
 \begin{equation}
@@ -364,7 +364,7 @@ A = \frac{1}{2} (8\cdot7 - 1\cdot2) = 27
 \end{equation}
 \]</span></p>
 <p>Esta forma es aplicable en cada uno de los <span class="math inline">\(n\)</span> lados, observando que el vértice <span class="math inline">\(P_{n+1}\)</span> equivale a <span class="math inline">\(P_{1}\)</span> (pues el polígono se encuentra cerrado). Pero ¿cuál es el propósito de generalizar esta ecuación? Observen lo que sucede al iterarla en el triángulo <span class="math inline">\(A\)</span> del primer ejemplo; en estas animaciones, los triángulos de borde rojo poseen área positiva; los de borde azul, negativa.</p>
-<p><img src="../../../../post/2020/07/01-cordones-coordenadas_files/figure-html/animation-1-1.gif" /><!-- --></p>
+<p><img src="https://ruevko.github.io/hexagonal/post/2020/07/01-cordones-coordenadas_files/figure-html/animation-1-1.gif" /><!-- --></p>
 <p>El hecho de que esta fórmula devuelva resultados positivos y negativos resuelve el problema del área para cualquier polígono <span class="math inline">\(P_{1}P_{2}...P_{n}\)</span>; calculándola en todos los lados, se generan triángulos cuyas áreas, sumadas, producen el polígono buscado. Existe, sin embargo, la restricción de que el polígono sea simple (no se debe intersecar a sí mismo).</p>
 <p><span class="math display">\[
 \begin{equation}
@@ -378,9 +378,9 @@ A_{P_{1}P_{2}...P_{n}} = \sum_{i=1}^{n} \triangle P_{0}P_{i}P_{i+1} = \frac{1}{2
 \end{equation}
 \]</span></p>
 <p>Y esta es la <em>shoelace formula</em>. Su construcción, multiplicando de manera cruzada las coordenadas de un vértice con el siguiente, se asemeja a insertar los cordones en un zapato. Compliquemos un poco nuestro ejemplo, añadiendo dos vértices:</p>
-<p><img src="../../../../post/2020/07/01-cordones-coordenadas_files/figure-html/animation-2-1.gif" /><!-- --></p>
+<p><img src="https://ruevko.github.io/hexagonal/post/2020/07/01-cordones-coordenadas_files/figure-html/animation-2-1.gif" /><!-- --></p>
 <p>Otro nombre que se le ha otorgado es <em>surveyor’s formula</em> pues su utilidad en topografía salta a la vista; en esta aplicación, un paso previo era transformar las coordenadas polares, del teodolito, a rectangulares. <span class="math inline">\(P_{0}\)</span> representaría la ubicación del topógrafo, y este punto no tiene que ser el origen necesariamente; reutilizando <a href="#eq:triangle">(1)</a> es posible desplazarlo a cualquier ubicación.</p>
-<p><img src="../../../../post/2020/07/01-cordones-coordenadas_files/figure-html/animation-3-1.gif" /><!-- --></p>
+<p><img src="https://ruevko.github.io/hexagonal/post/2020/07/01-cordones-coordenadas_files/figure-html/animation-3-1.gif" /><!-- --></p>
 <p>La fórmula encuentra una aplicación más en el cálculo del centroide, el centro de masa de un polígono. Si <span class="math inline">\(A\)</span> es el área calculada con la <em>shoelace formula</em> (ya sea positiva o negativa), las coordenadas del centroide <span class="math inline">\(P_{c} = x_{c},\ y_{c}\)</span> se hallan con el siguiente par de fórmulas:</p>
 <p><span class="math display" id="eq:centroidx">\[
 \begin{equation}
@@ -462,9 +462,9 @@ y_{c} = \frac{1}{6A} \sum_{i=1}^{n} (y_{i} + y_{i+1}) (x_{i}y_{i+1} - x_{i+1}y_{
                   <div class="post-footer-tags">
                     <span class="text-color-light text-small">Etiquetado en</span><br/>
                     
-  <a class="tag tag--primary tag--small" href="../../../../tags/calcular-%C3%A1reas/">calcular áreas</a>
+  <a class="tag tag--primary tag--small" href="https://ruevko.github.io/hexagonal/tags/calcular-%C3%A1reas/">calcular áreas</a>
 
-  <a class="tag tag--primary tag--small" href="../../../../tags/centroides/">centroides</a>
+  <a class="tag tag--primary tag--small" href="https://ruevko.github.io/hexagonal/tags/centroides/">centroides</a>
 
                   </div>
                 
@@ -485,7 +485,7 @@ y_{c} = \frac{1}{6A} \sum_{i=1}^{n} (y_{i} + y_{i+1}) (x_{i}y_{i+1} - x_{i+1}y_{
             </li>
             <li class="post-action">
               
-                <a class="post-action-btn btn btn--default tooltip-big" href="../../../../post/2020/03/20-caracterizacion-covid-ecuador/" data-tooltip="Caracterización del COVID-19 en Ecuador">
+                <a class="post-action-btn btn btn--default tooltip-big" href="https://ruevko.github.io/hexagonal/post/2020/03/20-caracterizacion-covid-ecuador/" data-tooltip="Caracterización del COVID-19 en Ecuador">
               
                   <span class="hide-xs text-small icon-mr" style="margin-left: 1.5px;">Anterior</span>
                   <i class="fa fa-angle-right"></i>
@@ -598,7 +598,7 @@ y_{c} = \frac{1}{6A} \sum_{i=1}^{n} (y_{i} + y_{i+1}) (x_{i}y_{i+1} - x_{i+1}y_{
             </li>
             <li class="post-action">
               
-                <a class="post-action-btn btn btn--default tooltip-big" href="../../../../post/2020/03/20-caracterizacion-covid-ecuador/" data-tooltip="Caracterización del COVID-19 en Ecuador">
+                <a class="post-action-btn btn btn--default tooltip-big" href="https://ruevko.github.io/hexagonal/post/2020/03/20-caracterizacion-covid-ecuador/" data-tooltip="Caracterización del COVID-19 en Ecuador">
               
                   <span class="hide-xs text-small icon-mr" style="margin-left: 1.5px;">Anterior</span>
                   <i class="fa fa-angle-right"></i>
@@ -781,7 +781,7 @@ y_{c} = \frac{1}{6A} \sum_{i=1}^{n} (y_{i} + y_{i+1}) (x_{i}y_{i+1} - x_{i+1}y_{
 <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.7/js/jquery.fancybox.min.js" integrity="sha256-GEAnjcTqVP+vBp3SSc8bEDQqvWAZMiHyUSIorrWwH50=" crossorigin="anonymous"></script>
 
 
-<script src="../../../../js/script-7hx2cpgtcylepsregwhdvs6ty8aksei6fkqvecilv039vd5l1rij948pep.min.js"></script>
+<script src="https://ruevko.github.io/hexagonal/js/script-7hx2cpgtcylepsregwhdvs6ty8aksei6fkqvecilv039vd5l1rij948pep.min.js"></script>
 
 
 <script lang="javascript">

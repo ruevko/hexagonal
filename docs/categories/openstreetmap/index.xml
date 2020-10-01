@@ -16,7 +16,7 @@
       <pubDate>Wed, 04 Mar 2020</pubDate>
       <guid>https://ruevko.github.io/hexagonal/post/2020/03/04-crecimiento-diario-nodos/</guid>
       <description>
-&lt;script src=&#34;../../rmarkdown-libs/accessible-code-block/empty-anchor.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;https://ruevko.github.io/hexagonal/rmarkdown-libs/accessible-code-block/empty-anchor.js&#34;&gt;&lt;/script&gt;
 &lt;style type=&#34;text/css&#34;&gt;
 code.sourceCode &gt; span { display: inline-block; line-height: 1.25; }
 code.sourceCode &gt; span { color: inherit; text-decoration: inherit; }
@@ -114,7 +114,7 @@ code span.wa { color: #bf0303; } /* Warning */
 ## 6 Africa    Algeria 2012-04-30    15374   225807&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Incluso agregando los datos, existen 96 observaciones mensuales por cada uno de los 173 países. Para el siguiente gráfico se agregó aún más los datos: se agrupó los países de acuerdo al continente (exceptuando Antártida) y se promedió la suma de nodos creados.&lt;/p&gt;
 &lt;div class=&#34;figure&#34;&gt;&lt;span id=&#34;fig:mean&#34;&gt;&lt;/span&gt;
-&lt;img src=&#34;../../post/2020/03/04-crecimiento-diario-nodos_files/figure-html/mean-1.png&#34; alt=&#34;Promedio de nodos creados mensualmente en cada continente&#34; width=&#34;672&#34; /&gt;
+&lt;img src=&#34;https://ruevko.github.io/hexagonal/post/2020/03/04-crecimiento-diario-nodos_files/figure-html/mean-1.png&#34; alt=&#34;Promedio de nodos creados mensualmente en cada continente&#34; width=&#34;672&#34; /&gt;
 &lt;p class=&#34;caption&#34;&gt;
 Figure 1: Promedio de nodos creados mensualmente en cada continente
 &lt;/p&gt;
@@ -135,7 +135,7 @@ Figure 1: Promedio de nodos creados mensualmente en cada continente
 &lt;li&gt;Argentina&lt;/li&gt;
 &lt;/ol&gt;
 &lt;div class=&#34;figure&#34;&gt;&lt;span id=&#34;fig:cumsum&#34;&gt;&lt;/span&gt;
-&lt;img src=&#34;../../post/2020/03/04-crecimiento-diario-nodos_files/figure-html/cumsum-1.png&#34; alt=&#34;Suma 👆 y suma acumulativa 👇 de nodos creados mensualmente en países seleccionados&#34; width=&#34;672&#34; /&gt;
+&lt;img src=&#34;https://ruevko.github.io/hexagonal/post/2020/03/04-crecimiento-diario-nodos_files/figure-html/cumsum-1.png&#34; alt=&#34;Suma 👆 y suma acumulativa 👇 de nodos creados mensualmente en países seleccionados&#34; width=&#34;672&#34; /&gt;
 &lt;p class=&#34;caption&#34;&gt;
 Figure 2: Suma 👆 y suma acumulativa 👇 de nodos creados mensualmente en países seleccionados
 &lt;/p&gt;
@@ -182,14 +182,14 @@ Figure 2: Suma 👆 y suma acumulativa 👇 de nodos creados mensualmente en pa�
 ## 6 Africa    Burundi      &amp;lt;tibble [96 x 3]&amp;gt; &amp;lt;lm&amp;gt;   -13142257.  843. 0.856&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Para ilustrar los resultados se presentan las regresiones de los países seleccionados:&lt;/p&gt;
 &lt;div class=&#34;figure&#34;&gt;&lt;span id=&#34;fig:model-sel&#34;&gt;&lt;/span&gt;
-&lt;img src=&#34;../../post/2020/03/04-crecimiento-diario-nodos_files/figure-html/model-sel-1.png&#34; alt=&#34;Regresiones lineales ajustadas en países seleccionados&#34; width=&#34;672&#34; /&gt;
+&lt;img src=&#34;https://ruevko.github.io/hexagonal/post/2020/03/04-crecimiento-diario-nodos_files/figure-html/model-sel-1.png&#34; alt=&#34;Regresiones lineales ajustadas en países seleccionados&#34; width=&#34;672&#34; /&gt;
 &lt;p class=&#34;caption&#34;&gt;
 Figure 3: Regresiones lineales ajustadas en países seleccionados
 &lt;/p&gt;
 &lt;/div&gt;
 &lt;p&gt;Se obtuvo un buen ajuste en la mayoría de casos, en función del coeficiente de determinación (el “r” cuadrado) &lt;a href=&#34;https://en.wikipedia.org/wiki/Coefficient_of_determination#Adjusted_R2&#34;&gt;ajustado&lt;/a&gt;. Solamente nueve países obtuvieron un coeficiente menor a 0.70 debido probablemente a que las contribuciones aparecieron de una manera atípica.&lt;/p&gt;
 &lt;div class=&#34;figure&#34;&gt;&lt;span id=&#34;fig:model-low&#34;&gt;&lt;/span&gt;
-&lt;img src=&#34;../../post/2020/03/04-crecimiento-diario-nodos_files/figure-html/model-low-1.png&#34; alt=&#34;Regresiones lineales ajustadas con coeficiente de determinación menor a 0.70&#34; width=&#34;672&#34; /&gt;
+&lt;img src=&#34;https://ruevko.github.io/hexagonal/post/2020/03/04-crecimiento-diario-nodos_files/figure-html/model-low-1.png&#34; alt=&#34;Regresiones lineales ajustadas con coeficiente de determinación menor a 0.70&#34; width=&#34;672&#34; /&gt;
 &lt;p class=&#34;caption&#34;&gt;
 Figure 4: Regresiones lineales ajustadas con coeficiente de determinación menor a 0.70
 &lt;/p&gt;
@@ -198,13 +198,13 @@ Figure 4: Regresiones lineales ajustadas con coeficiente de determinación menor
 &lt;p&gt;¿De qué manera podemos verificar estas estimaciones? &lt;span class=&#34;citation&#34;&gt;Neis and Zipf (&lt;a href=&#34;#ref-neis12&#34; role=&#34;doc-biblioref&#34;&gt;2012&lt;/a&gt;)&lt;/span&gt; revelan que, en enero de 2012, la tasa mundial de contribuciones fue aproximadamente 1.2 millones de nodos, 130 mil vías y 1500 relaciones creados a diario, en promedio. Sumando las pendientes de las regresiones ajustadas se obtiene el promedio diario de 1.6 millones de nodos creados en todo el mundo: un valor mayor al observado en 2012 y consistente con el periodo posterior al que pertenecen nuestros datos.&lt;/p&gt;
 &lt;p&gt;Para cerrar este post se presentan los mapas coropléticos con las pendientes -las tasas diarias de creación de nodos- y los coeficientes de determinación ajustados de las regresiones calculadas en cada país.&lt;/p&gt;
 &lt;div class=&#34;figure&#34;&gt;&lt;span id=&#34;fig:map-slope&#34;&gt;&lt;/span&gt;
-&lt;img src=&#34;../../post/2020/03/04-crecimiento-diario-nodos_files/figure-html/map-slope-1.svg&#34; alt=&#34;Tasa diaria estimada de nodos creados por país&#34; width=&#34;672&#34; /&gt;
+&lt;img src=&#34;https://ruevko.github.io/hexagonal/post/2020/03/04-crecimiento-diario-nodos_files/figure-html/map-slope-1.svg&#34; alt=&#34;Tasa diaria estimada de nodos creados por país&#34; width=&#34;672&#34; /&gt;
 &lt;p class=&#34;caption&#34;&gt;
 Figure 5: Tasa diaria estimada de nodos creados por país
 &lt;/p&gt;
 &lt;/div&gt;
 &lt;div class=&#34;figure&#34;&gt;&lt;span id=&#34;fig:map-coeff&#34;&gt;&lt;/span&gt;
-&lt;img src=&#34;../../post/2020/03/04-crecimiento-diario-nodos_files/figure-html/map-coeff-1.svg&#34; alt=&#34;Coeficiente de determinación del ajuste lineal por país&#34; width=&#34;672&#34; /&gt;
+&lt;img src=&#34;https://ruevko.github.io/hexagonal/post/2020/03/04-crecimiento-diario-nodos_files/figure-html/map-coeff-1.svg&#34; alt=&#34;Coeficiente de determinación del ajuste lineal por país&#34; width=&#34;672&#34; /&gt;
 &lt;p class=&#34;caption&#34;&gt;
 Figure 6: Coeficiente de determinación del ajuste lineal por país
 &lt;/p&gt;
@@ -237,7 +237,7 @@ Figure 6: Coeficiente de determinación del ajuste lineal por país
       <pubDate>Tue, 07 Jan 2020</pubDate>
       <guid>https://ruevko.github.io/hexagonal/post/2020/01/07-estimando-nodos-openstreetmap-pais/</guid>
       <description>
-&lt;script src=&#34;../../rmarkdown-libs/accessible-code-block/empty-anchor.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;https://ruevko.github.io/hexagonal/rmarkdown-libs/accessible-code-block/empty-anchor.js&#34;&gt;&lt;/script&gt;
 &lt;style type=&#34;text/css&#34;&gt;
 code.sourceCode &gt; span { display: inline-block; line-height: 1.25; }
 code.sourceCode &gt; span { color: inherit; text-decoration: inherit; }
@@ -369,7 +369,7 @@ code span.wa { color: #bf0303; } /* Warning */
 &lt;span id=&#34;cb7-6&#34;&gt;&lt;a href=&#34;#cb7-6&#34;&gt;&lt;/a&gt;&lt;span class=&#34;kw&#34;&gt;left_join&lt;/span&gt;(World, countries_nodes, &lt;span class=&#34;dt&#34;&gt;by =&lt;/span&gt; &lt;span class=&#34;kw&#34;&gt;c&lt;/span&gt;(&lt;span class=&#34;st&#34;&gt;&amp;quot;name&amp;quot;&lt;/span&gt; =&lt;span class=&#34;st&#34;&gt; &amp;quot;country&amp;quot;&lt;/span&gt;)) &lt;span class=&#34;op&#34;&gt;%&amp;gt;%&lt;/span&gt;&lt;/span&gt;
 &lt;span id=&#34;cb7-7&#34;&gt;&lt;a href=&#34;#cb7-7&#34;&gt;&lt;/a&gt;&lt;span class=&#34;st&#34;&gt;   &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;ggplot&lt;/span&gt;(&lt;span class=&#34;kw&#34;&gt;aes&lt;/span&gt;(&lt;span class=&#34;dt&#34;&gt;fill =&lt;/span&gt; nodes)) &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;span class=&#34;st&#34;&gt; &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;geom_sf&lt;/span&gt;(&lt;span class=&#34;dt&#34;&gt;color =&lt;/span&gt; &lt;span class=&#34;ot&#34;&gt;NA&lt;/span&gt;) &lt;span class=&#34;op&#34;&gt;+&lt;/span&gt;&lt;span class=&#34;st&#34;&gt; &lt;/span&gt;&lt;span class=&#34;kw&#34;&gt;theme_minimal&lt;/span&gt;()&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;div class=&#34;figure&#34;&gt;&lt;span id=&#34;fig:map&#34;&gt;&lt;/span&gt;
-&lt;img src=&#34;../../post/2020/01/07-estimando-nodos-openstreetmap-pais_files/figure-html/map-1.svg&#34; alt=&#34;Primer intento de generar nuestro mapa&#34; width=&#34;672&#34; /&gt;
+&lt;img src=&#34;https://ruevko.github.io/hexagonal/post/2020/01/07-estimando-nodos-openstreetmap-pais_files/figure-html/map-1.svg&#34; alt=&#34;Primer intento de generar nuestro mapa&#34; width=&#34;672&#34; /&gt;
 &lt;p class=&#34;caption&#34;&gt;
 Figure 1: Primer intento de generar nuestro mapa
 &lt;/p&gt;
@@ -413,7 +413,7 @@ Figure 1: Primer intento de generar nuestro mapa
 &lt;pre&gt;&lt;code&gt;## [1] &amp;quot;N. Cyprus&amp;quot;   &amp;quot;Palestine&amp;quot;   &amp;quot;Somaliland&amp;quot;  &amp;quot;Timor-Leste&amp;quot;&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Chipre del Norte, Palestina, Somalilandia y Timor Oriental son países -¿con reconocimiento limitado?- que no figuran en la fuente de datos, y por ende persistirán vacíos en el mapa. Por otra parte un total de 80 países o territorios están en la fuente, pero son demasiado pequeños para aparecer en el mapa: Andorra, Singapur y las Antillas Menores, por citar ejemplos. Efectivamente, del total de 4197.32 millones de nodos, en el mapa se encuentran 4180.61 millones; esto es el 99.6 %. Con estas aclaraciones, solo falta unir los datos nuevamente y generar el mapa con un par de mejoras.&lt;/p&gt;
 &lt;div class=&#34;figure&#34;&gt;&lt;span id=&#34;fig:finalmap&#34;&gt;&lt;/span&gt;
-&lt;img src=&#34;../../post/2020/01/07-estimando-nodos-openstreetmap-pais_files/figure-html/finalmap-1.svg&#34; alt=&#34;Segundo intento de generar nuestro mapa 🎉&#34; width=&#34;672&#34; /&gt;
+&lt;img src=&#34;https://ruevko.github.io/hexagonal/post/2020/01/07-estimando-nodos-openstreetmap-pais_files/figure-html/finalmap-1.svg&#34; alt=&#34;Segundo intento de generar nuestro mapa 🎉&#34; width=&#34;672&#34; /&gt;
 &lt;p class=&#34;caption&#34;&gt;
 Figure 2: Segundo intento de generar nuestro mapa 🎉
 &lt;/p&gt;
