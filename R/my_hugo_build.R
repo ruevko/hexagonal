@@ -38,4 +38,10 @@ for (htmlFile in dir('content/post', '\\.html$', full.names = TRUE, recursive = 
 
 }
 
+tomlLines = readLines("config.toml")
+
+writeLines(tomlLines[-13], "config.toml")
+
 blogdown::hugo_build()
+
+writeLines(tomlLines, "config.toml")

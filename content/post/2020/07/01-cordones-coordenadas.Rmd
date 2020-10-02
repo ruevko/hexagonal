@@ -20,7 +20,8 @@ math: yes
 thumbnailImage: https://ruevko.github.io/hexagonal/post/2020/07/01-cordones-coordenadas_files/figure-html/animation-1-1.gif
 summary: Este primer post sobre matemáticas presenta una demostración de la fórmula *shoelace*, utilizada para calcular áreas y centroides de polígonos.
 ---
-`r knitr::opts_chunk$set(dev = "svg", echo=FALSE, fig.height = 3, fig.width = 4.5)`
+
+`r knitr::opts_chunk$set(dev="svg", echo=FALSE, fig.height=3, fig.width=4.5)`
 
 El Ecuador continental^[En los libros aparece la cifra de 256370 km^2^ para todo el Ecuador; a ello hay que restar no solo las Galápagos, también las islas frente al litoral, como Puná o La Plata.] posee una extensión un poco mayor a 246 mil km^2^. Es sencillo verificar este dato, si uno cuenta con la cartografía oficial; en esta tarea,  `sf::st_area()` es la función clave:
 

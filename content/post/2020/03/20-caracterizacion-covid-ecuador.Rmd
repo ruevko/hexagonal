@@ -23,9 +23,9 @@ coverImage: https://res.cloudinary.com/dodnzqhiz/image/upload/v1595302810/2020po
 summary: Utilizando paquetes desarrollados por el R Epidemics Consortium se estima el ritmo reproductivo básico, así como tres escenarios de crecimiento para los casos confirmados.
 ---
 
-`r knitr::opts_chunk$set(echo = FALSE)`
+`r knitr::opts_chunk$set(echo=FALSE)`
 
-**Actualizado: 23 de abril, 13 PM**
+**Actualizado: 23 de abril, 1 p. m.**
 
 En atención a la emergencia en curso causada por el SARS-CoV-2 se presenta una caracterización de la epidemia en Ecuador. Se aplicó una metodología sugerida por el R Epidemics Consortium [RECON](https://www.repidemicsconsortium.org/) que permite estimar tempranamente una variable clave como lo es el ritmo reproductivo; dicha metodología requiere conocer ciertas características del virus, y poseer datos de la incidencia diaria. Adicionalmente se ha utilizado `library(tidyverse)`.
 
@@ -45,7 +45,7 @@ Para aplicar la presente metodología es necesario familiarizarse con las siguie
 
 Es crucial entender que tanto el R~0~ como el SI no son constantes biológicas de un virus, pues son afectados por factores internos -como la vulnerabilidad- y externos -como el ambiente, el contacto social o el tratamiento médico- del individuo infectado. El siguiente gráfico permite visualizar la relación existente entre el SI y los periodos mencionados:
 
-```{r period-a, fig.dim=c(9,3), fig.cap="Evento de transmisión con Intervalo Serial positivo"}
+```{r period-a, out.extra="style=\"max-width:100%\"", fig.dim=c(9,3), fig.cap="Evento de transmisión con Intervalo Serial positivo"}
 library(tidyverse)
 
 dfd = data.frame(d = c(0, 4, 6, 8, 12, 14, 16), v0 = 0, v1 = 6, v2 = c(
@@ -78,7 +78,7 @@ Como lo sugiere el gráfico, el periodo latente puede ser menor que el de incuba
 
 Por otra parte, debido a la variabilidad del periodo de incubación, es posible que en una transmisión el individuo infectado presente síntomas antes que el causante de su infección. En este caso el SI se vuelve negativo, tal y como lo presenta el siguiente gráfico:
 
-```{r period-b, fig.dim=c(9,3), fig.cap="Evento de transmisión con Intervalo Serial negativo"}
+```{r period-b, out.extra="style=\"max-width:100%\"", fig.dim=c(9,3), fig.cap="Evento de transmisión con Intervalo Serial negativo"}
 COVID19_Riesgos_Ec = {read_csv("COVID19_Riesgos_Ec.csv", col_types = "ccT__ii") %>%
    rename(id = sitrep, day = corte, conf = confirmado)}[-c(2, 5, 7, 8+2*1:4, 18+2*1:9), ]
 
