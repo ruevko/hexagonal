@@ -8,7 +8,7 @@
     {{ end }}
     <!-- h4 id="about-card-name">{{ .Site.Author.name }}</h4 -->
     <h4 id="about-card-name">{{ .Site.Title }}</h4>
-    {{ with .Site.Author.bio }}
+    {{ with .Site.Params.description }}
       <div id="about-card-bio">{{ . | markdownify }}</div>
     {{ end }}
     {{ with .Site.Author.job }}

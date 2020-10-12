@@ -4,16 +4,21 @@
 
 ignoreFiles = ["\\.csv$", "\\.sh.$", "\\.RDS$", "\\.Rmd$", "_files$", "_cache$"]
 ignoreErrors = ["error-output-taxonomy"]
-title = "La Galería Hexagonal"
 baseURL = "https://ruevko.github.io/hexagonal/"
 theme = "hugo-tranquilpeak-theme"
 defaultContentLanguage = "es-es"
-languageCode = "es-es"
+title = "La Galería Hexagonal"
 publishDir = "docs"
+canonifyURLs = true
 relativeURLs = true
-canonifyurls = true
 enableEmoji = true
 paginate = 6
+
+[author]
+  name = "Roger Rafael Castro Zambrano"
+  picture = "/hexagonal/logo.png"
+  location = "Ecuador"
+  job = "Geógrafo"
 
 [outputs]
   section = "HTML"
@@ -24,12 +29,13 @@ paginate = 6
   category = "categories"
   archive = "archives"
 
-[author]
-  name = "Roger Rafael Castro Zambrano"
-  picture = "/hexagonal/logo.png"
-  location = "Ecuador"
-  job = "Geógrafo"
-  bio = "El blog de Rafael Castro, orientado a Cartografía y Análisis de Datos"
+[languages]
+
+  [languages.es-es]
+    weight = 1
+    languageName = "Español"
+
+[menus]
 
   #[[menu.main]]
     #weight = 1
