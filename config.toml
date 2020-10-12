@@ -6,7 +6,7 @@ ignoreFiles = ["\\.csv$", "\\.sh.$", "\\.RDS$", "\\.Rmd$", "_files$", "_cache$"]
 ignoreErrors = ["error-output-taxonomy"]
 baseURL = "https://ruevko.github.io/hexagonal/"
 theme = "hugo-tranquilpeak-theme"
-defaultContentLanguage = "es-es"
+defaultContentLanguage = "es"
 title = "La Galería Hexagonal"
 publishDir = "docs"
 canonifyURLs = true
@@ -31,7 +31,7 @@ paginate = 6
 
 [languages]
 
-  [languages.es-es]
+  [languages.es]
     weight = 1
     languageName = "Español"
 
