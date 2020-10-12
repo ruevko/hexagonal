@@ -8,6 +8,7 @@ categories:
 tags:
   - hashtags
   - paro nacional
+source: 19-sobre-tweets-paro-nacional-parte.Rmd
 keywords:
   - hashtags
   - paro nacional

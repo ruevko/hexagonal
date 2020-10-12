@@ -58,7 +58,7 @@
           <li class="post-action hide-sm hide-xs">
             <a class="post-action-btn btn btn--default" href=
             {{ if eq .icon "fab fa-github-alt" }}
-              "{{ printf .url ( replace $.File.Dir "\\" "/" ) $.Params.slug }}"
+              "{{ printf .url ( replace $.File.Dir "\\" "/" ) $.Params.source }}"
             {{ else }}
               "{{ printf .url $.Site.Params.sharingMessage $.Permalink }}" target="_blank"
             {{ end }}

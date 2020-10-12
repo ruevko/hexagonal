@@ -129,7 +129,7 @@ paginate = 6
   [[params.sharingOptions]]
     name = "Ver código en Github"
     icon = "fab fa-github-alt"
-    url = "https://github.com/ruevko/hexagonal/blob/master/content/%s%s.Rmd"
+    url = "https://github.com/ruevko/hexagonal/blob/master/content/%s%s"
 
   [[params.sharingOptions]]
     name = "Enviar con Telegram"

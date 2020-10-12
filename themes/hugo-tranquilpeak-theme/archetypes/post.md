@@ -1,6 +1,7 @@
 ---
 title: {{ replace .TranslationBaseName "-" " " | title }}
 date: {{ .Date }}
+source: (copy slug).Rmd
 
 categories:
   - category
@@ -20,12 +21,12 @@ editor_options:
 output:
   blogdown::html_page:
     highlight: kate
-    toc: true                 # remove if no content
+    toc: true                 (in case o titles)
 
-math: true                    # remove if no equations
-link-citations: true          # remove if no citations
-bibliography: ../../babel.bib # remove if no citations
+math: true                    (in case of latex)
+link-citations: true          (in case of cites)
+bibliography: ../../babel.bib (in case of cites)
 
-thumbnailImage: /octocat.png
+thumbnailImage: /octocat.png  (or cover instead)
 summary: Proudly hosted in [GitHub Pages](https://pages.github.com/)
 ---

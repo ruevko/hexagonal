@@ -8,6 +8,7 @@ slug: 20-caracterizacion-covid-ecuador
 tags:
 #  - coronavirus
   - regresión
+source: 20-caracterizacion-covid-ecuador.Rmd
 keywords:
 #  - coronavirus
   - regresión

@@ -5,7 +5,7 @@
       <li class="share-option">
             <a class="share-option-btn" href=
             {{ if eq .icon "fab fa-github-alt" }}
-              "{{ printf .url ( replace $.File.Dir "\\" "/" ) $.Params.slug }}"
+              "{{ printf .url ( replace $.File.Dir "\\" "/" ) $.Params.source }}"
             {{ else }}
               "{{ printf .url $.Site.Params.sharingMessage $.Permalink }}" target="_blank"
             {{ end }}

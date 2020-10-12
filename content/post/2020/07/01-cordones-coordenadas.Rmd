@@ -8,6 +8,7 @@ categories:
 tags:
   - calcular áreas
   - centroides
+source: 01-cordones-coordenadas.Rmd
 keywords:
   - calcular áreas
   - centroides

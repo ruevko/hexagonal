@@ -9,6 +9,7 @@ tags:
   - nodos
   - coropletas
   - regresión
+source: 04-crecimiento-diario-nodos.Rmd
 keywords:
   - nodos
   - coropletas

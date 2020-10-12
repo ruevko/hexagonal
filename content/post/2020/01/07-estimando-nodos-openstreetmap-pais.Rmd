@@ -9,6 +9,7 @@ tags:
   - nodos
   - coropletas
   - web scraping
+source: 07-estimando-nodos-openstreetmap-pais.Rmd
 keywords:
   - nodos
   - coropletas
