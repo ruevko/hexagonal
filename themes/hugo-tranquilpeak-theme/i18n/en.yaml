@@ -23,17 +23,17 @@
 - id: "global.about"
   translation: "about"
 
-- id: "global.author_picture"
-  translation: "Author's picture"
+- id: "global.source_on"
+  translation: "View source on %s"
+
+- id: "global.share_on"
+  translation: "Share with %s"
 
 - id: "global.back_to_top"
   translation: "Back to the top"
 
-- id: "global.mail"
-  translation: "Mail"
-
-- id: "global.rss"
-  translation: "RSS"
+- id: "global.readme"
+  translation: "About . . ."
 
 - id: "global.search_category"
   translation: "Search category"
