@@ -85,10 +85,9 @@
          href="#footer">
     
     
-      <i class="fa fa-lg fa-chevron-down"></i>
+      <i class="fa-lg fas fa-chevron-down"></i></a>
     
-    
-    </a>
+  
   
 </header>
       <nav id="sidebar" data-behavior="4">
@@ -312,19 +311,19 @@ code span.wa { color: #bf0303; } /* Warning */
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="kw">tail</span>(wambra)</span></code></pre></div>
 <pre><code>## [[1]]
 ## [1] &quot;wambraEc: RT @CDHGYE: #ParoNacionalEc\n#MuertesEnElParo \n\n@CDHGYE agradece a @wambraEc por el trabajo periodístico sobre estas graves violaciones de D…&quot;
-## 
+##
 ## [[2]]
 ## [1] &quot;wambraEc: RT @machadopepita: Esas son las vidas que menos importan al capitalismo, se vuelven descartables y nos corresponde honrarlas, no olvidar y…&quot;
-## 
+##
 ## [[3]]
 ## [1] &quot;wambraEc: RT @kinoraxx: Un 8 de enero, dos adolescentes fueron asesinados a manos de la Policía ecuatoriana #HermanosRestrepo\n32 años después la impu…&quot;
-## 
+##
 ## [[4]]
 ## [1] &quot;wambraEc: #MuertesEnElParo\nAnte el silencio y la falta de respuesta de las autoridades, sus familias decidieron contar sus hi… https://t.co/b5zXi9cuR6&quot;
-## 
+##
 ## [[5]]
 ## [1] &quot;wambraEc: [ESPECIAL]\nSon 11 nombres, muy poco pronunciados en la historia del #ParoNacional #Ecuador\n\n¿Quiénes eran las perso… https://t.co/82jimxB9P0&quot;
-## 
+##
 ## [[6]]
 ## [1] &quot;wambraEc: [INTERNACIONAL]\n#Chiapas: “Necesitamos y merecemos vivir”, ese fue el mensaje de clausura en el segundo Encuentro I… https://t.co/JKgRBVaQ0R&quot;</code></pre>
 <p>Para tabular los metadatos se puede utilizar la función existente <code>twitteR::twListToDF()</code> o una función personalizada:</p>
@@ -349,8 +348,8 @@ code span.wa { color: #bf0303; } /* Warning */
 <span id="cb4-19"><a href="#cb4-19"></a></span>
 <span id="cb4-20"><a href="#cb4-20"></a><span class="kw">twts2tbl</span>(<span class="kw">tail</span>(wambra), <span class="st">&quot;America/Guayaquil&quot;</span>)</span></code></pre></div>
 <pre><code>## # A tibble: 6 x 9
-##   isrt    rts  favs time                  lon   lat user   rpto   text          
-##   &lt;lgl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dttm&gt;              &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;  &lt;chr&gt;  &lt;chr&gt;         
+##   isrt    rts  favs time                  lon   lat user   rpto   text
+##   &lt;lgl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dttm&gt;              &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;  &lt;chr&gt;  &lt;chr&gt;
 ## 1 TRUE     19     0 2020-01-09 09:15:07    NA    NA @wamb~ &lt;NA&gt;   &quot;RT @CDHGYE: ~
 ## 2 TRUE     25     0 2020-01-09 08:25:34    NA    NA @wamb~ &lt;NA&gt;   &quot;RT @machadop~
 ## 3 TRUE     14     0 2020-01-09 08:25:03    NA    NA @wamb~ &lt;NA&gt;   &quot;RT @kinoraxx~
@@ -508,8 +507,8 @@ code span.wa { color: #bf0303; } /* Warning */
             <a class="post-action-btn btn btn--default" href=
             
               "https://www.facebook.com/sharer.php?t=Este%20art%c3%adculo%20fue%20publicado%20en%20el%20blog%20La%20Galer%c3%ada%20Hexagonal&amp;u=https://ruevko.github.io/hexagonal/post/2020/01/23-sobre-tweets-paro-nacional/" target="_blank"
+              data-tooltip="Compartir en Facebook">
             
-            data-tooltip="Compartir en Facebook">
               <i class="fab fa-facebook"></i>
             </a>
           </li>
@@ -518,8 +517,8 @@ code span.wa { color: #bf0303; } /* Warning */
             <a class="post-action-btn btn btn--default" href=
             
               "https://twitter.com/intent/tweet?text=Este%20art%c3%adculo%20fue%20publicado%20en%20el%20blog%20La%20Galer%c3%ada%20Hexagonal&amp;url=https://ruevko.github.io/hexagonal/post/2020/01/23-sobre-tweets-paro-nacional/" target="_blank"
+              data-tooltip="Compartir en Twitter">
             
-            data-tooltip="Compartir en Twitter">
               <i class="fab fa-twitter"></i>
             </a>
           </li>
@@ -528,8 +527,8 @@ code span.wa { color: #bf0303; } /* Warning */
             <a class="post-action-btn btn btn--default" href=
             
               "https://github.com/ruevko/hexagonal/blob/master/content/post/2020/01/23-sobre-tweets-paro-nacional.Rmd"
+              data-tooltip="Ver código en GitHub">
             
-            data-tooltip="Ver código en Github">
               <i class="fab fa-github-alt"></i>
             </a>
           </li>
@@ -538,8 +537,8 @@ code span.wa { color: #bf0303; } /* Warning */
             <a class="post-action-btn btn btn--default" href=
             
               "https://t.me/share/url?text=Este%20art%c3%adculo%20fue%20publicado%20en%20el%20blog%20La%20Galer%c3%ada%20Hexagonal&amp;url=https://ruevko.github.io/hexagonal/post/2020/01/23-sobre-tweets-paro-nacional/" target="_blank"
+              data-tooltip="Compartir en Telegram">
             
-            data-tooltip="Enviar con Telegram">
               <i class="fab fa-telegram-plane"></i>
             </a>
           </li>
@@ -548,8 +547,8 @@ code span.wa { color: #bf0303; } /* Warning */
             <a class="post-action-btn btn btn--default" href=
             
               "https://api.whatsapp.com/send?text=Este%20art%c3%adculo%20fue%20publicado%20en%20el%20blog%20La%20Galer%c3%ada%20Hexagonal%20https://ruevko.github.io/hexagonal/post/2020/01/23-sobre-tweets-paro-nacional/" target="_blank"
+              data-tooltip="Compartir en WhatsApp">
             
-            data-tooltip="Enviar con WhatsApp">
               <i class="fab fa-whatsapp"></i>
             </a>
           </li>
@@ -621,8 +620,8 @@ code span.wa { color: #bf0303; } /* Warning */
             <a class="post-action-btn btn btn--default" href=
             
               "https://www.facebook.com/sharer.php?t=Este%20art%c3%adculo%20fue%20publicado%20en%20el%20blog%20La%20Galer%c3%ada%20Hexagonal&amp;u=https://ruevko.github.io/hexagonal/post/2020/01/23-sobre-tweets-paro-nacional/" target="_blank"
+              data-tooltip="Compartir en Facebook">
             
-            data-tooltip="Compartir en Facebook">
               <i class="fab fa-facebook"></i>
             </a>
           </li>
@@ -631,8 +630,8 @@ code span.wa { color: #bf0303; } /* Warning */
             <a class="post-action-btn btn btn--default" href=
             
               "https://twitter.com/intent/tweet?text=Este%20art%c3%adculo%20fue%20publicado%20en%20el%20blog%20La%20Galer%c3%ada%20Hexagonal&amp;url=https://ruevko.github.io/hexagonal/post/2020/01/23-sobre-tweets-paro-nacional/" target="_blank"
+              data-tooltip="Compartir en Twitter">
             
-            data-tooltip="Compartir en Twitter">
               <i class="fab fa-twitter"></i>
             </a>
           </li>
@@ -641,8 +640,8 @@ code span.wa { color: #bf0303; } /* Warning */
             <a class="post-action-btn btn btn--default" href=
             
               "https://github.com/ruevko/hexagonal/blob/master/content/post/2020/01/23-sobre-tweets-paro-nacional.Rmd"
+              data-tooltip="Ver código en GitHub">
             
-            data-tooltip="Ver código en Github">
               <i class="fab fa-github-alt"></i>
             </a>
           </li>
@@ -651,8 +650,8 @@ code span.wa { color: #bf0303; } /* Warning */
             <a class="post-action-btn btn btn--default" href=
             
               "https://t.me/share/url?text=Este%20art%c3%adculo%20fue%20publicado%20en%20el%20blog%20La%20Galer%c3%ada%20Hexagonal&amp;url=https://ruevko.github.io/hexagonal/post/2020/01/23-sobre-tweets-paro-nacional/" target="_blank"
+              data-tooltip="Compartir en Telegram">
             
-            data-tooltip="Enviar con Telegram">
               <i class="fab fa-telegram-plane"></i>
             </a>
           </li>
@@ -661,8 +660,8 @@ code span.wa { color: #bf0303; } /* Warning */
             <a class="post-action-btn btn btn--default" href=
             
               "https://api.whatsapp.com/send?text=Este%20art%c3%adculo%20fue%20publicado%20en%20el%20blog%20La%20Galer%c3%ada%20Hexagonal%20https://ruevko.github.io/hexagonal/post/2020/01/23-sobre-tweets-paro-nacional/" target="_blank"
+              data-tooltip="Compartir en WhatsApp">
             
-            data-tooltip="Enviar con WhatsApp">
               <i class="fab fa-whatsapp"></i>
             </a>
           </li>
@@ -687,9 +686,8 @@ code span.wa { color: #bf0303; } /* Warning */
             <a class="share-option-btn" href=
             
               "https://www.facebook.com/sharer.php?t=Este%20art%c3%adculo%20fue%20publicado%20en%20el%20blog%20La%20Galer%c3%ada%20Hexagonal&amp;u=https://ruevko.github.io/hexagonal/post/2020/01/23-sobre-tweets-paro-nacional/" target="_blank"
+              ><span class="icon-mr">Compartir en Facebook</span>
             
-            >
-              <span class="icon-mr">Compartir en Facebook</span>
               <i class="fab fa-facebook"></i>
             </a>
       </li>
@@ -698,9 +696,8 @@ code span.wa { color: #bf0303; } /* Warning */
             <a class="share-option-btn" href=
             
               "https://twitter.com/intent/tweet?text=Este%20art%c3%adculo%20fue%20publicado%20en%20el%20blog%20La%20Galer%c3%ada%20Hexagonal&amp;url=https://ruevko.github.io/hexagonal/post/2020/01/23-sobre-tweets-paro-nacional/" target="_blank"
+              ><span class="icon-mr">Compartir en Twitter</span>
             
-            >
-              <span class="icon-mr">Compartir en Twitter</span>
               <i class="fab fa-twitter"></i>
             </a>
       </li>
@@ -709,9 +706,8 @@ code span.wa { color: #bf0303; } /* Warning */
             <a class="share-option-btn" href=
             
               "https://github.com/ruevko/hexagonal/blob/master/content/post/2020/01/23-sobre-tweets-paro-nacional.Rmd"
+              ><span class="icon-mr">Ver código en GitHub</span>
             
-            >
-              <span class="icon-mr">Ver código en Github</span>
               <i class="fab fa-github-alt"></i>
             </a>
       </li>
@@ -720,9 +716,8 @@ code span.wa { color: #bf0303; } /* Warning */
             <a class="share-option-btn" href=
             
               "https://t.me/share/url?text=Este%20art%c3%adculo%20fue%20publicado%20en%20el%20blog%20La%20Galer%c3%ada%20Hexagonal&amp;url=https://ruevko.github.io/hexagonal/post/2020/01/23-sobre-tweets-paro-nacional/" target="_blank"
+              ><span class="icon-mr">Compartir en Telegram</span>
             
-            >
-              <span class="icon-mr">Enviar con Telegram</span>
               <i class="fab fa-telegram-plane"></i>
             </a>
       </li>
@@ -731,9 +726,8 @@ code span.wa { color: #bf0303; } /* Warning */
             <a class="share-option-btn" href=
             
               "https://api.whatsapp.com/send?text=Este%20art%c3%adculo%20fue%20publicado%20en%20el%20blog%20La%20Galer%c3%ada%20Hexagonal%20https://ruevko.github.io/hexagonal/post/2020/01/23-sobre-tweets-paro-nacional/" target="_blank"
+              ><span class="icon-mr">Compartir en WhatsApp</span>
             
-            >
-              <span class="icon-mr">Enviar con WhatsApp</span>
               <i class="fab fa-whatsapp"></i>
             </a>
       </li>

@@ -57,12 +57,13 @@
         {{ range .Site.Params.sharingOptions }}
           <li class="post-action hide-sm hide-xs">
             <a class="post-action-btn btn btn--default" href=
-            {{ if eq .icon "fab fa-github-alt" }}
+            {{ if eq .name "GitHub" }}
               "{{ printf .url ( replace $.File.Dir "\\" "/" ) $.Params.source }}"
+              data-tooltip="{{ printf (i18n "global.source_on") .name }}">
             {{ else }}
               "{{ printf .url $.Site.Params.sharingMessage $.Permalink }}" target="_blank"
+              data-tooltip="{{ printf (i18n "global.share_on") .name }}">
             {{ end }}
-            data-tooltip="{{ .name }}">
               <i class="{{ .icon }}"></i>
             </a>
           </li>

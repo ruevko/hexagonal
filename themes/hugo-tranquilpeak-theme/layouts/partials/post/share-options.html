@@ -4,13 +4,13 @@
     {{ range .Site.Params.sharingOptions }}
       <li class="share-option">
             <a class="share-option-btn" href=
-            {{ if eq .icon "fab fa-github-alt" }}
+            {{ if eq .name "GitHub" }}
               "{{ printf .url ( replace $.File.Dir "\\" "/" ) $.Params.source }}"
+              ><span class="icon-mr">{{ printf (i18n "global.source_on") .name }}</span>
             {{ else }}
               "{{ printf .url $.Site.Params.sharingMessage $.Permalink }}" target="_blank"
+              ><span class="icon-mr">{{ printf (i18n "global.share_on") .name }}</span>
             {{ end }}
-            >
-              <span class="icon-mr">{{ .name }}</span>
               <i class="{{ .icon }}"></i>
             </a>
       </li>
