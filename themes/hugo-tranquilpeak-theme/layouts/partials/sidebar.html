@@ -6,7 +6,6 @@
           <img class="sidebar-profile-picture" src="{{ . }}{{ if in . "//www.gravatar.com/avatar/" }}?s=110{{ end }}"/>
         </a>
         <a class="sidebar-profile-name" href="{{ "/" | relLangURL }}">{{ $.Site.Title }}</a>
-
       </div>
     {{ end }}
     <ul class="sidebar-buttons">
@@ -15,8 +14,15 @@
     <ul class="sidebar-buttons">
       {{ partial "menu.html" (dict "menu" .Site.Menus.links "root" $) }}
     </ul>
-    <ul class="sidebar-buttons">
-      {{ partial "menu.html" (dict "menu" .Site.Menus.misc "root" $) }}
+    <ul class="sidebar-buttons" style="width:auto;">
+{{ range .Site.Params.miscellaneousMenu }}
+  <li class="sidebar-button">
+    <a class="sidebar-button-link" href="{{ .url | relLangURL }}">
+      <i class="sidebar-button-icon {{ .icon }} fa-lg"></i>
+      <span class="sidebar-button-desc">{{ .name }}</span>
+    </a>
+  </li>
+{{ end }}
     </ul>
   </div>
 </nav>

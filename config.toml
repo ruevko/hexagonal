@@ -37,68 +37,55 @@ paginate = 6
 
 [menus]
 
-  #[[menu.main]]
-    #weight = 1
-    #identifier = "home"
-    #name = "Home"
-    #pre = "fas fa-atlas"
-    #url = "/"
   [[menu.main]]
-    weight = 2
+    weight = 1
     identifier = "archives"
     name = "Archives"
     pre = "fas fa-globe-americas" #fa-globe
     url = "/archives"
   [[menu.main]]
-    weight = 3
+    weight = 2
     identifier = "categories"
     name = "Categories"
     pre = "fas fa-map-marked-alt" #fa-map
     url = "/categories"
   [[menu.main]]
-    weight = 4
+    weight = 3
     identifier = "tags"
     name = "Tags"
     pre = "fas fa-map-marker-alt"
     url = "/tags"
+  #[[menu.main]]
+    #weight = 4
+    #identifier = "rss"
+    #name = "RSS"
+    #pre = "fas fa-atlas"
+    #url = "/index.xml"
 
   [[menu.links]]
-    weight = 2
+    weight = 1
     identifier = "github"
     name = "GitHub"
     pre = "fab fa-github-alt"
     url = "https://github.com/ruevko"
   [[menu.links]]
-    weight = 3
+    weight = 2
     identifier = "twitter"
     name = "Twitter"
     pre = "fab fa-twitter"
     url = "https://twitter.com/ruevko"
   [[menu.links]]
-    weight = 4
+    weight = 3
     identifier = "kofi"
     name = "Ko-fi"
     pre = "fas fa-coffee"
     url = "https://ko-fi.com/ruevko"
   #[[menu.links]]
-    #weight = 1
-    #identifier = "researchgate"
-    #name = "RGate"
-    #pre = "fab fa-researchgate"
-    #url = "https://www.researchgate.net/profile/Roger_Rafael_Castro_Zambrano"
-
-  [[menu.misc]]
-    weight = 5
-    identifier = "readme"
-    name = "Acerca de..."
-    pre = "fas fa-compass"
-    url = "/post/readme"
-  #[[menu.misc]]
-    #weight = 6
-    #identifier = "english"
-    #name = "English blog..."
-    #pre = "fas fa-map-signs"
-    #url = "/post/readme"
+    #weight = 4
+    #identifier = "rbloggers"
+    #name = "R-bloggers"
+    #pre = "fas fa-rss"
+    #url = "https://www.r-bloggers.com"
 
 [params]
 
@@ -138,6 +125,21 @@ paginate = 6
     name = "WhatsApp"
     icon = "fab fa-whatsapp"
     url = "https://api.whatsapp.com/send?text=%s %s"
+
+[params.miscellaneous]
+
+  #[[params.miscellaneousMenu]]
+    #name = "Suscripción"
+    #icon = "fas fa-envelope"
+    #url = "https://follow.it/ruevko"
+  [[params.miscellaneousMenu]]
+    name = "Acerca de . . ."
+    icon = "fas fa-compass"
+    url = "/post/readme"
+  #[[params.miscellaneousMenu]]
+    #name = "The english blog . . ."
+    #icon = "fas fa-map-signs"
+    #url = "en"
 
 [params.header]
   #icon = "fas fa-map-signs"
