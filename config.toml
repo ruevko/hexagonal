@@ -5,9 +5,9 @@
 ignoreFiles = ["\\.csv$", "\\.sh.$", "\\.RDS$", "\\.Rmd$", "_files$", "_cache$"]
 ignoreErrors = ["error-output-taxonomy"]
 baseURL = "https://ruevko.github.io/hexagonal/"
-theme = "hugo-tranquilpeak-theme"
-defaultContentLanguage = "es"
 title = "La Galería Hexagonal"
+defaultContentLanguage = "es"
+theme = "tranquilpeak"
 publishDir = "docs"
 canonifyURLs = true
 relativeURLs = true
