@@ -318,14 +318,14 @@ code span.wa { color: #bf0303; } /* Warning */
 <li>Ordenar los puntos en sentido antihorario, comenzando por cualquiera de ellos.</li>
 <li>Conectar los puntos en dicho orden, cerrando y rellenando el polígono.</li>
 </ol>
-<p><img src="https://ruevko.github.io/hexagonal/post/2020/11/11-ejercicio-benchmark-generar-poligonos_files/figure-html/convex-howto-1.svg" width="672" /></p>
+<p><img src="https://ruevko.github.io/hexagonal/post/2020/11/11-ejercicio-benchmark-generador-poligonos_files/figure-html/convex-howto-1.svg" width="672" /></p>
 <p>Debido a que todos sus vértices yacen sobre la circunferencia circunscrita, el polígono así generado será <a href="https://en.wikipedia.org/wiki/Circumscribed_circle">cíclico</a>. Pero no todos los polígonos poseen una circunferencia circunscrita; los siguientes ejemplos -no obtenibles con este método- lo demuestran:</p>
-<p><img src="https://ruevko.github.io/hexagonal/post/2020/11/11-ejercicio-benchmark-generar-poligonos_files/figure-html/convex-extra-1.svg" width="672" /></p>
+<p><img src="https://ruevko.github.io/hexagonal/post/2020/11/11-ejercicio-benchmark-generador-poligonos_files/figure-html/convex-extra-1.svg" width="672" /></p>
 <p>Hasta aquí, los polígonos presentados, cíclicos o no, son todos <a href="https://en.wikipedia.org/wiki/Convex_polygon">convexos</a>; significa que todos sus ángulos interiores son menores a 180º. Todos los polígonos cíclicos son convexos, pero lo contrario no es verdad. La principal propiedad de la convexidad es que, para dos puntos cualesquiera del polígono (en su interior o en su límite), el segmento que los conecta nunca sale al exterior del polígono. En contraste, los polígonos <a href="https://en.wikipedia.org/wiki/Concave_polygon">cóncavos</a> (aquellos con al menos un ángulo interior mayor a 180º), carecen de esta propiedad. Una manera sencilla (aunque no infalible) de obtener polígonos cóncavos es insertar este paso en el método anterior:</p>
 <p>2.5. Mover aleatoriamente los puntos hacia el centro de la circunferencia, con una cantidad no mayor al radio de la misma.</p>
-<p><img src="https://ruevko.github.io/hexagonal/post/2020/11/11-ejercicio-benchmark-generar-poligonos_files/figure-html/concav-howto-1.svg" width="672" /></p>
+<p><img src="https://ruevko.github.io/hexagonal/post/2020/11/11-ejercicio-benchmark-generador-poligonos_files/figure-html/concav-howto-1.svg" width="672" /></p>
 <p>Dependiendo de la magnitud del acercamiento de los vértices hacia el centro, los polígonos podrían o no dejar de ser convexos, pero siempre dejarán de ser cíclicos. Adicionalmente, siempre serán <a href="https://en.wikipedia.org/wiki/Star-shaped_polygon">estrellados</a>. Un polígono estrellado posee al menos un punto en su interior desde el cual es posible observar todo el límite; en este método, al menos el centro de la circunferencia cumplirá esta propiedad. Todos los polígonos convexos son estrellados, pero no todos los cóncavos lo son; los siguientes ejemplos son cóncavos, pero no estrellados:</p>
-<p><img src="https://ruevko.github.io/hexagonal/post/2020/11/11-ejercicio-benchmark-generar-poligonos_files/figure-html/concav-extra-1.svg" width="672" /></p>
+<p><img src="https://ruevko.github.io/hexagonal/post/2020/11/11-ejercicio-benchmark-generador-poligonos_files/figure-html/concav-extra-1.svg" width="672" /></p>
 <p>En definitiva, este método es una simplificación porque solamente puede producir polígonos estrellados; sin embargo, para nuestro propósito, es suficientemente simple y aleatorio. Con esto concluye la lección de geometría.</p>
 </div>
 <div id="un-generador-de-polígonos" class="section level1">
@@ -367,7 +367,7 @@ code span.wa { color: #bf0303; } /* Warning */
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="kw">set.seed</span>(<span class="dv">57</span>); <span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">2</span>, <span class="dv">3</span>)) <span class="co"># la &quot;semilla&quot; determina cuáles polígonos obtendré</span></span>
 <span id="cb4-2"><a href="#cb4-2"></a></span>
 <span id="cb4-3"><a href="#cb4-3"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="kw">c</span>(<span class="dv">3</span><span class="op">:</span>4L, 6L, 10L, 30L, 90L)) <span class="kw">plot</span>(<span class="kw">ngon</span>(i), <span class="dt">xlab =</span> <span class="kw">paste0</span>(i, <span class="st">&quot;-gon&quot;</span>), <span class="dt">ylab =</span> <span class="st">&quot;&quot;</span>)</span></code></pre></div>
-<p><img src="https://ruevko.github.io/hexagonal/post/2020/11/11-ejercicio-benchmark-generar-poligonos_files/figure-html/convex-1.svg" width="672" /></p>
+<p><img src="https://ruevko.github.io/hexagonal/post/2020/11/11-ejercicio-benchmark-generador-poligonos_files/figure-html/convex-1.svg" width="672" /></p>
 <p>Una observación evidente es que, con un número suficientemente grande de vértices, un polígono convexo será bastante similar a un círculo. Podemos aprovechar este fenómeno para estimar <code>pi</code>, recordando que el área de un círculo de radio unitario es <code>pi</code> unidades cuadradas.</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="kw">shoelace_area</span>(<span class="kw">set_units</span>(<span class="kw">ngon</span>(<span class="fl">1e4</span>L), <span class="st">&quot;cm&quot;</span>))</span></code></pre></div>
 <pre><code>## 3.141591 [cm^2]</code></pre>
@@ -382,7 +382,7 @@ code span.wa { color: #bf0303; } /* Warning */
 <span id="cb7-5"><a href="#cb7-5"></a>      <span class="kw">plot</span>(<span class="kw">ngon</span>(i, j), <span class="dt">xlab =</span> <span class="kw">paste0</span>(i, <span class="st">&quot;-gon&quot;</span>), <span class="dt">ylab =</span> <span class="kw">paste</span>(<span class="st">&quot;min&quot;</span>, j))</span>
 <span id="cb7-6"><a href="#cb7-6"></a>   }</span>
 <span id="cb7-7"><a href="#cb7-7"></a>}</span></code></pre></div>
-<p><img src="https://ruevko.github.io/hexagonal/post/2020/11/11-ejercicio-benchmark-generar-poligonos_files/figure-html/concav-1.svg" width="672" /></p>
+<p><img src="https://ruevko.github.io/hexagonal/post/2020/11/11-ejercicio-benchmark-generador-poligonos_files/figure-html/concav-1.svg" width="672" /></p>
 </div>
 </div>
 <div id="efectuar-benchmark" class="section level1">
@@ -400,11 +400,11 @@ code span.wa { color: #bf0303; } /* Warning */
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a>radBmark =<span class="st"> </span>dplyr<span class="op">::</span><span class="kw">filter</span>(radBmark, time <span class="op">&lt;</span><span class="st"> </span><span class="fl">15e3</span>)</span></code></pre></div>
 <p>Lo siguiente son los resultados<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a> de <code>print(radBmark)</code> y <code>plot(radBmark)</code>. En el gráfico, el tiempo se encuentra en nanosegundos. Es claro, de acuerdo al resumen númerico y al gráfico, que aumentar el radio en <code>ngon</code> no afecta el tiempo de cálculo.</p>
 <pre><code>## Unit: microseconds
-##                 expr min   lq     mean median   uq  max neval
-##   shoelace_area(r10) 8.2 8.60 9.168687    9.1 9.50 11.2    99
-##   shoelace_area(r30) 8.2 8.70 9.257576    9.1 9.55 12.9    99
-##  shoelace_area(r100) 8.0 8.65 9.234343    9.0 9.45 14.5    99</code></pre>
-<p><img src="https://ruevko.github.io/hexagonal/post/2020/11/11-ejercicio-benchmark-generar-poligonos_files/figure-html/radius-plot-1.svg" width="672" /></p>
+##                 expr min  lq     mean median  uq  max neval
+##   shoelace_area(r10) 8.2 8.7 9.213000    9.1 9.6 12.0   100
+##   shoelace_area(r30) 8.3 8.7 9.227273    9.1 9.5 12.4    99
+##  shoelace_area(r100) 8.1 8.7 9.121000    9.0 9.4 10.9   100</code></pre>
+<p><img src="https://ruevko.github.io/hexagonal/post/2020/11/11-ejercicio-benchmark-generador-poligonos_files/figure-html/radius-plot-1.svg" width="672" /></p>
 </div>
 <div id="variando-la-convexidad" class="section level2">
 <h2>Variando la convexidad</h2>
@@ -412,7 +412,7 @@ code span.wa { color: #bf0303; } /* Warning */
 <span id="cb11-2"><a href="#cb11-2"></a></span>
 <span id="cb11-3"><a href="#cb11-3"></a>conBmark =<span class="st"> </span><span class="kw">microbenchmark</span>(<span class="kw">shoelace_area</span>(r<span class="fl">.9</span>), <span class="kw">shoelace_area</span>(r<span class="fl">.5</span>), <span class="kw">shoelace_area</span>(r<span class="fl">.1</span>))</span></code></pre></div>
 <p>Esta vez, las expresiones evaluadas son <code>shoelace_area</code> aplicada a tres polígonos cóncavos, con valores <code>min_radius</code> decrecientes: 0.9, 0.5 y 0.1. Así se sabrá si cambiar la convexidad del polígono afecta el cálculo del área; nuevamente, el cambio resulta ser irrelevante. Ambas variaciones, radio y convexidad, pueden introducir cambios abruptos en la magnitud númerica de los vértices, pero esto es irrelevante para la manera como los valores numéricos son tratados.</p>
-<p><img src="https://ruevko.github.io/hexagonal/post/2020/11/11-ejercicio-benchmark-generar-poligonos_files/figure-html/convex-plot-1.svg" width="672" /></p>
+<p><img src="https://ruevko.github.io/hexagonal/post/2020/11/11-ejercicio-benchmark-generador-poligonos_files/figure-html/convex-plot-1.svg" width="672" /></p>
 </div>
 <div id="variando-el-número-de-vértices" class="section level2">
 <h2>Variando el número de vértices</h2>
