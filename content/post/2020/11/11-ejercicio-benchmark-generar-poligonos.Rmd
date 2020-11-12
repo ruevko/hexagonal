@@ -1,0 +1,291 @@
+---
+title: Un ejercicio de benchmark (y cómo generar polígonos)
+author: Roger Rafael Castro Zambrano
+date: '2020-11-11'
+slug: 11-ejercicio-benchmark-generador-poligonos
+#categories:
+#  - Matemáticas
+tags:
+  - benchmark
+  - calcular áreas
+source: 11-ejercicio-benchmark-generador-poligonos.Rmd
+keywords:
+  - benchmark
+  - calcular áreas
+editor_options:
+  chunk_output_type: console
+output:
+  blogdown::html_page:
+    highlight: kate
+    toc: true
+thumbnailImage: https://res.cloudinary.com/dodnzqhiz/image/upload/v1605132065/2020post/polygons_g7ii9o.svg
+summary: Dos opciones para calcular una misma cosa. ¿Cuál utilizar? Un *benchmark* ayudaría a responder esta pregunta, pero primero se necesita ciertos insumos.
+---
+
+`r knitr::opts_chunk$set(fig.asp=1/3, dev="svg")`
+
+`r knitr::opts_knit$set(global.par=TRUE)`
+
+En un [artículo anterior](https://ruevko.github.io/hexagonal/post/2020/07/01-cordones-coordenadas/) aprendimos que calcular el área de un polígono simple, conociendo las coordenadas de sus vértices, es un problema directamente resoluble, con ayuda de la llamada fórmula *shoelace*. Suponiendo un `data.frame` o `matrix` de vértices, cuyas columnas son `colnames(.) = c("x", "y")`, la implementación en R de esta fórmula luce algo así:
+
+```{r shoelace}
+shoelace_area = function(vertices){
+
+   x0 = vertices[, "x"]
+   x1 = x0[c(2 : length(x0), 1)]
+
+   y0 = vertices[, "y"]
+   y1 = y0[c(2 : length(y0), 1)]
+
+   sum(x0 * y1 - x1 * y0) / 2
+}
+```
+
+También comprobamos que el área calculada de esta manera es correcta, coincidiendo con el área calculada por una función confiable, i.e. la encontrada en el paquete `sf` para datos espaciales. No obstante, frente a dos funciones capaces de calcular un mismo resultado, la pregunta inevitable es ¿cuál utilizar? Varios criterios deben ser considerados pero, por lo pronto, digamos que nos interesa la velocidad de ejecución; en este caso, el método *benchmark* nos permitirá evaluar ese criterio. TL; DR: nuestra función es más rápida, pero esta ventaja es insignificante, considerando que `sf::st_area` es mucho más versátil.
+
+# Una lección de geometría
+
+Necesitaremos datos para realizar el *benchmark*, y ya que hablamos de polígonos, sería conveniente contar con una función que los genere aleatoriamente. Recordemos que un polígono es una figura plana finita, delimitada por una cadena cerrada (el límite) de segmentos lineales (los lados). Si el límite no se interseca a sí mismo, entonces el polígono es [simple](https://en.wikipedia.org/wiki/Simple_polygon). Para generalizar la nomenclatura nos referiremos al polígono de n lados como un "n-gon". Ahora, aunque no lo parezca, generar polígonos completamente aleatorios es un problema más o menos complicado. El siguiente método simplifica considerablemente este problema:
+
+1. Ubicar n puntos aleatorios sobre una circunferencia de radio definido.
+2. Ordenar los puntos en sentido antihorario, comenzando por cualquiera de ellos.
+3. Conectar los puntos en dicho orden, cerrando y rellenando el polígono.
+
+```{r convex-howto, echo=FALSE}
+oldPar = par(mfcol = c(1, 3), bty = "n", xaxt = "n", yaxt = "n")#, cex = 1
+
+myPal = tmaptools::get_brewer_pal("Dark2", 8, plot = FALSE)
+
+myPlot = function(myPoints, col, xlab = "", pch = NULL){
+   circle = matrix(c(cospi(1:40 / 20), sinpi(1:40 / 20)), 40)
+   plot(circle, asp = 1, type = "n", xlab = xlab, ylab = "")
+   polygon(circle, border = "grey60")
+   if(is.null(pch)) polygon(myPoints, border = NA, col = col)
+   else points(myPoints, pch = pch, col = col)
+}
+
+myPoly = matrix(c(+.8079, -.1741, -.6599, -.9992, -.8672, -.1355, +.8585, +.9458,
+                  +.5893, +.9847, +.7513, -.0405, -.4979, -.9908, -.5127, -.3248), 8)
+
+myPlot(myPoly, myPal[4], "1.", 20)
+
+myPlot(myPoly, myPal[4], "2.", as.character(1:8))
+
+myPlot(myPoly, myPal[4], "3.")
+```
+
+Debido a que todos sus vértices yacen sobre la circunferencia circunscrita, el polígono así generado será [cíclico](https://en.wikipedia.org/wiki/Circumscribed_circle). Pero no todos los polígonos poseen una circunferencia circunscrita; los siguientes ejemplos -no obtenibles con este método- lo demuestran:
+
+```{r convex-extra, echo=FALSE}
+myPlot(matrix(c(0, 4/5, 4/5, 0, -4/5, -4/5, 1, 1/2, -1/2, -1, -1/2, 1/2), 6), myPal[6])
+
+myPlot(matrix(c(cospi(-1:6/4), sinpi(-1:6/4)) * c(rep(5/8, 7), 1), 8), myPal[7])
+
+myPlot(matrix(c(cospi(1:4/2 + 1/4), sinpi(1:4/2 + 1/4)) * c(1/3, 1), 4), myPal[2])
+```
+
+Hasta aquí, los polígonos presentados, cíclicos o no, son todos [convexos](https://en.wikipedia.org/wiki/Convex_polygon); significa que todos sus ángulos interiores son menores a 180º. Todos los polígonos cíclicos son convexos, pero lo contrario no es verdad. La principal propiedad de la convexidad es que, para dos puntos cualesquiera del polígono (en su interior o en su límite), el segmento que los conecta nunca sale al exterior del polígono. En contraste, los polígonos [cóncavos](https://en.wikipedia.org/wiki/Concave_polygon) (aquellos con al menos un ángulo interior mayor a 180º), carecen de esta propiedad. Una manera sencilla (aunque no infalible) de obtener polígonos cóncavos es insertar este paso en el método anterior:
+
+2.5. Mover aleatoriamente los puntos hacia el centro de la circunferencia, con una cantidad no mayor al radio de la misma.
+
+```{r concav-howto, echo=FALSE}
+myPlot(myPoly, myPal[4], "2.", as.character(1:8))
+
+myPoly = matrix(c(+.8079, -.0348, -.5939, -.9992, -.3469, -.1084, +.2576, +.8512,
+                  +.5893, +.1969, +.6762, -.0405, -.1992, -.7926, -.1538, -.2923), 8)
+
+myPlot(myPoly, myPal[4], "2.5.", as.character(1:8))
+
+myPlot(myPoly, myPal[4], "3.")
+```
+
+Dependiendo de la magnitud del acercamiento de los vértices hacia el centro, los polígonos podrían o no dejar de ser convexos, pero siempre dejarán de ser cíclicos. Adicionalmente, siempre serán [estrellados](https://en.wikipedia.org/wiki/Star-shaped_polygon). Un polígono estrellado posee al menos un punto en su interior desde el cual es posible observar todo el límite; en este método, al menos el centro de la circunferencia cumplirá esta propiedad. Todos los polígonos convexos son estrellados, pero no todos los cóncavos lo son; los siguientes ejemplos son cóncavos, pero no estrellados:
+
+```{r concav-extra, echo=FALSE}
+myPlot(matrix(c(0,-2/5,-2/5,0,0,2/3,1,1,1/2,0,1,1,-1,-1,0,2/3,2/3,1,1,1/2),10), myPal[5])
+
+myPoly = matrix(c(cospi(1:8/4 - 1/8), sinpi(1:8/4 - 1/8)), 8)
+
+myPlot(rbind(myPoly, myPoly[8:1, ] * 5/8), myPal[1])
+
+myPlot(matrix(c(1,-1,-1,.4,-1,-1,1,1,-.4,1,1,1,.6,.6,-.6,-1,-1,-.6,-.6,.6),10) * sinpi(1/3), myPal[3])
+```
+
+En definitiva, este método es una simplificación porque solamente puede producir polígonos estrellados; sin embargo, para nuestro propósito, es suficientemente simple y aleatorio. Con esto concluye la lección de geometría.
+
+# Un generador de polígonos
+
+La siguiente función `ngon` utiliza el método ya descrito para generar aleatoriamente un polígono estrellado de `n` lados, convexo o cóncavo, contenido en una circunferencia de `radius` específico centrada en el origen.
+
+```{r ngon}
+ngon = function(n, min_radius = NA, radius = 1){
+
+   stopifnot(is.integer(n), n > 2L)
+   stopifnot(is.numeric(radius), radius > 0)
+   
+   if(!is.na(min_radius)){
+      stopifnot(is.double(min_radius), min_radius > 0, min_radius < 1)
+      radius = radius * runif(n, min_radius, 1)
+   }
+
+   theta = sort(runif(n, max = 2 * pi))
+   ngon = radius * matrix(c(cos(theta), sin(theta)), n)
+   colnames(ngon) = c("x", "y")
+   return(`class<-`(ngon, c("ngon", "matrix")))
+}
+```
+
+```{r ngon-thumbnail, echo=FALSE, eval=FALSE}
+myPoly = c(3:8, 10L, 14L, 20L, 28L, 100L)
+
+myPal = tmaptools::get_brewer_pal("Dark2", 15, plot = FALSE)[c(15:9, 1, 5:7)]
+
+plot(-1:1*5/4, -1:1*5/4, asp=1, bty="n", type="n", xaxt="n", xlab="", yaxt="n", ylab="")
+
+for(i in 1:11) polygon(
+   ngon(myPoly[i], NA, 1/3) + rep(c(cospi((i+1)/6), sinpi((i+1)/6)), each = myPoly[i]),
+   col = scales::alpha(myPal[i], sqrt(i/11)), border = NA
+)
+```
+
+El resultado predeterminado de `ngon` sería un polígono cíclico, con circunferencia circunscrita de radio unitario. La probabilidad de obtener un polígono cóncavo deriva del argumento `min_radius` que permite acercar los vértices al centro, hasta cierto radio mínimo (como porcentaje del radio de la circunferencia). Tanto este acercamiento, como la ubicación de los vértices en la circunferencia, son calculados con una distribución uniforme, vía `runif`.
+
+Para facilitar el trabajo más adelante, se han definido dos métodos^[Un método es una versión de otra función -denominada genérica- que sirve para una clase específica. Por ejemplo, `diff` es una función genérica con métodos para números, fechas y fecha/horas. Compárese el resultado de `diff(1:9)`, de `diff(Sys.Date()+1:9)` y de `diff(Sys.time()+1:9)`.] para los objetos de clase `ngon` (uno para graficar y otro para transformar a la clase `units`), y una función para transformar a la clase `sfg`.
+
+```{r ngon-functions}
+plot.ngon = function(x, pal = tmaptools::get_brewer_pal("Dark2", 15, plot=FALSE), ...){
+   plot.default(x, asp = 1, bty = "n", type = "n", xaxt = "n", yaxt = "n", ...)
+   polygon(x, col = sample(pal, 1), border = NA)
+}
+
+library(units)
+
+set_units.ngon = function(x, value) units::set_units(
+   `class<-`(x, "matrix"), value, mode = "standard")
+
+library(sf)
+
+as_polygon = function(x) st_polygon(list(x[c(1:nrow(x), 1), ]))
+```
+
+## Generando polígonos convexos
+
+Es hora de jugar con nuestra función generadora de polígonos. Para esta muestra no se alteró el comportamiento predeterminado de `ngon`, así que con seguridad los polígonos serán convexos.
+
+```{r convex, fig.asp=2/3}
+set.seed(57); par(mfrow = c(2, 3)) # la "semilla" determina cuáles polígonos obtendré
+
+for(i in c(3:4L, 6L, 10L, 30L, 90L)) plot(ngon(i), xlab = paste0(i, "-gon"), ylab = "")
+```
+
+Una observación evidente es que, con un número suficientemente grande de vértices, un polígono convexo será bastante similar a un círculo. Podemos aprovechar este fenómeno para estimar `pi`, recordando que el área de un círculo de radio unitario es `pi` unidades cuadradas.
+
+```{r convex-pi}
+shoelace_area(set_units(ngon(1e4L), "cm"))
+```
+
+## Generando polígonos cóncavos
+
+Ahora veremos qué clase de polígonos cóncavos podemos obtener. En esta muestra (combinando varios `n` y `min_radius`) se verifica que, cuando los vértices son pocos y el radio mínimo cercano a uno, es probable que el polígono no sea cóncavo. En el caso contrario, con muchos vértices y radio mínimo cercano a cero, se genera un polígono literalmente estrellado.
+
+```{r concav, fig.asp=1}
+set.seed(32); par(mfrow = c(3, 3))
+
+for(i in c(5L, 10L, 30L)){
+   for(j in c(.7, .4, .1)){
+      plot(ngon(i, j), xlab = paste0(i, "-gon"), ylab = paste("min", j))
+   }
+}
+```
+
+# Efectuar benchmark
+
+Finalmente poseemos los datos y el conocimiento necesarios para evaluar la velocidad de ejecución de dos funciones que calculan áreas. En pocas palabras, el *benchmark* consiste en ejecutar una expresión (una función o algún fragmento pequeño de código) muchas veces, midiendo cada vez el tiempo invertido en ello. Obviamente el tiempo dependerá de la capacidad del procesador utilizado; sin embargo, la utilidad del *benchmark* reside en ejecutar no una, sino varias expresiones similares. Comparando los tiempos de ejecución se obtiene un criterio -que algunas veces resulta sufiente- para decidir cuál expresión es la mejor resolviendo cierto problema.
+
+De regreso a la definición de `ngon`, existen tres parámetros con los que se puede jugar y evaluar si ocurre algún cambio. Sin embargo, como se verá, el radio de la circunferencia circunscrita y la convexidad del polígono generado son irrelevantes; por esta razón se estudió su comportamiento con la función `ngon` solamente. Todos los *benchmarks* fueron ejecutados con `microbenchmark`.
+
+## Variando el radio
+
+```{r radius-bmark}
+library(microbenchmark)
+
+for(i in c(10, 30, 100)) assign(paste0("r", i), ngon(100L, radius = 10 ^ i))
+
+radBmark = microbenchmark(shoelace_area(r10), shoelace_area(r30), shoelace_area(r100))
+```
+
+Cada argumento ingresado en la función `microbenchmark` es una expresión a ser evaluada. En este caso, las expresiones son `shoelace_area` aplicada a tres polígonos cíclicos (con radio^[El número 10^100^, conocido como ["googol"](https://www.youtube.com/watch?v=8GEebx72-qs), es mayor que el número estimado de partículas en el universo (~10^80^). Estos números son ridículamente gigantescos, pero para un procesador no poseen ningún significado. En teoría, se pudo haber utilizado un radio cercano a `sqrt(.Machine$double.xmax/pi)`] creciente: 10^10^, 10^30^ y 10^100^). El resultado del *benchmark* es un objeto de clase `microbenchmark`, pero también un `data.frame`. En consecuencia, podemos manipular este objeto de muchas formas; por ejemplo, podemos utilizar `dplyr` para descartar valores atípicos:
+
+```{r radius-filter}
+radBmark = dplyr::filter(radBmark, time < 15e3)
+```
+
+Lo siguiente son los resultados^[Las funciones `print` y `plot` son genéricas. El primer resultado corresponde al método `microbenchmark` de `print`, y el segundo al método `data.frame` de `plot`.] de `print(radBmark)` y `plot(radBmark)`. En el gráfico, el tiempo se encuentra en nanosegundos. Es claro, de acuerdo al resumen númerico y al gráfico, que aumentar el radio en `ngon` no afecta el tiempo de cálculo.
+
+```{r radius-plot, echo=FALSE, fig.asp=1/2}
+library(dplyr); radBmark; par(oldPar); plot(radBmark)
+```
+
+## Variando la convexidad
+
+```{r convex-bmark}
+for(i in c(9, 5, 1)) assign(paste0("r.", i), ngon(1000L, i / 10))
+
+conBmark = microbenchmark(shoelace_area(r.9), shoelace_area(r.5), shoelace_area(r.1))
+```
+
+Esta vez, las expresiones evaluadas son `shoelace_area` aplicada a tres polígonos cóncavos, con valores `min_radius` decrecientes: 0.9, 0.5 y 0.1. Así se sabrá si cambiar la convexidad del polígono afecta el cálculo del área; nuevamente, el cambio resulta ser irrelevante. Ambas variaciones, radio y convexidad, pueden introducir cambios abruptos en la magnitud númerica de los vértices, pero esto es irrelevante para la manera como los valores numéricos son tratados.
+
+```{r convex-plot, echo=FALSE, fig.asp=1/2}
+conBmark = filter(conBmark, time < 60e3); plot(conBmark)
+```
+
+## Variando el número de vértices
+
+```{r vertex-bmark, eval=FALSE}
+verBmark = setNames( , c(1e2L, 3e2L, 1e3L, 3e3L, 1e4L, 3e4L)) %>%
+   lapply(function(ver) microbenchmark(
+      shoelace_area(gon), st_area(sfg), times = 1e3,
+      setup = { gon = ngon(ver); sfg = as_polygon(gon) }
+      ))
+```
+
+Podemos anticipar que incrementar el número de vértices sí afectará el tiempo de cálculo; más que comparar entre polígonos, esta vez se compara el desempeño de las funciones `shoelace_area` y `st_area`. Para esto se ejecutó seis *benchmarks*: en cada uno, ambas funciones se ejecutaron mil veces, utilizando cada vez un nuevo polígono de 100/300/mil/3 mil/10 mil/30 mil vértices. Después de ejecutarlos, la lista de *benchmarks* fue manipulada con `dplyr` y el siguiente gráfico se generó con `ggplot2` (y se utilizó *violinplots* en lugar de *boxplots*).
+
+```{r vertex-plot, echo=FALSE, eval=FALSE, fig.asp=3/4, dev="png"}
+library(ggplot2)
+
+bind_rows(readRDS("verBmark.RDS"), .id = "n") %>%
+   mutate(across(n, as.numeric), across(time, ~ . / 1e3)) %>%
+   group_by(expr, n) %>% filter(time < quantile(time, .95), time < 3e3) %>%
+   ggplot(aes(expr, time)) + geom_violin(color = NA, fill = "grey60") +
+   scale_y_log10("microseconds", c(1, 3) * rep(10 ^ { 1:3 }, each = 2)) +
+   facet_grid("n", labeller = label_both) + coord_flip() +
+   theme(axis.ticks = element_blank(), axis.title.y = element_blank())
+```
+
+![](https://res.cloudinary.com/dodnzqhiz/image/upload/v1605139624/2020post/polygons-benchmark_qpkpmh.png)
+
+Es así como descubrimos que nuestra función `shoelace_area` calcula el área en menos tiempo. Resulta que con polígonos pequeños (en el sentido de tener pocos vértices), `st_area` toma mucho más tiempo que `shoelace_area`, seguramente porque realiza verificaciones sobre los datos u otra clase de operaciones. Esta diferencia se hace cada vez más pequeña y tal vez desaparece, para un número suficientemente grande de vértices.
+
+# Conclusiones
+
+En este artículo se habló de algunos conceptos de geometría y de cómo implementarlos en código R, aparentemente con el propósito de generar polígonos y comparar dos funciones que permiten calcular sus áreas. Pero la verdad es que el propósito siempre fue aprender a realizar *benchmarks*. Desde el principio era previsible que `sf::st_area` tuviese una ejecución más larga, no solo porque debe verificar que los datos sean adecuados (de clase `sf`/`sfc`/`sfg`), sino porque también está preparada para tratar con los distintos tipos de geometrías existentes en el análisis espacial. En el siguiente ejemplo, el área de la geometría *multipolygon* no podría ser calculada con nuestra función.
+
+```{r st-area}
+data("NLD_prov", package = "tmap")
+
+(NLD_prov$area = set_units(st_area(NLD_prov), "km2"))
+```
+
+```{r st-plot, eval=FALSE, fig.asp=1, dev="png"}
+NLD_cent = unlist(st_centroid(NLD_prov)$geometry)
+
+plot(NLD_prov["area"], main = "Netherlands provinces' area [km²]", reset = FALSE)
+
+text(NLD_cent[2*1:12-1], NLD_cent[2*1:12], sub("-", "\n", NLD_prov$name), col = "grey")
+```
+
+![](https://res.cloudinary.com/dodnzqhiz/image/upload/v1605140674/2020post/polygons-netherlands_lafwiv.png)
+
+Adicionalmente, ambas fórmulas se ejecutan con gran velocidad: cuando se calculó el área de un 30000-gon, el tiempo promedio fue algo mayor a mil microsegundos (eso es la milésima parte de un segundo). Una duda final: ¿en `sf::st_area` se aplica la fórmula *shoelace*, o existe un mejor algoritmo? Observando los tiempos de nuestra `shoelace_area`, no obstante, parece que sí es la solución más eficiente.

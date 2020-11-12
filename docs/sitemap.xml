@@ -3,8 +3,33 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://ruevko.github.io/hexagonal/tags/benchmark/</loc>
+    <lastmod>2020-11-11T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://ruevko.github.io/hexagonal/tags/calcular-%C3%A1reas/</loc>
-    <lastmod>2020-07-01T00:00:00+00:00</lastmod>
+    <lastmod>2020-11-11T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://ruevko.github.io/hexagonal/</loc>
+    <lastmod>2020-11-11T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://ruevko.github.io/hexagonal/post/</loc>
+    <lastmod>2020-11-11T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://ruevko.github.io/hexagonal/tags/</loc>
+    <lastmod>2020-11-11T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://ruevko.github.io/hexagonal/post/2020/11/11-ejercicio-benchmark-generador-poligonos/</loc>
+    <lastmod>2020-11-11T00:00:00+00:00</lastmod>
   </url>
   
   <url>
@@ -23,22 +48,7 @@
   </url>
   
   <url>
-    <loc>https://ruevko.github.io/hexagonal/</loc>
-    <lastmod>2020-07-01T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
     <loc>https://ruevko.github.io/hexagonal/categories/matem%C3%A1ticas/</loc>
-    <lastmod>2020-07-01T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://ruevko.github.io/hexagonal/post/</loc>
-    <lastmod>2020-07-01T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://ruevko.github.io/hexagonal/tags/</loc>
     <lastmod>2020-07-01T00:00:00+00:00</lastmod>
   </url>
   
