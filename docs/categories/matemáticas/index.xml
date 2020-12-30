@@ -6,9 +6,17 @@
     <description>Artículos sobre Matemáticas en La Galería Hexagonal</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>es</language>
-    <lastBuildDate>Wed, 01 Jul 2020</lastBuildDate>
+    <lastBuildDate>Mon, 28 Dec 2020</lastBuildDate>
     
     <atom:link href="https://ruevko.github.io/hexagonal/categories/matem%C3%A1ticas/index.xml" rel="self" type="application/rss+xml"/>
+    
+    <item>
+      <title>Cordones y Coordenadas, ahora en tres dimensiones</title>
+      <link>https://ruevko.github.io/hexagonal/post/2020/12/28-cordones-coordenadas-tres-dimensiones/</link>
+      <pubDate>Mon, 28 Dec 2020</pubDate>
+      <guid>https://ruevko.github.io/hexagonal/post/2020/12/28-cordones-coordenadas-tres-dimensiones/</guid>
+      <description>Presenta cómo calcular el área de un polígono sobre un plano tridimensional. Incluye un ejemplo utilizando datos topográficos.</description>
+    </item>
     
     <item>
       <title>Cordones y Coordenadas</title>
