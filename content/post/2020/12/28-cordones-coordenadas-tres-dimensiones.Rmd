@@ -1,0 +1,310 @@
+---
+title: Cordones y Coordenadas, ahora en tres dimensiones
+author: Roger Rafael Castro Zambrano
+date: '2020-12-28'
+slug: 28-cordones-coordenadas-tres-dimensiones
+categories:
+  - Matemáticas
+tags:
+  - calcular áreas
+source: 28-cordones-coordenadas-tres-dimensiones.Rmd
+keywords:
+  - calcular áreas
+editor_options:
+  chunk_output_type: console
+output:
+  blogdown::html_page:
+    highlight: kate
+math: true
+link-citations: true
+bibliography: ../../babel.bib
+thumbnailImage: https://res.cloudinary.com/dodnzqhiz/image/upload/v1609376325/2020post/ikkf4h3a2c1p8xwlbvyu.gif
+summary: Presenta cómo calcular el área de un polígono sobre un plano tridimensional. Incluye un ejemplo utilizando datos topográficos.
+---
+
+```{r fun, echo=FALSE}
+knitr::opts_chunk$set(echo=FALSE, out.width="100%")
+
+library(plotly)
+
+my_layout = function(plot, asp = rep(1, 3), eye = rep(1, 3), tick = rep(2, 3)) plot %>%
+   config(displayModeBar = FALSE) %>% layout(scene = list(
+      aspectratio = list(x = asp[1], y = asp[2], z = asp[3]),
+      camera = list(center = list(z = -1/4), eye = list(x=eye[1], y=eye[2], z=eye[3])),
+      xaxis = list(showspikes = FALSE, tick0 = 0, dtick = tick[1]),
+      yaxis = list(showspikes = FALSE, tick0 = 0, dtick = tick[2]),
+      zaxis = list(showspikes = FALSE, tick0 = 0, dtick = tick[3])))
+```
+
+Este artículo presentará cómo extender la funcionalidad de la fórmula *shoelace*, para
+calcular el área de polígonos simples que no yacen en dos dimensiones, sino en un plano
+tridimensional. Digamos que los puntos $P_{i} = x_{i},\ y_{i},\ z_{i};\ i = 1, 2, ... n$
+representan los vértices de un polígono en el espacio. La siguiente visualización, creada
+con `library(plotly)`, demuestra como luciría tal polígono.
+
+```{r points-plot, fig.height=3.5}
+points_append = function(points) as.data.frame(points)[c(1:nrow(points), 1), ]
+
+M = c(-4, -2, 7,   5, 0, 5,   6, -2, 2,   8, 2, 6,   3, 4, 11,   4, 2, 8) %>%
+   matrix(6, , TRUE, list(c("P2", "P3", "P", "P1", "P", "P"), c("x", "y", "z")))
+
+plot_ly(points_append(M), x = ~x, y = ~y, z = ~z) %>% add_markers(name = "points") %>%
+   add_paths(name = "polygon", line=list(color="navy", width=5), hoverinfo = "skip") %>%
+   my_layout(c(12, 6, 7) / 8, c(0, -3/2, 11/40)) %>%
+   layout(scene = list(camera = list(center = list(z = -1/5))))
+```
+
+Esta visualización interactiva demuestra que los puntos seleccionados yacen en un mismo
+plano; sin embargo, existen infinitas superficies curvas que también contienen esos
+mismos puntos. Para propósito de este artículo, nos concentraremos únicamente en
+superficies planas. De esta manera, resolveremos el problema de hallar el área plana
+encerrada por varios puntos tridimensionales.
+
+Un plano en el espacio se define completamente a través de dos elementos: el vector
+normal (perpendicular) al plano en cualquiera de sus puntos, y uno de esos puntos. Sean
+$\overrightarrow{n} = (a,\ b,\ c)$ el vector normal; $P_0 = x_0,\ y_0,\ z_0$ un punto
+conocido; y $P = x,\ y,\ z$ otro punto cualquiera del plano. Entonces el plano quedará
+definido a través de la ecuación \@ref(eq:plane)
+
+$$\overrightarrow{n} \cdot \overrightarrow{P_0 P} = 0$$
+
+$$(a,\ b,\ c) \cdot (x - x_0,\ y - y_0,\ z - z_0) = 0$$
+
+$$
+\begin{equation}
+a (x - x_0) + b (y - y_0) + c (z - z_0) = 0
+(\#eq:plane)
+\end{equation}
+$$
+
+El razonamiento en esta ecuación es que $\overrightarrow{n}$ es perpendicular a
+$\overrightarrow{P_0 P}$; por lo tanto, el producto punto de ambos vectores debe ser
+igual a cero. La ecuación \@ref(eq:plane) suele ser reescrita de la siguiente forma:
+
+$$a x + b y + c z = d;\ d = a x_0 + b y_0 + c z_0$$
+
+Pero nosotros escribiremos la variable $z$ como una función de $x,\ y$. Más tarde se verá el por qué.
+
+$$
+\begin{equation}
+z = f( x,\ y ) = A x + B y + C;\ A = -\frac{a}{c};\ B = -\frac{b}{c};\ C = \frac{d}{c}
+(\#eq:planez)
+\end{equation}
+$$
+
+Regresando al planteamiento inicial, aunque no se conoce el vector normal
+$\overrightarrow{n}$, es posible calcularlo empleando tres vértices del polígono. En
+efecto, para definir un plano tridimensional se necesitan al menos tres puntos (de la
+misma manera que, para definir una recta bidimensional, se necesitan al menos dos).
+Digamos que la siguiente matriz `M` contiene tres de los puntos representados en la
+visualización de arriba.
+
+```{r points, eval=1}
+M[c("P1", "P2", "P3"), ]
+
+S = ggplot(points_append(M), aes(x, y)) + coord_fixed() +
+   geom_path(color = "darkred") + theme_minimal() +
+   scale_x_continuous(breaks = 2 * -4 : 4)
+
+ggsave(".png", S, width = 6, height = 3.375, dpi = "screen")
+```
+
+Dado que todos se encuentran en el mismo plano, da lo mismo cuáles tres puntos son seleccionados. Las funciones
+[`points_normal()`](https://github.com/ruevko/hexagonal/blob/master/content/post/2020/11/11-ejercicio-benchmark-generador-poligonos.Rmd#L32-L41) y
+[`points_plane()`](https://github.com/ruevko/hexagonal/blob/master/content/post/2020/11/11-ejercicio-benchmark-generador-poligonos.Rmd#L32-L41)
+fueron escritas para calcular los componentes de $\overrightarrow{n}$, y los coeficientes
+de la ecuación \@ref(eq:planez) respectivamente. Ambas funciones contienen operaciones
+algebraicas sencillas, y pueden ser revisadas en sus respectivos enlaces.
+
+```{r fun-plane, echo=c(3,7), message=TRUE}
+points_normal = function(points){
+
+   v1 = points["P1", ] - points["P3", ]
+   v2 = points["P2", ] - points["P3", ]
+
+   n = c(v1["y"] * v2["z"] - v1["z"] * v2["y"],
+         v1["z"] * v2["x"] - v1["x"] * v2["z"],
+         v1["x"] * v2["y"] - v1["y"] * v2["x"])
+
+   names(n) = c("a", "b", "c"); return(n / max(abs(n)))
+}
+
+points_normal(M)
+
+points_plane = function(points){
+
+   n = points_normal(points); a = - n["a"] / n["c"]; b = - n["b"] / n["c"]
+
+   f = c(a, b, points["P3", "z"] - b * points["P3", "y"] - a * points["P3", "x"])
+
+   message("z = Ax + By + C"); names(f) = c("A", "B", "C"); return(f)
+}
+
+points_plane(M)
+```
+
+El resultado de `points_plane(M)` indica que el plano buscado es $z = -\frac{1}{2} x +\frac{5}{4} y +\frac{15}{2}$.
+Ahora que conocemos su ecuación, podemos añadirlo a la visualización `plotly`.
+
+```{r points-plot-plane, fig.height=4.4}
+points_matrix = function(points, margin = 0, fill = FALSE, fix = FALSE){
+
+   f = points_plane(points)
+
+   x = range(points[ , "x"]) + margin * c(-1, 1)
+   if (fill) x = min(x):max(x)
+   if (fill & fix) x = zoo::rollmean(x, 2)
+
+   y = range(points[ , "y"]) + margin * c(-1, 1)
+   if (fill) y = min(y):max(y)
+   if (fill & fix) y = zoo::rollmean(y, 2)
+
+   z = matrix(0, length(y), length(x))
+
+   for (i in 1:length(x)) {
+      for (j in 1:length(y)) {
+         z[j, i] = f["C"] + f["B"] * y[j] + f["A"] * x[i]
+      }
+   }
+
+   attr(z, "x") = x; attr(z, "y") = y; return(z)
+}
+
+R = points_matrix(M, 1)
+
+S = M; S[ , "z"] = 0; S = rbind(S, M, S)[rep(1:nrow(M), each = 3) + 0:2 * nrow(M), ]
+
+nh = list(highlight = FALSE)
+
+plot_ly(points_append(M), x = ~x, y = ~y, z = ~z) %>% add_markers(name = "points") %>%
+   add_surface(R, x = attr(R, "x"), y = attr(R, "y"), name = "plane", opacity = .75,
+               hoverlabel = list(bgcolor = "#2c9793"), contours=list(x=nh, y=nh, z=nh),
+               surfacecolor = matrix(0, dim(R)[1], dim(R)[2]), showscale = FALSE) %>%
+   add_paths(name = "polygon", line=list(color="navy", width=5), hoverinfo = "skip") %>%
+   add_paths(name = "shadow", color = I("darkred"), data = points_append(S)) %>%
+   my_layout(c(12, 6, 9) / 8, c(0, -3/2, 0))
+```
+
+También se ha añadido la proyección del polígono en el plano $z = 0$, o su "sombra" por
+así decirlo. A esta sombra la denominaremos la región $R$. Ahora, la razón de representar
+$R$, y de haber escrito el plano como una función, es que se aplicará Cálculo
+Multivariado para resolver nuestro problema. De acuerdo al Cálculo, si existe una
+superficie determinada por $z = f(x,\ y)$, el área de la porción de esa superficie
+correspondiente a los puntos de cierta región $R$ viene dado por:
+
+$$
+\begin{equation}
+S = \iint\limits_R \sqrt{1
++ \left( \frac{\partial f}{\partial x} \right)^2
++ \left( \frac{\partial f}{\partial y} \right)^2} dS
+(\#eq:surface)
+\end{equation}
+$$
+
+$S$ es el área superficial buscada y $dS$ -el elemento diferencial de área- es igual a
+$dxdy$ cuando las coordenadas son rectangulares. En el ejemplo ya planteado, $R$ es este polígono bidimensional:
+
+![](https://res.cloudinary.com/dodnzqhiz/image/upload/v1609179976/2020post/lqm78wnt3nxuliemwglv.svg)
+
+Normalmente es importante definir los límites de $R$, a través de intervalos o funciones
+en $x,\ y$. Además, es necesario calcular las derivadas parciales de $f(x,\ y)$; si se
+tratase de una superficie curva, se obtendrá una expresión más o menos compleja que
+deberá ser integrada. Pero como se trata de un plano, con ecuación de la forma
+\@ref(eq:planez), las derivadas serán constantes: $\frac{\partial z}{\partial x} = A;$
+$\frac{\partial z}{\partial y} = B$. Por ende no afectarán a la integral \@ref(eq:surface).
+
+$$
+\begin{equation}
+S = \sqrt{1 + A^2 + B^2} \iint\limits_R dS = \sqrt{1 + A^2 + B^2} \ S_R
+(\#eq:surarea)
+\end{equation}
+$$
+
+Lo más importante es que nada será integrado, salvo el elemento diferencial de área. Esta
+integral equivale a calcular $S_R$, el área plana de la región $R$. Es un hallazgo útil
+pues, en vez de preocuparnos por los límites de $R$, simplemente hay que calcular su
+área. Resumiendo: el área de un polígono que yace en un plano tridimensional es igual al
+área de su sombra (el mismo polígono pero con $z = 0$) multiplicada por cierta constante
+(dependiente de la ecuación del plano).
+
+La fórmula \@ref(eq:surarea) fue implementada en la siguiente función. Se trata de una extensión de la fórmula *shoelace* (la definición de
+[`shoelace_area()`](https://ruevko.github.io/hexagonal/post/2020/11/11-ejercicio-benchmark-generador-poligonos/#cb1-1)
+está en el artículo anterior) que multiplica su resultado por la constante adecuada, considerando un polígonos en espacio tridimensional.
+
+```{r fun-calc, echo=-1}
+shoelace_area = function(vertices){
+   x0 = vertices[, "x"]
+   x1 = x0[c(2 : length(x0), 1)]
+   y0 = vertices[, "y"]
+   y1 = y0[c(2 : length(y0), 1)]
+   sum(x0 * y1 - x1 * y0) / 2
+}
+
+shoelace_plane_area = function(vertices){
+   suppressMessages(f <- points_plane(vertices))
+   f = sqrt(1 + f["A"] ** 2 + f["B"] ** 2)
+   names(f) = NULL; f * shoelace_area(vertices)
+}
+```
+
+Resolviendo el ejemplo, `shoelace_area(M)` devuelve `r shoelace_area(M)`, mientras que
+`shoelace_plane_area(M)` devuelve `r shoelace_plane_area(M)`. La razón entre ambos
+valores es `r shoelace_plane_area(M) / shoelace_area(M)`, o también
+$\sqrt{1 + \left( -\frac{1}{2} \right)^2 + \left( \frac{5}{4} \right)^2} = \frac{3}{4} \sqrt{5}$
+si se expresa la razón con los coeficientes del plano.
+
+Ahora plantearemos un ejemplo con datos más o menos reales. Se utilizará el dataset `volcano`
+que contiene la elevación -digitada a partir de un mapa topográfico- del volcán Maunga Whau.
+
+```{r volcano, fig.height=3.5}
+plot_ly(z = volcano, type = "surface") %>%
+   colorbar(tick0 = 0, dtick = 25) %>%
+   my_layout(c(61, 87, 101 / 5) / 52, tick = c(20, 20, 25))
+```
+
+Anteriormente se habló de cómo la funciones `shoelace_area()` y `sf::st_area()` permiten
+calcular lo mismo. Ahora se verá que tambien para `shoelace_plane_area()` existe un
+equivalente. Concretamente, ejecutando `sp::surfaceArea(volcano, 10, 10)` -donde diez es
+el tamaño de las celdas en metros- se obtiene la superficie del Maunga Whau, incluyendo
+el efecto de la topografía; este valor es de `r sp::surfaceArea(volcano, 10, 10) / 1e4` hectáreas.
+
+Para replicar el funcionamiento de esta función hay que ser un poco laborioso. Sin entrar
+en detalles, el proceso es: se define una función que, dado un cuadrado con valores de
+elevación en cada esquina, divide el cuadrado en cuatro triángulos iguales y calcula sus
+áreas con `shoelace_plane_area()`; luego se itera esta función en cada cuadrado posible
+de la matriz `volcano`; finalmente, se insertan una fila y una columna extras con el
+menor área posible (100 m^2^) por celda. El último paso se efectúa para dar cuenta de
+que, para `surfaceArea()`, las elevaciones se encuentran al centro de la celda, no en las esquinas.
+
+```{r volcano-area-calc, echo=TRUE}
+
+matrix_area = function(m, d = 1){
+
+   m = c(0, d, m[1],   0, 0, m[2],   d, 0, m[4],   d, d, m[3],   d/2, d/2, mean(m)) %>%
+      matrix(5, , TRUE, list(c("P1", "P2", "P1", "P2", "P3"), c("x", "y", "z")))
+
+   a = shoelace_plane_area(m[-c(3, 4), ])
+   a = shoelace_plane_area(m[-c(1, 4), ]) + a
+   a = shoelace_plane_area(m[-c(1, 2), ]) + a
+   a + shoelace_plane_area(m[c(4,1,5), ])
+}
+
+volcano_area = matrix(0, nrow(volcano), ncol(volcano))
+
+for (i in 1:nrow(volcano)) {
+   for (j in 1:ncol(volcano)) {
+      volcano_area[i, j] = if(i == 1 | j == 1) 100 else
+         matrix_area(volcano[{i - 1}:i, {j - 1}:j], 10)
+   }
+}
+
+sum(volcano_area)
+```
+
+De esta manera se calculó, con nuestras propias fórmulas, que la superficie del volcán es de `r sum(volcano_area) / 1e4` hectáreas. Esto es el `r 100 * sum(volcano_area) / sp::surfaceArea(volcano, 10, 10)` % del valor considerado más real. En el futuro, si se trata de superficies topográficas, se utilizará la función `sp` dedicada. Pero si alguna vez se tratase de polígonos en el espacio, tal vez la solución aquí descrita será la ideal. Para culminar, la visualización `plotly` del área real -por celda de 100 m^2^ planos- del :volcano:
+
+```{r volcano-area, fig.height=3.5}
+plot_ly(z = volcano_area, type = "surface") %>%
+   colorbar(tick0 = 0, dtick = 25) %>%
+   my_layout(c(61, 87, 101 / 5) / 52, tick = c(20, 20, 25))
+```
