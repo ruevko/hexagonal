@@ -19,11 +19,11 @@
     </item>
     
     <item>
-      <title>Un ejercicio de benchmark (y cómo generar polígonos)</title>
+      <title>Un ejercicio de benchmark (y un generador de polígonos aleatorios)</title>
       <link>https://ruevko.github.io/hexagonal/post/2020/11/11-ejercicio-benchmark-generador-poligonos/</link>
       <pubDate>Wed, 11 Nov 2020</pubDate>
       <guid>https://ruevko.github.io/hexagonal/post/2020/11/11-ejercicio-benchmark-generador-poligonos/</guid>
-      <description>Dos opciones para calcular una misma cosa. ¿Cuál utilizar? Un &lt;em&gt;benchmark&lt;/em&gt; ayudaría a responder esta pregunta, pero primero se necesita ciertos insumos.</description>
+      <description>Dos opciones para calcular una misma cosa. ¿Cuál utilizar? Un &lt;em&gt;benchmark&lt;/em&gt; ayudaría a responder esta pregunta, pero se necesitarán datos para ejecutarlo.</description>
     </item>
     
     <item>

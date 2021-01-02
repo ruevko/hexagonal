@@ -7,12 +7,12 @@
 <meta name="generator" content="Hugo 0.73.0 with theme Tranquilpeak 0.4.8-BETA">
 <meta name="author" content="Roger Rafael Castro Zambrano">
 <meta name="keywords" content="benchmark, calcular áreas, análisis, cartografía, datos, mapas">
-<meta name="description" content="Dos opciones para calcular una misma cosa. ¿Cuál utilizar? Un benchmark ayudaría a responder esta pregunta, pero primero se necesita ciertos insumos.">
+<meta name="description" content="Dos opciones para calcular una misma cosa. ¿Cuál utilizar? Un benchmark ayudaría a responder esta pregunta, pero se necesitarán datos para ejecutarlo.">
 
 
 <meta property="og:type" content="article">
-<meta property="og:title" content="Un ejercicio de benchmark (y cómo generar polígonos)">
-<meta property="og:description" content="Dos opciones para calcular una misma cosa. ¿Cuál utilizar? Un benchmark ayudaría a responder esta pregunta, pero primero se necesita ciertos insumos.">
+<meta property="og:title" content="Un ejercicio de benchmark (y un generador de polígonos aleatorios)">
+<meta property="og:description" content="Dos opciones para calcular una misma cosa. ¿Cuál utilizar? Un benchmark ayudaría a responder esta pregunta, pero se necesitarán datos para ejecutarlo.">
 <meta property="og:url" content="https://ruevko.github.io/hexagonal/post/2020/11/11-ejercicio-benchmark-generador-poligonos/">
 <meta property="og:site_name" content="La Galería Hexagonal">
 <meta property="og:locale" content="es">
@@ -45,7 +45,7 @@
 
     <title>
       
-        Un ejercicio de benchmark (y cómo generar polígonos) | La Galería Hexagonal
+        Un ejercicio de benchmark (y un generador de polígonos aleatorios) | La Galería Hexagonal
       
     </title>
 
@@ -188,7 +188,7 @@
             <div class="post-header main-content-wrap text-left">
   
     <h1 class="post-title" itemprop="headline">
-      Un ejercicio de benchmark (y cómo generar polígonos)
+      Un ejercicio de benchmark (y un generador de polígonos aleatorios)
     </h1>
   
   
@@ -298,7 +298,10 @@ code span.wa { color: #bf0303; } /* Warning */
 </ul>
 </div>
 
-<p>En un <a href="https://ruevko.github.io/hexagonal/post/2020/07/01-cordones-coordenadas/">artículo anterior</a> aprendimos que calcular el área de un polígono simple, conociendo las coordenadas de sus vértices, es un problema directamente resoluble, con ayuda de la llamada fórmula <em>shoelace</em>. Suponiendo un <code>data.frame</code> o <code>matrix</code> de vértices, cuyas columnas son <code>colnames(.) = c("x", "y")</code>, la implementación en R de esta fórmula luce algo así:</p>
+<p>En el artículo anterior aprendimos que calcular el área de un polígono simple, conociendo
+las coordenadas de sus vértices, es un problema directamente resoluble, con ayuda de la
+llamada fórmula <em>shoelace</em>. Suponiendo un <code>data.frame</code> o <code>matrix</code> de vértices, cuyas
+columnas son <code>colnames(.) = c("x", "y")</code>, la implementación en R de esta fórmula puede escribirse así:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a>shoelace_area =<span class="st"> </span><span class="cf">function</span>(vertices){</span>
 <span id="cb1-2"><a href="#cb1-2"></a></span>
 <span id="cb1-3"><a href="#cb1-3"></a>   x0 =<span class="st"> </span>vertices[, <span class="st">&quot;x&quot;</span>]</span>
@@ -309,28 +312,62 @@ code span.wa { color: #bf0303; } /* Warning */
 <span id="cb1-8"><a href="#cb1-8"></a></span>
 <span id="cb1-9"><a href="#cb1-9"></a>   <span class="kw">sum</span>(x0 <span class="op">*</span><span class="st"> </span>y1 <span class="op">-</span><span class="st"> </span>x1 <span class="op">*</span><span class="st"> </span>y0) <span class="op">/</span><span class="st"> </span><span class="dv">2</span></span>
 <span id="cb1-10"><a href="#cb1-10"></a>}</span></code></pre></div>
-<p>También comprobamos que el área calculada de esta manera es correcta, coincidiendo con el área calculada por una función confiable, i.e. la encontrada en el paquete <code>sf</code> para datos espaciales. No obstante, frente a dos funciones capaces de calcular un mismo resultado, la pregunta inevitable es ¿cuál utilizar? Varios criterios deben ser considerados pero, por lo pronto, digamos que nos interesa la velocidad de ejecución; en este caso, el método <em>benchmark</em> nos permitirá evaluar ese criterio. TL; DR: nuestra función es más rápida, pero esta ventaja es insignificante, considerando que <code>sf::st_area</code> es mucho más versátil.</p>
+<p>También comprobamos que el área calculada de esta manera es correcta, coincidiendo con el
+área calculada por una función confiable, i.e. la encontrada en el paquete <code>sf</code> para
+datos espaciales. No obstante, frente a dos funciones capaces de calcular un mismo
+resultado, la pregunta inevitable es ¿cuál utilizar? Varios criterios deben ser
+considerados pero, por lo pronto, digamos que nos interesa la velocidad de ejecución; en
+este caso, el método <em>benchmark</em> nos permitirá evaluar ese criterio. TL; DR: nuestra
+función es más rápida, pero es una ventaja insignificante, sin contar que <code>sf::st_area</code> es mucho más versátil.</p>
 <div id="una-lección-de-geometría" class="section level1">
 <h1>Una lección de geometría</h1>
-<p>Necesitaremos datos para realizar el <em>benchmark</em>, y ya que hablamos de polígonos, sería conveniente contar con una función que los genere aleatoriamente. Recordemos que un polígono es una figura plana finita, delimitada por una cadena cerrada (el límite) de segmentos lineales (los lados). Si el límite no se interseca a sí mismo, entonces el polígono es <a href="https://en.wikipedia.org/wiki/Simple_polygon">simple</a>. Para generalizar la nomenclatura nos referiremos al polígono de n lados como un “n-gon”. Ahora, aunque no lo parezca, generar polígonos completamente aleatorios es un problema más o menos complicado. El siguiente método simplifica considerablemente este problema:</p>
+<p>Necesitaremos datos para realizar el <em>benchmark</em>, y ya que hablamos de polígonos, sería
+conveniente contar con una función que los genere aleatoriamente. Recordemos que un
+polígono es una figura plana finita, delimitada por una cadena cerrada (el límite) de
+segmentos lineales (los lados). Si el límite no se interseca a sí mismo, entonces el
+polígono es <a href="https://en.wikipedia.org/wiki/Simple_polygon">simple</a>. Para generalizar la
+nomenclatura nos referiremos al polígono de n lados como un “n-gon”. Ahora, aunque no lo
+parezca, generar polígonos completamente aleatorios es un problema más o menos
+complicado. El siguiente método simplifica considerablemente este problema:</p>
 <ol style="list-style-type: decimal">
 <li>Ubicar n puntos aleatorios sobre una circunferencia de radio definido.</li>
 <li>Ordenar los puntos en sentido antihorario, comenzando por cualquiera de ellos.</li>
 <li>Conectar los puntos en dicho orden, cerrando y rellenando el polígono.</li>
 </ol>
 <p><img src="https://ruevko.github.io/hexagonal/post/2020/11/11-ejercicio-benchmark-generador-poligonos_files/figure-html/convex-howto-1.svg" width="672" /></p>
-<p>Debido a que todos sus vértices yacen sobre la circunferencia circunscrita, el polígono así generado será <a href="https://en.wikipedia.org/wiki/Circumscribed_circle">cíclico</a>. Pero no todos los polígonos poseen una circunferencia circunscrita; los siguientes ejemplos -no obtenibles con este método- lo demuestran:</p>
+<p>Debido a que todos sus vértices yacen sobre la circunferencia circunscrita, el polígono
+así generado será <a href="https://en.wikipedia.org/wiki/Circumscribed_circle">cíclico</a>. Pero no
+todos los polígonos poseen una circunferencia circunscrita; los siguientes ejemplos -no
+obtenibles con este método- lo demuestran:</p>
 <p><img src="https://ruevko.github.io/hexagonal/post/2020/11/11-ejercicio-benchmark-generador-poligonos_files/figure-html/convex-extra-1.svg" width="672" /></p>
-<p>Hasta aquí, los polígonos presentados, cíclicos o no, son todos <a href="https://en.wikipedia.org/wiki/Convex_polygon">convexos</a>; significa que todos sus ángulos interiores son menores a 180º. Todos los polígonos cíclicos son convexos, pero lo contrario no es verdad. La principal propiedad de la convexidad es que, para dos puntos cualesquiera del polígono (en su interior o en su límite), el segmento que los conecta nunca sale al exterior del polígono. En contraste, los polígonos <a href="https://en.wikipedia.org/wiki/Concave_polygon">cóncavos</a> (aquellos con al menos un ángulo interior mayor a 180º), carecen de esta propiedad. Una manera sencilla (aunque no infalible) de obtener polígonos cóncavos es insertar este paso en el método anterior:</p>
+<p>Hasta aquí, los polígonos presentados, cíclicos o no, son todos
+<a href="https://en.wikipedia.org/wiki/Convex_polygon">convexos</a>; significa que todos sus ángulos
+interiores son menores a 180º. Todos los polígonos cíclicos son convexos, pero lo
+contrario no es verdad. La principal propiedad de la convexidad es que, para dos puntos
+cualesquiera del polígono (en su interior o en su límite), el segmento que los conecta
+nunca sale al exterior del polígono. En contraste, los polígonos
+<a href="https://en.wikipedia.org/wiki/Concave_polygon">cóncavos</a> (aquellos con al menos un
+ángulo interior mayor a 180º), carecen de esta propiedad. Una manera sencilla (aunque no
+infalible) de obtener polígonos cóncavos es insertar este paso en el método anterior:</p>
 <p>2.5. Mover aleatoriamente los puntos hacia el centro de la circunferencia, con una cantidad no mayor al radio de la misma.</p>
 <p><img src="https://ruevko.github.io/hexagonal/post/2020/11/11-ejercicio-benchmark-generador-poligonos_files/figure-html/concav-howto-1.svg" width="672" /></p>
-<p>Dependiendo de la magnitud del acercamiento de los vértices hacia el centro, los polígonos podrían o no dejar de ser convexos, pero siempre dejarán de ser cíclicos. Adicionalmente, siempre serán <a href="https://en.wikipedia.org/wiki/Star-shaped_polygon">estrellados</a>. Un polígono estrellado posee al menos un punto en su interior desde el cual es posible observar todo el límite; en este método, al menos el centro de la circunferencia cumplirá esta propiedad. Todos los polígonos convexos son estrellados, pero no todos los cóncavos lo son; los siguientes ejemplos son cóncavos, pero no estrellados:</p>
+<p>Dependiendo de la magnitud del acercamiento de los vértices al centro, los polígonos podrían
+o no dejar de ser convexos, pero siempre dejarán de ser cíclicos. Además, siempre serán
+<a href="https://en.wikipedia.org/wiki/Star-shaped_polygon">estrellados</a>. Un polígono estrellado
+posee al menos un punto en su interior desde el cual es posible observar todo el límite;
+en este método, al menos el centro de la circunferencia cumplirá esta propiedad. Todos
+los polígonos convexos son estrellados, pero no todos los cóncavos lo son; los siguientes
+ejemplos son cóncavos, pero no estrellados:</p>
 <p><img src="https://ruevko.github.io/hexagonal/post/2020/11/11-ejercicio-benchmark-generador-poligonos_files/figure-html/concav-extra-1.svg" width="672" /></p>
-<p>En definitiva, este método es una simplificación porque solamente puede producir polígonos estrellados; sin embargo, para nuestro propósito, es suficientemente simple y aleatorio. Con esto concluye la lección de geometría.</p>
+<p>En definitiva, este método es una simplificación porque solamente puede producir
+polígonos estrellados; sin embargo, para nuestro propósito, es suficientemente simple y
+aleatorio. Con esto concluye la lección de geometría.</p>
 </div>
 <div id="un-generador-de-polígonos" class="section level1">
 <h1>Un generador de polígonos</h1>
-<p>La siguiente función <code>ngon</code> utiliza el método ya descrito para generar aleatoriamente un polígono estrellado de <code>n</code> lados, convexo o cóncavo, contenido en una circunferencia de <code>radius</code> específico centrada en el origen.</p>
+<p>La siguiente función <code>ngon</code> utiliza el método ya descrito para generar aleatoriamente un
+polígono estrellado de <code>n</code> lados, convexo o cóncavo, contenido en una circunferencia de
+<code>radius</code> específico centrada en el origen.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>ngon =<span class="st"> </span><span class="cf">function</span>(n, <span class="dt">min_radius =</span> <span class="ot">NA</span>, <span class="dt">radius =</span> <span class="dv">1</span>){</span>
 <span id="cb2-2"><a href="#cb2-2"></a></span>
 <span id="cb2-3"><a href="#cb2-3"></a>   <span class="kw">stopifnot</span>(<span class="kw">is.integer</span>(n), n <span class="op">&gt;</span><span class="st"> </span>2L)</span>
@@ -346,8 +383,14 @@ code span.wa { color: #bf0303; } /* Warning */
 <span id="cb2-13"><a href="#cb2-13"></a>   <span class="kw">colnames</span>(ngon) =<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;x&quot;</span>, <span class="st">&quot;y&quot;</span>)</span>
 <span id="cb2-14"><a href="#cb2-14"></a>   <span class="kw">return</span>(<span class="st">`</span><span class="dt">class&lt;-</span><span class="st">`</span>(ngon, <span class="kw">c</span>(<span class="st">&quot;ngon&quot;</span>, <span class="st">&quot;matrix&quot;</span>)))</span>
 <span id="cb2-15"><a href="#cb2-15"></a>}</span></code></pre></div>
-<p>El resultado predeterminado de <code>ngon</code> sería un polígono cíclico, con circunferencia circunscrita de radio unitario. La probabilidad de obtener un polígono cóncavo deriva del argumento <code>min_radius</code> que permite acercar los vértices al centro, hasta cierto radio mínimo (como porcentaje del radio de la circunferencia). Tanto este acercamiento, como la ubicación de los vértices en la circunferencia, son calculados con una distribución uniforme, vía <code>runif</code>.</p>
-<p>Para facilitar el trabajo más adelante, se han definido dos métodos<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> para los objetos de clase <code>ngon</code> (uno para graficar y otro para transformar a la clase <code>units</code>), y una función para transformar a la clase <code>sfg</code>.</p>
+<p>El resultado predeterminado de <code>ngon</code> sería un polígono cíclico, con circunferencia
+circunscrita de radio unitario. La probabilidad de obtener un polígono cóncavo deriva del
+argumento <code>min_radius</code> que permite acercar los vértices al centro, hasta cierto radio
+mínimo (como porcentaje del radio de la circunferencia). Tanto este acercamiento, como la
+ubicación de los vértices en la circunferencia, son calculados con una distribución uniforme, vía <code>runif</code>.</p>
+<p>Para facilitar el trabajo más adelante, se han definido dos métodos<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>
+para los objetos de clase <code>ngon</code> (uno para graficar y otro para transformar a la clase
+<code>units</code>), y una función para transformar a la clase <code>sfg</code>.</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>plot.ngon =<span class="st"> </span><span class="cf">function</span>(x, <span class="dt">pal =</span> tmaptools<span class="op">::</span><span class="kw">get_brewer_pal</span>(<span class="st">&quot;Dark2&quot;</span>, <span class="dv">15</span>, <span class="dt">plot=</span><span class="ot">FALSE</span>), ...){</span>
 <span id="cb3-2"><a href="#cb3-2"></a>   <span class="kw">plot.default</span>(x, <span class="dt">asp =</span> <span class="dv">1</span>, <span class="dt">bty =</span> <span class="st">&quot;n&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;n&quot;</span>, <span class="dt">xaxt =</span> <span class="st">&quot;n&quot;</span>, <span class="dt">yaxt =</span> <span class="st">&quot;n&quot;</span>, ...)</span>
 <span id="cb3-3"><a href="#cb3-3"></a>   <span class="kw">polygon</span>(x, <span class="dt">col =</span> <span class="kw">sample</span>(pal, <span class="dv">1</span>), <span class="dt">border =</span> <span class="ot">NA</span>)</span>
@@ -363,18 +406,24 @@ code span.wa { color: #bf0303; } /* Warning */
 <span id="cb3-13"><a href="#cb3-13"></a>as_polygon =<span class="st"> </span><span class="cf">function</span>(x) <span class="kw">st_polygon</span>(<span class="kw">list</span>(x[<span class="kw">c</span>(<span class="dv">1</span><span class="op">:</span><span class="kw">nrow</span>(x), <span class="dv">1</span>), ]))</span></code></pre></div>
 <div id="generando-polígonos-convexos" class="section level2">
 <h2>Generando polígonos convexos</h2>
-<p>Es hora de jugar con nuestra función generadora de polígonos. Para esta muestra no se alteró el comportamiento predeterminado de <code>ngon</code>, así que con seguridad los polígonos serán convexos.</p>
+<p>Es hora de jugar con nuestra función generadora de polígonos. Para esta muestra no se alteró
+el comportamiento predeterminado de <code>ngon</code>, así que con seguridad los polígonos serán convexos.</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="kw">set.seed</span>(<span class="dv">57</span>); <span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">2</span>, <span class="dv">3</span>)) <span class="co"># la &quot;semilla&quot; determina cuáles polígonos obtendré</span></span>
 <span id="cb4-2"><a href="#cb4-2"></a></span>
 <span id="cb4-3"><a href="#cb4-3"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="kw">c</span>(<span class="dv">3</span><span class="op">:</span>4L, 6L, 10L, 30L, 90L)) <span class="kw">plot</span>(<span class="kw">ngon</span>(i), <span class="dt">xlab =</span> <span class="kw">paste0</span>(i, <span class="st">&quot;-gon&quot;</span>), <span class="dt">ylab =</span> <span class="st">&quot;&quot;</span>)</span></code></pre></div>
 <p><img src="https://ruevko.github.io/hexagonal/post/2020/11/11-ejercicio-benchmark-generador-poligonos_files/figure-html/convex-1.svg" width="672" /></p>
-<p>Una observación evidente es que, con un número suficientemente grande de vértices, un polígono convexo será bastante similar a un círculo. Podemos aprovechar este fenómeno para estimar <code>pi</code>, recordando que el área de un círculo de radio unitario es <code>pi</code> unidades cuadradas.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="kw">shoelace_area</span>(<span class="kw">set_units</span>(<span class="kw">ngon</span>(<span class="fl">1e4</span>L), <span class="st">&quot;cm&quot;</span>))</span></code></pre></div>
-<pre><code>## 3.141591 [cm^2]</code></pre>
+<p>Una observación evidente es que, con un número suficientemente grande de vértices, un
+polígono convexo será bastante similar a un círculo. Podemos aprovechar este fenómeno
+para estimar <code>pi</code>, recordando que el área de un círculo de radio unitario es <code>pi</code> unidades cuadradas.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="kw">ngon</span>(<span class="fl">1e4</span>L) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">set_units</span>(<span class="st">&quot;cm&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">shoelace_area</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">format</span>(<span class="dt">digits =</span> <span class="dv">8</span>)</span></code></pre></div>
+<pre><code>## [1] &quot;3.1415915 [cm^2]&quot;</code></pre>
 </div>
 <div id="generando-polígonos-cóncavos" class="section level2">
 <h2>Generando polígonos cóncavos</h2>
-<p>Ahora veremos qué clase de polígonos cóncavos podemos obtener. En esta muestra (combinando varios <code>n</code> y <code>min_radius</code>) se verifica que, cuando los vértices son pocos y el radio mínimo cercano a uno, es probable que el polígono no sea cóncavo. En el caso contrario, con muchos vértices y radio mínimo cercano a cero, se genera un polígono literalmente estrellado.</p>
+<p>Ahora veremos qué clase de polígonos cóncavos podemos obtener. En esta muestra
+(combinando varios <code>n</code> y <code>min_radius</code>) se verifica que, cuando los vértices son pocos y
+el radio mínimo cercano a uno, es probable que el polígono no sea cóncavo. En el caso
+contrario, con muchos vértices y radio mínimo cercano a cero, se genera un polígono literalmente estrellado.</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="kw">set.seed</span>(<span class="dv">32</span>); <span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">3</span>, <span class="dv">3</span>))</span>
 <span id="cb7-2"><a href="#cb7-2"></a></span>
 <span id="cb7-3"><a href="#cb7-3"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="kw">c</span>(5L, 10L, 30L)){</span>
@@ -387,8 +436,19 @@ code span.wa { color: #bf0303; } /* Warning */
 </div>
 <div id="efectuar-benchmark" class="section level1">
 <h1>Efectuar benchmark</h1>
-<p>Finalmente poseemos los datos y el conocimiento necesarios para evaluar la velocidad de ejecución de dos funciones que calculan áreas. En pocas palabras, el <em>benchmark</em> consiste en ejecutar una expresión (una función o algún fragmento pequeño de código) muchas veces, midiendo cada vez el tiempo invertido en ello. Obviamente el tiempo dependerá de la capacidad del procesador utilizado; sin embargo, la utilidad del <em>benchmark</em> reside en ejecutar no una, sino varias expresiones similares. Comparando los tiempos de ejecución se obtiene un criterio -que algunas veces resulta sufiente- para decidir cuál expresión es la mejor resolviendo cierto problema.</p>
-<p>De regreso a la definición de <code>ngon</code>, existen tres parámetros con los que se puede jugar y evaluar si ocurre algún cambio. Sin embargo, como se verá, el radio de la circunferencia circunscrita y la convexidad del polígono generado son irrelevantes; por esta razón se estudió su comportamiento con la función <code>ngon</code> solamente. Todos los <em>benchmarks</em> fueron ejecutados con <code>microbenchmark</code>.</p>
+<p>Finalmente poseemos los datos y el conocimiento necesarios para evaluar la velocidad de
+ejecución de dos funciones que calculan áreas. En pocas palabras, el <em>benchmark</em> consiste
+en ejecutar cierta expresión (una función o algún fragmento pequeño de código) muchas
+veces, midiendo cada vez el tiempo invertido en ello. Obviamente el tiempo dependerá de
+la capacidad del procesador utilizado; sin embargo, la utilidad del <em>benchmark</em> reside en
+ejecutar no una, sino varias expresiones similares. Comparando los tiempos de ejecución
+se obtiene un criterio -que algunas veces resulta sufiente- para decidir cuál expresión
+es la mejor resolviendo cierto problema.</p>
+<p>De regreso a la definición de <code>ngon</code>, existen tres parámetros con los que se puede jugar
+y evaluar si ocurre algún cambio. Sin embargo, como se verá, el radio de la circunferencia
+circunscrita y la convexidad del polígono generado son irrelevantes; por esta razón se
+estudió su comportamiento con la función <code>ngon</code> solamente. Todos los <em>benchmarks</em> fueron
+ejecutados con <code>microbenchmark</code>.</p>
 <div id="variando-el-radio" class="section level2">
 <h2>Variando el radio</h2>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a><span class="kw">library</span>(microbenchmark)</span>
@@ -396,14 +456,20 @@ code span.wa { color: #bf0303; } /* Warning */
 <span id="cb8-3"><a href="#cb8-3"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="kw">c</span>(<span class="dv">10</span>, <span class="dv">30</span>, <span class="dv">100</span>)) <span class="kw">assign</span>(<span class="kw">paste0</span>(<span class="st">&quot;r&quot;</span>, i), <span class="kw">ngon</span>(100L, <span class="dt">radius =</span> <span class="dv">10</span> <span class="op">^</span><span class="st"> </span>i))</span>
 <span id="cb8-4"><a href="#cb8-4"></a></span>
 <span id="cb8-5"><a href="#cb8-5"></a>radBmark =<span class="st"> </span><span class="kw">microbenchmark</span>(<span class="kw">shoelace_area</span>(r10), <span class="kw">shoelace_area</span>(r30), <span class="kw">shoelace_area</span>(r100))</span></code></pre></div>
-<p>Cada argumento ingresado en la función <code>microbenchmark</code> es una expresión a ser evaluada. En este caso, las expresiones son <code>shoelace_area</code> aplicada a tres polígonos cíclicos (con radio<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a> creciente: 10<sup>10</sup>, 10<sup>30</sup> y 10<sup>100</sup>). El resultado del <em>benchmark</em> es un objeto de clase <code>microbenchmark</code>, pero también un <code>data.frame</code>. En consecuencia, podemos manipular este objeto de muchas formas; por ejemplo, podemos utilizar <code>dplyr</code> para descartar valores atípicos:</p>
+<p>Cada argumento ingresado en la función <code>microbenchmark</code> es una expresión a ser evaluada.
+En este caso, las expresiones son <code>shoelace_area</code> aplicada a tres polígonos cíclicos (con
+radio<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a> creciente: 10<sup>10</sup>, 10<sup>30</sup> y 10<sup>100</sup>). El resultado del <em>benchmark</em> es un objeto
+de clase <code>microbenchmark</code>, pero también un <code>data.frame</code>. En consecuencia, podemos
+manipular este objeto de muchas formas; por ejemplo, podemos utilizar <code>dplyr</code> para descartar valores atípicos:</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a>radBmark =<span class="st"> </span>dplyr<span class="op">::</span><span class="kw">filter</span>(radBmark, time <span class="op">&lt;</span><span class="st"> </span><span class="fl">15e3</span>)</span></code></pre></div>
-<p>Lo siguiente son los resultados<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a> de <code>print(radBmark)</code> y <code>plot(radBmark)</code>. En el gráfico, el tiempo se encuentra en nanosegundos. Es claro, de acuerdo al resumen númerico y al gráfico, que aumentar el radio en <code>ngon</code> no afecta el tiempo de cálculo.</p>
+<p>Lo siguiente son los resultados<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a> de <code>print(radBmark)</code> y <code>plot(radBmark)</code>. En el gráfico, el
+tiempo se encuentra en nanosegundos. Es claro, de acuerdo al resumen númerico y al
+gráfico, que aumentar el radio en <code>ngon</code> no afecta el tiempo de cálculo.</p>
 <pre><code>## Unit: microseconds
-##                 expr min  lq     mean median  uq  max neval
-##   shoelace_area(r10) 8.2 8.7 9.213000    9.1 9.6 12.0   100
-##   shoelace_area(r30) 8.3 8.7 9.227273    9.1 9.5 12.4    99
-##  shoelace_area(r100) 8.1 8.7 9.121000    9.0 9.4 10.9   100</code></pre>
+##                 expr min  lq  mean median   uq  max neval
+##   shoelace_area(r10) 8.2 8.5 9.020    8.9 9.30 11.8    99
+##   shoelace_area(r30) 8.0 8.4 8.984    8.8 9.35 12.1    99
+##  shoelace_area(r100) 8.2 8.5 9.027    8.9 9.30 11.3   100</code></pre>
 <p><img src="https://ruevko.github.io/hexagonal/post/2020/11/11-ejercicio-benchmark-generador-poligonos_files/figure-html/radius-plot-1.svg" width="672" /></p>
 </div>
 <div id="variando-la-convexidad" class="section level2">
@@ -411,7 +477,12 @@ code span.wa { color: #bf0303; } /* Warning */
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="kw">c</span>(<span class="dv">9</span>, <span class="dv">5</span>, <span class="dv">1</span>)) <span class="kw">assign</span>(<span class="kw">paste0</span>(<span class="st">&quot;r.&quot;</span>, i), <span class="kw">ngon</span>(1000L, i <span class="op">/</span><span class="st"> </span><span class="dv">10</span>))</span>
 <span id="cb11-2"><a href="#cb11-2"></a></span>
 <span id="cb11-3"><a href="#cb11-3"></a>conBmark =<span class="st"> </span><span class="kw">microbenchmark</span>(<span class="kw">shoelace_area</span>(r<span class="fl">.9</span>), <span class="kw">shoelace_area</span>(r<span class="fl">.5</span>), <span class="kw">shoelace_area</span>(r<span class="fl">.1</span>))</span></code></pre></div>
-<p>Esta vez, las expresiones evaluadas son <code>shoelace_area</code> aplicada a tres polígonos cóncavos, con valores <code>min_radius</code> decrecientes: 0.9, 0.5 y 0.1. Así se sabrá si cambiar la convexidad del polígono afecta el cálculo del área; nuevamente, el cambio resulta ser irrelevante. Ambas variaciones, radio y convexidad, pueden introducir cambios abruptos en la magnitud númerica de los vértices, pero esto es irrelevante para la manera como los valores numéricos son tratados.</p>
+<p>Esta vez, las expresiones evaluadas son <code>shoelace_area</code> aplicada a tres polígonos
+cóncavos, con valores <code>min_radius</code> decrecientes: 0.9, 0.5 y 0.1. Así se sabrá si cambiar
+la convexidad del polígono afecta el cálculo del área; nuevamente, el cambio resulta ser
+irrelevante. Ambas variaciones, radio y convexidad, pueden introducir cambios abruptos en
+la magnitud númerica de los vértices, pero esto es irrelevante para la manera como los
+valores numéricos son tratados.</p>
 <p><img src="https://ruevko.github.io/hexagonal/post/2020/11/11-ejercicio-benchmark-generador-poligonos_files/figure-html/convex-plot-1.svg" width="672" /></p>
 </div>
 <div id="variando-el-número-de-vértices" class="section level2">
@@ -421,34 +492,63 @@ code span.wa { color: #bf0303; } /* Warning */
 <span id="cb12-3"><a href="#cb12-3"></a>      <span class="kw">shoelace_area</span>(gon), <span class="kw">st_area</span>(sfg), <span class="dt">times =</span> <span class="fl">1e3</span>,</span>
 <span id="cb12-4"><a href="#cb12-4"></a>      <span class="dt">setup =</span> { gon =<span class="st"> </span><span class="kw">ngon</span>(ver); sfg =<span class="st"> </span><span class="kw">as_polygon</span>(gon) }</span>
 <span id="cb12-5"><a href="#cb12-5"></a>      ))</span></code></pre></div>
-<p>Podemos anticipar que incrementar el número de vértices sí afectará el tiempo de cálculo; más que comparar entre polígonos, esta vez se compara el desempeño de las funciones <code>shoelace_area</code> y <code>st_area</code>. Para esto se ejecutó seis <em>benchmarks</em>: en cada uno, ambas funciones se ejecutaron mil veces, utilizando cada vez un nuevo polígono de 100/300/mil/3 mil/10 mil/30 mil vértices. Después de ejecutarlos, la lista de <em>benchmarks</em> fue manipulada con <code>dplyr</code> y el siguiente gráfico se generó con <code>ggplot2</code> (y se utilizó <em>violinplots</em> en lugar de <em>boxplots</em>).</p>
+<p>Podemos anticipar que incrementar el número de vértices sí afectará el tiempo de cálculo;
+más que comparar entre polígonos, esta vez se compara el desempeño de las funciones
+<code>shoelace_area</code> y <code>st_area</code>. Para esto se ejecutó seis <em>benchmarks</em>: en cada uno, ambas
+funciones se ejecutaron mil veces, usando cada vez un nuevo polígono de 100 / 300 / mil /
+3 mil / 10 mil / 30 mil vértices. Después de ejecutarlos, la lista de <em>benchmarks</em> fue
+manipulada con <code>dplyr</code> y el siguiente gráfico generado con <code>ggplot2</code> (y se utilizó
+<em>violinplots</em> en lugar de <em>boxplots</em>).</p>
 <p><img src="https://res.cloudinary.com/dodnzqhiz/image/upload/v1605139624/2020post/polygons-benchmark_qpkpmh.png" /></p>
-<p>Es así como descubrimos que nuestra función <code>shoelace_area</code> calcula el área en menos tiempo. Resulta que con polígonos pequeños (en el sentido de tener pocos vértices), <code>st_area</code> toma mucho más tiempo que <code>shoelace_area</code>, seguramente porque realiza verificaciones sobre los datos u otra clase de operaciones. Esta diferencia se hace cada vez más pequeña y tal vez desaparece, para un número suficientemente grande de vértices.</p>
+<p>Es así como descubrimos que nuestra función <code>shoelace_area</code> calcula el área en menos
+tiempo. Resulta que con polígonos pequeños (en el sentido de tener pocos vértices),
+<code>st_area</code> toma mucho más tiempo que <code>shoelace_area</code>, seguramente porque realiza
+verificaciones sobre los datos u otra clase de operaciones. Esta diferencia se hace cada
+vez más pequeña y tal vez desaparece, para un número suficientemente grande de vértices.</p>
 </div>
 </div>
 <div id="conclusiones" class="section level1">
 <h1>Conclusiones</h1>
-<p>En este artículo se habló de algunos conceptos de geometría y de cómo implementarlos en código R, aparentemente con el propósito de generar polígonos y comparar dos funciones que permiten calcular sus áreas. Pero la verdad es que el propósito siempre fue aprender a realizar <em>benchmarks</em>. Desde el principio era previsible que <code>sf::st_area</code> tuviese una ejecución más larga, no solo porque debe verificar que los datos sean adecuados (de clase <code>sf</code>/<code>sfc</code>/<code>sfg</code>), sino porque también está preparada para tratar con los distintos tipos de geometrías existentes en el análisis espacial. En el siguiente ejemplo, el área de la geometría <em>multipolygon</em> no podría ser calculada con nuestra función.</p>
+<p>En este artículo se habló de algunos conceptos de geometría y de cómo implementarlos en
+código R, aparentemente con el propósito de generar polígonos y comparar dos funciones
+que permiten calcular sus áreas. Pero la verdad es que el propósito siempre fue aprender
+a realizar <em>benchmarks</em>. Desde el principio era previsible que <code>sf::st_area</code> tuviese una
+ejecución más larga, no solo porque debe verificar que los datos sean adecuados (de clase
+<code>sf</code> / <code>sfc</code> / <code>sfg</code>); también porque está preparada para tratar con los distintos tipos
+de geometrías existentes en el análisis espacial. En el siguiente ejemplo, el área de la
+geometría multipolygon no podría ser calculada con nuestra función.</p>
 <div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a><span class="kw">data</span>(<span class="st">&quot;NLD_prov&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;tmap&quot;</span>)</span>
 <span id="cb13-2"><a href="#cb13-2"></a></span>
 <span id="cb13-3"><a href="#cb13-3"></a>(NLD_prov<span class="op">$</span><span class="dt">area =</span> <span class="kw">set_units</span>(<span class="kw">st_area</span>(NLD_prov), <span class="st">&quot;km2&quot;</span>))</span></code></pre></div>
 <pre><code>## Units: [km^2]
-##  [1] 2391.971 3517.571 2680.466 3405.038 1464.803 5117.582 1442.966 2856.684
-##  [9] 3102.503 1833.836 5053.121 2209.545</code></pre>
+##  [1] 2392 3518 2680 3405 1465 5118 1443 2857 3103 1834 5053 2210</code></pre>
 <div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a>NLD_cent =<span class="st"> </span><span class="kw">unlist</span>(<span class="kw">st_centroid</span>(NLD_prov)<span class="op">$</span>geometry)</span>
 <span id="cb15-2"><a href="#cb15-2"></a></span>
 <span id="cb15-3"><a href="#cb15-3"></a><span class="kw">plot</span>(NLD_prov[<span class="st">&quot;area&quot;</span>], <span class="dt">main =</span> <span class="st">&quot;Netherlands provinces&#39; area [km²]&quot;</span>, <span class="dt">reset =</span> <span class="ot">FALSE</span>)</span>
 <span id="cb15-4"><a href="#cb15-4"></a></span>
 <span id="cb15-5"><a href="#cb15-5"></a><span class="kw">text</span>(NLD_cent[<span class="dv">2</span><span class="op">*</span><span class="dv">1</span><span class="op">:</span><span class="dv">12-1</span>], NLD_cent[<span class="dv">2</span><span class="op">*</span><span class="dv">1</span><span class="op">:</span><span class="dv">12</span>], <span class="kw">sub</span>(<span class="st">&quot;-&quot;</span>, <span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>, NLD_prov<span class="op">$</span>name), <span class="dt">col =</span> <span class="st">&quot;grey&quot;</span>)</span></code></pre></div>
 <p><img src="https://res.cloudinary.com/dodnzqhiz/image/upload/v1605140674/2020post/polygons-netherlands_lafwiv.png" /></p>
-<p>Adicionalmente, ambas fórmulas se ejecutan con gran velocidad: cuando se calculó el área de un 30000-gon, el tiempo promedio fue algo mayor a mil microsegundos (eso es la milésima parte de un segundo). Una duda final: ¿en <code>sf::st_area</code> se aplica la fórmula <em>shoelace</em>, o existe un mejor algoritmo? Observando los tiempos de nuestra <code>shoelace_area</code>, no obstante, parece que sí es la solución más eficiente.</p>
+<p>Adicionalmente, ambas fórmulas se ejecutan con gran velocidad: cuando se calculó el área
+de un 30000-gon, el tiempo promedio fue algo mayor a mil microsegundos (eso es la
+milésima parte de un segundo). Una duda final: ¿en <code>sf::st_area</code> se aplica la fórmula
+<em>shoelace</em>, o existe un mejor algoritmo? Observando los tiempos de nuestra <code>shoelace_area</code>,
+no obstante, parece que sí es la solución más eficiente.</p>
 </div>
 <div class="footnotes">
 <hr />
 <ol>
-<li id="fn1"><p>Un método es una versión de otra función -denominada genérica- que sirve para una clase específica. Por ejemplo, <code>diff</code> es una función genérica con métodos para números, fechas y fecha/horas. Compárese el resultado de <code>diff(1:9)</code>, de <code>diff(Sys.Date()+1:9)</code> y de <code>diff(Sys.time()+1:9)</code>.<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
-<li id="fn2"><p>El número 10<sup>100</sup>, conocido como <a href="https://www.youtube.com/watch?v=8GEebx72-qs">“googol”</a>, es mayor que el número estimado de partículas en el universo (~10<sup>80</sup>). Estos números son ridículamente gigantescos, pero para un procesador no poseen ningún significado. En teoría, se pudo haber utilizado un radio cercano a <code>sqrt(.Machine$double.xmax/pi)</code><a href="#fnref2" class="footnote-back">↩︎</a></p></li>
-<li id="fn3"><p>Las funciones <code>print</code> y <code>plot</code> son genéricas. El primer resultado corresponde al método <code>microbenchmark</code> de <code>print</code>, y el segundo al método <code>data.frame</code> de <code>plot</code>.<a href="#fnref3" class="footnote-back">↩︎</a></p></li>
+<li id="fn1"><p>Un método es una
+versión de otra función -denominada genérica- que sirve para una clase específica. Por
+ejemplo, <code>diff</code> es una función genérica con métodos para números, fechas y fecha/horas.
+Compárese el resultado de <code>diff(1:9)</code>, de <code>diff(Sys.Date()+1:9)</code> y de <code>diff(Sys.time()+1:9)</code>.<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn2"><p>El número 10<sup>100</sup>, conocido como <a href="https://www.youtube.com/watch?v=8GEebx72-qs">“googol”</a>,
+es mayor que el número estimado de partículas en el universo (~10<sup>80</sup>). Estos números son
+ridículamente gigantescos, pero para un procesador no poseen ningún significado. Es posible
+utilizar un radio mayor; el límite es el valor que la expresión <code>sqrt(.Machine$double.xmax/pi)</code>
+calcule.<a href="#fnref2" class="footnote-back">↩︎</a></p></li>
+<li id="fn3"><p>Las funciones <code>print</code> y <code>plot</code> son genéricas. El primer
+resultado corresponde al método <code>microbenchmark</code> de <code>print</code>, y el segundo al método
+<code>data.frame</code> de <code>plot</code>.<a href="#fnref3" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
 

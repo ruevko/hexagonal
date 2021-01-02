@@ -110,8 +110,8 @@ ggsave(".png", S, width = 6, height = 3.375, dpi = "screen")
 ```
 
 Dado que todos se encuentran en el mismo plano, da lo mismo cuáles tres puntos son seleccionados. Las funciones
-[`points_normal()`](https://github.com/ruevko/hexagonal/blob/master/content/post/2020/11/11-ejercicio-benchmark-generador-poligonos.Rmd#L32-L41) y
-[`points_plane()`](https://github.com/ruevko/hexagonal/blob/master/content/post/2020/11/11-ejercicio-benchmark-generador-poligonos.Rmd#L32-L41)
+[`points_normal()`](https://github.com/ruevko/hexagonal/blob/master/content/post/2020/12/28-cordones-coordenadas-tres-dimensiones.Rmd#L120-L130) y
+[`points_plane()`](https://github.com/ruevko/hexagonal/blob/master/content/post/2020/12/28-cordones-coordenadas-tres-dimensiones.Rmd#L134-L141)
 fueron escritas para calcular los componentes de $\overrightarrow{n}$, y los coeficientes
 de la ecuación \@ref(eq:planez) respectivamente. Ambas funciones contienen operaciones
 algebraicas sencillas, y pueden ser revisadas en sus respectivos enlaces.
@@ -229,7 +229,7 @@ pues, en vez de preocuparnos por los límites de $R$, simplemente hay que calcul
 
 La fórmula \@ref(eq:surarea) fue implementada en la siguiente función. Se trata de una extensión de la fórmula *shoelace* (la definición de
 [`shoelace_area()`](https://ruevko.github.io/hexagonal/post/2020/11/11-ejercicio-benchmark-generador-poligonos/#cb1-1)
-está en el artículo anterior) que multiplica su resultado por la constante adecuada, considerando un polígonos en espacio tridimensional.
+está en el artículo anterior) que multiplica su resultado por la constante adecuada, considerando un polígono en el espacio tridimensional.
 
 ```{r fun-calc, echo=-1}
 shoelace_area = function(vertices){
@@ -253,7 +253,7 @@ valores es `r shoelace_plane_area(M) / shoelace_area(M)`, o también
 $\sqrt{1 + \left( -\frac{1}{2} \right)^2 + \left( \frac{5}{4} \right)^2} = \frac{3}{4} \sqrt{5}$
 si se expresa la razón con los coeficientes del plano.
 
-Ahora plantearemos un ejemplo con datos más o menos reales. Se utilizará el dataset `volcano`
+Ahora plantearemos un ejemplo con datos más o menos reales. Se utilizará el *dataset* `volcano`
 que contiene la elevación -digitada a partir de un mapa topográfico- del volcán Maunga Whau.
 
 ```{r volcano, fig.height=3.5}
@@ -262,19 +262,21 @@ plot_ly(z = volcano, type = "surface") %>%
    my_layout(c(61, 87, 101 / 5) / 52, tick = c(20, 20, 25))
 ```
 
-Anteriormente se habló de cómo la funciones `shoelace_area()` y `sf::st_area()` permiten
-calcular lo mismo. Ahora se verá que tambien para `shoelace_plane_area()` existe un
-equivalente. Concretamente, ejecutando `sp::surfaceArea(volcano, 10, 10)` -donde diez es
-el tamaño de las celdas en metros- se obtiene la superficie del Maunga Whau, incluyendo
-el efecto de la topografía; este valor es de `r sp::surfaceArea(volcano, 10, 10) / 1e4` hectáreas.
+Anteriormente se habló de cómo las funciones `shoelace_area()` y `sf::st_area()` permiten
+calcular lo mismo. Ahora se verá que también para `shoelace_plane_area()` ya existe una
+función equivalente: `sp::surfaceArea()`, que implementa un método [@jenn04] para
+calcular el área superficial -en lugar del área planimétrica- de un terreno, a partir de
+su modelo digital de elevación. Entonces, ejecutando `sp::surfaceArea(volcano, 10, 10)`
+-donde diez es el tamaño de las celdas en metros- se obtendrá el área del Maunga Whau,
+incluyendo el efecto de su topografía; este valor es de `r sp::surfaceArea(volcano, 10, 10) / 1e4` hectáreas.
 
 Para replicar el funcionamiento de esta función hay que ser un poco laborioso. Sin entrar
 en detalles, el proceso es: se define una función que, dado un cuadrado con valores de
 elevación en cada esquina, divide el cuadrado en cuatro triángulos iguales y calcula sus
 áreas con `shoelace_plane_area()`; luego se itera esta función en cada cuadrado posible
 de la matriz `volcano`; finalmente, se insertan una fila y una columna extras con el
-menor área posible (100 m^2^) por celda. El último paso se efectúa para dar cuenta de
-que, para `surfaceArea()`, las elevaciones se encuentran al centro de la celda, no en las esquinas.
+menor área posible (100 m^2^) por celda. El último paso se efectúa para corregir el hecho
+de que la elevación debería estar al centro de cada celda, no en las esquinas.
 
 ```{r volcano-area-calc, echo=TRUE}
 
@@ -301,10 +303,17 @@ for (i in 1:nrow(volcano)) {
 sum(volcano_area)
 ```
 
-De esta manera se calculó, con nuestras propias fórmulas, que la superficie del volcán es de `r sum(volcano_area) / 1e4` hectáreas. Esto es el `r 100 * sum(volcano_area) / sp::surfaceArea(volcano, 10, 10)` % del valor considerado más real. En el futuro, si se trata de superficies topográficas, se utilizará la función `sp` dedicada. Pero si alguna vez se tratase de polígonos en el espacio, tal vez la solución aquí descrita será la ideal. Para culminar, la visualización `plotly` del área real -por celda de 100 m^2^ planos- del :volcano:
+De esta manera se estimó, con nuestras propias fórmulas, que la superficie del volcán es
+de `r sum(volcano_area) / 1e4` hectáreas. Esto es el `r 100 * sum(volcano_area) /
+sp::surfaceArea(volcano, 10, 10)` % del valor considerado más real. En el futuro, si se
+trata de superficies topográficas, se utilizará la función `sp` dedicada. Pero si alguna
+vez se tratase de polígonos en el espacio, tal vez la solución aquí descrita será la
+ideal. Para culminar, la visualización `plotly` del área real -por celda de 100 m^2^ planos- del :volcano:
 
 ```{r volcano-area, fig.height=3.5}
 plot_ly(z = volcano_area, type = "surface") %>%
    colorbar(tick0 = 0, dtick = 25) %>%
    my_layout(c(61, 87, 101 / 5) / 52, tick = c(20, 20, 25))
 ```
+
+# Referencias
