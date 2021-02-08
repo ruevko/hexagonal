@@ -17,29 +17,41 @@ editor_options:
 output:
   blogdown::html_page:
     highlight: kate
-math: yes
+math: true
 thumbnailImage: https://ruevko.github.io/hexagonal/post/2020/07/01-cordones-coordenadas_files/figure-html/animation-1-1.gif
 summary: Este primer post sobre matemáticas presenta una demostración de la fórmula *shoelace*, utilizada para calcular áreas y centroides de polígonos.
 ---
 
 `r knitr::opts_chunk$set(dev="svg", echo=FALSE, fig.height=3, fig.width=4.5)`
 
-El Ecuador continental^[En los libros aparece la cifra de 256370 km^2^ para todo el Ecuador; a ello hay que restar no solo las Galápagos, también las islas frente al litoral, como Puná o La Plata.] posee una extensión un poco mayor a 246 mil km^2^. Es sencillo verificar este dato, si uno cuenta con la cartografía oficial; en esta tarea,  `sf::st_area()` es la función clave:
+El Ecuador continental^[En los libros aparece la cifra de 256370 km^2^ para todo el Ecuador;
+a ello hay que restar no solo las Galápagos, también las islas frente al litoral, como Puná
+o La Plata.] posee una extensión un poco mayor a 246 mil km^2^. Es sencillo verificar este dato,
+si uno cuenta con la cartografía oficial; en esta tarea,  `sf::st_area()` es la función clave:
 
 ```{r ecuador-area, echo=TRUE}
 library(sf)
 library(units)
 
 Ecuador_sf = read_sf("boundaryl.shp")$geometry %>% # fuente: http://www.igm.gob.ec/
-   st_set_crs(32717) %>% # proyección oficial: UTM zona 17S
-   st_cast("POLYGON")
+   st_cast("POLYGON") %>% st_set_crs(32717) # proyección oficial: UTM zona 17S
 
-set_units(st_area(Ecuador_sf), "km^2")
+st_area(Ecuador_sf) %>% set_units("km^2") %>% format(digits = 8)
 ```
 
-Resulta trivial calcular cantidades como áreas o distancias, pero aprender la lógica detrás de tales operaciones no deja de ser interesante. En este post revisaremos un acercamiento al problema de calcular el área de un polígono: la *shoelace formula*^[También conocida como la fórmula del área de Gauss; no obstante, parece que el primero en describirla fue [Albrecht Ludwig Friedrich Meister](https://www.deutsche-biographie.de/sfz60150.html). En cualquier caso, fue descrita por un matemático alemán.]. Este curioso nombre, como se verá, proviene de la forma como se construye la fórmula.
+Resulta trivial calcular cantidades como áreas o distancias, pero aprender la lógica
+detrás de tales operaciones nunca dejará de resultar interesante. En este artículo revisaremos
+un acercamiento al problema de calcular el área de un polígono: la *shoelace formula*^[También
+conocida como la fórmula del área de Gauss; no obstante, parece que el primero en describirla
+fue [Albrecht Ludwig Friedrich Meister](https://www.deutsche-biographie.de/sfz60150.html). En
+cualquier caso, fue descrita por un matemático alemán.]. Este curioso nombre, como se verá,
+proviene de la forma como se construye la fórmula.
 
-Plantear dicho problema supone conocer las coordenadas $P_{i} = x_{i},\ y_{i};\ i = 1, 2, ... n$ de los vértices del polígono, donde $n$ es el número de vértices (que también es el número lados). Es un requisito que estos vértices se encuentren ordenados alrededor del límite; dicho de otra manera, que el polígono se trace “uniendo los puntos” en orden. Tomemos el siguiente gráfico; en este ejemplo, el área del triángulo $A = \triangle P_{1}P_{2}P_{3}$ será la interrogante.
+Plantear dicho problema supone conocer las coordenadas $P_i = x_i,\ y_i;\ i = 1, 2, ... n$
+de los vértices del polígono, donde $n$ es el número de vértices (y también es el número de
+lados). Es un requisito que estos vértices se encuentren ordenados alrededor del límite;
+dicho de otra manera, que el polígono se trace “uniendo los puntos” en orden. Tomemos el
+siguiente gráfico; en este ejemplo, el área del triángulo $A = \triangle P_1 P_2 P_3$ será la interrogante.
 
 ```{r example-1}
 library(gganimate)
@@ -69,18 +81,24 @@ rectan = data.frame(
 shoeplot2(rectan)
 ```
 
-El rectángulo $E = A + B + C + D$ se traza de manera que contenga al triángulo $A$, su área sea mínima, y sus lados sean paralelos a los ejes. En este caso^[Al menos un vértice del triángulo coincidirá con uno del rectángulo. También puede suceder que dos (o los tres) vértices del triángulo coincidan; se invita a demostrar la ecuación \@ref(eq:triangle) en esos dos casos.] es sencillo calcular el área de $E$ y de los triángulos $B, C, D$ con fórmulas geométricas elementales: $bh$ y $\frac{1}{2} bh$ respectivamente.
+El rectángulo $E = A + B + C + D$ se traza de manera que contenga al triángulo $A$, su
+área sea mínima, y sus lados sean paralelos a los ejes. En este caso^[Al menos un vértice
+del triángulo coincidirá con uno del rectángulo. También puede suceder que dos (o los tres)
+vértices del triángulo coincidan; se invita a demostrar la ecuación \@ref(eq:triangle) en
+esos dos casos.] es sencillo calcular el área de $E$ y de los triángulos $B, C, D$ con
+fórmulas geométricas elementales: $bh$ y $\frac{1}{2} bh$ respectivamente.
 
-$$E = (x_{2} - x_{3})(y_{3} - y_{1})$$
-$$D = \frac{1}{2} (x_{1} - x_{3})(y_{3} - y_{1})$$
-$$C = \frac{1}{2} (x_{2} - x_{3})(y_{3} - y_{2})$$
-$$B = \frac{1}{2} (x_{2} - x_{1})(y_{2} - y_{1})$$
+$$E = (x_2 - x_3) (y_3 - y_1)$$
+$$D = \frac{1}{2} (x_1 - x_3) (y_3 - y_1)$$
+$$C = \frac{1}{2} (x_2 - x_3) (y_3 - y_2)$$
+$$B = \frac{1}{2} (x_2 - x_1) (y_2 - y_1)$$
 
-Ahora, es evidente que el área buscada se puede hallar por diferencia: $A = E - B - C - D$. Reemplazando y simplificando se obtiene:
+Ahora, es evidente que el área buscada se puede hallar por diferencia: $A = E - B - C - D$.
+Reemplazando y simplificando se obtiene:
 
 $$
 \begin{equation}
-A = \frac{1}{2} (x_{1}y_{2} - x_{2}y_{1} + x_{2}y_{3} - x_{3}y_{2} + x_{3}y_{1} - x_{1}y_{3})
+A = \frac{1}{2} (x_1 y_2 - x_2 y_1 + x_2 y_3 - x_3 y_2 + x_3 y_1 - x_1 y_3)
 (\#eq:triangle)
 \end{equation}
 $$
@@ -93,7 +111,8 @@ A = \frac{1}{2} (8\cdot6 - 9\cdot2 + 9\cdot7 - 1\cdot6 + 1\cdot2 - 8\cdot7) = 16
 \end{equation}
 $$
 
-De manera que el problema está resuelto, al menos cuando el polígono es un triángulo. Con todo, revisemos que sucede si variamos este ejemplo, intercambiando las posiciones de $P_{2}$ y $P_{3}$.
+De manera que el problema está resuelto, al menos cuando el polígono es un triángulo. Con todo,
+revisemos que sucede si variamos este ejemplo, intercambiando las posiciones de $P_2$ y $P_3$.
 
 ```{r example-2}
 rectan2 = data.frame(
@@ -113,9 +132,12 @@ A = \frac{1}{2} (8\cdot7 - 1\cdot2 + 1\cdot6 - 9\cdot7 + 9\cdot2 - 8\cdot6) = -1
 \end{equation}
 $$
 
-Es un resultado importante pues, mientras el valor absoluto del área sigue siendo correcto, el hecho de que haya cambiado de signo resultará crucial más tarde. La regla es la siguiente: si los vértices se encuentran ordenados en sentido antihorario, se calcula un área positiva; si el orden es horario, se calcula un área negativa.
+Es un resultado importante pues, mientras el valor absoluto del área sigue siendo
+correcto, el hecho de que haya cambiado de signo resultará crucial más tarde. La regla es
+la siguiente: si los vértices se encuentran ordenados en sentido antihorario, se calcula
+un área positiva; si el orden es horario, se calcula un área negativa.
 
-Revisemos una variación más, reemplazando $P_{3}$ por $P_{0} = 0,\ 0$.
+Revisemos una variación más, reemplazando $P_3$ por $P_0 = 0,\ 0$.
 
 ```{r example-3}
 rectan2 = data.frame(
@@ -131,7 +153,8 @@ Cuando uno de los vértices es el origen, es posible reducir \@ref(eq:triangle):
 
 $$
 \begin{equation}
-A = \frac{1}{2} (x_{1}y_{2} - x_{2}y_{1} + x_{2}\cdot0 - 0\cdot y_{2} + 0\cdot y_{1} - x_{1}\cdot0) = \frac{1}{2} (x_{1}y_{2} - x_{2}y_{1})
+A = \frac{1}{2} (x_1 y_2 - x_2 y_1 + x_2 \cdot0 - 0\cdot y_2 + 0\cdot y_1 - x_1\cdot0) =
+\frac{1}{2} (x_{1}y_{2} - x_{2}y_{1})
 (\#eq:origin)
 \end{equation}
 $$
@@ -144,15 +167,20 @@ A = \frac{1}{2} (8\cdot7 - 1\cdot2) = 27
 \end{equation}
 $$
 
-Ahora podemos verificar que se calcula un área positiva, pues los vértices se encuentran en sentido antihorario. La ecuación \@ref(eq:origin) puede ser generalizada a:
+Ahora podemos verificar que se calcula un área positiva, pues los vértices se encuentran
+en sentido antihorario. La ecuación \@ref(eq:origin) puede ser generalizada a:
 
 $$
 \begin{equation}
-\triangle P_{0}P_{i}P_{i+1} = \frac{1}{2} (x_{i}y_{i+1} - x_{i+1}y_{i});\ i = 1, 2, ... n
+\triangle P_0 P_i P_{i+1} = \frac{1}{2} (x_i y_{i+1} - x_{i+1} y_i);\ i = 1, 2, ... n
 \end{equation}
 $$
 
-Esta forma es aplicable en cada uno de los $n$ lados, observando que el vértice $P_{n+1}$ equivale a $P_{1}$ (pues el polígono se encuentra cerrado). Pero ¿cuál es el propósito de generalizar esta ecuación? Observen lo que sucede al iterarla en el triángulo $A$ del primer ejemplo; en estas animaciones, los triángulos de borde rojo poseen área positiva; los de borde azul, negativa.
+Esta forma es aplicable en cada uno de los $n$ lados, observando que el vértice $P_{n+1}$
+equivale a $P_1$ (pues el polígono se encuentra cerrado). Pero ¿cuál es el propósito de
+generalizar esta ecuación? Observen lo que sucede al iterarla en el triángulo $A$ del
+primer ejemplo; en estas animaciones, los triángulos de borde rojo poseen área positiva;
+los de borde azul, negativa.
 
 ```{r animation-1}
 options(gganimate.renderer = magick_renderer())
@@ -199,22 +227,29 @@ shoeanim = function(vertex, x0 = 0, y0 = 0, paths = TRUE, texts = TRUE){
 animate(shoeanim(rectan[1:3, -2]), 5, 1, end_pause = 2, height = 4, width = 4)
 ```
 
-El hecho de que esta fórmula devuelva resultados positivos y negativos resuelve el problema del área para cualquier polígono $P_{1}P_{2}...P_{n}$; calculándola en todos los lados, se generan triángulos cuyas áreas, sumadas, producen el polígono buscado. Existe, sin embargo, la restricción de que el polígono sea simple (no se debe intersecar a sí mismo).
+El hecho de que esta fórmula devuelva resultados positivos y negativos resuelve el problema
+del área para cualquier polígono $P_1 P_2 ... P_n$; calculándola en todos los lados, se
+generan triángulos cuyas áreas, sumadas, producen el polígono buscado. Existe, sin embargo,
+la restricción de que el polígono sea simple (no se debe intersecar a sí mismo).
 
 $$
 \begin{equation}
-A_{P_{1}P_{2}...P_{n}} = \triangle P_{0}P_{1}P_{2} +\triangle P_{0}P_{2}P_{3} +\ ...\ \triangle P_{0}P_{n}P_{1}
+A_{P_1 P_2 ... P_n} = \triangle P_0 P_1 P_2 +
+\triangle P_0 P_2 P_3 +\ ...\ \triangle P_0 P_n P_1
 \end{equation}
 $$
 
 $$
 \begin{equation}
-A_{P_{1}P_{2}...P_{n}} = \sum_{i=1}^{n} \triangle P_{0}P_{i}P_{i+1} = \frac{1}{2} \sum_{i=1}^{n} (x_{i}y_{i+1} - x_{i+1}y_{i});\ P_{n+1} = P_{1}
+A_{P_1 P_2 ... P_n} = \sum_{i=1}^n \triangle P_0 P_i P_{i+1} =
+\frac{1}{2} \sum_{i=1}^n (x_i y_{i+1} - x_{i+1} y_i);\ P_{n+1} = P_1
 (\#eq:shoelace)
 \end{equation}
 $$
 
-Y esta es la *shoelace formula*. Su construcción, multiplicando de manera cruzada las coordenadas de un vértice con el siguiente, se asemeja a insertar los cordones en un zapato. Compliquemos un poco nuestro ejemplo, añadiendo dos vértices:
+Y esta es la *shoelace formula*. Su construcción, multiplicando de manera cruzada las
+coordenadas de un vértice con el siguiente, se asemeja a insertar los cordones en un
+zapato. Compliquemos un poco nuestro ejemplo, añadiendo dos vértices:
 
 ```{r animation-2}
 pentagon = data.frame(
@@ -225,35 +260,44 @@ pentagon = data.frame(
 animate(shoeanim(pentagon), 7 , 1, end_pause = 2, height = 3.6, width = 4)
 ```
 
-Otro nombre que se le ha otorgado es *surveyor's formula* pues su utilidad en topografía salta a la vista; en esta aplicación, un paso previo era transformar las coordenadas polares, del teodolito, a rectangulares. $P_{0}$ representaría la ubicación del topógrafo, y este punto no tiene que ser el origen necesariamente; reutilizando \@ref(eq:triangle) es posible desplazarlo a cualquier ubicación.
+Otro nombre que se le ha otorgado es *surveyor's formula* pues su utilidad en topografía
+salta a la vista; en esta aplicación, un paso previo era transformar las coordenadas
+polares, del teodolito, a rectangulares. $P_{0}$ representaría la ubicación del topógrafo,
+y este punto no tiene que ser el origen necesariamente; reutilizando \@ref(eq:triangle) es
+posible desplazarlo a cualquier ubicación.
 
 ```{r animation-3}
 animate(shoeanim(pentagon, 5, 2), 7 , 1, end_pause = 2, height = 3.6, width = 4)
 ```
 
-La fórmula encuentra una aplicación más en el cálculo del centroide, el centro de masa de un polígono. Si $A$ es el área calculada con la *shoelace formula* (ya sea positiva o negativa), las coordenadas del centroide $P_{c} = x_{c},\ y_{c}$ se hallan con el siguiente par de fórmulas:
+La fórmula encuentra una aplicación más en el cálculo del centroide, el cual es el centro
+de masa del polígono. Si $A$ es el área calculada con la *shoelace formula* (incluyendo
+su signo positivo o negativo), las coordenadas del centroide $P_c = x_c,\ y_c$ se hallan
+con el siguiente par de fórmulas:
 
 $$
 \begin{equation}
-x_{c} = \frac{1}{6A} \sum_{i=1}^{n} (x_{i} + x_{i+1}) (x_{i}y_{i+1} - x_{i+1}y_{i})
+x_c = \frac{1}{6A} \sum_{i=1}^n (x_i + x_{i+1}) (x_i y_{i+1} - x_{i+1} y_i)
 (\#eq:centroidx)
 \end{equation}
 $$
 
 $$
 \begin{equation}
-y_{c} = \frac{1}{6A} \sum_{i=1}^{n} (y_{i} + y_{i+1}) (x_{i}y_{i+1} - x_{i+1}y_{i})
+y_c = \frac{1}{6A} \sum_{i=1}^n (y_i + y_{i+1}) (x_i y_{i+1} - x_{i+1} y_i)
 (\#eq:centroidy)
 \end{equation}
 $$
 
-Nuevamente, calcular el centroide de un polígono es algo trivial; en el caso del Ecuador continental, por ejemplo, podemos ejecutar `sf::st_centroid(Ecuador_sf)`, obteniendo como resultado:
+Nuevamente, calcular el centroide de un polígono es algo trivial; en el caso del Ecuador
+continental, por ejemplo, podemos ejecutar `sf::st_centroid(Ecuador_sf)`, obteniendo como resultado:
 
 ```{r ecuador-cent, message=TRUE}
-st_centroid(Ecuador_sf)[[1]]
+options(digits = 8); st_centroid(Ecuador_sf)[[1]]
 ```
 
-Con todo, ahora estamos en capacidad de replicar esas funciones `sf`. El primer paso es transformar los datos espaciales en una matriz de coordenadas.
+Con todo, ahora estamos en capacidad de replicar esas funciones `sf`. El primer paso
+es transformar los datos espaciales en una matriz de coordenadas.
 
 ```{r ecuador-df, echo=TRUE}
 Ecuador_df = st_cast(Ecuador_sf, "POINT")[-1] %>%
@@ -268,7 +312,8 @@ rownames(Ecuador_df) = NULL
 head(Ecuador_df)
 ```
 
-El segundo paso es escribir una función que reciba la matriz y aplique las ecuaciones \@ref(eq:shoelace) \@ref(eq:centroidx) \@ref(eq:centroidy).
+El segundo paso es escribir una función que reciba la matriz y aplique las ecuaciones
+\@ref(eq:shoelace) \@ref(eq:centroidx) \@ref(eq:centroidy).
 
 ```{r shoelace, echo=TRUE}
 shoelace = function(vertices){
@@ -295,12 +340,14 @@ El último paso es ejecutar `sholace(Ecuador_df)`; este es el resultado:
 shoelace(Ecuador_df)
 ```
 
-¡Hemos hallado los resultados correctos! Aquí termina la revisión de la *shoelace formula*, con una última observación: es cierto que la fórmula se ejecuta en un solo paso, pero estas animaciones^[La última animación fue generada con una versión simplificada del límite ecuatoriano; por esta razón la extensión calculada difiere de la correcta.] progresivas se ven muy bien.
+¡Hemos hallado los resultados correctos! Aquí termina la revisión de la *shoelace formula*,
+con una última observación: es cierto que la fórmula se ejecuta en un solo paso, pero estas
+animaciones^[La última animación fue generada con una versión simplificada del límite ecuatoriano;
+por esta razón la extensión calculada difiere de la correcta.] progresivas se ven muy bien.
 
 ```{r ecuador-gif, eval=FALSE}
-Ecuador_gif = {st_cast(st_simplify(Ecuador_sf, dTolerance = 5e3), "POINT") %>%
-   lapply(as.double) %>% Reduce(rbind, .) %>% set_units("km") %>% #1e4c(45:2,71:46)
-   as.data.frame()}[c(80:35,30:26,21:19,15:7,5:4,1,122:118,112:111,104:99,93:81),]/1e3
+Ecuador_gif = { st_cast(st_simplify(Ecuador_sf, dTolerance = 5e3), "POINT") %>%
+   lapply(as.double) %>% Reduce(rbind, .) %>% set_units("km") %>% as.data.frame() } / 1e3
 
 colnames(Ecuador_gif) = c("x", "y")
 

@@ -297,28 +297,38 @@ code span.wa { color: #bf0303; } /* Warning */
 </style>
 
 
-<p>El Ecuador continental<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> posee una extensión un poco mayor a 246 mil km<sup>2</sup>. Es sencillo verificar este dato, si uno cuenta con la cartografía oficial; en esta tarea, <code>sf::st_area()</code> es la función clave:</p>
+<p>El Ecuador continental<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> posee una extensión un poco mayor a 246 mil km<sup>2</sup>. Es sencillo verificar este dato,
+si uno cuenta con la cartografía oficial; en esta tarea, <code>sf::st_area()</code> es la función clave:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw">library</span>(sf)</span>
 <span id="cb1-2"><a href="#cb1-2"></a><span class="kw">library</span>(units)</span>
 <span id="cb1-3"><a href="#cb1-3"></a></span>
 <span id="cb1-4"><a href="#cb1-4"></a>Ecuador_sf =<span class="st"> </span><span class="kw">read_sf</span>(<span class="st">&quot;boundaryl.shp&quot;</span>)<span class="op">$</span>geometry <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># fuente: http://www.igm.gob.ec/</span></span>
-<span id="cb1-5"><a href="#cb1-5"></a><span class="st">   </span><span class="kw">st_set_crs</span>(<span class="dv">32717</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># proyección oficial: UTM zona 17S</span></span>
-<span id="cb1-6"><a href="#cb1-6"></a><span class="st">   </span><span class="kw">st_cast</span>(<span class="st">&quot;POLYGON&quot;</span>)</span>
-<span id="cb1-7"><a href="#cb1-7"></a></span>
-<span id="cb1-8"><a href="#cb1-8"></a><span class="kw">set_units</span>(<span class="kw">st_area</span>(Ecuador_sf), <span class="st">&quot;km^2&quot;</span>)</span></code></pre></div>
-<pre><code>## 246039.9 [km^2]</code></pre>
-<p>Resulta trivial calcular cantidades como áreas o distancias, pero aprender la lógica detrás de tales operaciones no deja de ser interesante. En este post revisaremos un acercamiento al problema de calcular el área de un polígono: la <em>shoelace formula</em><a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>. Este curioso nombre, como se verá, proviene de la forma como se construye la fórmula.</p>
-<p>Plantear dicho problema supone conocer las coordenadas <span class="math inline">\(P_{i} = x_{i},\ y_{i};\ i = 1, 2, ... n\)</span> de los vértices del polígono, donde <span class="math inline">\(n\)</span> es el número de vértices (que también es el número lados). Es un requisito que estos vértices se encuentren ordenados alrededor del límite; dicho de otra manera, que el polígono se trace “uniendo los puntos” en orden. Tomemos el siguiente gráfico; en este ejemplo, el área del triángulo <span class="math inline">\(A = \triangle P_{1}P_{2}P_{3}\)</span> será la interrogante.</p>
+<span id="cb1-5"><a href="#cb1-5"></a><span class="st">   </span><span class="kw">st_cast</span>(<span class="st">&quot;POLYGON&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">st_set_crs</span>(<span class="dv">32717</span>) <span class="co"># proyección oficial: UTM zona 17S</span></span>
+<span id="cb1-6"><a href="#cb1-6"></a></span>
+<span id="cb1-7"><a href="#cb1-7"></a><span class="kw">st_area</span>(Ecuador_sf) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">set_units</span>(<span class="st">&quot;km^2&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">format</span>(<span class="dt">digits =</span> <span class="dv">8</span>)</span></code></pre></div>
+<pre><code>## [1] &quot;246039.89 [km^2]&quot;</code></pre>
+<p>Resulta trivial calcular cantidades como áreas o distancias, pero aprender la lógica
+detrás de tales operaciones nunca dejará de resultar interesante. En este artículo revisaremos
+un acercamiento al problema de calcular el área de un polígono: la <em>shoelace formula</em><a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>. Este curioso nombre, como se verá,
+proviene de la forma como se construye la fórmula.</p>
+<p>Plantear dicho problema supone conocer las coordenadas <span class="math inline">\(P_i = x_i,\ y_i;\ i = 1, 2, ... n\)</span>
+de los vértices del polígono, donde <span class="math inline">\(n\)</span> es el número de vértices (y también es el número de
+lados). Es un requisito que estos vértices se encuentren ordenados alrededor del límite;
+dicho de otra manera, que el polígono se trace “uniendo los puntos” en orden. Tomemos el
+siguiente gráfico; en este ejemplo, el área del triángulo <span class="math inline">\(A = \triangle P_1 P_2 P_3\)</span> será la interrogante.</p>
 <p><img src="https://ruevko.github.io/hexagonal/post/2020/07/01-cordones-coordenadas_files/figure-html/example-1-1.svg" width="432" /></p>
-<p>El rectángulo <span class="math inline">\(E = A + B + C + D\)</span> se traza de manera que contenga al triángulo <span class="math inline">\(A\)</span>, su área sea mínima, y sus lados sean paralelos a los ejes. En este caso<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a> es sencillo calcular el área de <span class="math inline">\(E\)</span> y de los triángulos <span class="math inline">\(B, C, D\)</span> con fórmulas geométricas elementales: <span class="math inline">\(bh\)</span> y <span class="math inline">\(\frac{1}{2} bh\)</span> respectivamente.</p>
-<p><span class="math display">\[E = (x_{2} - x_{3})(y_{3} - y_{1})\]</span>
-<span class="math display">\[D = \frac{1}{2} (x_{1} - x_{3})(y_{3} - y_{1})\]</span>
-<span class="math display">\[C = \frac{1}{2} (x_{2} - x_{3})(y_{3} - y_{2})\]</span>
-<span class="math display">\[B = \frac{1}{2} (x_{2} - x_{1})(y_{2} - y_{1})\]</span></p>
-<p>Ahora, es evidente que el área buscada se puede hallar por diferencia: <span class="math inline">\(A = E - B - C - D\)</span>. Reemplazando y simplificando se obtiene:</p>
+<p>El rectángulo <span class="math inline">\(E = A + B + C + D\)</span> se traza de manera que contenga al triángulo <span class="math inline">\(A\)</span>, su
+área sea mínima, y sus lados sean paralelos a los ejes. En este caso<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a> es sencillo calcular el área de <span class="math inline">\(E\)</span> y de los triángulos <span class="math inline">\(B, C, D\)</span> con
+fórmulas geométricas elementales: <span class="math inline">\(bh\)</span> y <span class="math inline">\(\frac{1}{2} bh\)</span> respectivamente.</p>
+<p><span class="math display">\[E = (x_2 - x_3) (y_3 - y_1)\]</span>
+<span class="math display">\[D = \frac{1}{2} (x_1 - x_3) (y_3 - y_1)\]</span>
+<span class="math display">\[C = \frac{1}{2} (x_2 - x_3) (y_3 - y_2)\]</span>
+<span class="math display">\[B = \frac{1}{2} (x_2 - x_1) (y_2 - y_1)\]</span></p>
+<p>Ahora, es evidente que el área buscada se puede hallar por diferencia: <span class="math inline">\(A = E - B - C - D\)</span>.
+Reemplazando y simplificando se obtiene:</p>
 <p><span class="math display" id="eq:triangle">\[
 \begin{equation}
-A = \frac{1}{2} (x_{1}y_{2} - x_{2}y_{1} + x_{2}y_{3} - x_{3}y_{2} + x_{3}y_{1} - x_{1}y_{3})
+A = \frac{1}{2} (x_1 y_2 - x_2 y_1 + x_2 y_3 - x_3 y_2 + x_3 y_1 - x_1 y_3)
 \tag{1}
 \end{equation}
 \]</span></p>
@@ -328,7 +338,8 @@ A = \frac{1}{2} (x_{1}y_{2} - x_{2}y_{1} + x_{2}y_{3} - x_{3}y_{2} + x_{3}y_{1} 
 A = \frac{1}{2} (8\cdot6 - 9\cdot2 + 9\cdot7 - 1\cdot6 + 1\cdot2 - 8\cdot7) = 16.5
 \end{equation}
 \]</span></p>
-<p>De manera que el problema está resuelto, al menos cuando el polígono es un triángulo. Con todo, revisemos que sucede si variamos este ejemplo, intercambiando las posiciones de <span class="math inline">\(P_{2}\)</span> y <span class="math inline">\(P_{3}\)</span>.</p>
+<p>De manera que el problema está resuelto, al menos cuando el polígono es un triángulo. Con todo,
+revisemos que sucede si variamos este ejemplo, intercambiando las posiciones de <span class="math inline">\(P_2\)</span> y <span class="math inline">\(P_3\)</span>.</p>
 <p><img src="https://ruevko.github.io/hexagonal/post/2020/07/01-cordones-coordenadas_files/figure-html/example-2-1.svg" width="432" /></p>
 <p>Según la ecuación <a href="#eq:triangle">(1)</a>:</p>
 <p><span class="math display">\[
@@ -336,13 +347,17 @@ A = \frac{1}{2} (8\cdot6 - 9\cdot2 + 9\cdot7 - 1\cdot6 + 1\cdot2 - 8\cdot7) = 16
 A = \frac{1}{2} (8\cdot7 - 1\cdot2 + 1\cdot6 - 9\cdot7 + 9\cdot2 - 8\cdot6) = -16.5
 \end{equation}
 \]</span></p>
-<p>Es un resultado importante pues, mientras el valor absoluto del área sigue siendo correcto, el hecho de que haya cambiado de signo resultará crucial más tarde. La regla es la siguiente: si los vértices se encuentran ordenados en sentido antihorario, se calcula un área positiva; si el orden es horario, se calcula un área negativa.</p>
-<p>Revisemos una variación más, reemplazando <span class="math inline">\(P_{3}\)</span> por <span class="math inline">\(P_{0} = 0,\ 0\)</span>.</p>
+<p>Es un resultado importante pues, mientras el valor absoluto del área sigue siendo
+correcto, el hecho de que haya cambiado de signo resultará crucial más tarde. La regla es
+la siguiente: si los vértices se encuentran ordenados en sentido antihorario, se calcula
+un área positiva; si el orden es horario, se calcula un área negativa.</p>
+<p>Revisemos una variación más, reemplazando <span class="math inline">\(P_3\)</span> por <span class="math inline">\(P_0 = 0,\ 0\)</span>.</p>
 <p><img src="https://ruevko.github.io/hexagonal/post/2020/07/01-cordones-coordenadas_files/figure-html/example-3-1.svg" width="432" /></p>
 <p>Cuando uno de los vértices es el origen, es posible reducir <a href="#eq:triangle">(1)</a>:</p>
 <p><span class="math display" id="eq:origin">\[
 \begin{equation}
-A = \frac{1}{2} (x_{1}y_{2} - x_{2}y_{1} + x_{2}\cdot0 - 0\cdot y_{2} + 0\cdot y_{1} - x_{1}\cdot0) = \frac{1}{2} (x_{1}y_{2} - x_{2}y_{1})
+A = \frac{1}{2} (x_1 y_2 - x_2 y_1 + x_2 \cdot0 - 0\cdot y_2 + 0\cdot y_1 - x_1\cdot0) =
+\frac{1}{2} (x_{1}y_{2} - x_{2}y_{1})
 \tag{2}
 \end{equation}
 \]</span></p>
@@ -352,46 +367,67 @@ A = \frac{1}{2} (x_{1}y_{2} - x_{2}y_{1} + x_{2}\cdot0 - 0\cdot y_{2} + 0\cdot y
 A = \frac{1}{2} (8\cdot7 - 1\cdot2) = 27
 \end{equation}
 \]</span></p>
-<p>Ahora podemos verificar que se calcula un área positiva, pues los vértices se encuentran en sentido antihorario. La ecuación <a href="#eq:origin">(2)</a> puede ser generalizada a:</p>
+<p>Ahora podemos verificar que se calcula un área positiva, pues los vértices se encuentran
+en sentido antihorario. La ecuación <a href="#eq:origin">(2)</a> puede ser generalizada a:</p>
 <p><span class="math display">\[
 \begin{equation}
-\triangle P_{0}P_{i}P_{i+1} = \frac{1}{2} (x_{i}y_{i+1} - x_{i+1}y_{i});\ i = 1, 2, ... n
+\triangle P_0 P_i P_{i+1} = \frac{1}{2} (x_i y_{i+1} - x_{i+1} y_i);\ i = 1, 2, ... n
 \end{equation}
 \]</span></p>
-<p>Esta forma es aplicable en cada uno de los <span class="math inline">\(n\)</span> lados, observando que el vértice <span class="math inline">\(P_{n+1}\)</span> equivale a <span class="math inline">\(P_{1}\)</span> (pues el polígono se encuentra cerrado). Pero ¿cuál es el propósito de generalizar esta ecuación? Observen lo que sucede al iterarla en el triángulo <span class="math inline">\(A\)</span> del primer ejemplo; en estas animaciones, los triángulos de borde rojo poseen área positiva; los de borde azul, negativa.</p>
+<p>Esta forma es aplicable en cada uno de los <span class="math inline">\(n\)</span> lados, observando que el vértice <span class="math inline">\(P_{n+1}\)</span>
+equivale a <span class="math inline">\(P_1\)</span> (pues el polígono se encuentra cerrado). Pero ¿cuál es el propósito de
+generalizar esta ecuación? Observen lo que sucede al iterarla en el triángulo <span class="math inline">\(A\)</span> del
+primer ejemplo; en estas animaciones, los triángulos de borde rojo poseen área positiva;
+los de borde azul, negativa.</p>
 <p><img src="https://ruevko.github.io/hexagonal/post/2020/07/01-cordones-coordenadas_files/figure-html/animation-1-1.gif" /><!-- --></p>
-<p>El hecho de que esta fórmula devuelva resultados positivos y negativos resuelve el problema del área para cualquier polígono <span class="math inline">\(P_{1}P_{2}...P_{n}\)</span>; calculándola en todos los lados, se generan triángulos cuyas áreas, sumadas, producen el polígono buscado. Existe, sin embargo, la restricción de que el polígono sea simple (no se debe intersecar a sí mismo).</p>
+<p>El hecho de que esta fórmula devuelva resultados positivos y negativos resuelve el problema
+del área para cualquier polígono <span class="math inline">\(P_1 P_2 ... P_n\)</span>; calculándola en todos los lados, se
+generan triángulos cuyas áreas, sumadas, producen el polígono buscado. Existe, sin embargo,
+la restricción de que el polígono sea simple (no se debe intersecar a sí mismo).</p>
 <p><span class="math display">\[
 \begin{equation}
-A_{P_{1}P_{2}...P_{n}} = \triangle P_{0}P_{1}P_{2} +\triangle P_{0}P_{2}P_{3} +\ ...\ \triangle P_{0}P_{n}P_{1}
+A_{P_1 P_2 ... P_n} = \triangle P_0 P_1 P_2 +
+\triangle P_0 P_2 P_3 +\ ...\ \triangle P_0 P_n P_1
 \end{equation}
 \]</span></p>
 <p><span class="math display" id="eq:shoelace">\[
 \begin{equation}
-A_{P_{1}P_{2}...P_{n}} = \sum_{i=1}^{n} \triangle P_{0}P_{i}P_{i+1} = \frac{1}{2} \sum_{i=1}^{n} (x_{i}y_{i+1} - x_{i+1}y_{i});\ P_{n+1} = P_{1}
+A_{P_1 P_2 ... P_n} = \sum_{i=1}^n \triangle P_0 P_i P_{i+1} =
+\frac{1}{2} \sum_{i=1}^n (x_i y_{i+1} - x_{i+1} y_i);\ P_{n+1} = P_1
 \tag{3}
 \end{equation}
 \]</span></p>
-<p>Y esta es la <em>shoelace formula</em>. Su construcción, multiplicando de manera cruzada las coordenadas de un vértice con el siguiente, se asemeja a insertar los cordones en un zapato. Compliquemos un poco nuestro ejemplo, añadiendo dos vértices:</p>
+<p>Y esta es la <em>shoelace formula</em>. Su construcción, multiplicando de manera cruzada las
+coordenadas de un vértice con el siguiente, se asemeja a insertar los cordones en un
+zapato. Compliquemos un poco nuestro ejemplo, añadiendo dos vértices:</p>
 <p><img src="https://ruevko.github.io/hexagonal/post/2020/07/01-cordones-coordenadas_files/figure-html/animation-2-1.gif" /><!-- --></p>
-<p>Otro nombre que se le ha otorgado es <em>surveyor’s formula</em> pues su utilidad en topografía salta a la vista; en esta aplicación, un paso previo era transformar las coordenadas polares, del teodolito, a rectangulares. <span class="math inline">\(P_{0}\)</span> representaría la ubicación del topógrafo, y este punto no tiene que ser el origen necesariamente; reutilizando <a href="#eq:triangle">(1)</a> es posible desplazarlo a cualquier ubicación.</p>
+<p>Otro nombre que se le ha otorgado es <em>surveyor’s formula</em> pues su utilidad en topografía
+salta a la vista; en esta aplicación, un paso previo era transformar las coordenadas
+polares, del teodolito, a rectangulares. <span class="math inline">\(P_{0}\)</span> representaría la ubicación del topógrafo,
+y este punto no tiene que ser el origen necesariamente; reutilizando <a href="#eq:triangle">(1)</a> es
+posible desplazarlo a cualquier ubicación.</p>
 <p><img src="https://ruevko.github.io/hexagonal/post/2020/07/01-cordones-coordenadas_files/figure-html/animation-3-1.gif" /><!-- --></p>
-<p>La fórmula encuentra una aplicación más en el cálculo del centroide, el centro de masa de un polígono. Si <span class="math inline">\(A\)</span> es el área calculada con la <em>shoelace formula</em> (ya sea positiva o negativa), las coordenadas del centroide <span class="math inline">\(P_{c} = x_{c},\ y_{c}\)</span> se hallan con el siguiente par de fórmulas:</p>
+<p>La fórmula encuentra una aplicación más en el cálculo del centroide, el cual es el centro
+de masa del polígono. Si <span class="math inline">\(A\)</span> es el área calculada con la <em>shoelace formula</em> (incluyendo
+su signo positivo o negativo), las coordenadas del centroide <span class="math inline">\(P_c = x_c,\ y_c\)</span> se hallan
+con el siguiente par de fórmulas:</p>
 <p><span class="math display" id="eq:centroidx">\[
 \begin{equation}
-x_{c} = \frac{1}{6A} \sum_{i=1}^{n} (x_{i} + x_{i+1}) (x_{i}y_{i+1} - x_{i+1}y_{i})
+x_c = \frac{1}{6A} \sum_{i=1}^n (x_i + x_{i+1}) (x_i y_{i+1} - x_{i+1} y_i)
 \tag{4}
 \end{equation}
 \]</span></p>
 <p><span class="math display" id="eq:centroidy">\[
 \begin{equation}
-y_{c} = \frac{1}{6A} \sum_{i=1}^{n} (y_{i} + y_{i+1}) (x_{i}y_{i+1} - x_{i+1}y_{i})
+y_c = \frac{1}{6A} \sum_{i=1}^n (y_i + y_{i+1}) (x_i y_{i+1} - x_{i+1} y_i)
 \tag{5}
 \end{equation}
 \]</span></p>
-<p>Nuevamente, calcular el centroide de un polígono es algo trivial; en el caso del Ecuador continental, por ejemplo, podemos ejecutar <code>sf::st_centroid(Ecuador_sf)</code>, obteniendo como resultado:</p>
-<pre><code>## POINT (793562.4 9841010)</code></pre>
-<p>Con todo, ahora estamos en capacidad de replicar esas funciones <code>sf</code>. El primer paso es transformar los datos espaciales en una matriz de coordenadas.</p>
+<p>Nuevamente, calcular el centroide de un polígono es algo trivial; en el caso del Ecuador
+continental, por ejemplo, podemos ejecutar <code>sf::st_centroid(Ecuador_sf)</code>, obteniendo como resultado:</p>
+<pre><code>## POINT (793562.37 9841009.5)</code></pre>
+<p>Con todo, ahora estamos en capacidad de replicar esas funciones <code>sf</code>. El primer paso
+es transformar los datos espaciales en una matriz de coordenadas.</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>Ecuador_df =<span class="st"> </span><span class="kw">st_cast</span>(Ecuador_sf, <span class="st">&quot;POINT&quot;</span>)[<span class="op">-</span><span class="dv">1</span>] <span class="op">%&gt;%</span></span>
 <span id="cb4-2"><a href="#cb4-2"></a><span class="st">   </span><span class="kw">lapply</span>(as.double) <span class="op">%&gt;%</span></span>
 <span id="cb4-3"><a href="#cb4-3"></a><span class="st">   </span><span class="kw">Reduce</span>(rbind, .) <span class="op">%&gt;%</span></span>
@@ -403,14 +439,15 @@ y_{c} = \frac{1}{6A} \sum_{i=1}^{n} (y_{i} + y_{i+1}) (x_{i}y_{i+1} - x_{i+1}y_{
 <span id="cb4-9"><a href="#cb4-9"></a></span>
 <span id="cb4-10"><a href="#cb4-10"></a><span class="kw">head</span>(Ecuador_df)</span></code></pre></div>
 <pre><code>## Units: [m]
-##             x       y
-## [1,] 594079.7 9721564
-## [2,] 594365.8 9721901
-## [3,] 595334.4 9722495
-## [4,] 595503.6 9722943
-## [5,] 595385.5 9724374
-## [6,] 595721.7 9725385</code></pre>
-<p>El segundo paso es escribir una función que reciba la matriz y aplique las ecuaciones <a href="#eq:shoelace">(3)</a> <a href="#eq:centroidx">(4)</a> <a href="#eq:centroidy">(5)</a>.</p>
+##              x         y
+## [1,] 594079.73 9721564.1
+## [2,] 594365.82 9721900.8
+## [3,] 595334.41 9722494.5
+## [4,] 595503.63 9722942.7
+## [5,] 595385.53 9724374.5
+## [6,] 595721.66 9725385.2</code></pre>
+<p>El segundo paso es escribir una función que reciba la matriz y aplique las ecuaciones
+<a href="#eq:shoelace">(3)</a> <a href="#eq:centroidx">(4)</a> <a href="#eq:centroidy">(5)</a>.</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>shoelace =<span class="st"> </span><span class="cf">function</span>(vertices){</span>
 <span id="cb6-2"><a href="#cb6-2"></a>   x0 =<span class="st"> </span>vertices[, <span class="st">&quot;x&quot;</span>]</span>
 <span id="cb6-3"><a href="#cb6-3"></a>   x1 =<span class="st"> </span>x0[<span class="kw">c</span>(<span class="dv">2</span> <span class="op">:</span><span class="st"> </span><span class="kw">length</span>(x0), <span class="dv">1</span>)]</span>
@@ -429,20 +466,31 @@ y_{c} = \frac{1}{6A} \sum_{i=1}^{n} (y_{i} + y_{i+1}) (x_{i}y_{i+1} - x_{i+1}y_{
 <span id="cb6-16"><a href="#cb6-16"></a>}</span></code></pre></div>
 <p>El último paso es ejecutar <code>sholace(Ecuador_df)</code>; este es el resultado:</p>
 <pre><code>## Area:</code></pre>
-<pre><code>## 246039.9 [km^2]</code></pre>
+<pre><code>## 246039.89 [km^2]</code></pre>
 <pre><code>## Centroid:</code></pre>
 <pre><code>## Units: [m]
-##      East     North
-##  793562.4 9841009.5</code></pre>
-<p>¡Hemos hallado los resultados correctos! Aquí termina la revisión de la <em>shoelace formula</em>, con una última observación: es cierto que la fórmula se ejecuta en un solo paso, pero estas animaciones<a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a> progresivas se ven muy bien.</p>
+##       East      North 
+##  793562.37 9841009.54</code></pre>
+<p>¡Hemos hallado los resultados correctos! Aquí termina la revisión de la <em>shoelace formula</em>,
+con una última observación: es cierto que la fórmula se ejecuta en un solo paso, pero estas
+animaciones<a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a> progresivas se ven muy bien.</p>
 <p><img src="https://res.cloudinary.com/dodnzqhiz/image/upload/v1593884075/2020post/ecuador-shoelace-gif_xav1ma.gif" /></p>
 <div class="footnotes">
 <hr />
 <ol>
-<li id="fn1"><p>En los libros aparece la cifra de 256370 km<sup>2</sup> para todo el Ecuador; a ello hay que restar no solo las Galápagos, también las islas frente al litoral, como Puná o La Plata.<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
-<li id="fn2"><p>También conocida como la fórmula del área de Gauss; no obstante, parece que el primero en describirla fue <a href="https://www.deutsche-biographie.de/sfz60150.html">Albrecht Ludwig Friedrich Meister</a>. En cualquier caso, fue descrita por un matemático alemán.<a href="#fnref2" class="footnote-back">↩︎</a></p></li>
-<li id="fn3"><p>Al menos un vértice del triángulo coincidirá con uno del rectángulo. También puede suceder que dos (o los tres) vértices del triángulo coincidan; se invita a demostrar la ecuación <a href="#eq:triangle">(1)</a> en esos dos casos.<a href="#fnref3" class="footnote-back">↩︎</a></p></li>
-<li id="fn4"><p>La última animación fue generada con una versión simplificada del límite ecuatoriano; por esta razón la extensión calculada difiere de la correcta.<a href="#fnref4" class="footnote-back">↩︎</a></p></li>
+<li id="fn1"><p>En los libros aparece la cifra de 256370 km<sup>2</sup> para todo el Ecuador;
+a ello hay que restar no solo las Galápagos, también las islas frente al litoral, como Puná
+o La Plata.<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn2"><p>También
+conocida como la fórmula del área de Gauss; no obstante, parece que el primero en describirla
+fue <a href="https://www.deutsche-biographie.de/sfz60150.html">Albrecht Ludwig Friedrich Meister</a>. En
+cualquier caso, fue descrita por un matemático alemán.<a href="#fnref2" class="footnote-back">↩︎</a></p></li>
+<li id="fn3"><p>Al menos un vértice
+del triángulo coincidirá con uno del rectángulo. También puede suceder que dos (o los tres)
+vértices del triángulo coincidan; se invita a demostrar la ecuación <a href="#eq:triangle">(1)</a> en
+esos dos casos.<a href="#fnref3" class="footnote-back">↩︎</a></p></li>
+<li id="fn4"><p>La última animación fue generada con una versión simplificada del límite ecuatoriano;
+por esta razón la extensión calculada difiere de la correcta.<a href="#fnref4" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
 
