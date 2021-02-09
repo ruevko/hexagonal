@@ -6,10 +6,11 @@ slug: 19-sobre-tweets-paro-nacional-parte
 categories:
   - Twitter
 tags:
+  - ecuador
   - hashtags
-  - paro nacional
 source: 19-sobre-tweets-paro-nacional-parte.Rmd
 keywords:
+  - ecuador
   - hashtags
   - paro nacional
 editor_options:
@@ -23,7 +24,10 @@ summary: Continúa la discusión sobre *tweets* publicados durante el paro de oc
 
 `r library(dplyr); df_all=readRDS("hashtags_ParoNacionalEcuador.RDS")`
 
-Continuando con la discusión del artículo anterior se realizó un nuevo análisis, considerando ahora seis *hashtags* populares durante el paro nacional de octubre pasado en Ecuador. Los *tweets* fueron obtenidos utilizando un programa *java* con menos capacidad que la API oficial y gratuita de Twitter, pero que permite recuperar publicaciones de cualquier época.
+Continuando con la discusión del artículo anterior se realizó un nuevo análisis, considerando
+ahora seis *hashtags* populares durante el paro nacional de octubre pasado en Ecuador. Los
+*tweets* fueron obtenidos utilizando un programa *java* con menos capacidad que la API
+oficial y gratuita de Twitter, pero que permite recuperar publicaciones de cualquier época.
 
 ```{r intro, eval=FALSE}
 library(dplyr)
@@ -36,7 +40,11 @@ df_all = purrr::map(HashTags, readHashTag) %>% # la función readHashTag()
    mutate_at("ht", forcats::fct_infreq)        # del artículo anterior
 ```
 
-Con este código se ha importado y unido los archivos de valores separados por comas -uno por cada *hashtag*- generados por el programa *java*. Un paso importante fue renombrar (en este caso, según el formato "output_HashTag.csv") cada archivo generado por el programa; caso contrario, el archivo sería reescrito. Se obtuvieron `r n_distinct(df_all$id)` *tweets* de `r n_distinct(df_all$user)` usuarios diferentes, con las siguientes frecuencias:
+Con este código se ha importado y unido los archivos de valores separados por comas -uno
+por cada *hashtag*- generados por el programa *java*. Un paso importante fue renombrar
+(en este caso, según el formato "output_HashTag.csv") cada archivo generado por el
+programa; caso contrario, el archivo sería reescrito. Se obtuvieron `r n_distinct(df_all$id)`
+*tweets* de `r n_distinct(df_all$user)` usuarios diferentes, con las siguientes frecuencias:
 
 ```{r plot1, fig.height=2, fig.cap="Frecuencia de *tweets* por *hashtag*"}
 library(ggplot2)
@@ -47,7 +55,13 @@ my_plot = ggplot() + coord_flip() + theme_minimal() +
 my_plot + geom_bar(aes(ht, fill = ht), df_all)
 ```
 
-En concordancia con lo expuesto en el artículo anterior, #EcuadorPaisDePaz se utilizó con mayor frecuencia comparado con otros *hashtags* que, en cambio, demostraban aprobación del paro. Solo #ParoNacionalEC fue utilizado en más *tweets*; no obstante, la popularidad de cada *hashtag* es tal vez un aspecto más revelador que la frecuencia de uso. En este sentido, los favoritos y los *retweets* (RTs) constituyen medidas de la popularidad. La distribución de ambas variables -diferenciando según *hashtag*- se visualizaría bien en *boxplots*, pero para esta representación primero se debe "alargar" los datos vía `tidyr::pivot_longer()`.
+En concordancia con lo expuesto en el artículo anterior, #EcuadorPaisDePaz se utilizó con
+mayor frecuencia comparado con otros *hashtags* que, en cambio, demostraban aprobación del
+paro. Solo #ParoNacionalEC fue utilizado en más *tweets*; no obstante, la popularidad de cada
+*hashtag* es tal vez un aspecto más revelador que la frecuencia de uso. En este sentido, los
+favoritos y los *retweets* (RTs) constituyen medidas de la popularidad. La distribución de
+ambas variables -diferenciando según *hashtag*- se visualizaría bien en *boxplots*, pero
+para esta representación primero se debe "alargar" los datos vía `tidyr::pivot_longer()`.
 
 ```{r plot2, fig.height=3, fig.cap="*Boxplots* de *favorites* y *retweets* por *hashtag*"}
 library(tidyr)
@@ -58,7 +72,14 @@ my_plot + geom_boxplot(aes(ht, value, fill = ht), df_long) +
    facet_wrap(~name) + scale_y_log10()
 ```
 
-Parece ser que la distribución de favoritos no varía considerablemente entre diferentes *hashtags*, mientras que en RTs la mayor diferencia existe entre #DialogoPorLaPaz y #ParoNacionalEC; este último sería el *hashtag* más popular. Hay que notar, sin embargo, los valores atípicos de favoritos y RTs para #EcuadorPaisDePaz, los cuales representarían unas pocas publicaciones que recibieron mucha atención. Si este es el caso, es algo lamentable pues significa que el discurso gubernamental tuvo cierto impacto. Para observar los datos con más detenimiento, la siguiente tabla presenta la razón de contribución (promedio de *tweets* por usuario) y un resumen de la distribución de RTs.
+Parece ser que la distribución de favoritos no varía considerablemente entre diferentes *hashtags*,
+mientras que en RTs la mayor diferencia existe entre #DialogoPorLaPaz y #ParoNacionalEC;
+este último sería el *hashtag* más popular. Hay que notar, sin embargo, los valores
+atípicos de favoritos y RTs para #EcuadorPaisDePaz, los cuales representarían unas pocas
+publicaciones que recibieron mucha atención. Si este es el caso, es algo lamentable pues
+significa que el discurso gubernamental tuvo cierto impacto. Para observar los datos con
+más detenimiento, la siguiente tabla presenta la razón de contribución (promedio de
+*tweets* por usuario) y un resumen de la distribución de RTs.
 
 ```{r table1, echo=FALSE}
 library(kableExtra)
@@ -70,15 +91,28 @@ group_by(filter(df_long, name == "retweets"), Hashtag = ht) %>%
    scroll_box(width = "auto", extra_css = "margin-bottom:2rem;")
 ```
 
-Nuevamente se halló que el uso de #EcuadorPaisDePaz fue el más parecido al *spam*, con más *tweets* y menos usuarios. Mientras que #DialogoPorLaPaz tuvo la razón de contribución más baja, es decir que fue publicado por más usuarios diferentes; aunque también es el *hashtag* menos utilizado, así que resulta ambiguo discernir con quiénes se relacionó mayoritariamente. Por otra parte, según el promedio y el total de RTs, es claro que #ParoNacionalEC tuvo el mayor alcance; se observó que los *tweets* con este *hashtag* servían para reportar acciones de los sectores movilizados, y la represión en contra de ellos. Este es el *tweet* con #ParoNacionalEC que recibió más RTs:
+Nuevamente se halló que el uso de #EcuadorPaisDePaz fue el más parecido al *spam*, con más
+*tweets* y menos usuarios. Mientras que #DialogoPorLaPaz tuvo la razón de contribución más
+baja, es decir que fue publicado por más usuarios diferentes; aunque también es el *hashtag*
+menos utilizado, así que resulta ambiguo discernir con quiénes se relacionó mayoritariamente.
+Por otra parte, según el promedio y el total de RTs, es claro que #ParoNacionalEC tuvo el
+mayor alcance; se observó que los *tweets* con este *hashtag* servían para reportar
+acciones de los sectores movilizados, y la represión en contra de ellos. Este es el
+*tweet* con #ParoNacionalEC que recibió más RTs:
 
 `r blogdown::shortcode("twitter", filter(df_all, ht=="#ParoNacionalEC") %>% top_n(1, retweets) %>% pull(id))`
 
-El discurso gubernamental, pretendiendo minimizar una protesta cuyas demandas fueron justas, recibió más RTs en este *tweet* del presidente:
+El discurso gubernamental, pretendiendo minimizar una protesta cuyas
+demandas fueron justas, recibió más RTs en este *tweet* del presidente:
 
 `r blogdown::shortcode("twitter", filter(df_all, ht=="#EcuadorPaisDePaz") %>% top_n(1, retweets) %>% pull(id))`
 
-A continuación se presta atención al hecho de que, unas pocas veces, los *hashtags* estudiados fueron utilizados en combinación. Esto solo sucedió en 44 *tweets*, de manera que no se aporta información adicional al análisis; con todo, la combinación #ParoNacionalEcuador y #ElParoSigue ocurrió once veces y fue la más frecuente. La manera de averiguar esto es “ensanchar” los datos, esta vez a través de `tidyr::pivot_wider()`, y calcular todas las combinaciones de *hashtags* posibles.
+A continuación se presta atención al hecho de que, unas pocas veces, los *hashtags*
+estudiados fueron utilizados en combinación. Esto solo sucedió en 44 *tweets*, de manera
+que no se aporta información adicional al análisis; con todo, la combinación #ParoNacionalEcuador
+y #ElParoSigue ocurrió once veces y fue la más frecuente. La manera de averiguar esto es
+“ensanchar” los datos, esta vez a través de `tidyr::pivot_wider()`, y calcular todas las
+combinaciones de *hashtags* posibles.
 
 ```{r help}
 df_wide = mutate(select(df_all, id, user, name = ht), value = "x") %>%
@@ -88,7 +122,8 @@ df_wide = mutate(select(df_all, id, user, name = ht), value = "x") %>%
    summarise(Tweets = n_distinct(id), Usuarios = n_distinct(user))
 ```
 
-En la siguiente tabla los *hashtags* son representados con sus iniciales; se contó el número de *tweets* y de usuarios para cada combinación.
+En la siguiente tabla los *hashtags* son representados con sus iniciales;
+se contó el número de *tweets* y de usuarios para cada combinación.
 
 ```{r table2, echo=FALSE}
 df_wide[rowSums(df_wide[names(df_wide) %>% stringr::str_which("#")] == "x") > 1, ] %>%
@@ -96,7 +131,12 @@ df_wide[rowSums(df_wide[names(df_wide) %>% stringr::str_which("#")] == "x") > 1,
    scroll_box(width = "auto", extra_css = "margin-bottom:2rem;")
 ```
 
-Con los datos obtenidos también es posible visualizar el tiempo de publicación de los *tweets*. El siguiente gráfico fue generado de manera que cada columna encierre seis horas. Los tiempos son congruentes con la aparición, posterior al inicio del paro, de la propaganda #EcuadorPaísDePaz; también son congruentes con la expectativa del #DialogoPorLaPaz, refiriéndose a la reunión del 13 de octubre donde se acordó derogar las medidas económicas, terminando efectivamente el paro.
+Con los datos obtenidos también es posible visualizar el tiempo de publicación de los
+*tweets*. El siguiente gráfico fue generado de manera que cada columna encierre seis
+horas. Los tiempos son congruentes con la aparición, posterior al inicio del paro, de la
+propaganda #EcuadorPaísDePaz; también son congruentes con la expectativa del #DialogoPorLaPaz,
+refiriéndose a la reunión del 13 de octubre donde se acordó derogar las medidas económicas,
+terminando efectivamente el paro.
 
 ```{r plot3, fig.height=4, fig.cap="Tiempo de publicación de los *tweets* por *hashtag*"}
 df_time = mutate(df_all, across(time, lubridate::round_date, "6 hours"))
@@ -106,7 +146,13 @@ my_plot + geom_bar(aes(time, fill = ht), df_time) +
    theme(legend.title = element_blank(), legend.position = "bottom")
 ```
 
-Finalmente, es posible averiguar quiénes utilizaron en mayor cantidad cada *hashtag*. En este gráfico se recogen los usuarios que publicaron diez o más *tweets* con cada *hashtag*; como era de esperar, fue en las cuentas del ejército, la policía y el presidente donde abundaron los mensajes de paz, al mismo tiempo que ellos se convertían en los responsables de reprimir violentamente a los manifestantes. En contraposición, se evidenciaron los mensajes de respaldo a las movilizaciones desde CONAIE y KolectiVOZ, y de reportaje desde Pichincha Comunicaciones y Wambra.
+Finalmente, es posible averiguar quiénes utilizaron en mayor cantidad cada *hashtag*. En
+este gráfico se recogen los usuarios que publicaron diez o más *tweets* con cada *hashtag*;
+como era de esperar, fue en las cuentas del ejército, la policía y el presidente donde
+abundaron los mensajes de paz, al mismo tiempo que ellos se convertían en los responsables
+de reprimir violentamente a los manifestantes. En contraposición, se evidenciaron los
+mensajes de respaldo a las movilizaciones desde CONAIE y KolectiVOZ, y de reportaje desde
+Pichincha Comunicaciones y Wambra.
 
 ```{r plot4, fig.height=3.5, fig.cap="Usuarios que publicaron diez o más *tweets* por *hashtag*", echo=FALSE}
 df_top = group_by(df_all, ht, user) %>% tally() %>% filter(n >= 10, ht != "#ElParoSigue")

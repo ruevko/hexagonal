@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="generator" content="Hugo 0.73.0 with theme Tranquilpeak 0.4.8-BETA">
 <meta name="author" content="Roger Rafael Castro Zambrano">
-<meta name="keywords" content="hashtags, paro nacional, análisis, cartografía, datos, mapas">
+<meta name="keywords" content="ecuador, hashtags, paro nacional, análisis, cartografía, datos, mapas">
 <meta name="description" content="Una discusión sobre tweets publicados con tres hashtags populares del paro de octubre en Ecuador, y una alternativa para recuperar esos datos hoy en día.">
 
 
@@ -41,9 +41,9 @@
   
   
     
-      <meta property="article:tag" content="hashtags">
+      <meta property="article:tag" content="ecuador">
     
-      <meta property="article:tag" content="paro nacional">
+      <meta property="article:tag" content="hashtags">
     
   
 
@@ -295,34 +295,55 @@ code span.wa { color: #bf0303; } /* Warning */
 </style>
 
 
-<p>Los últimos meses del año pasado fueron escenario de varias movilizaciones alrededor del mundo, en respuesta a acciones gubernamentales de diversas índoles. En Ecuador, las protestas de octubre fueron detonadas por las medidas económicas anunciadas por la presidencia, en el contexto del cumplimiento de una agenda acordada con el Fondo Monetario Internacional.</p>
-<p>Entre otras cosas, las medidas consistían en terminar inmediatamente el subsidio de combustibles. Como suele suceder con esta clase de medidas, ciertos sectores -estudiantil, indígena, agricultor, transportista- hubiesen sido los más afectados. Tras un paro nacional que se extendió del 3 al 13 de octubre, el gobierno retiró la propuesta. Para mayor información sobre la naturaleza de las medidas, la protesta de dichos sectores y la respuesta gubernamental, se recomienda consultar las siguientes fuentes: <a href="https://wambra.ec/la-protesta-indigena-y-popular-que-levanto-a-ecuador/">Wambra</a>, <a href="http://www.pichinchacomunicaciones.com.ec/federaciones-de-transporte-del-pais-paralizaran-actividades-si-gobierno-no-deroga-decreto/">Pichincha Comunicaciones</a><a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>, <a href="https://www.revistacrisis.com/coyuntura/apuntes-sobre-el-triunfo-popular-de-octubre/">Crisis</a> y <a href="https://conaie.org/2019/10/09/septimo-dia-de-movilizacion-nacional-del-movimiento-indigena/">CONAIE</a>.</p>
-<p>El propósito de este artículo es demostrar cómo se ejecutó un análisis sobre <em>tweets</em> generados entre el 1 y el 10 de octubre, considerando tres <em>hashtags</em> que fueron populares durante el paro nacional en Ecuador. La premisa es que la elección de un <em>hashtag</em> expone la intención del usuario, de reportar los hechos acontecidos o de desaprobar la protesta. Originalmente se ejecutó el análisis con ayuda del paquete <code>twitteR</code>, que permite obtener <em>tweets</em> a través de la API gratuita de Twitter; para esto, es necesario ejecutar previamente una proceso de autenticación<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>.</p>
+<p>Los últimos meses del año pasado fueron escenario de varias movilizaciones alrededor del
+mundo, en respuesta a acciones gubernamentales de diversas índoles. En Ecuador, las protestas
+de octubre fueron detonadas por las medidas económicas anunciadas por la presidencia, en
+el contexto del cumplimiento de una agenda acordada con el Fondo Monetario Internacional.</p>
+<p>Entre otras cosas, las medidas consistían en terminar inmediatamente el subsidio de
+combustibles. Como suele suceder con esta clase de medidas, ciertos sectores -estudiantil,
+indígena, agricultor, transportista- hubiesen sido los más afectados. Tras un paro
+nacional que se extendió del 3 al 13 de octubre, el gobierno retiró la propuesta. Para
+mayor información sobre la naturaleza de las medidas, la protesta de dichos sectores y
+la respuesta gubernamental, se recomienda consultar las siguientes fuentes:
+<a href="https://wambra.ec/la-protesta-indigena-y-popular-que-levanto-a-ecuador/">Wambra</a>, <a href="http://www.pichinchacomunicaciones.com.ec/federaciones-de-transporte-del-pais-paralizaran-actividades-si-gobierno-no-deroga-decreto/">Pichincha
+Comunicaciones</a><a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>,
+<a href="https://www.revistacrisis.com/coyuntura/apuntes-sobre-el-triunfo-popular-de-octubre/">Crisis</a> y
+<a href="https://conaie.org/2019/10/09/septimo-dia-de-movilizacion-nacional-del-movimiento-indigena/">CONAIE</a>.</p>
+<p>El propósito de este artículo es demostrar cómo se ejecutó un análisis sobre <em>tweets</em>
+generados entre el 1 y el 10 de octubre, considerando tres <em>hashtags</em> que fueron
+populares durante el paro nacional en Ecuador. La premisa es que la elección de un
+<em>hashtag</em> expone la intención del usuario, de reportar los hechos acontecidos o de
+desaprobar la protesta. Originalmente se ejecutó el análisis con ayuda del paquete
+<code>twitteR</code>, que permite obtener <em>tweets</em> a través de la API gratuita de Twitter; para
+esto, es necesario ejecutar previamente una proceso de autenticación<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw">library</span>(twitteR)</span>
 <span id="cb1-2"><a href="#cb1-2"></a></span>
 <span id="cb1-3"><a href="#cb1-3"></a><span class="kw">setup_twitter_oauth</span>(<span class="st">&quot;...&quot;</span>, <span class="st">&quot;...&quot;</span>, <span class="st">&quot;...&quot;</span>, <span class="st">&quot;...&quot;</span>) <span class="co"># claves personales de desarrollador</span></span>
 <span id="cb1-4"><a href="#cb1-4"></a></span>
 <span id="cb1-5"><a href="#cb1-5"></a>wambra =<span class="st"> </span><span class="kw">userTimeline</span>(<span class="st">&quot;wambraEc&quot;</span>, <span class="dv">100</span>, <span class="dt">excludeReplies =</span> <span class="ot">FALSE</span>, <span class="dt">includeRts =</span> <span class="ot">TRUE</span>)</span></code></pre></div>
-<p>A manera de ejemplo se han obtenido cien publicaciones de la cuenta “wambraEc”, incluyendo <em>replies</em> y <em>retweets</em>. El resultado es una lista de <em>tweets</em> donde los respectivos metadatos están ocultos:</p>
+<p>A manera de ejemplo se han obtenido cien publicaciones de la cuenta “wambraEc”, incluyendo
+<em>replies</em> y <em>retweets</em>. El resultado es una lista de <em>tweets</em> donde los respectivos
+metadatos están ocultos:</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="kw">tail</span>(wambra)</span></code></pre></div>
 <pre><code>## [[1]]
 ## [1] &quot;wambraEc: RT @CDHGYE: #ParoNacionalEc\n#MuertesEnElParo \n\n@CDHGYE agradece a @wambraEc por el trabajo periodístico sobre estas graves violaciones de D…&quot;
-##
+## 
 ## [[2]]
 ## [1] &quot;wambraEc: RT @machadopepita: Esas son las vidas que menos importan al capitalismo, se vuelven descartables y nos corresponde honrarlas, no olvidar y…&quot;
-##
+## 
 ## [[3]]
 ## [1] &quot;wambraEc: RT @kinoraxx: Un 8 de enero, dos adolescentes fueron asesinados a manos de la Policía ecuatoriana #HermanosRestrepo\n32 años después la impu…&quot;
-##
+## 
 ## [[4]]
 ## [1] &quot;wambraEc: #MuertesEnElParo\nAnte el silencio y la falta de respuesta de las autoridades, sus familias decidieron contar sus hi… https://t.co/b5zXi9cuR6&quot;
-##
+## 
 ## [[5]]
 ## [1] &quot;wambraEc: [ESPECIAL]\nSon 11 nombres, muy poco pronunciados en la historia del #ParoNacional #Ecuador\n\n¿Quiénes eran las perso… https://t.co/82jimxB9P0&quot;
-##
+## 
 ## [[6]]
 ## [1] &quot;wambraEc: [INTERNACIONAL]\n#Chiapas: “Necesitamos y merecemos vivir”, ese fue el mensaje de clausura en el segundo Encuentro I… https://t.co/JKgRBVaQ0R&quot;</code></pre>
-<p>Para tabular los metadatos se puede utilizar la función existente <code>twitteR::twListToDF()</code> o una función personalizada:</p>
+<p>Para tabular los metadatos se puede utilizar la función existente
+<code>twitteR::twListToDF()</code> o una función personalizada:</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="kw">library</span>(dplyr)</span>
 <span id="cb4-2"><a href="#cb4-2"></a><span class="kw">library</span>(purrr)</span>
 <span id="cb4-3"><a href="#cb4-3"></a></span>
@@ -344,19 +365,23 @@ code span.wa { color: #bf0303; } /* Warning */
 <span id="cb4-19"><a href="#cb4-19"></a></span>
 <span id="cb4-20"><a href="#cb4-20"></a><span class="kw">twts2tbl</span>(<span class="kw">tail</span>(wambra), <span class="st">&quot;America/Guayaquil&quot;</span>)</span></code></pre></div>
 <pre><code>## # A tibble: 6 x 9
-##   isrt    rts  favs time                  lon   lat user   rpto   text
-##   &lt;lgl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dttm&gt;              &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;  &lt;chr&gt;  &lt;chr&gt;
+##   isrt    rts  favs time                  lon   lat user   rpto   text          
+##   &lt;lgl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dttm&gt;              &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;  &lt;chr&gt;  &lt;chr&gt;         
 ## 1 TRUE     19     0 2020-01-09 09:15:07    NA    NA @wamb~ &lt;NA&gt;   &quot;RT @CDHGYE: ~
 ## 2 TRUE     25     0 2020-01-09 08:25:34    NA    NA @wamb~ &lt;NA&gt;   &quot;RT @machadop~
 ## 3 TRUE     14     0 2020-01-09 08:25:03    NA    NA @wamb~ &lt;NA&gt;   &quot;RT @kinoraxx~
 ## 4 FALSE    75    81 2020-01-08 22:17:37    NA    NA @wamb~ @wamb~ &quot;#MuertesEnEl~
 ## 5 FALSE   626   578 2020-01-08 22:17:36    NA    NA @wamb~ &lt;NA&gt;   &quot;[ESPECIAL]\n~
 ## 6 FALSE    10    17 2020-01-06 12:54:11    NA    NA @wamb~ &lt;NA&gt;   &quot;[INTERNACION~</code></pre>
-<p>Entre esas publicaciones se encuentra este artículo sobre las once personas que lamentablemente fallecieron participando en las manifestaciones, o de manera paralela a las mismas.</p>
+<p>Entre esas publicaciones se encuentra este artículo sobre las once personas que lamentablemente
+fallecieron participando en las manifestaciones, o de manera paralela a las mismas.</p>
 <blockquote class="twitter-tweet"><p lang="es" dir="ltr">[ESPECIAL]<br>Son 11 nombres, muy poco pronunciados en la historia del <a href="https://twitter.com/hashtag/ParoNacional?src=hash&amp;ref_src=twsrc%5Etfw">#ParoNacional</a> <a href="https://twitter.com/hashtag/Ecuador?src=hash&amp;ref_src=twsrc%5Etfw">#Ecuador</a><br><br>¿Quiénes eran las personas que murieron,<br>cómo ocurrió su muerte,<br>tiene responsabilidad la Fuerza Pública?<a href="https://twitter.com/hashtag/MuertesEnElParo?src=hash&amp;ref_src=twsrc%5Etfw">#MuertesEnElParo</a><br>8 historias<br>8 ilustraciones <br><br>Leer▶️ <a href="https://t.co/ln6WC7PzpI">https://t.co/ln6WC7PzpI</a> <a href="https://t.co/V474IiktKA">pic.twitter.com/V474IiktKA</a></p>&mdash; Wambra (@wambraEc) <a href="https://twitter.com/wambraEc/status/1215110345108467712?ref_src=twsrc%5Etfw">January 9, 2020</a></blockquote>
 <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 
-<p>Una vez tabulados los metadatos, existe una variedad de aspectos que pueden ser analizados. La siguiente tabla presenta el conteo de <em>tweets</em> que contienen cada <em>hashtag</em>, así como el porcentaje de los mismos que se han considerado únicos (esto es, no son <em>replies</em> ni su texto se encuentra repetido), el conteo de usuarios y la razón promedio de <em>tweets</em> por usuario.</p>
+<p>Una vez tabulados los metadatos, existe una variedad de aspectos que pueden ser analizados.
+La siguiente tabla presenta el conteo de <em>tweets</em> que contienen cada <em>hashtag</em>, así como el
+porcentaje de los mismos que se han considerado únicos (esto es, no son <em>replies</em> ni su texto
+se encuentra repetido), el conteo de usuarios y la razón promedio de <em>tweets</em> por usuario.</p>
 <table>
 <thead>
 <tr class="header">
@@ -375,7 +400,7 @@ code span.wa { color: #bf0303; } /* Warning */
 <td align="right">11471</td>
 <td align="right">0.8330</td>
 <td align="right">5297</td>
-<td align="right">2.5996</td>
+<td align="right">2.600</td>
 </tr>
 <tr class="even">
 <td align="left"><a href="https://twitter.com/search?q=%23EcuadorPaisDePaz%20since%3A2019-10-01%20until%3A2019-10-10">#EcuadorPaisDePaz</a></td>
@@ -383,7 +408,7 @@ code span.wa { color: #bf0303; } /* Warning */
 <td align="right">13356</td>
 <td align="right">0.6761</td>
 <td align="right">5412</td>
-<td align="right">3.6500</td>
+<td align="right">3.650</td>
 </tr>
 <tr class="odd">
 <td align="left"><a href="https://twitter.com/search?q=%23ElParoSigue%20since%3A2019-10-01%20until%3A2019-10-10">#ElParoSigue</a></td>
@@ -391,39 +416,65 @@ code span.wa { color: #bf0303; } /* Warning */
 <td align="right">10223</td>
 <td align="right">0.7814</td>
 <td align="right">3892</td>
-<td align="right">3.3615</td>
+<td align="right">3.361</td>
 </tr>
 </tbody>
 </table>
-<p>Un par de ideas se derivan de este conteo. La utilización de #EcuadorPaisDePaz (relacionado con una desaprobación de las protestas) presentó el porcentaje más bajo de <em>tweets</em> únicos y la razón más alta de <em>tweets</em> por usuario. Aunque los números no son particularmente atípicos, ponen en evidencia una forma de contribución cercana al <em>spam</em>. En contraposición, #ParoNacionalEcuador demuestra el porcentaje más alto de publicaciones diferentes, y la razón más baja de contribución por usuario; este <em>hashtag</em> fue utilizado comúnmente para reportar, con fotos y videos, eventos represivos y violentos ejecutados por las fuerzas gubernamentales.</p>
-<p>Además, se halló que solo tres usuarios superaron en 85 tweets el uso de #ParoNacionalEcuador; entre ellos, la cuenta de Pichincha Comunicaciones. Por el contrario, fueron catorce las cuentas que publicaron #EcuadorPaisDePaz más de 85 veces, entre ellas: los ministerios de transporte y obras públicas, de desarrollo urbano y vivienda, y de salud pública; las secretarias técnica, del deporte, y de comunicación de la presidencia; el servicio de rentas internas y cuentas zonales del ministerio de inclusión económica y social. Esta observación confirma la sospecha de que se trató de propaganda, por parte de instituciones públicas, para desmerecer las demandas de los sectores movilizados.</p>
-<p>Los datos resumidos en la tabla anterior fueron obtenidos a través de tres ejecuciones de la función <code>twitteR::searchTwitter()</code>, variando cada vez el <em>hashtag</em> de interés. Notar el uso de un filtro que excluye <em>retweets</em>, pues de otra manera los <em>tweets</em> devueltos habrían excedido el límite impuesto de veinte mil.</p>
+<p>Un par de ideas se derivan de este conteo. La utilización de #EcuadorPaisDePaz
+(relacionado con una desaprobación de las protestas) presentó el porcentaje más bajo de
+<em>tweets</em> únicos y la razón más alta de <em>tweets</em> por usuario. Aunque los números no son
+particularmente atípicos, ponen en evidencia una forma de contribución cercana al <em>spam</em>.
+En contraposición, #ParoNacionalEcuador demuestra el porcentaje más alto de publicaciones
+diferentes, y la razón más baja de contribución por usuario; este <em>hashtag</em> fue utilizado
+comúnmente para reportar, con fotos y videos, eventos represivos y violentos ejecutados
+por las fuerzas gubernamentales.</p>
+<p>Además, se halló que solo tres usuarios superaron en 85 tweets el uso de #ParoNacionalEcuador;
+entre ellos, la cuenta de Pichincha Comunicaciones. Por el contrario, fueron catorce las
+cuentas que publicaron #EcuadorPaisDePaz más de 85 veces, entre ellas: los ministerios
+de transporte y obras públicas, de desarrollo urbano y vivienda, y de salud pública; las
+secretarias técnica, del deporte, y de comunicación de la presidencia; el servicio de
+rentas internas y cuentas zonales del ministerio de inclusión económica y social. Esta
+observación confirma la sospecha de que se trató de propaganda, por parte de instituciones
+públicas, para desmerecer las demandas de los sectores movilizados.</p>
+<p>Los datos resumidos en la tabla anterior fueron obtenidos a través de tres ejecuciones
+de la función <code>twitteR::searchTwitter()</code>, variando cada vez el <em>hashtag</em> de interés.
+Notar el uso de un filtro que excluye <em>retweets</em>, pues de otra manera los <em>tweets</em>
+devueltos habrían excedido el límite impuesto de veinte mil.</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="st">&quot;#ParoNacionalEcuador -filter:retweets&quot;</span> <span class="op">%&gt;%</span></span>
 <span id="cb6-2"><a href="#cb6-2"></a><span class="st">   </span><span class="kw">searchTwitter</span>(<span class="fl">2e4</span>, <span class="dt">since =</span> <span class="st">&quot;2019-10-01&quot;</span>, <span class="dt">until =</span> <span class="st">&quot;2019-10-10&quot;</span>)</span></code></pre></div>
-<p>Este análisis se efectuó originalmente en octubre; sin embargo, recuperar los datos aplicando este método resulta imposible. La razón es que la API gratuita permite obtener <em>tweets</em> con una semana<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a> de antigüedad como máximo, a diferencia del sitio web de Twitter que permite navegar por <em>tweets</em> de cualquier época. Afortunadamente, existe <a href="https://github.com/Jefferson-Henrique/GetOldTweets-java">una alternativa</a> diseñada por el programador Jefferson Henrique; básicamente es un programa java que simula la navegación en el sitio web de Twitter y recupera datos conforme son presentados. Los siguientes comandos representan la obtención de <em>tweets</em> que contengan #ParoNacionalEcuador a través de la <em>command line</em> (requiere <em>git</em> y <em>java</em>).</p>
+<p>Este análisis se efectuó originalmente en octubre; sin embargo, recuperar los datos
+aplicando este método resulta imposible. La razón es que la API gratuita permite obtener
+<em>tweets</em> con una semana<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a> de antigüedad como máximo, a diferencia del sitio web de Twitter que permite
+navegar por <em>tweets</em> de cualquier época. Afortunadamente, existe <a href="https://github.com/Jefferson-Henrique/GetOldTweets-java">una
+alternativa</a> diseñada por el
+programador Jefferson Henrique; básicamente es un programa java que simula la navegación
+en el sitio web de Twitter y recupera datos conforme son presentados. Los siguientes
+comandos representan la obtención de <em>tweets</em> que contengan #ParoNacionalEcuador
+a través de la <em>command line</em> (requiere <em>git</em> y <em>java</em>).</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1"></a><span class="fu">git</span> clone https://github.com/Jefferson-Henrique/GetOldTweets-java</span>
 <span id="cb7-2"><a href="#cb7-2"></a><span class="bu">cd</span> GetOldTweets-java</span>
 <span id="cb7-3"><a href="#cb7-3"></a><span class="fu">java</span> -jar got.jar querysearch=<span class="st">&quot;#ParoNacionalEcuador&quot;</span> since=2019-10-01 until=2019-10-15</span>
 <span id="cb7-4"><a href="#cb7-4"></a><span class="bu">ren</span> <span class="st">&quot;output_got.csv&quot;</span> <span class="st">&quot;output_ParoNacionalEcuador.csv&quot;</span></span></code></pre></div>
-<p>Los resultados son escritos en un archivo de valores separados por comas, con dos particularidades: utiliza punto y coma como separador, e incurre en un uso inadecuado de las comillas. La siguiente función de lectura fue escrita teniendo en mente esas dos particularidades.</p>
+<p>Los resultados son escritos en un archivo de valores separados por comas, con dos particularidades:
+utiliza punto y coma como separador, e incurre en un uso inadecuado de las comillas. La
+siguiente función de lectura fue escrita teniendo en mente esas dos particularidades.</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>readHashTag =<span class="st"> </span><span class="cf">function</span>(hashtag){</span>
 <span id="cb8-2"><a href="#cb8-2"></a>   </span>
-<span id="cb8-3"><a href="#cb8-3"></a>   lines =<span class="st"> </span><span class="kw">readLines</span>(<span class="kw">paste0</span>(<span class="st">&quot;output_&quot;</span>, hashtag, <span class="st">&quot;.csv&quot;</span>))</span>
-<span id="cb8-4"><a href="#cb8-4"></a>   </span>
-<span id="cb8-5"><a href="#cb8-5"></a>   lines =<span class="st"> </span><span class="kw">gsub</span>(<span class="st">&quot;</span><span class="ch">\&quot;</span><span class="st">;&quot;</span>, <span class="st">&quot;&#39;;&quot;</span>, <span class="kw">gsub</span>(<span class="st">&quot;;</span><span class="ch">\&quot;</span><span class="st">&quot;</span>, <span class="st">&quot;;&#39;&quot;</span>, lines))</span>
-<span id="cb8-6"><a href="#cb8-6"></a>   </span>
-<span id="cb8-7"><a href="#cb8-7"></a>   class =<span class="st"> </span><span class="kw">c</span>(<span class="dt">date =</span> <span class="st">&quot;POSIXct&quot;</span>, <span class="dt">mentions =</span> <span class="st">&quot;NULL&quot;</span>, <span class="dt">hashtags =</span> <span class="st">&quot;NULL&quot;</span>, <span class="dt">id =</span> <span class="st">&quot;character&quot;</span>)</span>
-<span id="cb8-8"><a href="#cb8-8"></a>   </span>
-<span id="cb8-9"><a href="#cb8-9"></a>   df =<span class="st"> </span><span class="kw">read.csv2</span>(<span class="dt">text =</span> lines, <span class="dt">colClasses =</span> class, <span class="dt">quote =</span> <span class="st">&quot;&#39;&quot;</span>, <span class="dt">na.strings =</span> <span class="st">&quot;&quot;</span>) <span class="op">%&gt;%</span></span>
-<span id="cb8-10"><a href="#cb8-10"></a><span class="st">      </span><span class="kw">mutate</span>(<span class="dt">user =</span> <span class="kw">sub</span>(<span class="st">&quot;^https://twitter.com/(</span><span class="ch">\\</span><span class="st">w+)/status/</span><span class="ch">\\</span><span class="st">d+$&quot;</span>, <span class="st">&quot;@</span><span class="ch">\\</span><span class="st">1&quot;</span>, permalink),</span>
-<span id="cb8-11"><a href="#cb8-11"></a>             <span class="dt">text =</span> <span class="kw">sub</span>(<span class="st">&quot;https://twitter.com/.+$&quot;</span>, <span class="st">&quot;&quot;</span>, text),</span>
-<span id="cb8-12"><a href="#cb8-12"></a>             <span class="dt">text =</span> <span class="kw">sub</span>(<span class="st">&quot;pic.twitter.com/.+$&quot;</span>, <span class="st">&quot;&quot;</span>, text),</span>
-<span id="cb8-13"><a href="#cb8-13"></a>             <span class="dt">ht =</span> <span class="kw">paste0</span>(<span class="st">&quot;#&quot;</span>, hashtag)) <span class="op">%&gt;%</span></span>
-<span id="cb8-14"><a href="#cb8-14"></a><span class="st">      </span><span class="kw">select</span>(ht, id, <span class="dt">time =</span> date, text, user, retweets, favorites)</span>
-<span id="cb8-15"><a href="#cb8-15"></a>   </span>
-<span id="cb8-16"><a href="#cb8-16"></a>   <span class="kw">as_tibble</span>(df)}</span>
-<span id="cb8-17"><a href="#cb8-17"></a></span>
-<span id="cb8-18"><a href="#cb8-18"></a><span class="kw">readHashTag</span>(<span class="st">&quot;ParoNacionalEcuador&quot;</span>)</span></code></pre></div>
+<span id="cb8-3"><a href="#cb8-3"></a>   lines =<span class="st"> </span><span class="kw">readLines</span>(<span class="kw">paste0</span>(<span class="st">&quot;output_&quot;</span>, hashtag, <span class="st">&quot;.csv&quot;</span>)) <span class="op">%&gt;%</span></span>
+<span id="cb8-4"><a href="#cb8-4"></a><span class="st">      </span><span class="kw">gsub</span>(<span class="st">&quot;;</span><span class="ch">\&quot;</span><span class="st">&quot;</span>, <span class="st">&quot;;&#39;&quot;</span>, .) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">gsub</span>(<span class="st">&quot;</span><span class="ch">\&quot;</span><span class="st">;&quot;</span>, <span class="st">&quot;&#39;;&quot;</span>, .)</span>
+<span id="cb8-5"><a href="#cb8-5"></a>      </span>
+<span id="cb8-6"><a href="#cb8-6"></a>   class =<span class="st"> </span><span class="kw">c</span>(<span class="dt">date =</span> <span class="st">&quot;POSIXct&quot;</span>, <span class="dt">mentions =</span> <span class="st">&quot;NULL&quot;</span>, <span class="dt">hashtags =</span> <span class="st">&quot;NULL&quot;</span>, <span class="dt">id =</span> <span class="st">&quot;character&quot;</span>)</span>
+<span id="cb8-7"><a href="#cb8-7"></a>   </span>
+<span id="cb8-8"><a href="#cb8-8"></a>   <span class="kw">read.csv2</span>(<span class="dt">text =</span> lines, <span class="dt">colClasses =</span> class, <span class="dt">quote =</span> <span class="st">&quot;&#39;&quot;</span>, <span class="dt">na.strings =</span> <span class="st">&quot;&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb8-9"><a href="#cb8-9"></a><span class="st">      </span><span class="kw">mutate</span>(<span class="dt">user =</span> <span class="kw">sub</span>(<span class="st">&quot;^https://twitter.com/(</span><span class="ch">\\</span><span class="st">w+)/status/</span><span class="ch">\\</span><span class="st">d+$&quot;</span>, <span class="st">&quot;@</span><span class="ch">\\</span><span class="st">1&quot;</span>, permalink),</span>
+<span id="cb8-10"><a href="#cb8-10"></a>             <span class="dt">text =</span> <span class="kw">sub</span>(<span class="st">&quot;https://twitter.com/.+$&quot;</span>, <span class="st">&quot;&quot;</span>, text),</span>
+<span id="cb8-11"><a href="#cb8-11"></a>             <span class="dt">text =</span> <span class="kw">sub</span>(<span class="st">&quot;pic.twitter.com/.+$&quot;</span>, <span class="st">&quot;&quot;</span>, text),</span>
+<span id="cb8-12"><a href="#cb8-12"></a>             <span class="dt">ht =</span> <span class="kw">paste0</span>(<span class="st">&quot;#&quot;</span>, hashtag)) <span class="op">%&gt;%</span></span>
+<span id="cb8-13"><a href="#cb8-13"></a><span class="st">      </span><span class="kw">select</span>(ht, id, <span class="dt">time =</span> date, text, user, retweets, favorites) <span class="op">%&gt;%</span></span>
+<span id="cb8-14"><a href="#cb8-14"></a><span class="st">      </span><span class="kw">as_tibble</span>()</span>
+<span id="cb8-15"><a href="#cb8-15"></a>}</span>
+<span id="cb8-16"><a href="#cb8-16"></a></span>
+<span id="cb8-17"><a href="#cb8-17"></a><span class="kw">readHashTag</span>(<span class="st">&quot;ParoNacionalEcuador&quot;</span>)</span></code></pre></div>
 <pre><code>## # A tibble: 244 x 7
 ##    ht       id      time                text           user   retweets favorites
 ##    &lt;chr&gt;    &lt;chr&gt;   &lt;dttm&gt;              &lt;chr&gt;          &lt;chr&gt;     &lt;int&gt;     &lt;int&gt;
@@ -438,13 +489,24 @@ code span.wa { color: #bf0303; } /* Warning */
 ##  9 #ParoNa~ 118350~ 2019-10-13 16:57:00 &quot;Anunciamos a~ @radi~      312       242
 ## 10 #ParoNa~ 118349~ 2019-10-13 16:17:00 &quot;Asi luce la ~ @reli~       65        62
 ## # ... with 234 more rows</code></pre>
-<p>En este caso se han recuperado solamente 244 de 11471 <em>tweets</em> con <em>hashtag</em> #ParoNacionalEcuador que se obtuvieron originalmente; se trata de una cantidad mínima pero, por lo que sabemos, es la única alternativa a contratar una API comercial de Twitter. En el siguiente artículo se explorará qué aspectos del análisis son posibles con esta cantidad reducida de datos.</p>
+<p>En este caso se han recuperado solamente 244 de 11471 <em>tweets</em> con <em>hashtag</em> #ParoNacionalEcuador
+que se obtuvieron originalmente; se trata de una cantidad mínima pero, por lo que sabemos,
+es la única alternativa a contratar una API comercial de Twitter. En el siguiente artículo
+se explorará qué aspectos del análisis son posibles con esta cantidad reducida de datos.</p>
 <div class="footnotes">
 <hr />
 <ol>
-<li id="fn1"><p>A la fecha de publicación, el sitio web se encuentra suspendido debido a denuncias de la presidencia. De cualquier forma Pichincha Comunicaciones, al igual que las otras fuentes sugeridas, presenta en su Twitter la cobertura que realizó durante el paro.<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
-<li id="fn2"><p>La autenticación consiste en suministrar ciertas claves personales de consumidor y de acceso, y para obtener esas claves uno debe primero solicitar una cuenta de desarrollador en Twitter.<a href="#fnref2" class="footnote-back">↩︎</a></p></li>
-<li id="fn3"><p>Existe otra API gratuita y oficial que recupera <em>tweets</em> de cualquier época, pero procedentes de una única cuenta; esta API es la utilizada en el ejemplo de “wambraEc”. La búsqueda por <em>hashtag</em> o texto sí está restringida a una semana.<a href="#fnref3" class="footnote-back">↩︎</a></p></li>
+<li id="fn1"><p>A
+la fecha de publicación, el sitio web se encuentra suspendido debido a denuncias de
+la presidencia. De cualquier forma Pichincha Comunicaciones, al igual que las otras
+fuentes sugeridas, presenta en su Twitter la cobertura que realizó durante el paro.<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn2"><p>La autenticación
+consiste en suministrar ciertas claves personales de consumidor y de acceso, y para
+obtener esas claves uno debe primero solicitar una cuenta de desarrollador en Twitter.<a href="#fnref2" class="footnote-back">↩︎</a></p></li>
+<li id="fn3"><p>Existe otra API gratuita y oficial que recupera <em>tweets</em> de
+cualquier época, pero procedentes de una única cuenta; esta API es la utilizada en el
+ejemplo de “wambraEc”. La búsqueda por <em>hashtag</em> o texto sí está restringida a una
+semana.<a href="#fnref3" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
 
@@ -459,9 +521,9 @@ code span.wa { color: #bf0303; } /* Warning */
                   <div class="post-footer-tags">
                     <span class="text-color-light text-small">Etiquetado en</span><br/>
                     
-  <a class="tag tag--primary tag--small" href="https://ruevko.github.io/hexagonal/tags/hashtags/">hashtags</a>
+  <a class="tag tag--primary tag--small" href="https://ruevko.github.io/hexagonal/tags/ecuador/">ecuador</a>
 
-  <a class="tag tag--primary tag--small" href="https://ruevko.github.io/hexagonal/tags/paro-nacional/">paro nacional</a>
+  <a class="tag tag--primary tag--small" href="https://ruevko.github.io/hexagonal/tags/hashtags/">hashtags</a>
 
                   </div>
                 
