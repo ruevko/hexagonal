@@ -6,13 +6,13 @@ slug: 04-crecimiento-diario-nodos
 categories:
   - OpenStreetMap
 tags:
-  - nodos
   - coropletas
+  - nodos osm
   - regresión
 source: 04-crecimiento-diario-nodos.Rmd
 keywords:
-  - nodos
   - coropletas
+  - nodos osm
   - regresión
 editor_options:
   chunk_output_type: console
@@ -21,7 +21,7 @@ output:
     highlight: kate
 link-citations: true
 bibliography: ../../babel.bib
-thumbnailImage: https://ruevko.github.io/hexagonal/post/2020/03/04-crecimiento-diario-nodos_files/figure-html/model-low-1.png
+thumbnailImage: https://res.cloudinary.com/dodnzqhiz/image/upload/v1613341882/2020post/lnr408agxidsqml6gmpu.png
 summary: Se ha ajustado un modelo lineal para cada país, demostrando el crecimiento de OpenStreetMap en función de los nodos creados a diario.
 ---
 

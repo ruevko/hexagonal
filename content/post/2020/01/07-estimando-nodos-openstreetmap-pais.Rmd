@@ -6,13 +6,13 @@ slug: 07-estimando-nodos-openstreetmap-pais
 categories:
   - OpenStreetMap
 tags:
-  - nodos
   - coropletas
+  - nodos osm
   - web scraping
 source: 07-estimando-nodos-openstreetmap-pais.Rmd
 keywords:
-  - nodos
   - coropletas
+  - nodos osm
   - web scraping
 editor_options:
   chunk_output_type: console
@@ -21,21 +21,49 @@ output:
     highlight: kate
 link-citations: true
 bibliography: ../../babel.bib
-thumbnailImage: https://ruevko.github.io/hexagonal/post/2020/01/07-estimando-nodos-openstreetmap-pais_files/figure-html/map-1.svg
+thumbnailImage: https://res.cloudinary.com/dodnzqhiz/image/upload/v1613341804/2020post/rb72maukaadcmwkgbwke.png
 summary: Se presenta una metodología basada en *web scraping* para generar un mapa coroplético del número de nodos acumulados en cada país.
 ---
 
-[OpenStreetMap](https://www.openstreetmap.org/) es un proyecto remarcable. Antes de su existencia, la producción de geoinformación era una actividad exclusiva de instituciones gubernamentales o agencias comerciales, de manera que los usuarios enfrentaban limitaciones en forma de licencias o costos. Desde 2004, en cambio, existe una plataforma que -apoyada en las tecnologías que volvieron posible compartir datos libremente por internet- recibe y entrega geoinformación de manera gratuita y ubicua.
+[OpenStreetMap](https://www.openstreetmap.org/) es un proyecto remarcable. Antes de su
+existencia, la producción de geoinformación era una actividad exclusiva de instituciones
+gubernamentales o agencias comerciales, de manera que los usuarios enfrentaban limitaciones
+en forma de licencias o costos. Desde 2004, en cambio, existe una plataforma que -con
+ayuda de las tecnologías que volvieron posible el compartir datos libremente a través
+de internet- recibe y entrega geoinformación de manera gratuita y ubicua.
 
-Desafortunadamente, la utilización de OpenStreetMap implica ciertos inconvenientes derivados de la naturaleza de su funcionamiento. Un inconveniente es conocer su estado actual: como la base de datos cambia constantemente -con adiciones y modificaciones de usuarios en todo el mundo- es complicado conocer, por ejemplo, cuántas calles existen hoy en toda el mapa. Con todo, [OpenStreetMap Wiki Stats](https://wiki.openstreetmap.org/wiki/Stats) presenta diversos recursos -muchos actualizados diariamente- que permiten tener una idea del estado actual del proyecto.
+No obstante, la utilización de OpenStreetMap implica ciertos inconvenientes derivados de la
+propia naturaleza de su funcionamiento. Un inconveniente es conocer su estado actual: como
+la base de datos cambia constantemente -con adiciones y modificaciones de usuarios en todo
+el mundo- es complicado conocer, por ejemplo, cuántas calles han sido ingresadas en el mapa
+hasta el momento. Con todo, la página [OpenStreetMap Wiki Stats](https://wiki.openstreetmap.org/wiki/Stats)
+presenta diversos recursos (algunos de ellos incluso actualizados diariamente) que permiten
+tener una idea del estado actual del proyecto.
 
-Mientras realizaba mi tesis de grado, en determinado momento necesité un recurso muy específico: un mapa coroplético de elementos en OpenStreetMap por país. Es decir, un mapa donde cada país está coloreado de acuerdo a cuántos elementos contiene. Para hacerse una idea, comparto un mapa genial de una de mis fuentes [@introsm]:
+Mientras realizaba mi tesis de grado, en determinado momento necesité un recurso muy
+específico: un mapa coroplético de elementos OpenStreetMap por país; es decir, un mapa
+donde cada país está coloreado de acuerdo a cuántos elementos han sido contribuidos en
+su territorio. Para tener una idea de cómo luce tal mapa, comparto uno hallado en una
+de mis referencias [@introsm]:
 
-![Nodos OpenStreetMap creados por país en octubre de 2014; © 2015 Springer International Publishing](https://www.researchgate.net/profile/Jamal_Jokar_Arsanjani/publication/301977390/figure/fig6/AS:668313206136842@1536349693729/A-world-map-of-the-total-created-nodes-in-October-2014.png)
+![Nodos OpenStreetMap creados por país en octubre de 2014; © 2015 Springer International Publishing](https://tinyurl.com/3tq697eh)
 
-A pesar de considerar únicamente los nodos acumulados en un mes, este mapa demuestra correctamente el panorama global de las contribuciones a OpenStreetMap: los países europeos poseen las comunidades más activas; Canadá, Estados Unidos, Brasil, Rusia y Australia reciben gran cantidad de contribuciones, acorde a sus extensos territorios; y los niveles de contribución varían considerablemente en Latinoamérica, África y Asia.
+Si bien para elaborar este mapa se contabilizó únicamente los nodos creados en un mes,
+de todas maneras se demuestra correctamente el panorama global de las contribuciones a
+OpenStreetMap: en los países europeos se encuentran las comunidades más activas; Canadá,
+Estados Unidos, Brasil, Rusia y Australia reciben gran cantidad de contribuciones, acorde
+a sus extensos territorios; y los niveles de contribución varían considerablemente en
+Latinoamérica, África y Asia.
 
-Es importante tener presente que en OpenStreetMap existen tres elementos básicos: *nodes*, *ways*, *relations*. Pero tanto vías como relaciones se componen, en última instancia, de nodos; por eso un mapa que contabilice los nodos acumulados en el proyecto debería ofrecer una buena imagen de cómo se encuentran distribuidas las contribuciones. Una forma de obtener tal mapa es descargar todos los países -de [Geofabrik](http://download.geofabrik.de/) por ejemplo-  y contar los nodos en cada archivo, pero eso sería extenuante. Esa es la motivación detrás de la siguiente metodología para estimar el número de nodos por país aplicando *web scraping*, una técnica de minería de datos que consiste en utilizar software para extraer el contenido de páginas web.
+Es importante tener presente que en OpenStreetMap existen tres elementos básicos: nodos
+(*nodes*), vías (*ways*) y relaciones (*relations*). Pero tanto las vías como las relaciones
+se componen, en última instancia, de nodos; por esto, un mapa que contabilice los nodos debería
+representar correctamente la distribución de las contribuciones. Una forma de generar tal mapa
+es descargar los datos de cada país -la página [Geofabrik](http://download.geofabrik.de/),
+por ejemplo, contiene extractos por país- y contar los nodos en cada uno, pero este proceso
+resultaría extenuante. Esta es la motivación detrás de la siguiente metodología para
+estimar el número de nodos por país aplicando *web scraping*, una técnica de minería
+de datos que consiste en utilizar software para extraer el contenido de una página web.
 
 ```{r prefun, echo=FALSE}
 plucking = function(x) x %>%
@@ -55,7 +83,13 @@ framing = function(x) data.frame(
    stringsAsFactors = FALSE)
 ```
 
-La fuente de datos es el sitio [OSMstats](http://osmstats.neis-one.org/) desarrollado por Pascal Neis, cuyo trabajo fue clave en mi tesis [@neis12] igualmente. Este sitio ofrece estadísticas sobre varios aspectos de OpenStreetMap, con periodicidad diaria desde el 1 de noviembre de 2011; la pestaña *Countries* presenta los miembros activos y los nodos creados/modificados/eliminados en cada país, cada día. Para comenzar, se diseña una función de extracción, con ayuda de los paquetes `httr`, `xml2` y `purrr`:
+La fuente de datos es el sitio [OSMstats](http://osmstats.neis-one.org/) desarrollado por
+Pascal Neis, cuya investigación en el ámbito de OpenStreetMap [@neis12] también fue clave
+en mi tesis. Este sitio ofrece estadísticas sobre diferentes aspectos del proyecto, con una
+periodicidad diaria desde el 1 de noviembre de 2011; particularmente, la pestaña Countries
+presenta estimaciones del número de contribuyentes y de nodos creados / modificados / eliminados
+en cada país, cada día. El primer paso en esta metodología es escribir una función de
+extracción; en este caso, se utilizó los paquetes `httr`, `xml2` y `purrr`:
 
 ```{r fun}
 library(purrr)
@@ -77,19 +111,22 @@ get_day = possibly(function(day, url){
    return(df)}, NULL)
 ```
 
-Notar que `plucking()` y `framing()` son funciones declaradas previamente con el propósito de abstraer dos pasos: recortar y tabular los datos; los pasos cruciales se hallan entre `GET()` y `as_list()` pues es en ellos donde se obtiene y se transforma el contenido *XML* de una página. Además, la función de extracción fue insertada en `possibly()` con el propósito de evitar, al ser iterada, que la ejecución se detenga si una iteración falla. Lo siguiente sería una prueba:
+Las funciones `plucking()` y `framing()` no se encuentran en ningún paquete; en realidad, fueron declaradas
+[previamente](https://github.com/ruevko/hexagonal/blob/master/content/post/2020/01/07-estimando-nodos-openstreetmap-pais.Rmd#L68)
+con el propósito de recortar y tabular los datos, respectivamente. Los pasos más importantes
+son aquellos entre `httr::GET()` y `xml2::as_list()` pues es allí donde se extrae y transforma
+el contenido de la página expuesta al *web scraping*. Adicionalmente, toda la función de
+extracción fue insertada en `purrr::possibly()`; se trata de una precaución que devuelve
+`NULL` en caso de que la ejecución falle.
 
-```{r posfun}
+Ahora, esta función extrae los datos de una fecha específica, pero su verdadera utilidad
+aparecerá al iterarla en varias fechas. Considerando que los datos empiezan el 1 de noviembre
+de 2011, se decidió iterar por 2923 días, hasta el 1 de noviembre de 2019; es decir, se
+contabilizará el crecimiento de OpenStreetMap en ocho años.
+
+```{r posfun, eval=FALSE}
 neis = "https://osmstats.neis-one.org/?item=countries&date="
 
-test = get_day("2019-12-31", url = neis)
-
-test[as.integer(test$members) %>% sort.list(decreasing = TRUE), ] %>% head(10)
-```
-
-Se trata de los diez países que tuvieron más miembros activos el último día de 2019, tal y como lo presenta [esta](http://osmstats.neis-one.org/?item=countries&date=2019-12-31) página específica. Ahora, la verdadera utilidad de la función aparecerá al iterarla en muchas fechas. Considerando que los datos empiezan el 1 de noviembre de 2011, se decidió iterar por 2923 días, hasta el 1 de noviembre de 2019; es decir, se va a contabilizar el crecimiento de OpenStreetMap en ocho años.
-
-```{r get, eval=FALSE}
 days = as.Date("2011-11-1") + 0:2922
 
 countries = map(days, get_day, url = neis) %>% reduce(rbind)
@@ -97,19 +134,27 @@ countries = map(days, get_day, url = neis) %>% reduce(rbind)
 
 `r countries = readRDS("countries.RDS")`
 
-Los datos consisten en `r nrow(countries)` observaciones, correspondientes a `r unique(countries$country) %>% length()` países en `r unique(countries$date) %>% length()` días. Seis días en 2018 carecen de datos: 27 de julio, 3 y 24 de agosto, 10 y 29 de septiembre, y 22 de octubre; este hecho, cuya causa resulta desconocida, es comprobable en el sitio web. El siguiente paso consiste en sumar los nodos creados -restando al mismo tiempo los eliminados- en cada país; esto es posible implementando `dplyr`.
+Los datos contienen `r nrow(countries)` observaciones, de `r dplyr::n_distinct(countries$date)`
+días en `r dplyr::n_distinct(countries$country)` países o territorios. Seis de los días del
+año 2018 carecen de datos: 27 de julio, 3 y 24 de agosto, 10 y 29 de septiembre, y 22 de
+octubre; desconocemos la causa de este hecho. El siguiente paso será sumar los nodos creados
+-restando al mismo tiempo los eliminados- en cada país; esto es posible implementando `dplyr`:
 
-```{r join}
+```{r sum}
 library(dplyr)
 
 countries_nodes = group_by(countries, country) %>%
-   mutate_at(c("created", "deleted"), as.double) %>%
+   mutate(across(created:deleted, as.double)) %>%
    summarise(nodes = sum(created - deleted), dates = n_distinct(date))
 
 summary(countries_nodes)
 ```
 
-Finalmente, para generar el mapa, basta con unir los datos calculados en el paso anterior, a polígonos que representen los países. En este caso se han utilizado los polígonos disponibles en `tmap`; tratándose de un objeto de clase `sf`, el paquete homónimo debe ser incluido para garantizar una unión correcta. El mapa es generado vía `ggplot2`.
+Finalmente, para generar el mapa, los datos calculados en el paso anterior deben ser
+relacionados con la representación geográfica de los países. El *dataset* `World` contiene
+polígonos simplificados de territorios en todo el mundo; al ser un *dataset* de clase `sf`,
+el paquete homónimo deberá ser incluido para garantizar un procesamiento correcto. Luego
+es posible trazar el mapa vía `ggplot2`:
 
 ```{r map, dev="svg", fig.asp=.45, fig.cap="Primer intento de generar nuestro mapa"}
 library(sf)
@@ -121,16 +166,19 @@ left_join(World, countries_nodes, by = c("name" = "country")) %>%
    ggplot(aes(fill = nodes)) + geom_sf(color = NA) + theme_minimal()
 ```
 
-El mapa se encuentra casi listo; el inconveniente restante es que algunos países aparecen sin datos, como las dos Koreas y los dos Congos. El problema se desprende de los diferentes nombres con que estos países figuran en los datos y en los polígonos; es  necesesario averiguar cuáles son estos nombres: `setdiff(World$name, countries_nodes$country)`
+En este primer intento se detectó que algunos países aparecen sin datos, como las dos
+repúblicas de Korea y las dos del Congo. El problema se desprende de los diferentes nombres
+con que estos países figuran en `World` y en OSMstats; por ende, para solucionar este problema
+se debe averiguar cuáles son esos nombres, ejecutando `setdiff(World$name, countries_nodes$country)`:
 
 ```{r name, echo=FALSE}
 setdiff(World$name, countries_nodes$country)
 ```
 
-Entonces los nombres en los datos deben ser modificados para coincidir con estos nombres.
+Entonces los nombres obtenidos de OSMstats deben ser modificados para coincidir con los de arriba.
 
 ```{r rename}
-countries_nodes = mutate_at(countries_nodes, "country", ~case_when(
+countries_nodes = mutate(countries_nodes, across(country, ~case_when(
    . == "Bosnia and Herzegovina"              ~ "Bosnia and Herz.",
    . == "Central African Republic"            ~ "Central African Rep.",
    . == "Congo-Brazzaville"                   ~ "Congo",
@@ -152,7 +200,7 @@ countries_nodes = mutate_at(countries_nodes, "country", ~case_when(
    . == "The Gambia"                          ~ "Gambia",
    . == "United Republic of Tanzania"         ~ "Tanzania",
    . == "Western Sahara"                      ~ "W. Sahara",
-   TRUE ~ .))
+   TRUE ~ .)))
 
 setdiff(World$name, countries_nodes$country)
 ```
@@ -160,12 +208,19 @@ setdiff(World$name, countries_nodes$country)
 ```{r rejoin, echo=FALSE}
 World = left_join(World, countries_nodes, by = c("name" = "country"))
 
-sc = sum(countries_nodes$nodes, na.rm = TRUE)
+sc = round(sum(countries_nodes$nodes, na.rm = TRUE) / 1e6, 2)
 
-sw = sum(World$nodes, na.rm = TRUE)
+sw = round(sum(World$nodes, na.rm = TRUE) / 1e6, 2)
 ```
 
-Chipre del Norte, Palestina, Somalilandia y Timor Oriental son países -¿con reconocimiento limitado?- que no figuran en la fuente de datos, y por ende persistirán vacíos en el mapa. Por otra parte un total de `r setdiff(countries_nodes$country, World$name) %>% length()` países o territorios están en la fuente, pero son demasiado pequeños para aparecer en el mapa: Andorra, Singapur y las Antillas Menores, por citar ejemplos. Efectivamente, del total de `r round(sc/1e6, 2)` millones de nodos, en el mapa se encuentran `r round(sw/1e6, 2)` millones; esto es el `r round(100*sw/sc, 2)` %. Con estas aclaraciones, solo falta unir los datos nuevamente y generar el mapa con un par de mejoras.
+Chipre del Norte, Palestina, Somalilandia y Timor Oriental son países que, tal vez debido
+al limitado reconocimiento, no figuran en OSMstats y evidentemente persistirán vacíos en
+el mapa. En cambio, un total de `r length(setdiff(countries_nodes$country, World$name))`
+territorios que sí existen en OSMstats, no aparecen en `World` por tener una pequeña
+extensión: Andorra, Singapur y las Antillas Menores son algunos ejemplos de esta situación.
+Como consecuencia, del total de `r sc` millones de nodos extraídos, `r sw` millones sí se
+encuentran representados en el mapa, lo cual es el `r round(100 * sw/sc, 2)` %. Habiendo
+aclarado esto, podemos unir los datos nuevamente y trazar el mapa con algunas mejoras.
 
 ```{r finalmap, echo=FALSE, dev="svg", fig.asp=.63, fig.cap="Segundo intento de generar nuestro mapa :tada:"}
 ggplot(World, aes(fill = nodes)) + geom_sf(color = NA) + theme_minimal() +
@@ -173,13 +228,25 @@ ggplot(World, aes(fill = nodes)) + geom_sf(color = NA) + theme_minimal() +
                         na.value = "grey", trans = "log10") +
    theme(legend.title = element_blank(), legend.position = "bottom",
          legend.key.width = unit(.16, "npc"), legend.key.height = unit(.02, "npc")) +
-   ggtitle("Nodos OpenStreetMap acumulados por País (de 2011-11-01 a 2019-11-01)")
+   ggtitle("Cumulative OpenStreetMap Nodes by Country (from 2011-11-01 to 2019-11-01)")
 ```
 
-Recordando que OpenStreetMap inició en 2004, se sigue que este mapa presenta estimaciones del número de nodos (y posiblemente del número de elementos) en cada país. ¿Cuántos nodos faltan? El propio sitio OSMstats reporta que, el 1 de noviembre de 2019, existían 5559.60 millones de nodos en la base de datos; quiere decir que esta metodología logró recopilar el 75.49 % de los nodos. De la misma manera, OSMstats reporta 1248.29 millones de nodos el 1 de noviembre de 2011 (22.45 % del valor de 2019). Sumando ambos porcentajes alcanzamos el 97.94 %; así de cerca nos hallamos de explicar la presencia de todos los nodos OpenStreetMap. Para concluir, estos son los diez países con más nodos:
+Para concluir, es necesario recordar que OpenStreetMap inició en 2004; por ende, esta
+metodología es incapaz de contabilizar todos los nodos existentes. ¿Cuántos nodos faltan?
+Bueno, el propio sitio OSMstats [reportó](https://osmstats.neis-one.org/?item=elements&date=1-11-2019),
+el 1 de noviembre de 2019, la existencia de 5559.59 millones de nodos en la base de
+datos; quiere decir que esta metodología contabilizó el 75.49 % de todos los nodos.
+El mismo sitio reportó 1248.29 millones de nodos el 1 de noviembre de 2011 (lo cual
+es el 22.45 % del valor de 2019). Sumando ambos porcentajes alcanzamos el 97.94 %;
+este es el porcentaje de nodos OpenStreetMap cuya existencia podemos justificar.
 
-```{r final, echo=FALSE}
-as.data.frame(World) %>% select(name, nodes, dates) %>% arrange(desc(nodes)) %>% head(10)
+A través del *web scraping* en el sitio de Pascal Neis, no solo tracé el mapa coroplético
+que necesitaba; también generé un *dataset* considerablemente grande e interante. Por
+supuesto, en futuros artículos lo seguiré utilizando para aprender más de este maravilloso
+proyecto. Por lo pronto, averigüemos cuáles son los diez países con más nodos:
+
+```{r final}
+slice_max(countries_nodes, nodes, n = 10)
 ```
 
 # Referencias
