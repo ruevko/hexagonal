@@ -1,0 +1,302 @@
+---
+title: Estimando nodos OpenStreetMap por país
+author: Roger Rafael Castro Zambrano
+date: '2020-01-07'
+slug: 07-estimando-nodos-openstreetmap-pais
+categories:
+  - OpenStreetMap
+tags:
+  - coropletas
+  - nodos osm
+  - web scraping
+source: 07-estimando-nodos-openstreetmap-pais.Rmd
+keywords:
+  - coropletas
+  - nodos osm
+  - web scraping
+editor_options:
+  chunk_output_type: console
+output:
+  blogdown::html_page:
+    highlight: kate
+link-citations: true
+bibliography: ../../babel.bib
+thumbnailImage: https://res.cloudinary.com/dodnzqhiz/image/upload/v1613341804/2020post/rb72maukaadcmwkgbwke.png
+summary: Se presenta una metodología basada en *web scraping* para generar un mapa coroplético del número de nodos acumulados en cada país.
+---
+
+<script src="/rmarkdown-libs/accessible-code-block/empty-anchor.js"></script>
+<style type="text/css">
+code.sourceCode > span { display: inline-block; line-height: 1.25; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+code.sourceCode > span:empty { height: 1.2em; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    background-color: #ffffff;
+    color: #a0a0a0;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #a0a0a0;  padding-left: 4px; }
+div.sourceCode
+  { color: #1f1c1b; background-color: #ffffff; }
+@media screen {
+code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span. { color: #1f1c1b; } /* Normal */
+code span.al { color: #bf0303; background-color: #f7e6e6; font-weight: bold; } /* Alert */
+code span.an { color: #ca60ca; } /* Annotation */
+code span.at { color: #0057ae; } /* Attribute */
+code span.bn { color: #b08000; } /* BaseN */
+code span.bu { color: #644a9b; font-weight: bold; } /* BuiltIn */
+code span.cf { color: #1f1c1b; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #924c9d; } /* Char */
+code span.cn { color: #aa5500; } /* Constant */
+code span.co { color: #898887; } /* Comment */
+code span.cv { color: #0095ff; } /* CommentVar */
+code span.do { color: #607880; } /* Documentation */
+code span.dt { color: #0057ae; } /* DataType */
+code span.dv { color: #b08000; } /* DecVal */
+code span.er { color: #bf0303; text-decoration: underline; } /* Error */
+code span.ex { color: #0095ff; font-weight: bold; } /* Extension */
+code span.fl { color: #b08000; } /* Float */
+code span.fu { color: #644a9b; } /* Function */
+code span.im { color: #ff5500; } /* Import */
+code span.in { color: #b08000; } /* Information */
+code span.kw { color: #1f1c1b; font-weight: bold; } /* Keyword */
+code span.op { color: #1f1c1b; } /* Operator */
+code span.ot { color: #006e28; } /* Other */
+code span.pp { color: #006e28; } /* Preprocessor */
+code span.re { color: #0057ae; background-color: #e0e9f8; } /* RegionMarker */
+code span.sc { color: #3daee9; } /* SpecialChar */
+code span.ss { color: #ff5500; } /* SpecialString */
+code span.st { color: #bf0303; } /* String */
+code span.va { color: #0057ae; } /* Variable */
+code span.vs { color: #bf0303; } /* VerbatimString */
+code span.wa { color: #bf0303; } /* Warning */
+</style>
+
+
+<p><a href="https://www.openstreetmap.org/">OpenStreetMap</a> es un proyecto remarcable. Antes de su
+existencia, la producción de geoinformación era una actividad exclusiva de instituciones
+gubernamentales o agencias comerciales, de manera que los usuarios enfrentaban limitaciones
+en forma de licencias o costos. Desde 2004, en cambio, existe una plataforma que -con
+ayuda de las tecnologías que volvieron posible el compartir datos libremente a través
+de internet- recibe y entrega geoinformación de manera gratuita y ubicua.</p>
+<p>No obstante, la utilización de OpenStreetMap implica ciertos inconvenientes derivados de la
+propia naturaleza de su funcionamiento. Un inconveniente es conocer su estado actual: como
+la base de datos cambia constantemente -con adiciones y modificaciones de usuarios en todo
+el mundo- es complicado conocer, por ejemplo, cuántas calles han sido ingresadas en el mapa
+hasta el momento. Con todo, la página <a href="https://wiki.openstreetmap.org/wiki/Stats">OpenStreetMap Wiki Stats</a>
+presenta diversos recursos (algunos de ellos incluso actualizados diariamente) que permiten
+tener una idea del estado actual del proyecto.</p>
+<p>Mientras realizaba mi tesis de grado, en determinado momento necesité un recurso muy
+específico: un mapa coroplético de elementos OpenStreetMap por país; es decir, un mapa
+donde cada país está coloreado de acuerdo a cuántos elementos han sido contribuidos en
+su territorio. Para tener una idea de cómo luce tal mapa, comparto uno hallado en una
+de mis referencias <span class="citation">(Jokar Arsanjani et al. <a href="#ref-introsm" role="doc-biblioref">2015</a>)</span>:</p>
+<div class="figure">
+<img src="https://tinyurl.com/3tq697eh" alt="" />
+<p class="caption">Nodos OpenStreetMap creados por país en octubre de 2014; © 2015 Springer International Publishing</p>
+</div>
+<p>Si bien para elaborar este mapa se contabilizó únicamente los nodos creados en un mes,
+de todas maneras se demuestra correctamente el panorama global de las contribuciones a
+OpenStreetMap: en los países europeos se encuentran las comunidades más activas; Canadá,
+Estados Unidos, Brasil, Rusia y Australia reciben gran cantidad de contribuciones, acorde
+a sus extensos territorios; y los niveles de contribución varían considerablemente en
+Latinoamérica, África y Asia.</p>
+<p>Es importante tener presente que en OpenStreetMap existen tres elementos básicos: nodos
+(<em>nodes</em>), vías (<em>ways</em>) y relaciones (<em>relations</em>). Pero tanto las vías como las relaciones
+se componen, en última instancia, de nodos; por esto, un mapa que contabilice los nodos debería
+representar correctamente la distribución de las contribuciones. Una forma de generar tal mapa
+es descargar los datos de cada país -la página <a href="http://download.geofabrik.de/">Geofabrik</a>,
+por ejemplo, contiene extractos por país- y contar los nodos en cada uno, pero este proceso
+resultaría extenuante. Esta es la motivación detrás de la siguiente metodología para
+estimar el número de nodos por país aplicando <em>web scraping</em>, una técnica de minería
+de datos que consiste en utilizar software para extraer el contenido de una página web.</p>
+<p>La fuente de datos es el sitio <a href="http://osmstats.neis-one.org/">OSMstats</a> desarrollado por
+Pascal Neis, cuya investigación en el ámbito de OpenStreetMap <span class="citation">(Neis and Zipf <a href="#ref-neis12" role="doc-biblioref">2012</a>)</span> también fue clave
+en mi tesis. Este sitio ofrece estadísticas sobre diferentes aspectos del proyecto, con una
+periodicidad diaria desde el 1 de noviembre de 2011; particularmente, la pestaña Countries
+presenta estimaciones del número de contribuyentes y de nodos creados / modificados / eliminados
+en cada país, cada día. El primer paso en esta metodología es escribir una función de
+extracción; en este caso, se utilizó los paquetes <code>httr</code>, <code>xml2</code> y <code>purrr</code>:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw">library</span>(purrr)</span>
+<span id="cb1-2"><a href="#cb1-2"></a></span>
+<span id="cb1-3"><a href="#cb1-3"></a>get_day =<span class="st"> </span><span class="kw">possibly</span>(<span class="cf">function</span>(day, url){</span>
+<span id="cb1-4"><a href="#cb1-4"></a>   </span>
+<span id="cb1-5"><a href="#cb1-5"></a>   <span class="kw">message</span>(<span class="st">&quot;Day: &quot;</span>, day)</span>
+<span id="cb1-6"><a href="#cb1-6"></a>   </span>
+<span id="cb1-7"><a href="#cb1-7"></a>   df =<span class="st"> </span><span class="kw">paste0</span>(url, day) <span class="op">%&gt;%</span></span>
+<span id="cb1-8"><a href="#cb1-8"></a><span class="st">      </span>httr<span class="op">::</span><span class="kw">GET</span>() <span class="op">%&gt;%</span></span>
+<span id="cb1-9"><a href="#cb1-9"></a><span class="st">      </span>httr<span class="op">::</span><span class="kw">content</span>(<span class="dt">encoding =</span> <span class="st">&quot;UTF-8&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb1-10"><a href="#cb1-10"></a><span class="st">      </span>xml2<span class="op">::</span><span class="kw">as_list</span>() <span class="op">%&gt;%</span></span>
+<span id="cb1-11"><a href="#cb1-11"></a><span class="st">      </span><span class="kw">plucking</span>() <span class="op">%&gt;%</span></span>
+<span id="cb1-12"><a href="#cb1-12"></a><span class="st">      </span><span class="kw">map</span>(framing) <span class="op">%&gt;%</span></span>
+<span id="cb1-13"><a href="#cb1-13"></a><span class="st">      </span><span class="kw">reduce</span>(rbind)</span>
+<span id="cb1-14"><a href="#cb1-14"></a>   </span>
+<span id="cb1-15"><a href="#cb1-15"></a>   df<span class="op">$</span>date =<span class="st"> </span>day</span>
+<span id="cb1-16"><a href="#cb1-16"></a>   </span>
+<span id="cb1-17"><a href="#cb1-17"></a>   <span class="kw">return</span>(df)}, <span class="ot">NULL</span>)</span></code></pre></div>
+<p>Las funciones <code>plucking()</code> y <code>framing()</code> no se encuentran en ningún paquete; en realidad, fueron declaradas
+<a href="https://github.com/ruevko/hexagonal/blob/master/content/post/2020/01/07-estimando-nodos-openstreetmap-pais.Rmd#L68">previamente</a>
+con el propósito de recortar y tabular los datos, respectivamente. Los pasos más importantes
+son aquellos entre <code>httr::GET()</code> y <code>xml2::as_list()</code> pues es allí donde se extrae y transforma
+el contenido de la página expuesta al <em>web scraping</em>. Adicionalmente, toda la función de
+extracción fue insertada en <code>purrr::possibly()</code>; se trata de una precaución que devuelve
+<code>NULL</code> en caso de que la ejecución falle.</p>
+<p>Ahora, esta función extrae los datos de una fecha específica, pero su verdadera utilidad
+aparecerá al iterarla en varias fechas. Considerando que los datos empiezan el 1 de noviembre
+de 2011, se decidió iterar por 2923 días, hasta el 1 de noviembre de 2019; es decir, se
+contabilizará el crecimiento de OpenStreetMap en ocho años.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>neis =<span class="st"> &quot;https://osmstats.neis-one.org/?item=countries&amp;date=&quot;</span></span>
+<span id="cb2-2"><a href="#cb2-2"></a></span>
+<span id="cb2-3"><a href="#cb2-3"></a>days =<span class="st"> </span><span class="kw">as.Date</span>(<span class="st">&quot;2011-11-1&quot;</span>) <span class="op">+</span><span class="st"> </span><span class="dv">0</span><span class="op">:</span><span class="dv">2922</span></span>
+<span id="cb2-4"><a href="#cb2-4"></a></span>
+<span id="cb2-5"><a href="#cb2-5"></a>countries =<span class="st"> </span><span class="kw">map</span>(days, get_day, <span class="dt">url =</span> neis) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">reduce</span>(rbind)</span></code></pre></div>
+<p>Los datos contienen 738001 observaciones, de 2917
+días en 253 países o territorios. Seis de los días del
+año 2018 carecen de datos: 27 de julio, 3 y 24 de agosto, 10 y 29 de septiembre, y 22 de
+octubre; desconocemos la causa de este hecho. El siguiente paso será sumar los nodos creados
+-restando al mismo tiempo los eliminados- en cada país; esto es posible implementando <code>dplyr</code>:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="kw">library</span>(dplyr)</span>
+<span id="cb3-2"><a href="#cb3-2"></a></span>
+<span id="cb3-3"><a href="#cb3-3"></a>countries_nodes =<span class="st"> </span><span class="kw">group_by</span>(countries, country) <span class="op">%&gt;%</span></span>
+<span id="cb3-4"><a href="#cb3-4"></a><span class="st">   </span><span class="kw">mutate</span>(<span class="kw">across</span>(created<span class="op">:</span>deleted, as.double)) <span class="op">%&gt;%</span></span>
+<span id="cb3-5"><a href="#cb3-5"></a><span class="st">   </span><span class="kw">summarise</span>(<span class="dt">nodes =</span> <span class="kw">sum</span>(created <span class="op">-</span><span class="st"> </span>deleted), <span class="dt">dates =</span> <span class="kw">n_distinct</span>(date))</span>
+<span id="cb3-6"><a href="#cb3-6"></a></span>
+<span id="cb3-7"><a href="#cb3-7"></a><span class="kw">summary</span>(countries_nodes)</span></code></pre></div>
+<pre><code>##    country              nodes               dates     
+##  Length:253         Min.   :       -2   Min.   :2917  
+##  Class :character   1st Qu.:   259873   1st Qu.:2917  
+##  Mode  :character   Median :  2756173   Median :2917  
+##                     Mean   : 16590188   Mean   :2917  
+##                     3rd Qu.: 13561870   3rd Qu.:2917  
+##                     Max.   :388753376   Max.   :2917</code></pre>
+<p>Finalmente, para generar el mapa, los datos calculados en el paso anterior deben ser
+relacionados con la representación geográfica de los países. El <em>dataset</em> <code>World</code> contiene
+polígonos simplificados de territorios en todo el mundo; al ser un <em>dataset</em> de clase <code>sf</code>,
+el paquete homónimo deberá ser incluido para garantizar un procesamiento correcto. Luego
+es posible trazar el mapa vía <code>ggplot2</code>:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="kw">library</span>(sf)</span>
+<span id="cb5-2"><a href="#cb5-2"></a><span class="kw">library</span>(ggplot2)</span>
+<span id="cb5-3"><a href="#cb5-3"></a></span>
+<span id="cb5-4"><a href="#cb5-4"></a><span class="kw">data</span>(<span class="st">&quot;World&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;tmap&quot;</span>)</span>
+<span id="cb5-5"><a href="#cb5-5"></a></span>
+<span id="cb5-6"><a href="#cb5-6"></a><span class="kw">left_join</span>(World, countries_nodes, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;name&quot;</span> =<span class="st"> &quot;country&quot;</span>)) <span class="op">%&gt;%</span></span>
+<span id="cb5-7"><a href="#cb5-7"></a><span class="st">   </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">fill =</span> nodes)) <span class="op">+</span><span class="st"> </span><span class="kw">geom_sf</span>(<span class="dt">color =</span> <span class="ot">NA</span>) <span class="op">+</span><span class="st"> </span><span class="kw">theme_minimal</span>()</span></code></pre></div>
+<div class="figure"><span id="fig:map"></span>
+<img src="/post/2020/01/07-estimando-nodos-openstreetmap-pais_files/figure-html/map-1.svg" alt="Primer intento de generar nuestro mapa" width="672" />
+<p class="caption">
+Figure 1: Primer intento de generar nuestro mapa
+</p>
+</div>
+<p>En este primer intento se detectó que algunos países aparecen sin datos, como las dos
+repúblicas de Korea y las dos del Congo. El problema se desprende de los diferentes nombres
+con que estos países figuran en <code>World</code> y en OSMstats; por ende, para solucionar este problema
+se debe averiguar cuáles son esos nombres, ejecutando <code>setdiff(World$name, countries_nodes$country)</code>:</p>
+<pre><code>##  [1] &quot;Fr. S. Antarctic Lands&quot; &quot;Bahamas&quot;                &quot;Bosnia and Herz.&quot;      
+##  [4] &quot;Central African Rep.&quot;   &quot;Cote d&#39;Ivoire&quot;          &quot;Dem. Rep. Congo&quot;       
+##  [7] &quot;Congo&quot;                  &quot;N. Cyprus&quot;              &quot;Czech Rep.&quot;            
+## [10] &quot;Dominican Rep.&quot;         &quot;Falkland Is.&quot;           &quot;Gambia&quot;                
+## [13] &quot;Eq. Guinea&quot;             &quot;Korea&quot;                  &quot;Kosovo&quot;                
+## [16] &quot;Lao PDR&quot;                &quot;Myanmar&quot;                &quot;Dem. Rep. Korea&quot;       
+## [19] &quot;Palestine&quot;              &quot;W. Sahara&quot;              &quot;S. Sudan&quot;              
+## [22] &quot;Solomon Is.&quot;            &quot;Somaliland&quot;             &quot;Timor-Leste&quot;           
+## [25] &quot;Tanzania&quot;</code></pre>
+<p>Entonces los nombres obtenidos de OSMstats deben ser modificados para coincidir con los de arriba.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>countries_nodes =<span class="st"> </span><span class="kw">mutate</span>(countries_nodes, <span class="kw">across</span>(country, <span class="op">~</span><span class="kw">case_when</span>(</span>
+<span id="cb7-2"><a href="#cb7-2"></a>   . <span class="op">==</span><span class="st"> &quot;Bosnia and Herzegovina&quot;</span>              <span class="op">~</span><span class="st"> &quot;Bosnia and Herz.&quot;</span>,</span>
+<span id="cb7-3"><a href="#cb7-3"></a>   . <span class="op">==</span><span class="st"> &quot;Central African Republic&quot;</span>            <span class="op">~</span><span class="st"> &quot;Central African Rep.&quot;</span>,</span>
+<span id="cb7-4"><a href="#cb7-4"></a>   . <span class="op">==</span><span class="st"> &quot;Congo-Brazzaville&quot;</span>                   <span class="op">~</span><span class="st"> &quot;Congo&quot;</span>,</span>
+<span id="cb7-5"><a href="#cb7-5"></a>   . <span class="op">==</span><span class="st"> &quot;Congo-Kinshasa&quot;</span>                      <span class="op">~</span><span class="st"> &quot;Dem. Rep. Congo&quot;</span>,</span>
+<span id="cb7-6"><a href="#cb7-6"></a>   . <span class="op">==</span><span class="st"> &quot;Czech Republic&quot;</span>                      <span class="op">~</span><span class="st"> &quot;Czech Rep.&quot;</span>,</span>
+<span id="cb7-7"><a href="#cb7-7"></a>   . <span class="op">==</span><span class="st"> &quot;Dominican Republic&quot;</span>                  <span class="op">~</span><span class="st"> &quot;Dominican Rep.&quot;</span>,</span>
+<span id="cb7-8"><a href="#cb7-8"></a>   . <span class="op">==</span><span class="st"> &quot;Equatorial Guinea&quot;</span>                   <span class="op">~</span><span class="st"> &quot;Eq. Guinea&quot;</span>,</span>
+<span id="cb7-9"><a href="#cb7-9"></a>   . <span class="op">==</span><span class="st"> &quot;Falkland Islands (Islas Malvinas)&quot;</span>   <span class="op">~</span><span class="st"> &quot;Falkland Is.&quot;</span>,</span>
+<span id="cb7-10"><a href="#cb7-10"></a>   . <span class="op">==</span><span class="st"> &quot;French Southern and Antarctic Lands&quot;</span> <span class="op">~</span><span class="st"> &quot;Fr. S. Antarctic Lands&quot;</span>,</span>
+<span id="cb7-11"><a href="#cb7-11"></a>   . <span class="op">==</span><span class="st"> &quot;Ivory Coast&quot;</span>                         <span class="op">~</span><span class="st"> &quot;Cote d&#39;Ivoire&quot;</span>,</span>
+<span id="cb7-12"><a href="#cb7-12"></a>   . <span class="op">==</span><span class="st"> &quot;Laos&quot;</span>                                <span class="op">~</span><span class="st"> &quot;Lao PDR&quot;</span>,</span>
+<span id="cb7-13"><a href="#cb7-13"></a>   . <span class="op">==</span><span class="st"> &quot;Myanmar (Burma)&quot;</span>                     <span class="op">~</span><span class="st"> &quot;Myanmar&quot;</span>,</span>
+<span id="cb7-14"><a href="#cb7-14"></a>   . <span class="op">==</span><span class="st"> &quot;North Korea&quot;</span>                         <span class="op">~</span><span class="st"> &quot;Dem. Rep. Korea&quot;</span>,</span>
+<span id="cb7-15"><a href="#cb7-15"></a>   . <span class="op">==</span><span class="st"> &quot;Republic of Kosovo&quot;</span>                  <span class="op">~</span><span class="st"> &quot;Kosovo&quot;</span>,</span>
+<span id="cb7-16"><a href="#cb7-16"></a>   . <span class="op">==</span><span class="st"> &quot;Solomon Islands&quot;</span>                     <span class="op">~</span><span class="st"> &quot;Solomon Is.&quot;</span>,</span>
+<span id="cb7-17"><a href="#cb7-17"></a>   . <span class="op">==</span><span class="st"> &quot;South Korea&quot;</span>                         <span class="op">~</span><span class="st"> &quot;Korea&quot;</span>,</span>
+<span id="cb7-18"><a href="#cb7-18"></a>   . <span class="op">==</span><span class="st"> &quot;South Sudan&quot;</span>                         <span class="op">~</span><span class="st"> &quot;S. Sudan&quot;</span>,</span>
+<span id="cb7-19"><a href="#cb7-19"></a>   . <span class="op">==</span><span class="st"> &quot;The Bahamas&quot;</span>                         <span class="op">~</span><span class="st"> &quot;Bahamas&quot;</span>,</span>
+<span id="cb7-20"><a href="#cb7-20"></a>   . <span class="op">==</span><span class="st"> &quot;The Gambia&quot;</span>                          <span class="op">~</span><span class="st"> &quot;Gambia&quot;</span>,</span>
+<span id="cb7-21"><a href="#cb7-21"></a>   . <span class="op">==</span><span class="st"> &quot;United Republic of Tanzania&quot;</span>         <span class="op">~</span><span class="st"> &quot;Tanzania&quot;</span>,</span>
+<span id="cb7-22"><a href="#cb7-22"></a>   . <span class="op">==</span><span class="st"> &quot;Western Sahara&quot;</span>                      <span class="op">~</span><span class="st"> &quot;W. Sahara&quot;</span>,</span>
+<span id="cb7-23"><a href="#cb7-23"></a>   <span class="ot">TRUE</span> <span class="op">~</span><span class="st"> </span>.)))</span>
+<span id="cb7-24"><a href="#cb7-24"></a></span>
+<span id="cb7-25"><a href="#cb7-25"></a><span class="kw">setdiff</span>(World<span class="op">$</span>name, countries_nodes<span class="op">$</span>country)</span></code></pre></div>
+<pre><code>## [1] &quot;N. Cyprus&quot;   &quot;Palestine&quot;   &quot;Somaliland&quot;  &quot;Timor-Leste&quot;</code></pre>
+<p>Chipre del Norte, Palestina, Somalilandia y Timor Oriental son países que, tal vez debido
+al limitado reconocimiento, no figuran en OSMstats y evidentemente persistirán vacíos en
+el mapa. En cambio, un total de 80
+territorios que sí existen en OSMstats, no aparecen en <code>World</code> por tener una pequeña
+extensión: Andorra, Singapur y las Antillas Menores son algunos ejemplos de esta situación.
+Como consecuencia, del total de 4197.32 millones de nodos extraídos, 4180.61 millones sí se
+encuentran representados en el mapa, lo cual es el 99.6 %. Habiendo
+aclarado esto, podemos unir los datos nuevamente y trazar el mapa con algunas mejoras.</p>
+<div class="figure"><span id="fig:finalmap"></span>
+<img src="/post/2020/01/07-estimando-nodos-openstreetmap-pais_files/figure-html/finalmap-1.svg" alt="Segundo intento de generar nuestro mapa :tada:" width="672" />
+<p class="caption">
+Figure 2: Segundo intento de generar nuestro mapa :tada:
+</p>
+</div>
+<p>Para concluir, es necesario recordar que OpenStreetMap inició en 2004; por ende, esta
+metodología es incapaz de contabilizar todos los nodos existentes. ¿Cuántos nodos faltan?
+Bueno, el propio sitio OSMstats <a href="https://osmstats.neis-one.org/?item=elements&amp;date=1-11-2019">reportó</a>,
+el 1 de noviembre de 2019, la existencia de 5559.59 millones de nodos en la base de
+datos; quiere decir que esta metodología contabilizó el 75.49 % de todos los nodos.
+El mismo sitio reportó 1248.29 millones de nodos el 1 de noviembre de 2011 (lo cual
+es el 22.45 % del valor de 2019). Sumando ambos porcentajes alcanzamos el 97.94 %;
+este es el porcentaje de nodos OpenStreetMap cuya existencia podemos justificar.</p>
+<p>A través del <em>web scraping</em> en el sitio de Pascal Neis, no solo tracé el mapa coroplético
+que necesitaba; también generé un <em>dataset</em> considerablemente grande e interante. Por
+supuesto, en futuros artículos lo seguiré utilizando para aprender más de este maravilloso
+proyecto. Por lo pronto, averigüemos cuáles son los diez países con más nodos:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a><span class="kw">slice_max</span>(countries_nodes, nodes, <span class="dt">n =</span> <span class="dv">10</span>)</span></code></pre></div>
+<pre><code>## # A tibble: 10 x 3
+##    country           nodes dates
+##    &lt;chr&gt;             &lt;dbl&gt; &lt;int&gt;
+##  1 United States 388753376  2917
+##  2 Russia        294001095  2917
+##  3 Canada        231464569  2917
+##  4 France        230694245  2917
+##  5 Germany       220406582  2917
+##  6 Indonesia     154173689  2917
+##  7 Italy         143362158  2917
+##  8 Poland        120794989  2917
+##  9 Brazil        112646013  2917
+## 10 Japan          98296294  2917</code></pre>
+<div id="referencias" class="section level1 unnumbered">
+<h1>Referencias</h1>
+<div id="refs" class="references">
+<div id="ref-introsm">
+<p>Jokar Arsanjani, Jamal, Alexander Zipf, Peter Mooney, and Marco Helbich. 2015. “An Introduction to Openstreetmap in Geographic Information Science: Experiences, Research, and Applications.” In <em>Lecture Notes in Geoinformation and Cartography</em>, 1–15. <a href="https://doi.org/10.1007/978-3-319-14280-7_1">https://doi.org/10.1007/978-3-319-14280-7_1</a>.</p>
+</div>
+<div id="ref-neis12">
+<p>Neis, Pascal, and Alexander Zipf. 2012. “Analyzing the Contributor Activity of a Volunteered Geographic Information Project — the Case of Openstreetmap.” <em>ISPRS International Journal of Geo-Information</em> 1 (December): 146–65. <a href="https://doi.org/10.3390/ijgi1020146">https://doi.org/10.3390/ijgi1020146</a>.</p>
+</div>
+</div>
+</div>

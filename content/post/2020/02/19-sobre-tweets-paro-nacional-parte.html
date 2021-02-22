@@ -1,0 +1,615 @@
+---
+title: Sobre los Tweets en el Paro Nacional, segunda parte
+author: Roger Rafael Castro Zambrano
+date: '2020-02-19'
+slug: 19-sobre-tweets-paro-nacional-parte
+categories:
+  - Twitter
+tags:
+  - ecuador
+  - hashtags
+source: 19-sobre-tweets-paro-nacional-parte.Rmd
+keywords:
+  - ecuador
+  - hashtags
+  - paro nacional
+editor_options:
+  chunk_output_type: console
+output:
+  blogdown::html_page:
+    highlight: kate
+thumbnailImage: https://res.cloudinary.com/dodnzqhiz/image/upload/v1595302847/2020post/cacerolazo_ndaaxl.jpg
+summary: Continúa la discusión sobre *tweets* publicados durante el paro de octubre, esta vez considerando seis *hashtags* populares.
+---
+
+<script src="/rmarkdown-libs/accessible-code-block/empty-anchor.js"></script>
+<script src="/rmarkdown-libs/kePrint/kePrint.js"></script>
+<link href="/rmarkdown-libs/lightable/lightable.css" rel="stylesheet" />
+<style type="text/css">
+code.sourceCode > span { display: inline-block; line-height: 1.25; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+code.sourceCode > span:empty { height: 1.2em; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    background-color: #ffffff;
+    color: #a0a0a0;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #a0a0a0;  padding-left: 4px; }
+div.sourceCode
+  { color: #1f1c1b; background-color: #ffffff; }
+@media screen {
+code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span. { color: #1f1c1b; } /* Normal */
+code span.al { color: #bf0303; background-color: #f7e6e6; font-weight: bold; } /* Alert */
+code span.an { color: #ca60ca; } /* Annotation */
+code span.at { color: #0057ae; } /* Attribute */
+code span.bn { color: #b08000; } /* BaseN */
+code span.bu { color: #644a9b; font-weight: bold; } /* BuiltIn */
+code span.cf { color: #1f1c1b; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #924c9d; } /* Char */
+code span.cn { color: #aa5500; } /* Constant */
+code span.co { color: #898887; } /* Comment */
+code span.cv { color: #0095ff; } /* CommentVar */
+code span.do { color: #607880; } /* Documentation */
+code span.dt { color: #0057ae; } /* DataType */
+code span.dv { color: #b08000; } /* DecVal */
+code span.er { color: #bf0303; text-decoration: underline; } /* Error */
+code span.ex { color: #0095ff; font-weight: bold; } /* Extension */
+code span.fl { color: #b08000; } /* Float */
+code span.fu { color: #644a9b; } /* Function */
+code span.im { color: #ff5500; } /* Import */
+code span.in { color: #b08000; } /* Information */
+code span.kw { color: #1f1c1b; font-weight: bold; } /* Keyword */
+code span.op { color: #1f1c1b; } /* Operator */
+code span.ot { color: #006e28; } /* Other */
+code span.pp { color: #006e28; } /* Preprocessor */
+code span.re { color: #0057ae; background-color: #e0e9f8; } /* RegionMarker */
+code span.sc { color: #3daee9; } /* SpecialChar */
+code span.ss { color: #ff5500; } /* SpecialString */
+code span.st { color: #bf0303; } /* String */
+code span.va { color: #0057ae; } /* Variable */
+code span.vs { color: #bf0303; } /* VerbatimString */
+code span.wa { color: #bf0303; } /* Warning */
+</style>
+
+
+<p>Continuando con la discusión del artículo anterior se realizó un nuevo análisis, considerando
+ahora seis <em>hashtags</em> populares durante el paro nacional de octubre pasado en Ecuador. Los
+<em>tweets</em> fueron obtenidos utilizando un programa <em>java</em> con menos capacidad que la API
+oficial y gratuita de Twitter, pero que permite recuperar publicaciones de cualquier época.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw">library</span>(dplyr)</span>
+<span id="cb1-2"><a href="#cb1-2"></a></span>
+<span id="cb1-3"><a href="#cb1-3"></a>HashTags =<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;DialogoPorLaPaz&quot;</span>, <span class="st">&quot;EcuadorPaisDePaz&quot;</span>, <span class="st">&quot;ElParoNoPara&quot;</span>,</span>
+<span id="cb1-4"><a href="#cb1-4"></a>             <span class="st">&quot;ElParoSigue&quot;</span>, <span class="st">&quot;ParoNacionalEC&quot;</span>, <span class="st">&quot;ParoNacionalEcuador&quot;</span>)</span>
+<span id="cb1-5"><a href="#cb1-5"></a></span>
+<span id="cb1-6"><a href="#cb1-6"></a>df_all =<span class="st"> </span>purrr<span class="op">::</span><span class="kw">map</span>(HashTags, readHashTag) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># la función readHashTag()</span></span>
+<span id="cb1-7"><a href="#cb1-7"></a><span class="st">   </span>purrr<span class="op">::</span><span class="kw">reduce</span>(bind_rows) <span class="op">%&gt;%</span><span class="st">                </span><span class="co"># fue definida al final</span></span>
+<span id="cb1-8"><a href="#cb1-8"></a><span class="st">   </span><span class="kw">mutate_at</span>(<span class="st">&quot;ht&quot;</span>, forcats<span class="op">::</span>fct_infreq)        <span class="co"># del artículo anterior</span></span></code></pre></div>
+<p>Con este código se ha importado y unido los archivos de valores separados por comas -uno
+por cada <em>hashtag</em>- generados por el programa <em>java</em>. Un paso importante fue renombrar
+(en este caso, según el formato “output_HashTag.csv”) cada archivo generado por el
+programa; caso contrario, el archivo sería reescrito. Se obtuvieron 1399
+<em>tweets</em> de 618 usuarios diferentes, con las siguientes frecuencias:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="kw">library</span>(ggplot2)</span>
+<span id="cb2-2"><a href="#cb2-2"></a></span>
+<span id="cb2-3"><a href="#cb2-3"></a>my_plot =<span class="st"> </span><span class="kw">ggplot</span>() <span class="op">+</span><span class="st"> </span><span class="kw">coord_flip</span>() <span class="op">+</span><span class="st"> </span><span class="kw">theme_minimal</span>() <span class="op">+</span></span>
+<span id="cb2-4"><a href="#cb2-4"></a><span class="st">   </span><span class="kw">theme</span>(<span class="dt">axis.title =</span> <span class="kw">element_blank</span>(), <span class="dt">legend.position =</span> <span class="st">&quot;none&quot;</span>)</span>
+<span id="cb2-5"><a href="#cb2-5"></a></span>
+<span id="cb2-6"><a href="#cb2-6"></a>my_plot <span class="op">+</span><span class="st"> </span><span class="kw">geom_bar</span>(<span class="kw">aes</span>(ht, <span class="dt">fill =</span> ht), df_all)</span></code></pre></div>
+<div class="figure"><span id="fig:plot1"></span>
+<img src="/post/2020/02/19-sobre-tweets-paro-nacional-parte_files/figure-html/plot1-1.png" alt="Frecuencia de *tweets* por *hashtag*" width="672" />
+<p class="caption">
+Figure 1: Frecuencia de <em>tweets</em> por <em>hashtag</em>
+</p>
+</div>
+<p>En concordancia con lo expuesto en el artículo anterior, #EcuadorPaisDePaz se utilizó con
+mayor frecuencia comparado con otros <em>hashtags</em> que, en cambio, demostraban aprobación del
+paro. Solo #ParoNacionalEC fue utilizado en más <em>tweets</em>; no obstante, la popularidad de cada
+<em>hashtag</em> es tal vez un aspecto más revelador que la frecuencia de uso. En este sentido, los
+favoritos y los <em>retweets</em> (RTs) constituyen medidas de la popularidad. La distribución de
+ambas variables -diferenciando según <em>hashtag</em>- se visualizaría bien en <em>boxplots</em>, pero
+para esta representación primero se debe “alargar” los datos vía <code>tidyr::pivot_longer()</code>.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="kw">library</span>(tidyr)</span>
+<span id="cb3-2"><a href="#cb3-2"></a></span>
+<span id="cb3-3"><a href="#cb3-3"></a>df_long =<span class="st"> </span><span class="kw">pivot_longer</span>(df_all, <span class="kw">c</span>(favorites, retweets))</span>
+<span id="cb3-4"><a href="#cb3-4"></a></span>
+<span id="cb3-5"><a href="#cb3-5"></a>my_plot <span class="op">+</span><span class="st"> </span><span class="kw">geom_boxplot</span>(<span class="kw">aes</span>(ht, value, <span class="dt">fill =</span> ht), df_long) <span class="op">+</span></span>
+<span id="cb3-6"><a href="#cb3-6"></a><span class="st">   </span><span class="kw">facet_wrap</span>(<span class="op">~</span>name) <span class="op">+</span><span class="st"> </span><span class="kw">scale_y_log10</span>()</span></code></pre></div>
+<div class="figure"><span id="fig:plot2"></span>
+<img src="/post/2020/02/19-sobre-tweets-paro-nacional-parte_files/figure-html/plot2-1.png" alt="*Boxplots* de *favorites* y *retweets* por *hashtag*" width="672" />
+<p class="caption">
+Figure 2: <em>Boxplots</em> de <em>favorites</em> y <em>retweets</em> por <em>hashtag</em>
+</p>
+</div>
+<p>Parece ser que la distribución de favoritos no varía considerablemente entre diferentes <em>hashtags</em>,
+mientras que en RTs la mayor diferencia existe entre #DialogoPorLaPaz y #ParoNacionalEC;
+este último sería el <em>hashtag</em> más popular. Hay que notar, sin embargo, los valores
+atípicos de favoritos y RTs para #EcuadorPaisDePaz, los cuales representarían unas pocas
+publicaciones que recibieron mucha atención. Si este es el caso, es algo lamentable pues
+significa que el discurso gubernamental tuvo cierto impacto. Para observar los datos con
+más detenimiento, la siguiente tabla presenta la razón de contribución (promedio de
+<em>tweets</em> por usuario) y un resumen de la distribución de RTs.</p>
+<div style="border: 1px solid #ddd; padding: 5px; margin-bottom:2rem;overflow-x: scroll; width:auto; ">
+<table>
+<caption>
+<span id="tab:table1">Table 1: </span>Razón de contribución y distribución de <em>retweets</em>
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+Hashtag
+</th>
+<th style="text-align:right;">
+Tweets
+</th>
+<th style="text-align:right;">
+Usuarios
+</th>
+<th style="text-align:right;">
+Razón
+</th>
+<th style="text-align:right;">
+RTsMedio
+</th>
+<th style="text-align:right;">
+RTsMáximo
+</th>
+<th style="text-align:right;">
+RTsTotal
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+#ParoNacionalEC
+</td>
+<td style="text-align:right;">
+429
+</td>
+<td style="text-align:right;">
+223
+</td>
+<td style="text-align:right;">
+1.92
+</td>
+<td style="text-align:right;">
+306.0
+</td>
+<td style="text-align:right;">
+3627
+</td>
+<td style="text-align:right;">
+131275
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+#EcuadorPaisDePaz
+</td>
+<td style="text-align:right;">
+367
+</td>
+<td style="text-align:right;">
+158
+</td>
+<td style="text-align:right;">
+2.32
+</td>
+<td style="text-align:right;">
+259.2
+</td>
+<td style="text-align:right;">
+8592
+</td>
+<td style="text-align:right;">
+95129
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+#ParoNacionalEcuador
+</td>
+<td style="text-align:right;">
+244
+</td>
+<td style="text-align:right;">
+149
+</td>
+<td style="text-align:right;">
+1.64
+</td>
+<td style="text-align:right;">
+283.5
+</td>
+<td style="text-align:right;">
+5426
+</td>
+<td style="text-align:right;">
+69183
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+#ElParoSigue
+</td>
+<td style="text-align:right;">
+186
+</td>
+<td style="text-align:right;">
+106
+</td>
+<td style="text-align:right;">
+1.75
+</td>
+<td style="text-align:right;">
+278.7
+</td>
+<td style="text-align:right;">
+2133
+</td>
+<td style="text-align:right;">
+51830
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+#ElParoNoPara
+</td>
+<td style="text-align:right;">
+132
+</td>
+<td style="text-align:right;">
+91
+</td>
+<td style="text-align:right;">
+1.45
+</td>
+<td style="text-align:right;">
+263.2
+</td>
+<td style="text-align:right;">
+2473
+</td>
+<td style="text-align:right;">
+34743
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+#DialogoPorLaPaz
+</td>
+<td style="text-align:right;">
+86
+</td>
+<td style="text-align:right;">
+61
+</td>
+<td style="text-align:right;">
+1.41
+</td>
+<td style="text-align:right;">
+102.9
+</td>
+<td style="text-align:right;">
+627
+</td>
+<td style="text-align:right;">
+8848
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Nuevamente se halló que el uso de #EcuadorPaisDePaz fue el más parecido al <em>spam</em>, con más
+<em>tweets</em> y menos usuarios. Mientras que #DialogoPorLaPaz tuvo la razón de contribución más
+baja, es decir que fue publicado por más usuarios diferentes; aunque también es el <em>hashtag</em>
+menos utilizado, así que resulta ambiguo discernir con quiénes se relacionó mayoritariamente.
+Por otra parte, según el promedio y el total de RTs, es claro que #ParoNacionalEC tuvo el
+mayor alcance; se observó que los <em>tweets</em> con este <em>hashtag</em> servían para reportar
+acciones de los sectores movilizados, y la represión en contra de ellos. Este es el
+<em>tweet</em> con #ParoNacionalEC que recibió más RTs:</p>
+{{% twitter "1183225522651832320" %}}
+<p>El discurso gubernamental, pretendiendo minimizar una protesta cuyas
+demandas fueron justas, recibió más RTs en este <em>tweet</em> del presidente:</p>
+{{% twitter "1181413499555192833" %}}
+<p>A continuación se presta atención al hecho de que, unas pocas veces, los <em>hashtags</em>
+estudiados fueron utilizados en combinación. Esto solo sucedió en 44 <em>tweets</em>, de manera
+que no se aporta información adicional al análisis; con todo, la combinación #ParoNacionalEcuador
+y #ElParoSigue ocurrió once veces y fue la más frecuente. La manera de averiguar esto es
+“ensanchar” los datos, esta vez a través de <code>tidyr::pivot_wider()</code>, y calcular todas las
+combinaciones de <em>hashtags</em> posibles.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>df_wide =<span class="st"> </span><span class="kw">mutate</span>(<span class="kw">select</span>(df_all, id, user, <span class="dt">name =</span> ht), <span class="dt">value =</span> <span class="st">&quot;x&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb4-2"><a href="#cb4-2"></a><span class="st">   </span><span class="kw">pivot_wider</span>(<span class="dt">values_fill =</span> <span class="st">&quot; &quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb4-3"><a href="#cb4-3"></a><span class="st">   </span><span class="kw">rename_with</span>(stringr<span class="op">::</span>str_remove_all, <span class="op">-</span><span class="kw">c</span>(id, user), <span class="st">&quot;[[:lower:]]&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb4-4"><a href="#cb4-4"></a><span class="st">   </span><span class="kw">group_by</span>(<span class="kw">across</span>(<span class="op">-</span><span class="kw">c</span>(id, user))) <span class="op">%&gt;%</span></span>
+<span id="cb4-5"><a href="#cb4-5"></a><span class="st">   </span><span class="kw">summarise</span>(<span class="dt">Tweets =</span> <span class="kw">n_distinct</span>(id), <span class="dt">Usuarios =</span> <span class="kw">n_distinct</span>(user))</span></code></pre></div>
+<p>En la siguiente tabla los <em>hashtags</em> son representados con sus iniciales;
+se contó el número de <em>tweets</em> y de usuarios para cada combinación.</p>
+<div style="border: 1px solid #ddd; padding: 5px; margin-bottom:2rem;overflow-x: scroll; width:auto; ">
+<table>
+<caption>
+<span id="tab:table2">Table 2: </span>Resumen de <em>tweets</em> con <em>hashtags</em> combinados
+</caption>
+<thead>
+<tr>
+<th style="text-align:center;">
+#DPLP
+</th>
+<th style="text-align:center;">
+#EPDP
+</th>
+<th style="text-align:center;">
+#EPNP
+</th>
+<th style="text-align:center;">
+#EPS
+</th>
+<th style="text-align:center;">
+#PNEC
+</th>
+<th style="text-align:center;">
+#PNE
+</th>
+<th style="text-align:right;">
+Tweets
+</th>
+<th style="text-align:right;">
+Usuarios
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+x
+</td>
+<td style="text-align:center;">
+x
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+6
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+x
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+x
+</td>
+<td style="text-align:right;">
+14
+</td>
+<td style="text-align:right;">
+11
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+x
+</td>
+<td style="text-align:center;">
+x
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+4
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+x
+</td>
+<td style="text-align:center;">
+x
+</td>
+<td style="text-align:center;">
+x
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+x
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+x
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+6
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+x
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+x
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+6
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+x
+</td>
+<td style="text-align:center;">
+x
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+2
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+x
+</td>
+<td style="text-align:center;">
+x
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+x
+</td>
+<td style="text-align:center;">
+x
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Con los datos obtenidos también es posible visualizar el tiempo de publicación de los
+<em>tweets</em>. El siguiente gráfico fue generado de manera que cada columna encierre seis
+horas. Los tiempos son congruentes con la aparición, posterior al inicio del paro, de la
+propaganda #EcuadorPaísDePaz; también son congruentes con la expectativa del #DialogoPorLaPaz,
+refiriéndose a la reunión del 13 de octubre donde se acordó derogar las medidas económicas,
+terminando efectivamente el paro.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>df_time =<span class="st"> </span><span class="kw">mutate</span>(df_all, <span class="kw">across</span>(time, lubridate<span class="op">::</span>round_date, <span class="st">&quot;6 hours&quot;</span>))</span>
+<span id="cb5-2"><a href="#cb5-2"></a></span>
+<span id="cb5-3"><a href="#cb5-3"></a>my_plot <span class="op">+</span><span class="st"> </span><span class="kw">geom_bar</span>(<span class="kw">aes</span>(time, <span class="dt">fill =</span> ht), df_time) <span class="op">+</span></span>
+<span id="cb5-4"><a href="#cb5-4"></a><span class="st">   </span><span class="kw">scale_y_continuous</span>(<span class="dt">breaks =</span> <span class="dv">20</span><span class="op">*</span><span class="dv">0</span><span class="op">:</span><span class="dv">5</span>) <span class="op">+</span><span class="st"> </span><span class="kw">coord_cartesian</span>() <span class="op">+</span></span>
+<span id="cb5-5"><a href="#cb5-5"></a><span class="st">   </span><span class="kw">theme</span>(<span class="dt">legend.title =</span> <span class="kw">element_blank</span>(), <span class="dt">legend.position =</span> <span class="st">&quot;bottom&quot;</span>)</span></code></pre></div>
+<div class="figure"><span id="fig:plot3"></span>
+<img src="/post/2020/02/19-sobre-tweets-paro-nacional-parte_files/figure-html/plot3-1.png" alt="Tiempo de publicación de los *tweets* por *hashtag*" width="672" />
+<p class="caption">
+Figure 3: Tiempo de publicación de los <em>tweets</em> por <em>hashtag</em>
+</p>
+</div>
+<p>Finalmente, es posible averiguar quiénes utilizaron en mayor cantidad cada <em>hashtag</em>. En
+este gráfico se recogen los usuarios que publicaron diez o más <em>tweets</em> con cada <em>hashtag</em>;
+como era de esperar, fue en las cuentas del ejército, la policía y el presidente donde
+abundaron los mensajes de paz, al mismo tiempo que ellos se convertían en los responsables
+de reprimir violentamente a los manifestantes. En contraposición, se evidenciaron los
+mensajes de respaldo a las movilizaciones desde CONAIE y KolectiVOZ, y de reportaje desde
+Pichincha Comunicaciones y Wambra.</p>
+<div class="figure"><span id="fig:plot4"></span>
+<img src="/post/2020/02/19-sobre-tweets-paro-nacional-parte_files/figure-html/plot4-1.png" alt="Usuarios que publicaron diez o más *tweets* por *hashtag*" width="672" />
+<p class="caption">
+Figure 4: Usuarios que publicaron diez o más <em>tweets</em> por <em>hashtag</em>
+</p>
+</div>

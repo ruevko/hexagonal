@@ -3,8 +3,7 @@
 .Rprofile
 .Ruserdata
 .Rproj.user
-octocat.png
-static/post
-static/rmarkdown-libs
-content/post/**/*.html
 docs/post/babel.bib
+static/post/2021
+static/rmarkdown-libs
+content/post/2021/*/*.html
