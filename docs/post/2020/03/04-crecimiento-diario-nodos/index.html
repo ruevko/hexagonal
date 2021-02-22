@@ -297,127 +297,184 @@ code span.wa { color: #bf0303; } /* Warning */
 </style>
 
 
-<p>En el primer post de este blog presenté una metodología para generar un mapa coroplético de las contribuciones a OpenStreetMap. Esta alternativa recupera el 75 % de todos los nodos en la base de datos, así que constituye una buena estimación inicial. Con todo, sumar los nodos en cada país no es aprovechar completamente esos datos; después de todo estamos hablando de 738 mil observaciones. Por eso, el objetivo de este post será averiguar la tasa de crecimiento de los nodos en cada país; para comenzar, se utilizará <code>tidyverse</code> para cargar simultáneamente varios paquetes necesarios.</p>
+<p>En el primer artículo de este blog presenté cómo generar un mapa coroplético de las
+contribuciones a OpenStreetMap; utilizando una metodología web scraping fui capaz de
+contabilizar el 75 % de los nodos existentes, así que fue una buena estimación inicial.
+Con todo, contabilizar los nodos en cada país no constituye un aprovechamiento completo de
+esos datos; después de todo, se trata de 738 mil observaciones.
+Por eso, ahora estimaremos la tasa de crecimiento de las contribuciones en cada país.
+Utilizaremos <code>tidyverse</code> para cargar simultáneamente varios paquetes necesarios.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw">library</span>(sf)</span>
-<span id="cb1-2"><a href="#cb1-2"></a><span class="kw">library</span>(tidyverse) <span class="co"># contiene dplyr, ggplot2, purrr y tidyr!</span></span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="kw">library</span>(tidyverse) <span class="co"># contiene dplyr, ggplot2, purrr, tidyr</span></span>
 <span id="cb1-3"><a href="#cb1-3"></a></span>
-<span id="cb1-4"><a href="#cb1-4"></a><span class="kw">data</span>(<span class="st">&quot;World&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;tmap&quot;</span>); World =<span class="st"> </span><span class="kw">select</span>(World, name, continent)</span>
+<span id="cb1-4"><a href="#cb1-4"></a><span class="kw">data</span>(<span class="st">&quot;World&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;tmap&quot;</span>)</span>
 <span id="cb1-5"><a href="#cb1-5"></a></span>
-<span id="cb1-6"><a href="#cb1-6"></a>countries =<span class="st"> </span><span class="kw">left_join</span>(countries, World, <span class="kw">c</span>(<span class="st">&quot;country&quot;</span> =<span class="st"> &quot;name&quot;</span>)) <span class="op">%&gt;%</span></span>
-<span id="cb1-7"><a href="#cb1-7"></a><span class="st">   </span><span class="kw">filter</span>(<span class="op">!</span><span class="kw">is.na</span>(continent), date <span class="op">!=</span><span class="st"> </span><span class="kw">as.Date</span>(<span class="st">&quot;2019-11-01&quot;</span>)) <span class="op">%&gt;%</span></span>
-<span id="cb1-8"><a href="#cb1-8"></a><span class="st">   </span><span class="kw">select</span>(<span class="op">-</span>geometry) <span class="co"># &quot;countries&quot; viene del primer post</span></span></code></pre></div>
-<p>En el primer paso se descartó los territorios que no podrán ser representados en el mapa (reduciendo así los datos de 253 a 173 países) y se asignó el continente al que pertenece cada uno. Considerando que las observaciones son diarias, es preferible agregar los datos para reducir su número; en este caso se calcularon la suma<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> y la suma acumulativa mensuales.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>countries_month =<span class="st"> </span><span class="kw">mutate_at</span>(countries, <span class="st">&quot;date&quot;</span>, lubridate<span class="op">::</span>ceiling_date, <span class="st">&quot;month&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb1-6"><a href="#cb1-6"></a>countries =<span class="st"> </span><span class="kw">select</span>(<span class="kw">st_drop_geometry</span>(World), <span class="dt">country =</span> name, continent) <span class="op">%&gt;%</span></span>
+<span id="cb1-7"><a href="#cb1-7"></a><span class="st">   </span><span class="kw">left_join</span>(countries) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># el dataset countries viene del primer artículo</span></span>
+<span id="cb1-8"><a href="#cb1-8"></a><span class="st">   </span><span class="kw">filter</span>(date <span class="op">!=</span><span class="st"> </span><span class="kw">as.Date</span>(<span class="st">&quot;2019-11-01&quot;</span>))</span></code></pre></div>
+<p>En este primer paso se descartó aquellos territorios que no podrán ser representados en el
+mapa (reduciendo su número de 253 a 173) y también se añadió
+el continente al que pertenece cada uno. Ahora, la cantidad de observaciones es mayor que
+la necesaria, esto debido a que la periodicidad es diaria. Una estrategia para reducir la
+cantidad es “agregar” o agrupar las observaciones utilizando un periodo más largo; así que
+en el siguiente paso se calculan la suma<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> y la suma acumulativa de nodos creados, al final de cada mes.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>countries_month =<span class="st"> </span><span class="kw">mutate</span>(countries, <span class="kw">across</span>(date, lubridate<span class="op">::</span>ceiling_date, <span class="st">&quot;month&quot;</span>)) <span class="op">%&gt;%</span></span>
 <span id="cb2-2"><a href="#cb2-2"></a><span class="st">   </span><span class="kw">group_by</span>(continent, country, date) <span class="op">%&gt;%</span></span>
-<span id="cb2-3"><a href="#cb2-3"></a><span class="st">   </span><span class="kw">summarise</span>(<span class="dt">SumNodes =</span> <span class="kw">sum</span>(created)) <span class="op">%&gt;%</span></span>
-<span id="cb2-4"><a href="#cb2-4"></a><span class="st">   </span><span class="kw">mutate</span>(<span class="dt">CumNodes =</span> <span class="kw">cumsum</span>(SumNodes), <span class="dt">date =</span> date <span class="op">-</span><span class="st"> </span><span class="dv">1</span>) <span class="co"># es el último día de cada mes</span></span>
+<span id="cb2-3"><a href="#cb2-3"></a><span class="st">   </span><span class="kw">summarise</span>(<span class="dt">nodes_sum =</span> <span class="kw">sum</span>(created)) <span class="op">%&gt;%</span></span>
+<span id="cb2-4"><a href="#cb2-4"></a><span class="st">   </span><span class="kw">mutate</span>(<span class="dt">nodes_cum =</span> <span class="kw">cumsum</span>(nodes_sum), <span class="dt">date =</span> date <span class="op">-</span><span class="st"> </span><span class="dv">1</span>) <span class="co"># el último día de cada mes</span></span>
 <span id="cb2-5"><a href="#cb2-5"></a></span>
 <span id="cb2-6"><a href="#cb2-6"></a><span class="kw">head</span>(countries_month)</span></code></pre></div>
 <pre><code>## # A tibble: 6 x 5
 ## # Groups:   continent, country [1]
-##   continent country date       SumNodes CumNodes
-##   &lt;fct&gt;     &lt;chr&gt;   &lt;date&gt;        &lt;dbl&gt;    &lt;dbl&gt;
-## 1 Africa    Algeria 2011-11-30    45598    45598
-## 2 Africa    Algeria 2011-12-31    60887   106485
-## 3 Africa    Algeria 2012-01-31    46259   152744
-## 4 Africa    Algeria 2012-02-29    33228   185972
-## 5 Africa    Algeria 2012-03-31    24461   210433
-## 6 Africa    Algeria 2012-04-30    15374   225807</code></pre>
-<p>Incluso agregando los datos, existen 96 observaciones mensuales por cada uno de los 173 países. Para el siguiente gráfico se agregó aún más los datos: se agrupó los países de acuerdo al continente (exceptuando Antártida) y se promedió la suma de nodos creados.</p>
-<div class="figure"><span id="fig:mean"></span>
-<img src="https://ruevko.github.io/hexagonal/post/2020/03/04-crecimiento-diario-nodos_files/figure-html/mean-1.png" alt="Promedio de nodos creados mensualmente en cada continente" width="672" />
+##   continent country date       nodes_sum nodes_cum
+##   &lt;fct&gt;     &lt;chr&gt;   &lt;date&gt;         &lt;dbl&gt;     &lt;dbl&gt;
+## 1 Africa    Algeria 2011-11-30     45598     45598
+## 2 Africa    Algeria 2011-12-31     60887    106485
+## 3 Africa    Algeria 2012-01-31     46259    152744
+## 4 Africa    Algeria 2012-02-29     33228    185972
+## 5 Africa    Algeria 2012-03-31     24461    210433
+## 6 Africa    Algeria 2012-04-30     15374    225807</code></pre>
+<p>Después del agregamiento existen 96 observaciones
+mensuales para cada territorio. La cantidad de datos ya es adecuada para ajustar un
+modelo; sin embargo, sigue siendo muy grande como para ser visualizada. Para este gráfico
+se agregó aún más los datos: calculando el promedio de nodos creados mensualmente en cada
+continente<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>,
+exceptuando la Antártida.</p>
+<div class="figure"><span id="fig:nodes-mean"></span>
+<img src="https://ruevko.github.io/hexagonal/post/2020/03/04-crecimiento-diario-nodos_files/figure-html/nodes-mean-1.png" alt="Promedio de nodos creados mensualmente en cada continente" width="672" />
 <p class="caption">
 Figure 1: Promedio de nodos creados mensualmente en cada continente
 </p>
 </div>
-<p>Visualizar el promedio a través de los meses confirma el hecho de que los países europeos y norteamericanos poseen las contribuciones más elevadas. En África, Asia y Sudamérica las contribuciones son significativamente menores, pero han incrementado a través de los años. Es evidente que demostrar la evolución de cada país generaría un gráfico saturado de líneas; por esta razón se seleccionó, de cada continente, los dos países con más nodos en total. Estos países, ordenados de más a menos nodos, son:</p>
+<p>Aquí se verifica el hecho de que, a nivel mundial, los niveles de contribución más
+elevados ocurren en países europeos. Lo mismo no necesariamente pasa en Norteamérica,
+pero las contribuciones en Estados Unidos elevan el promedio en ese continente. En África,
+Asia y Sudamérica la participación ha sido menor, pero incrementando a través de los años.
+Si quisiéramos trazar la evolución de todos los países, resultaría un gráfico saturado de
+líneas. En vez de eso se seleccionó, de cada continente, los dos países con más nodos en
+total; en orden decreciente de nodos, los países son:</p>
 <ol style="list-style-type: decimal">
-<li>Estados Unidos</li>
-<li>Rusia</li>
-<li>Canadá</li>
-<li>Francia</li>
-<li>Indonesia</li>
-<li>Japón</li>
-<li>Brasil</li>
-<li>Tanzania</li>
-<li>Australia</li>
-<li>Nigeria</li>
-<li>Nueva Zelanda</li>
-<li>Argentina</li>
+<li>Estados Unidos 🇺🇸</li>
+<li>Rusia 🇷🇺</li>
+<li>Canadá 🇨🇦</li>
+<li>Francia 🇫🇷</li>
+<li>Indonesia 🇮🇩</li>
+<li>Japón 🇯🇵</li>
+<li>Brasil 🇧🇷</li>
+<li>Tanzania 🇹🇿</li>
+<li>Australia 🇦🇺</li>
+<li>Nigeria 🇳🇬</li>
+<li>Nueva Zelanda 🇳🇿</li>
+<li>Argentina 🇦🇷</li>
 </ol>
-<div class="figure"><span id="fig:cumsum"></span>
-<img src="https://ruevko.github.io/hexagonal/post/2020/03/04-crecimiento-diario-nodos_files/figure-html/cumsum-1.png" alt="Suma 👆 y suma acumulativa 👇 de nodos creados mensualmente en países seleccionados" width="672" />
+<div class="figure"><span id="fig:nodes-cumsum"></span>
+<img src="https://ruevko.github.io/hexagonal/post/2020/03/04-crecimiento-diario-nodos_files/figure-html/nodes-cumsum-1.png" alt="Suma 👆 y suma acumulativa 👇 de nodos creados mensualmente en países seleccionados" width="672" />
 <p class="caption">
 Figure 2: Suma 👆 y suma acumulativa 👇 de nodos creados mensualmente en países seleccionados
 </p>
 </div>
-<p>Como era de esperar, en EU, Rusia, Canadá y Francia se crean la mayor cantidad de nodos cada mes, superados de vez en cuando por países africanos, asiáticos y sudamericanos. No obstante, es imposible caracterizar las contribuciones a través de la suma mensual de nodos; la suma acumulativa, en cambio, presenta una evolución casi lineal. Argüiblemente, es de esperar que los aspectos de un proyecto colaborativo -tales como cantidad de miembros o de aportes- tengan un comportamiento lineal o exponencial, dependiendo de las características del proyecto.</p>
-<p>En OpenStreetMap se ha observado un comportamiento lineal antes, por ejemplo, en <span class="citation">Neis, Zielstra, and Zipf (<a href="#ref-neis13" role="doc-biblioref">2013</a>)</span>. Al comparar las contribuciones en doce grandes urbes alrededor del mundo, observaron un incremento lineal en los miembros contribuidores -normalizados respecto a población y área de la urbe- en el periodo de enero de 2007 a septiembre de 2012. Las urbes, ordenadas de mayor a menor tasa de incremento de contribuidores, fueron:</p>
+<p>Como era de esperar, en los países europeos y norteamericanos se crean mayor cantidad
+de nodos; en pocos meses sucedió que fueron superados por un país de otro continente.
+Con todo, no resultará práctico modelar las contribuciones a través de la suma mensual de
+nodos; la suma acumulativa, en cambio, parece tener una evolución lineal. Estados Unidos
+presenta la mayor pendiente, seguido por el grupo de Rusia, Canadá, Francia, y finalmente
+los demás países. Argüiblemente en cualquier clase de proyecto, aspectos tales como cantidad
+de miembros o de contribuciones siempre tendrán un comportamiento lineal o exponencial;
+esto dependerá, en última instancia, del funcionamiento o del propósito del proyecto.</p>
+<p>En OpenStreetMap ya se ha observado anteriormente un comportamiento lineal. <span class="citation">Neis, Zielstra, and Zipf (<a href="#ref-neis13" role="doc-biblioref">2013</a>)</span>,
+al comparar las contribuciones en doce grandes urbes alrededor del mundo, observaron
+un incremento lineal de los miembros que contribuyeron entre enero de 2007 y septiembre
+de 2012; esto se observó al normalizar el número de contribuyentes con respecto a la
+población o al área de la urbe. Las urbes, ordenadas de mayor a menor tasa de incremento
+de contribuidores, fueron:</p>
 <ol style="list-style-type: decimal">
-<li>Berlín</li>
-<li>París</li>
-<li>Moscú</li>
-<li>Londres</li>
-<li>Los Ángeles</li>
-<li>Sídney</li>
-<li>Johannesburgo</li>
-<li>Buenos Aires</li>
-<li>Osaka</li>
-<li>Estambul</li>
-<li>Seúl</li>
-<li>El Cairo</li>
+<li>Berlín (🇩🇪)</li>
+<li>París (🇫🇷)</li>
+<li>Moscú (🇷🇺)</li>
+<li>Londres (🇬🇧)</li>
+<li>Los Ángeles (🇺🇸)</li>
+<li>Sídney (🇦🇺)</li>
+<li>Johannesburgo (🇿🇦)</li>
+<li>Buenos Aires (🇦🇷)</li>
+<li>Osaka (🇯🇵)</li>
+<li>Estambul (🇹🇷)</li>
+<li>Seúl (🇰🇷)</li>
+<li>El Cairo (🇪🇬)</li>
 </ol>
-<p>Nuevamente, las ciudades europeas se encuentran en los primeros lugares, seguidas inmediatamente por una ciudad estadounidense. Un orden similar aparece en el siguiente gráfico <span class="citation">(Neis, Zielstra, and Zipf <a href="#ref-neis13" role="doc-biblioref">2013</a>)</span> que demuestra la cantidad de objetos -normalizados respecto al área- en las mismas urbes.</p>
+<p>Nuevamente, ciudades europeas son las que ocupan los primeros lugares, seguidas por una
+ciudad estadounidense. Un orden similar aparece en el siguiente gráfico <span class="citation">(Neis, Zielstra, and Zipf <a href="#ref-neis13" role="doc-biblioref">2013</a>)</span>, que
+presenta el número de objetos -normalizados respecto al área- existentes en las mismas urbes.</p>
 <div class="figure">
-<img src="https://www.mdpi.com/futureinternet/futureinternet-05-00282/article_deploy/html/images/futureinternet-05-00282-g005.png" alt="" />
-<p class="caption">Densidad de objetos OSM por Km<sup>2</sup> hasta octubre de 2012; © 2014 Pascal Neis, Dennis Zielstra, Alexander Zipf</p>
+<img src="https://tinyurl.com/1txoab65" alt="" />
+<p class="caption">Densidad de objetos OpenStreetMap en octubre de 2012; © 2014 Pascal Neis, Dennis Zielstra, Alexander Zipf</p>
 </div>
-<p>Con estos antecedentes se decidió calcular una regresión lineal<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a> para cada país, modelando la suma acumulativa de nodos con respecto al tiempo, en los ocho años -del 1 de noviembre de 2011 al 31 de octubre de 2019- que abarcan los datos. Un acercamiento organizado para esta tarea es utilizar <code>nest</code>, para “anidar” las observaciones por país, y luego ejecutar <code>lm</code> en las observaciones anidadas.</p>
+<p>Con estos antecedentes se decidió ajustar una regresión lineal<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a> para cada país, modelando la suma
+acumulativa de nodos creados con respecto al tiempo, en los ocho años (del 1 de noviembre
+de 2011 al 31 de octubre de 2019) de las observaciones. Una manera organizada de llevar a
+cabo esta tarea es utilizar <code>tidyr::nest()</code> para “anidar” las observaciones por país, y
+luego ejecutar <code>lm()</code> en cada grupo anidado.</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>countries_model =<span class="st"> </span><span class="kw">nest</span>(countries_month) <span class="op">%&gt;%</span></span>
-<span id="cb4-2"><a href="#cb4-2"></a><span class="st">   </span><span class="kw">mutate</span>(<span class="dt">model =</span> <span class="kw">map</span>(data, <span class="op">~</span><span class="kw">lm</span>(CumNodes <span class="op">~</span><span class="st"> </span>date, <span class="dt">data =</span> .)),</span>
-<span id="cb4-3"><a href="#cb4-3"></a>          <span class="dt">value =</span> <span class="kw">map</span>(model, <span class="op">~</span><span class="kw">c</span>(<span class="kw">coef</span>(.), <span class="kw">summary</span>(.)<span class="op">$</span>adj.r.squared))) <span class="op">%&gt;%</span></span>
-<span id="cb4-4"><a href="#cb4-4"></a><span class="st">   </span><span class="kw">unnest</span>(<span class="dt">cols =</span> <span class="kw">c</span>(value)) <span class="op">%&gt;%</span></span>
-<span id="cb4-5"><a href="#cb4-5"></a><span class="st">   </span><span class="kw">mutate</span>(<span class="dt">name =</span> <span class="kw">c</span>(<span class="st">&quot;b&quot;</span>, <span class="st">&quot;m&quot;</span>, <span class="st">&quot;r&quot;</span>)) <span class="op">%&gt;%</span></span>
-<span id="cb4-6"><a href="#cb4-6"></a><span class="st">   </span><span class="kw">pivot_wider</span>() <span class="op">%&gt;%</span></span>
-<span id="cb4-7"><a href="#cb4-7"></a><span class="st">   </span><span class="kw">ungroup</span>()</span>
-<span id="cb4-8"><a href="#cb4-8"></a></span>
-<span id="cb4-9"><a href="#cb4-9"></a><span class="kw">head</span>(countries_model)</span></code></pre></div>
-<pre><code>## # A tibble: 6 x 7
-##   continent country      data              model           b     m     r
-##   &lt;fct&gt;     &lt;chr&gt;        &lt;list&gt;            &lt;list&gt;      &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
-## 1 Africa    Algeria      &lt;tibble [96 x 3]&gt; &lt;lm&gt;   -65540524. 4211. 0.982
-## 2 Africa    Angola       &lt;tibble [96 x 3]&gt; &lt;lm&gt;   -38861484. 2443. 0.738
-## 3 Africa    Benin        &lt;tibble [96 x 3]&gt; &lt;lm&gt;   -28410417. 1791. 0.908
-## 4 Africa    Botswana     &lt;tibble [96 x 3]&gt; &lt;lm&gt;   -56111053. 3536. 0.897
-## 5 Africa    Burkina Faso &lt;tibble [96 x 3]&gt; &lt;lm&gt;   -46220666. 2921. 0.926
-## 6 Africa    Burundi      &lt;tibble [96 x 3]&gt; &lt;lm&gt;   -13142257.  843. 0.856</code></pre>
-<p>Para ilustrar los resultados se presentan las regresiones de los países seleccionados:</p>
-<div class="figure"><span id="fig:model-sel"></span>
-<img src="https://ruevko.github.io/hexagonal/post/2020/03/04-crecimiento-diario-nodos_files/figure-html/model-sel-1.png" alt="Regresiones lineales ajustadas en países seleccionados" width="672" />
+<span id="cb4-2"><a href="#cb4-2"></a><span class="st">   </span><span class="kw">mutate</span>(<span class="dt">model =</span> <span class="kw">map</span>(data, <span class="op">~</span><span class="kw">lm</span>(nodes_cum <span class="op">~</span><span class="st"> </span>date, <span class="dt">data =</span> .)),</span>
+<span id="cb4-3"><a href="#cb4-3"></a>          <span class="dt">model =</span> <span class="kw">map</span>(model, <span class="op">~</span><span class="kw">c</span>(<span class="kw">coef</span>(.), <span class="kw">summary</span>(.)<span class="op">$</span>r.squared)),</span>
+<span id="cb4-4"><a href="#cb4-4"></a>          <span class="dt">name =</span> <span class="kw">list</span>(<span class="kw">c</span>(<span class="st">&quot;intercept&quot;</span>, <span class="st">&quot;rate&quot;</span>, <span class="st">&quot;rsquared&quot;</span>))) <span class="op">%&gt;%</span></span>
+<span id="cb4-5"><a href="#cb4-5"></a><span class="st">   </span><span class="kw">unnest</span>(<span class="dt">cols =</span> <span class="kw">c</span>(model, name)) <span class="op">%&gt;%</span></span>
+<span id="cb4-6"><a href="#cb4-6"></a><span class="st">   </span><span class="kw">pivot_wider</span>(<span class="dt">values_from =</span> model)</span>
+<span id="cb4-7"><a href="#cb4-7"></a></span>
+<span id="cb4-8"><a href="#cb4-8"></a><span class="kw">head</span>(countries_model)</span></code></pre></div>
+<pre><code>## # A tibble: 6 x 6
+## # Groups:   continent, country [6]
+##   continent country      data               intercept  rate rsquared
+##   &lt;fct&gt;     &lt;chr&gt;        &lt;list&gt;                 &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;
+## 1 Africa    Algeria      &lt;tibble [96 x 3]&gt; -65540524. 4211.    0.982
+## 2 Africa    Angola       &lt;tibble [96 x 3]&gt; -38861484. 2443.    0.740
+## 3 Africa    Benin        &lt;tibble [96 x 3]&gt; -28410417. 1791.    0.909
+## 4 Africa    Botswana     &lt;tibble [96 x 3]&gt; -56111053. 3536.    0.898
+## 5 Africa    Burkina Faso &lt;tibble [96 x 3]&gt; -46220666. 2921.    0.927
+## 6 Africa    Burundi      &lt;tibble [96 x 3]&gt; -13142257.  843.    0.857</code></pre>
+<p>Para ilustrar los resultados, estas son las regresiones correspondientes a los doce países escogidos:</p>
+<div class="figure"><span id="fig:model-select"></span>
+<img src="https://ruevko.github.io/hexagonal/post/2020/03/04-crecimiento-diario-nodos_files/figure-html/model-select-1.png" alt="Regresiones lineales ajustadas en países seleccionados" width="672" />
 <p class="caption">
 Figure 3: Regresiones lineales ajustadas en países seleccionados
 </p>
 </div>
-<p>Se obtuvo un buen ajuste en la mayoría de casos, en función del coeficiente de determinación (el “r” cuadrado) <a href="https://en.wikipedia.org/wiki/Coefficient_of_determination#Adjusted_R2">ajustado</a>. Solamente nueve países obtuvieron un coeficiente menor a 0.70 debido probablemente a que las contribuciones aparecieron de una manera atípica.</p>
-<div class="figure"><span id="fig:model-low"></span>
-<img src="https://ruevko.github.io/hexagonal/post/2020/03/04-crecimiento-diario-nodos_files/figure-html/model-low-1.png" alt="Regresiones lineales ajustadas con coeficiente de determinación menor a 0.70" width="672" />
+<p>En la mayoría de territorios se obtuvo un buen ajuste; la manera de evaluar esto es en función
+del coeficiente de determinación R<sup>2</sup>, que obtuvo un promedio de 0.8957.
+Solamente en nueve países (cuyas regresiones son presentadas a continuación) apareció un coeficiente
+R<sup>2</sup> &lt; 0.70; se trata de territorios que posiblemente fueron reconocidos recientemente en la
+fuente de los datos, o donde las contribuciones aparecieron de manera súbita.</p>
+<div class="figure"><span id="fig:model-rsmall"></span>
+<img src="https://ruevko.github.io/hexagonal/post/2020/03/04-crecimiento-diario-nodos_files/figure-html/model-rsmall-1.png" alt="Regresiones lineales ajustadas con R^2^ menor a 0.70" width="672" />
 <p class="caption">
-Figure 4: Regresiones lineales ajustadas con coeficiente de determinación menor a 0.70
+Figure 4: Regresiones lineales ajustadas con R<sup>2</sup> menor a 0.70
 </p>
 </div>
-<p>En las regresiones que tuvieron buen ajuste, la característica que permite caracterizar las contribuciones en el tiempo es la pendiente, pues representa la tasa estimada de nodos creados al día<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a> en un determinado país. El promedio se situó en 9275 y el máximo en 159555 nodos diarios; es el caso de Estados Unidos, que constituye verdaderamente un valor atípico.</p>
-<p>¿De qué manera podemos verificar estas estimaciones? <span class="citation">Neis and Zipf (<a href="#ref-neis12" role="doc-biblioref">2012</a>)</span> revelan que, en enero de 2012, la tasa mundial de contribuciones fue aproximadamente 1.2 millones de nodos, 130 mil vías y 1500 relaciones creados a diario, en promedio. Sumando las pendientes de las regresiones ajustadas se obtiene el promedio diario de 1.6 millones de nodos creados en todo el mundo: un valor mayor al observado en 2012 y consistente con el periodo posterior al que pertenecen nuestros datos.</p>
-<p>Para cerrar este post se presentan los mapas coropléticos con las pendientes -las tasas diarias de creación de nodos- y los coeficientes de determinación ajustados de las regresiones calculadas en cada país.</p>
+<p>Para los territorios que sí obtuvieron un buen ajuste, el parámetro estimado que define
+la evolución de las contribuciones en el tiempo es la pendiente de la regresión lineal;
+este valor representa la tasa ajustada de nodos creados diariamente<a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a>. La
+intercepción, en cambio, es irrelevante en este análisis particular. El promedio de la
+tasa de creación se situó en 9275 y el máximo en 159555 nodos diarios; este último es
+el caso de Estados Unidos, que constituye un valor atípico.</p>
+<p>¿De qué manera podemos evaluar la exactitud de estas estimaciones? <span class="citation">Neis and Zipf (<a href="#ref-neis12" role="doc-biblioref">2012</a>)</span> reportan
+que, en enero de 2012, la tasa total de contribuciones fue aproximadamente 1.2 millones
+de nodos, 130 mil vías y 1500 relaciones creados a diario en todo el mundo. Ahora, si
+sumamos las pendientes de todas las regresiones que ajustamos, obtenemos el valor mundial
+estimado de 1.605 millones de nodos diarios; es
+un valor mayor al reportado en 2012, lo cual tiene sentido pues ahora nos hallamos en
+una época con más contribuidores.</p>
+<p>Para cerrar este artículo presentamos mapas coropléticos de las pendientes (que, como ya
+sabemos, son las tasas de crecimiento diario de los nodos) y de los coeficientes R<sup>2</sup> de
+las regresiones ajustadas para cada país.</p>
 <div class="figure"><span id="fig:map-slope"></span>
-<img src="https://ruevko.github.io/hexagonal/post/2020/03/04-crecimiento-diario-nodos_files/figure-html/map-slope-1.svg" alt="Tasa diaria estimada de nodos creados por país" width="672" />
+<img src="https://ruevko.github.io/hexagonal/post/2020/03/04-crecimiento-diario-nodos_files/figure-html/map-slope-1.svg" alt="Tasa ajustada de nodos creados diariamente por país" width="672" />
 <p class="caption">
-Figure 5: Tasa diaria estimada de nodos creados por país
+Figure 5: Tasa ajustada de nodos creados diariamente por país
 </p>
 </div>
 <div class="figure"><span id="fig:map-coeff"></span>
-<img src="https://ruevko.github.io/hexagonal/post/2020/03/04-crecimiento-diario-nodos_files/figure-html/map-coeff-1.svg" alt="Coeficiente de determinación del ajuste lineal por país" width="672" />
+<img src="https://ruevko.github.io/hexagonal/post/2020/03/04-crecimiento-diario-nodos_files/figure-html/map-coeff-1.svg" alt="Coeficiente R^2^ del ajuste lineal por país" width="672" />
 <p class="caption">
-Figure 6: Coeficiente de determinación del ajuste lineal por país
+Figure 6: Coeficiente R<sup>2</sup> del ajuste lineal por país
 </p>
 </div>
 <div id="referencias" class="section level1 unnumbered">
@@ -434,9 +491,21 @@ Figure 6: Coeficiente de determinación del ajuste lineal por país
 <div class="footnotes">
 <hr />
 <ol>
-<li id="fn1"><p>Simplemente se sumaron los nodos creados, sin restar los eliminados. En consecuencia, las tasas de crecimiento obtenidas al final de este post no permiten calcular el número final de nodos en un país.<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
-<li id="fn2"><p>Se puede argumentar que una regresión al origen (donde la intercepción es siempre cero) generará un mejor ajuste. Este modelo también fue evaluado y en ningún caso obtuvo un mejor ajuste, comparado con el modelo lineal típico.<a href="#fnref2" class="footnote-back">↩︎</a></p></li>
-<li id="fn3"><p>A pesar de que los datos fueron agregados mensualmente, las tasas estimadas son diarias pues la función de regresión considera que la fecha es un número entero, donde el incremento de uno representa un día.<a href="#fnref3" class="footnote-back">↩︎</a></p></li>
+<li id="fn1"><p>Es importante notar que simplemente se sumaron
+los nodos creados cada mes, sin restar los eliminados. Como consecuencia, las tasas de
+crecimiento obtenidas al final de este artículo no sirven para calcular el número real de
+nodos en determinado país.<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn2"><p>No olvidar que el número de países difiere ampliamente entre continentes,
+desde 7 en Oceanía,
+hasta 50 en África.<a href="#fnref2" class="footnote-back">↩︎</a></p></li>
+<li id="fn3"><p>Considerando que el
+total de nodos comienza en cero, una regresión al origen (aquella donde la intercepción
+se fija en cero) es teóricamente un mejor modelo. Esa regresión también fue evaluada pero
+no generó mejor ajuste, comparada con la regresión lineal típica. Parece que este es uno de
+esos casos donde el modelo más sencillo es el indicado.<a href="#fnref3" class="footnote-back">↩︎</a></p></li>
+<li id="fn4"><p>Es verdad que los
+datos fueron agregados mensualmente pero, debido a la manera como R maneja las fechas,
+la tasa indica el cambio esperado en los nodos, cuando la fecha aumenta en un día.<a href="#fnref4" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
 

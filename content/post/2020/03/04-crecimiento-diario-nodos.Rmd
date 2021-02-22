@@ -25,16 +25,13 @@ thumbnailImage: https://res.cloudinary.com/dodnzqhiz/image/upload/v1613341882/20
 summary: Se ha ajustado un modelo lineal para cada país, demostrando el crecimiento de OpenStreetMap en función de los nodos creados a diario.
 ---
 
-`r knitr::opts_chunk$set(echo=FALSE)`
+```{r countries-read, echo=FALSE}
+library(dplyr); knitr::opts_chunk$set(echo=FALSE)
 
-```{r secret}
-countries = "https://github.com/ruevko/hexagonal/raw/master/content/post/2020/01/countries.RDS"
+# countries = as_tibble(readRDS(url("this I used to read from GitHub", "rb")))
 
-countries = tibble::as_tibble(readRDS(url(countries, "rb")))
-
-countries = dplyr::mutate_at(countries, dplyr::vars(-country, -date), as.numeric)
-
-countries = dplyr::mutate_at(countries, "country", ~dplyr::case_when(
+countries = readRDS("../01/countries.RDS") %>%
+   mutate(across(-c(country, date), as.numeric), across(country, ~case_when(
       . == "Bosnia and Herzegovina"              ~ "Bosnia and Herz.",
       . == "Central African Republic"            ~ "Central African Rep.",
       . == "Congo-Brazzaville"                   ~ "Congo",
@@ -56,174 +53,234 @@ countries = dplyr::mutate_at(countries, "country", ~dplyr::case_when(
       . == "The Gambia"                          ~ "Gambia",
       . == "United Republic of Tanzania"         ~ "Tanzania",
       . == "Western Sahara"                      ~ "W. Sahara",
-      TRUE ~ .))
+      TRUE ~ .)))
 
 my_plot = function(my_data) ggplot(my_data, aes(date, col = continent)) +
    theme_minimal() + theme(title = element_blank(), legend.position = "bottom")
 ```
 
-En el primer post de este blog presenté una metodología para generar un mapa coroplético de las contribuciones a OpenStreetMap. Esta alternativa recupera el 75 % de todos los nodos en la base de datos, así que constituye una buena estimación inicial. Con todo, sumar los nodos en cada país no es aprovechar completamente esos datos; después de todo estamos hablando de `r round(nrow(countries) / 1e3)` mil observaciones. Por eso, el objetivo de este post será averiguar la tasa de crecimiento de los nodos en cada país; para comenzar, se utilizará `tidyverse` para cargar simultáneamente varios paquetes necesarios.
+En el primer artículo de este blog presenté cómo generar un mapa coroplético de las
+contribuciones a OpenStreetMap; utilizando una metodología web scraping fui capaz de
+contabilizar el 75 % de los nodos existentes, así que fue una buena estimación inicial.
+Con todo, contabilizar los nodos en cada país no constituye un aprovechamiento completo de
+esos datos; después de todo, se trata de `r round(nrow(countries)/1e3)` mil observaciones.
+Por eso, ahora estimaremos la tasa de crecimiento de las contribuciones en cada país.
+Utilizaremos `tidyverse` para cargar simultáneamente varios paquetes necesarios.
 
-```{r intro, echo=TRUE}
+```{r countries, echo=TRUE}
 library(sf)
-library(tidyverse) # contiene dplyr, ggplot2, purrr y tidyr!
+library(tidyverse) # contiene dplyr, ggplot2, purrr, tidyr
 
-data("World", package = "tmap"); World = select(World, name, continent)
+data("World", package = "tmap")
 
-countries = left_join(countries, World, c("country" = "name")) %>%
-   filter(!is.na(continent), date != as.Date("2019-11-01")) %>%
-   select(-geometry) # "countries" viene del primer post
+countries = select(st_drop_geometry(World), country = name, continent) %>%
+   left_join(countries) %>% # el dataset countries viene del primer artículo
+   filter(date != as.Date("2019-11-01"))
 ```
 
-En el primer paso se descartó los territorios que no podrán ser representados en el mapa (reduciendo así los datos de 253 a `r n_distinct(countries$country)` países) y se asignó el continente al que pertenece cada uno. Considerando que las observaciones son diarias, es preferible agregar los datos para reducir su número; en este caso se calcularon la suma^[Simplemente se sumaron los nodos creados, sin restar los eliminados. En consecuencia, las tasas de crecimiento obtenidas al final de este post no permiten calcular el número final de nodos en un país.] y la suma acumulativa mensuales.
+En este primer paso se descartó aquellos territorios que no podrán ser representados en el
+mapa (reduciendo su número de 253 a `r n_distinct(countries$country)`) y también se añadió
+el continente al que pertenece cada uno. Ahora, la cantidad de observaciones es mayor que
+la necesaria, esto debido a que la periodicidad es diaria. Una estrategia para reducir la
+cantidad es "agregar" o agrupar las observaciones utilizando un periodo más largo; así que
+en el siguiente paso se calculan la suma^[Es importante notar que simplemente se sumaron
+los nodos creados cada mes, sin restar los eliminados. Como consecuencia, las tasas de
+crecimiento obtenidas al final de este artículo no sirven para calcular el número real de
+nodos en determinado país.] y la suma acumulativa de nodos creados, al final de cada mes.
 
-```{r month, echo=TRUE}
-countries_month = mutate_at(countries, "date", lubridate::ceiling_date, "month") %>%
+```{r countries-month, echo=TRUE}
+countries_month = mutate(countries, across(date, lubridate::ceiling_date, "month")) %>%
    group_by(continent, country, date) %>%
-   summarise(SumNodes = sum(created)) %>%
-   mutate(CumNodes = cumsum(SumNodes), date = date - 1) # es el último día de cada mes
+   summarise(nodes_sum = sum(created)) %>%
+   mutate(nodes_cum = cumsum(nodes_sum), date = date - 1) # el último día de cada mes
 
 head(countries_month)
 ```
 
-Incluso agregando los datos, existen `r n_distinct(countries_month$date)` observaciones mensuales por cada uno de los `r n_distinct(countries_month$country)` países. Para el siguiente gráfico se agregó aún más los datos: se agrupó los países de acuerdo al continente (exceptuando Antártida) y se promedió la suma de nodos creados.
+Después del agregamiento existen `r n_distinct(countries_month$date)` observaciones
+mensuales para cada territorio. La cantidad de datos ya es adecuada para ajustar un
+modelo; sin embargo, sigue siendo muy grande como para ser visualizada. Para este gráfico
+se agregó aún más los datos: calculando el promedio de nodos creados mensualmente en cada
+continente^[No olvidar que el número de países difiere ampliamente entre continentes,
+desde `r n_distinct(filter(countries_month, continent=="Oceania")$country)` en Oceanía,
+hasta `r n_distinct(filter(countries_month, continent=="Africa")$country)` en África.],
+exceptuando la Antártida.
 
-```{r mean, fig.asp=.4, fig.cap="Promedio de nodos creados mensualmente en cada continente"}
+```{r nodes-mean, fig.asp=2/5, fig.cap="Promedio de nodos creados mensualmente en cada continente"}
 my_top = filter(countries_month, !continent %in% c("Antarctica", "Seven seas (open ocean)"))
 
 group_by(my_top, continent, date) %>%
-   summarise_at("SumNodes", mean) %>% my_plot() +
-   geom_line(aes(y = SumNodes))
+   summarise(m = mean(nodes_sum)) %>%
+   my_plot() + geom_line(aes(y = m))
 ```
 
-Visualizar el promedio a través de los meses confirma el hecho de que los países europeos y norteamericanos poseen las contribuciones más elevadas. En África, Asia y Sudamérica las contribuciones son significativamente menores, pero han incrementado a través de los años. Es evidente que demostrar la evolución de cada país generaría un gráfico saturado de líneas; por esta razón se seleccionó, de cada continente, los dos países con más nodos en total. Estos países, ordenados de más a menos nodos, son:
+Aquí se verifica el hecho de que, a nivel mundial, los niveles de contribución más
+elevados ocurren en países europeos. Lo mismo no necesariamente pasa en Norteamérica,
+pero las contribuciones en Estados Unidos elevan el promedio en ese continente. En África,
+Asia y Sudamérica la participación ha sido menor, pero incrementando a través de los años.
+Si quisiéramos trazar la evolución de todos los países, resultaría un gráfico saturado de
+líneas. En vez de eso se seleccionó, de cada continente, los dos países con más nodos en
+total; en orden decreciente de nodos, los países son:
 
-1. Estados Unidos
-2. Rusia
-3. Canadá
-4. Francia
-5. Indonesia
-6. Japón
-7. Brasil
-8. Tanzania
-9. Australia
-10. Nigeria
-11. Nueva Zelanda
-12. Argentina
+1. Estados Unidos :us:
+2. Rusia :ru:
+3. Canadá :canada:
+4. Francia :fr:
+5. Indonesia :indonesia:
+6. Japón :jp:
+7. Brasil :brazil:
+8. Tanzania :tanzania:
+9. Australia :australia:
+10. Nigeria :nigeria:
+11. Nueva Zelanda :new_zealand:
+12. Argentina :argentina:
 
-```{r cumsum, fig.asp=.7, fig.cap="Suma :point_up_2: y suma acumulativa :point_down: de nodos creados mensualmente en países seleccionados"}
-my_top = summarise_at(my_top, "SumNodes", sum) %>% top_n(2, SumNodes) %>% pull(country)
+```{r nodes-cumsum, fig.asp=3/4, fig.cap="Suma :point_up_2: y suma acumulativa :point_down: de nodos creados mensualmente en países seleccionados"}
+my_top = summarise(my_top, s = sum(nodes_sum)) %>% slice_max(s, n = 2) %>% pull(country)
 
 filter(countries_month, country %in% my_top) %>%
-   pivot_longer(c("SumNodes", "CumNodes")) %>% my_plot() +
-   facet_wrap(~name, scales = "free_y", ncol = 1, as.table = 0) +
-   geom_line(aes(y = value, group = country))
+   pivot_longer(c(nodes_sum, nodes_cum)) %>%
+   mutate(name = str_replace(toupper(name), "_", " ")) %>%
+   my_plot() + geom_line(aes(y = value, group = country)) +
+   facet_wrap(~name, 2, scales = "free_y", as.table = FALSE) +
+   scale_y_continuous(n.breaks = 6)
 ```
 
-Como era de esperar, en EU, Rusia, Canadá y Francia se crean la mayor cantidad de nodos cada mes, superados de vez en cuando por países africanos, asiáticos y sudamericanos. No obstante, es imposible caracterizar las contribuciones a través de la suma mensual de nodos; la suma acumulativa, en cambio, presenta una evolución casi lineal. Argüiblemente, es de esperar que los aspectos de un proyecto colaborativo -tales como cantidad de miembros o de aportes- tengan un comportamiento lineal o exponencial, dependiendo de las características del proyecto.
+Como era de esperar, en los países europeos y norteamericanos se crean mayor cantidad
+de nodos; en pocos meses sucedió que fueron superados por un país de otro continente.
+Con todo, no resultará práctico modelar las contribuciones a través de la suma mensual de
+nodos; la suma acumulativa, en cambio, parece tener una evolución lineal. Estados Unidos
+presenta la mayor pendiente, seguido por el grupo de Rusia, Canadá, Francia, y finalmente
+los demás países. Argüiblemente en cualquier clase de proyecto, aspectos tales como cantidad
+de miembros o de contribuciones siempre tendrán un comportamiento lineal o exponencial;
+esto dependerá, en última instancia, del funcionamiento o del propósito del proyecto.
 
-En OpenStreetMap se ha observado un comportamiento lineal antes, por ejemplo, en @neis13. Al comparar las contribuciones en doce grandes urbes alrededor del mundo, observaron un incremento lineal en los miembros contribuidores -normalizados respecto a población y área de la urbe- en el periodo de enero de 2007 a septiembre de 2012. Las urbes, ordenadas de mayor a menor tasa de incremento de contribuidores, fueron:
+En OpenStreetMap ya se ha observado anteriormente un comportamiento lineal. @neis13,
+al comparar las contribuciones en doce grandes urbes alrededor del mundo, observaron
+un incremento lineal de los miembros que contribuyeron entre enero de 2007 y septiembre
+de 2012; esto se observó al normalizar el número de contribuyentes con respecto a la
+población o al área de la urbe. Las urbes, ordenadas de mayor a menor tasa de incremento
+de contribuidores, fueron:
 
-1. Berlín
-2. París
-3. Moscú
-4. Londres
-5. Los Ángeles
-6. Sídney
-7. Johannesburgo
-8. Buenos Aires
-9. Osaka
-10. Estambul
-11. Seúl
-12. El Cairo
+1. Berlín (:de:)
+2. París (:fr:)
+3. Moscú (:ru:)
+4. Londres (:gb:)
+5. Los Ángeles (:us:)
+6. Sídney (:australia:)
+7. Johannesburgo (:south_africa:)
+8. Buenos Aires (:argentina:)
+9. Osaka (:jp:)
+10. Estambul (:tr:)
+11. Seúl (:kr:)
+12. El Cairo (:egypt:)
 
-Nuevamente, las ciudades europeas se encuentran en los primeros lugares, seguidas inmediatamente por una ciudad estadounidense. Un orden similar aparece en el siguiente gráfico [@neis13] que demuestra la cantidad de objetos -normalizados respecto al área- en las mismas urbes.
+Nuevamente, ciudades europeas son las que ocupan los primeros lugares, seguidas por una
+ciudad estadounidense. Un orden similar aparece en el siguiente gráfico [@neis13], que
+presenta el número de objetos -normalizados respecto al área- existentes en las mismas urbes.
 
-![Densidad de objetos OSM por Km^2^ hasta octubre de 2012; © 2014 Pascal Neis, Dennis Zielstra, Alexander Zipf](https://www.mdpi.com/futureinternet/futureinternet-05-00282/article_deploy/html/images/futureinternet-05-00282-g005.png)
+![Densidad de objetos OpenStreetMap en octubre de 2012; © 2014 Pascal Neis, Dennis Zielstra, Alexander Zipf](https://tinyurl.com/1txoab65)
 
-Con estos antecedentes se decidió calcular una regresión lineal^[Se puede argumentar que una regresión al origen (donde la intercepción es siempre cero) generará un mejor ajuste. Este modelo también fue evaluado y en ningún caso obtuvo un mejor ajuste, comparado con el modelo lineal típico.] para cada país, modelando la suma acumulativa de nodos con respecto al tiempo, en los ocho años -del 1 de noviembre de 2011 al 31 de octubre de 2019- que abarcan los datos. Un acercamiento organizado para esta tarea es utilizar `nest`, para "anidar" las observaciones por país, y luego ejecutar `lm` en las observaciones anidadas.
+Con estos antecedentes se decidió ajustar una regresión lineal^[Considerando que el
+total de nodos comienza en cero, una regresión al origen (aquella donde la intercepción
+se fija en cero) es teóricamente un mejor modelo. Esa regresión también fue evaluada pero
+no generó mejor ajuste, comparada con la regresión lineal típica. Parece que este es uno de
+esos casos donde el modelo más sencillo es el indicado.] para cada país, modelando la suma
+acumulativa de nodos creados con respecto al tiempo, en los ocho años (del 1 de noviembre
+de 2011 al 31 de octubre de 2019) de las observaciones. Una manera organizada de llevar a
+cabo esta tarea es utilizar `tidyr::nest()` para "anidar" las observaciones por país, y
+luego ejecutar `lm()` en cada grupo anidado.
 
 ```{r model, echo=TRUE}
 countries_model = nest(countries_month) %>%
-   mutate(model = map(data, ~lm(CumNodes ~ date, data = .)),
-          value = map(model, ~c(coef(.), summary(.)$adj.r.squared))) %>%
-   unnest(cols = c(value)) %>%
-   mutate(name = c("b", "m", "r")) %>%
-   pivot_wider() %>%
-   ungroup()
+   mutate(model = map(data, ~lm(nodes_cum ~ date, data = .)),
+          model = map(model, ~c(coef(.), summary(.)$r.squared)),
+          name = list(c("intercept", "rate", "rsquared"))) %>%
+   unnest(cols = c(model, name)) %>%
+   pivot_wider(values_from = model)
 
 head(countries_model)
 ```
 
-Para ilustrar los resultados se presentan las regresiones de los países seleccionados:
+Para ilustrar los resultados, estas son las regresiones correspondientes a los doce países escogidos:
 
-```{r model-sel, fig.asp=4/3, fig.cap="Regresiones lineales ajustadas en países seleccionados"}
-# my_test = nest(countries_month) %>% mutate(
-#    data = map(data, ~mutate(., month = 1:96)),
-#    lm0 = map(data, ~lm(CumNodes ~ 0 + month, data = .)),
-#    lm1 = map(data, ~lm(CumNodes ~ date, data = .)),
-#    best0 = map2_lgl(lm0, lm1, ~anova(.x, .y)$RSS %>% diff() > 0))
+```{r model-select, fig.asp=4/3, fig.cap="Regresiones lineales ajustadas en países seleccionados"}
+# mutate(countries_month, month = 1:96) %>% nest() %>% mutate(
+#    origin_lm = map(data, ~lm(nodes_cum ~ 0 + month, data = .)),
+#    normal_lm = map(data, ~lm(nodes_cum ~ date, data = .)),
+#    origin_is_best = map2_lgl(origin_lm, normal_lm, ~anova(.x, .y)$RSS %>% diff() > 0)) %>%
+#    filter(origin_is_best) # this is to prove regression through the origin is not the best
 
-countries_model2 = select(countries_model, country, b, m) %>%
-   filter(country %in% my_top) #[-8]
+my_top = filter(countries_model, country %in% my_top) %>% select(country, intercept, rate)
 
-select(countries_model, continent:data) %>%
-   filter(country %in% my_top) %>%
-   unnest(data) %>% my_plot() +
-   facet_wrap(~country, ncol = 3, scales = "free_y") +
-   geom_point(aes(y = CumNodes), size = .5, show.legend = FALSE) +
-   geom_abline(aes(intercept = b, slope = m), countries_model2)
+filter(countries_month, country %in% my_top$country) %>%
+   my_plot() + geom_point(aes(y = nodes_cum), size = .5, show.legend = FALSE) +
+   geom_abline(aes(intercept = intercept, slope = rate), my_top) +
+   facet_wrap(~country, 4, scales = "free_y")
 ```
 
-Se obtuvo un buen ajuste en la mayoría de casos, en función del coeficiente de determinación (el "r" cuadrado) [ajustado](https://en.wikipedia.org/wiki/Coefficient_of_determination#Adjusted_R2). Solamente nueve países obtuvieron un coeficiente menor a 0.70 debido probablemente a que las contribuciones aparecieron de una manera atípica. 
+En la mayoría de territorios se obtuvo un buen ajuste; la manera de evaluar esto es en función
+del coeficiente de determinación R^2^, que obtuvo un promedio de `r mean(countries_model$rsquared)`.
+Solamente en nueve países (cuyas regresiones son presentadas a continuación) apareció un coeficiente
+R^2^ < 0.70; se trata de territorios que posiblemente fueron reconocidos recientemente en la
+fuente de los datos, o donde las contribuciones aparecieron de manera súbita.
 
-```{r model-low, fig.asp=1, fig.cap="Regresiones lineales ajustadas con coeficiente de determinación menor a 0.70"}
-my_model = mutate_at(countries_model, "continent", ~case_when(
+```{r model-rsmall, fig.asp=1, fig.cap="Regresiones lineales ajustadas con R^2^ menor a 0.70"}
+countries_month = mutate(ungroup(countries_month), across(continent, ~case_when(
    . == "Africa"        ~ scale_fill_hue()$palette(6)[1],
    . == "Asia"          ~ scale_fill_hue()$palette(6)[2],
    . == "Europe"        ~ scale_fill_hue()$palette(6)[3],
    . == "North America" ~ scale_fill_hue()$palette(6)[4],
    . == "Oceania"       ~ scale_fill_hue()$palette(6)[5],
    . == "South America" ~ scale_fill_hue()$palette(6)[6],
-   TRUE ~ "#BEBEBE"))
+   TRUE ~ "#BEBEBE")))
 
-my_model2 = select(my_model, country, b, m) %>%
-   filter(country %in% filter(countries_model, r < .7)$country)
+my_top = filter(countries_model, rsquared < .7) %>% select(country, intercept, rate)
 
-select(my_model, continent:data) %>%
-   filter(country %in% filter(countries_model, r < .7)$country) %>%
-   unnest(data) %>% my_plot() + scale_color_identity() +
-   facet_wrap(~country, ncol = 3, scales = "free_y") +
-   geom_point(aes(y = CumNodes), size = .5, show.legend = FALSE) +
-   geom_abline(aes(intercept = b, slope = m), my_model2)
+filter(countries_month, country %in% my_top$country) %>%
+   my_plot() + geom_point(aes(y = nodes_cum), size = .5) +
+   geom_abline(aes(intercept = intercept, slope = rate), my_top) +
+   facet_wrap(~country, 3, scales = "free_y") +
+   scale_color_identity()
 ```
 
-En las regresiones que tuvieron buen ajuste, la característica que permite caracterizar las contribuciones en el tiempo es la pendiente, pues representa la tasa estimada de nodos creados al día^[A pesar de que los datos fueron agregados mensualmente, las tasas estimadas son diarias pues la función de regresión considera que la fecha es un número entero, donde el incremento de uno representa un día.] en un determinado país. El promedio se situó en 9275 y el máximo en 159555 nodos diarios; es el caso de Estados Unidos, que constituye verdaderamente un valor atípico.
+Para los territorios que sí obtuvieron un buen ajuste, el parámetro estimado que define
+la evolución de las contribuciones en el tiempo es la pendiente de la regresión lineal;
+este valor representa la tasa ajustada de nodos creados diariamente^[Es verdad que los
+datos fueron agregados mensualmente pero, debido a la manera como R maneja las fechas,
+la tasa indica el cambio esperado en los nodos, cuando la fecha aumenta en un día.]. La
+intercepción, en cambio, es irrelevante en este análisis particular. El promedio de la
+tasa de creación se situó en 9275 y el máximo en 159555 nodos diarios; este último es
+el caso de Estados Unidos, que constituye un valor atípico.
 
-¿De qué manera podemos verificar estas estimaciones? @neis12 revelan que, en enero de 2012, la tasa mundial de contribuciones fue aproximadamente 1.2 millones de nodos, 130 mil vías y 1500 relaciones creados a diario, en promedio. Sumando las pendientes de las regresiones ajustadas se obtiene el promedio diario de `r round(sum(countries_model$m) / 1e6, 1)` millones de nodos creados en todo el mundo: un valor mayor al observado en 2012 y consistente con el periodo posterior al que pertenecen nuestros datos.
+¿De qué manera podemos evaluar la exactitud de estas estimaciones? @neis12 reportan
+que, en enero de 2012, la tasa total de contribuciones fue aproximadamente 1.2 millones
+de nodos, 130 mil vías y 1500 relaciones creados a diario en todo el mundo. Ahora, si
+sumamos las pendientes de todas las regresiones que ajustamos, obtenemos el valor mundial
+estimado de `r round(sum(countries_model$rate) / 1e6, 3)` millones de nodos diarios; es
+un valor mayor al reportado en 2012, lo cual tiene sentido pues ahora nos hallamos en
+una época con más contribuidores.
 
-Para cerrar este post se presentan los mapas coropléticos con las pendientes -las tasas diarias de creación de nodos- y los coeficientes de determinación ajustados de las regresiones calculadas en cada país.
+Para cerrar este artículo presentamos mapas coropléticos de las pendientes (que, como ya
+sabemos, son las tasas de crecimiento diario de los nodos) y de los coeficientes R^2^ de
+las regresiones ajustadas para cada país.
 
-```{r map-slope, dev="svg", fig.asp=.605, fig.cap="Tasa diaria estimada de nodos creados por país"}
-rm(countries, my_model, my_model2)
+```{r map-slope, dev="svg", fig.asp=3/5, fig.cap="Tasa ajustada de nodos creados diariamente por país"}
+World = select(countries_model, name = country, rate, rsquared) %>%
+   mutate(across(rsquared, cut, c(.7, .8, .9, .96, .98, 1)),
+          across(rate, cut, c(.05, 1, 2, 5, 10, 20, 50, 160) * 1e3, labels =
+                    c("(50, 1e3]", "(1e3, 2e3]", "(2e3, 5e3]", "(5e3, 10e3]",
+                      "(10e3, 20e3]", "(20e3, 50e3]", "(50e3, 160e3]"))) %>%
+   right_join(World) %>% st_as_sf()
 
-World = select(countries_model, country, m, r) %>%
-   mutate_at("m", cut, c(0, 1, 2, 5, 10, 20, 50, 200)*1e3, labels =
-                c("(50, 1e3]", "(1e3, 2e3]", "(2e3, 5e3]", "(5e3, 10e3]",
-                  "(10e3, 20e3]", "(20e3, 50e3]", "> 50e3")) %>%
-   mutate_at("r", cut, c(.7, .8, .9, .96, .98, 1)) %>%
-   right_join(World, c("country" = "name")) %>% st_as_sf()
-
-my_plot(World) +
+my_plot(World) + geom_sf(aes(fill = rate), color = NA, inherit.aes = FALSE) +
    scale_fill_viridis_d(na.value = "grey") +
-   geom_sf(aes(fill = m), color = NA, inherit.aes = FALSE) +
    theme(legend.key.width = unit(.025, "npc"), legend.key.height = unit(.045, "npc"))
 ```
 
-```{r map-coeff, dev="svg", fig.asp=.605, fig.cap="Coeficiente de determinación del ajuste lineal por país"}
-my_plot(World) +
+```{r map-coeff, dev="svg", fig.asp=3/5, fig.cap="Coeficiente R^2^ del ajuste lineal por país"}
+my_plot(World) + geom_sf(aes(fill = rsquared), color = NA, inherit.aes = FALSE) +
    scale_fill_viridis_d(na.value = "grey", option = "B", begin = .25) +
-   geom_sf(aes(fill = r), color = NA, inherit.aes = FALSE) +
    theme(legend.key.width = unit(.025, "npc"), legend.key.height = unit(.045, "npc"))
 ```
 
