@@ -1,9 +1,10 @@
+.DS_Store
 .RData
 .Rhistory
 .Rprofile
 .Ruserdata
 .Rproj.user
 docs/post/babel.bib
-static/post/2021
+static/post
 static/rmarkdown-libs
 content/post/2021/*/*.html
