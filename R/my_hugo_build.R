@@ -52,14 +52,14 @@ xmlLines = readLines('docs/sitemap.xml', warn = FALSE)
 
 xmlLength = length(xmlLines)
 
-if (xmlLines[xmlLength - 7] != '    <lastmod>2020-01-01T00:00:00+00:00</lastmod>') {
+if (xmlLines[xmlLength - 4] != '    <lastmod>2020-01-01T00:00:00+00:00</lastmod>') {
 
-   xmlLines = c(xmlLines[1 : {xmlLength - 5}],
-                '  <url>',
+   xmlLines = c(xmlLines[1 : {xmlLength - 4}],
+                '  </url><url>',
                 '    <loc>https://ruevko.github.io/hexagonal/post/readme/</loc>',
                 '    <lastmod>2020-01-01T00:00:00+00:00</lastmod>',
-                '  </url>',
-                xmlLines[{xmlLength - 5} : xmlLength])
+                '  </url><url>',
+                xmlLines[{xmlLength - 2} : xmlLength])
 
    writeLines(paste(xmlLines, collapse = '\n'), 'docs/sitemap.xml', sep = '')
 
