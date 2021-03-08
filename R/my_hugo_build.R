@@ -39,28 +39,3 @@ for (htmlFile in dir('content/post', '\\.html$', full.names = TRUE, recursive = 
    writeLines(htmlLines, htmlFile)
 
 }
-
-tomlLines = readLines('config.toml')
-
-writeLines(tomlLines[ - 13], 'config.toml')
-
-blogdown::hugo_build()
-
-writeLines(tomlLines, 'config.toml')
-
-xmlLines = readLines('docs/sitemap.xml', warn = FALSE)
-
-xmlLength = length(xmlLines)
-
-if (xmlLines[xmlLength - 4] != '    <lastmod>2020-01-01T00:00:00+00:00</lastmod>') {
-
-   xmlLines = c(xmlLines[1 : {xmlLength - 4}],
-                '  </url><url>',
-                '    <loc>https://ruevko.github.io/hexagonal/post/readme/</loc>',
-                '    <lastmod>2020-01-01T00:00:00+00:00</lastmod>',
-                '  </url><url>',
-                xmlLines[{xmlLength - 2} : xmlLength])
-
-   writeLines(paste(xmlLines, collapse = '\n'), 'docs/sitemap.xml', sep = '')
-
-}
