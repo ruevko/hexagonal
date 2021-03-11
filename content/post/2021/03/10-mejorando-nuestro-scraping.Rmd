@@ -1,0 +1,182 @@
+---
+title: Mejorando nuestro Web Scraping
+date: '2021-03-10'
+slug: 10-mejorando-nuestro-scraping
+categories:
+  - OpenStreetMap
+tags:
+  - benchmark
+  - web scraping
+source: 10-mejorando-nuestro-scraping.Rmd
+keywords:
+  - benchmark
+  - web scraping
+editor_options:
+  chunk_output_type: console
+output:
+  blogdown::html_page:
+    highlight: kate
+thumbnailImage: https://ruevko.github.io/hexagonal/post/2021/03/10-mejorando-nuestro-scraping_files/figure-html/parsing-bmark-1.png
+summary: El sitio OSMstats ha cambiado; es una oportunidad para introducir `rvest` y así obtener datos OpenStreetMap de una manera más sencilla.
+---
+
+En este artículo vamos a enmendar la metodología *web scraping* que utilizamos
+anteriormente para obtener, desde [OSMstats](https://osmstats.neis-one.org), los
+nodos OpenStreetMap creados a diario en cada país. Neis Pascal, quien mantiene ese
+sitio web, introdujo el año pasado algunas mejoras que ahora impiden la ejecución de
+[`get_day()`](https://ruevko.github.io/hexagonal/post/2020/01/07-estimando-nodos-openstreetmap-pais/#cb1-1),
+la función que diseñamos para este fin. Aprovechamos esta ocasión para introducir
+el paquete `rvest`, que simplificará y acelerará todo el proceso; adicionalmente,
+cuantificaremos con *benchmarks* la magnitud de la mejora.
+
+En `get_day()` se utilizaba `httr` para conectarse a la página web ---que en realidad
+se trata de un documento HTML--- deseada y obtener su contenido. Los objetos generados
+por `httr::content()` son de clase `xml_document`.
+
+```{r httr-doc}
+osmstats = "https://osmstats.neis-one.org/?item=countries&date=1-3-2021"
+
+(httr_doc = httr::content(httr::GET(osmstats), "parsed", encoding = "UTF-8"))
+```
+
+Un `xml_document` es como una copia de la página en linea, con exactamente la misma
+estructura de *tags*^[Los *tags* son los nodos o elementos que componen a un documento
+HTML, como `<a>` o `<tr>`.]. En el sitio OSMstats existe una página para cada día ---desde
+el primero de noviembre de 2011--- con la actividad suscitada en 260 territorios del mundo.
+Nos interesa extraer de cualquiera de esas páginas (es decir, para cualquier día) un *tag*
+de tipo `<table>`: una tabla con los elementos creados, modificados y eliminados un día
+específico. La siguiente captura de pantalla presenta la tabla correspondiente^[En realidad,
+en la pestaña Countries de OSMstats, cada página contiene los datos correspondientes al día
+anterior; así, en este ejemplo, los datos son del 28 de febrero.] al primero de marzo de 2021.
+
+```{r screen, echo=FALSE, fig.cap="El tag `<table>` en una página de OSMstats"}
+knitr::include_graphics("https://res.cloudinary.com/dodnzqhiz/image/upload/v1615391078/2021post/dpn3dfjlsdgeycxixttu.png")
+```
+
+Originalmente se utilizaba `xml2::as_list()` para convertir el `xml_document` en una
+típica lista de R; luego, con funciones escritas específicamente para estos propósitos,
+se buscaba dentro de la lista el miembro correspondiente al `<table>`, y se procesaba
+cada uno de sus submiembros como filas de una matriz.
+
+```{r httr}
+pluck_xml = function(x) x$html$body[[12]][[14]]$div$table[-1]
+
+row_xml = function(x) matrix(
+  c( x[[2]][[1]][[1]], x[[4]][[1]], x[[6]][[1]], x[[8]][[1]], x[[10]][[1]] ), 1)
+```
+
+La manera de utilizar estas funciones es la siguiente:
+
+```{r httr-table}
+library(purrr)
+
+httr_table = xml2::as_list(httr_doc) %>%
+   pluck_xml() %>% map(row_xml) %>% reduce(rbind)
+
+table_names = c("country", "contributors", "created_e", "modified_e", "deleted_e")
+
+colnames(httr_table) = table_names; head(httr_table)
+```
+
+Si el código presentado hasta ahora es difícil de comprender, no importa mucho. A
+continuación se demostrará cómo con `rvest` es posible repetir esas operaciones, de
+una manera más sencilla; este paquete está construido sobre `httr` y `xml2`, así que
+también trabaja con objetos `xml_document`. Ahora obtendremos el contenido de la página
+web deseada vía `rvest::read_html()`.
+
+```{r rvest-doc}
+library(rvest)
+
+rvest_doc = read_html(osmstats, encoding = "UTF-8")
+
+identical(httr_doc, rvest_doc) # documentos obtenidos vía httr y rvest parecen diferentes
+
+identical(as_list(httr_doc), as_list(rvest_doc)) # pero sus contenidos son iguales
+```
+
+Una vez obtenido el documento, es posible extraer el `<table>` con `rvest::html_node()`.
+Esta función ofrece dos opciones para especificar la búsqueda de un *tag*, que será
+devuelto como un objeto `xml_node`^[También existe `rvest::html_nodes()` que puede
+extraer varios *tags* a la vez y devuelve un `xml_nodeset`.]. La primera opción es
+suministrar un *selector* CSS^[Los *selectors* son reglas para aplicar estilos en
+un documento HTML, como `a:hover { }` o `tr.odd { }`.] que seleccione (valga la
+redundancia) de manera exacta el *tag* que buscamos.
+
+Observando la captura de pantalla (figura \@ref(fig:screen)), descubriremos que el *tag* de la
+tabla está escrito así: `<table id="countrytable">`; puesto que es el único *tag* con ese `id`
+en toda la página ---además es la única tabla--- podemos utilizar el siguiente *selector*:
+
+```{r rvest-table}
+library(dplyr)
+
+html_node(rvest_doc, "#countrytable") %>% html_table() %>% as_tibble()
+```
+
+En la última línea de código, el xml_node extraído se introduce inmediatamente
+en `html_table()` y el resultado es un `data.frame` correspondiente a la tabla con la
+actividad OpenStreetMap del día. Y eso es todo: con tres funciones de `rvest` hemos
+simplificado la metodología original. Además, como estas funciones han sido optimizadas,
+se ejecutan de manera más rápida. Vamos a realizar un *benchmark* para cuantificar la
+mejora en la rapidez; definimos una función para contener el método de tabulado original,
+y otra para el nuevo (`parse_old()` y `parse_rvest()` respectivamente):
+
+```{r parsing}
+parse_rvest = function(doc) html_table(html_node(doc, "#countrytable"))[-1]
+
+parse_old = function(doc) as_list(doc) %>% pluck_xml() %>% map(row_xml) %>%
+   reduce(rbind) %>% as.data.frame() %>% set_names(table_names) %>%
+   mutate(across(ends_with("_e"), as.numeric))
+
+summary(parse_rvest(rvest_doc) == parse_old(rvest_doc)) # generan tablas iguales
+```
+
+E introducimos ambas funciones en `microbenchmark()`:
+
+```{r parsing-bmark, fig.dim=c(5.2,5.2), fig.cap="Benchmark de los dos métodos de tabulación"}
+library(microbenchmark)
+
+(parsing_bmark = microbenchmark(parse_rvest(rvest_doc), parse_old(rvest_doc)))
+
+boxplot(filter(parsing_bmark, time < 4.5e8),
+        main = "Table parsing benchmark",
+        ylab = "Milliseconds")
+```
+
+Resulta claro que el nuevo método es considerablemente más rápido que el original: el
+tiempo de ejecución se redujo a la mitad (la mediana pasó de 0.37 a 0.18 segundos).
+Por ende, a partir de ahora se aprovechará `rvest` para realizar *web scraping*; no
+obstante, todavía existe un aspecto a través del cual podemos introducir una mejora
+en la rapidez de ejecución. Se mencionó que `html_node()` ofrece dos opciones para
+especificar cuál nodo debe ser extraído. La segunda opción es suministrar una
+expresión [XPath](https://www.w3schools.com/xml/xpath_intro.asp), que funciona
+de manera similar a la ruta de un archivo en un computador.
+
+Vamos a comparar la rapidez de extracción con un *selector* CSS y con dos XPaths. La
+expresión `"//table"` significa buscar una tabla (recordemos que solo hay una en cada
+página de OSMstats), sin importar su ubicación dentro del documento; podemos decir que
+esta es una expresión “fácil”. Con el otro XPath vamos a especificar exactamente dónde
+se encuentra la tabla; esto es comparable a la función `pluck_xml()` definida en el
+método original y será, en teoría, la expresión más rápida.
+
+```{r extraction-bmark, fig.dim=c(7.8,5.2), fig.cap="Benchmark de los tres métodos de extracción"}
+easy_css = function(doc) html_node(doc, css = "#countrytable")
+
+easy_xpath = function(doc) html_node(doc, xpath = "//table")
+
+exact_xpath = function(doc) html_node(doc, xpath = "body/div[3]/div[4]/div/table")
+
+extraction_bmark = microbenchmark(easy_css(rvest_doc),
+                                  easy_xpath(rvest_doc),
+                                  exact_xpath(rvest_doc))
+
+boxplot(filter(extraction_bmark, time < 4.5e6),
+        main = "Table extraction benchmark",
+        ylab = "Microseconds")
+```
+
+El resultado es que la extracción es unos 2 milisegundos más lenta cuando se utiliza
+el *selector*. Cuando se utiliza la expresión XPath exacta existe una pequeña mejora,
+comparada con la expresión fácil; sin embargo, dicha mejora se encuentra en el orden
+de los microsegundos. Como conclusión, en el futuro ---cuando necesitemos obtener
+nuevamente los elementos OpenStreetMap creados en un día--- usaremos la
+expresión `"//table"` que es igual de rápida y más fácil de comprender.
