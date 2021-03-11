@@ -6,9 +6,17 @@
     <description>Artículos sobre benchmark en La Galería Hexagonal</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>es</language>
-    <lastBuildDate>Wed, 11 Nov 2020</lastBuildDate>
+    <lastBuildDate>Wed, 10 Mar 2021</lastBuildDate>
     
     <atom:link href="https://ruevko.github.io/hexagonal/tags/benchmark/index.xml" rel="self" type="application/rss+xml"/>
+    
+    <item>
+      <title>Mejorando nuestro Web Scraping</title>
+      <link>https://ruevko.github.io/hexagonal/post/2021/03/10-mejorando-nuestro-scraping/</link>
+      <pubDate>Wed, 10 Mar 2021</pubDate>
+      <guid>https://ruevko.github.io/hexagonal/post/2021/03/10-mejorando-nuestro-scraping/</guid>
+      <description>El sitio OSMstats ha cambiado; es una oportunidad para introducir &lt;code&gt;rvest&lt;/code&gt; y así obtener datos OpenStreetMap de una manera más sencilla.</description>
+    </item>
     
     <item>
       <title>Un ejercicio de benchmark (y un generador de polígonos aleatorios)</title>

@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="generator" content="Hugo 0.81.0 with theme Tranquilpeak 0.4.8-BETA">
+<meta name="author" content="Roger Rafael Castro Zambrano">
+<meta name="keywords" content="benchmark, web scraping, análisis, cartografía, datos, mapas">
+<meta name="description" content="El sitio OSMstats ha cambiado; es una oportunidad para introducir rvest y así obtener datos OpenStreetMap de una manera más sencilla.">
+
+
+<meta property="og:type" content="article">
+<meta property="og:title" content="Mejorando nuestro Web Scraping">
+<meta property="og:description" content="El sitio OSMstats ha cambiado; es una oportunidad para introducir rvest y así obtener datos OpenStreetMap de una manera más sencilla.">
+<meta property="og:url" content="https://ruevko.github.io/hexagonal/post/2021/03/10-mejorando-nuestro-scraping/">
+<meta property="og:site_name" content="La Galería Hexagonal">
+<meta property="og:locale" content="es">
+<meta name="twitter:card" content="summary">
+
+
+
+<meta property="og:image" content="https://ruevko.github.io/hexagonal/logo.png">
+
+
+  <meta property="og:image" content="https://ruevko.github.io/hexagonal/post/2021/03/10-mejorando-nuestro-scraping_files/figure-html/parsing-bmark-1.png">
+
+
+
+  
+    <meta property="article:published_time" content="2021-03-10T00:00:00">
+  
+  
+    <meta property="article:modified_time" content="2021-03-10T00:00:00">
+  
+  
+  
+    
+      <meta property="article:section" content="OpenStreetMap">
+    
+  
+  
+    
+      <meta property="article:tag" content="benchmark">
+    
+      <meta property="article:tag" content="web scraping">
+    
+  
+
+    <title>
+      
+        Mejorando nuestro Web Scraping | La Galería Hexagonal
+      
+    </title>
+
+    <link rel="icon" href="https://ruevko.github.io/hexagonal/favicon.png">
+    
+    
+    <link rel="canonical" href="https://ruevko.github.io/hexagonal/post/2021/03/10-mejorando-nuestro-scraping/">
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" integrity="sha256-+N4/V/SbAFiW1MPBCXnfnP9QSN3+Keu+NlB+0ev/YKQ=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/jquery.fancybox.min.css" integrity="sha256-vuXZ9LGmmwtjqFX1F+EKin1ThZMub58gKULUyf0qECk=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/helpers/jquery.fancybox-thumbs.min.css" integrity="sha256-SEa4XYAHihTcEP1f5gARTB2K26Uk8PsndQYHQC1f4jU=" crossorigin="anonymous" />
+    
+    
+    <link rel="stylesheet" href="https://ruevko.github.io/hexagonal/css/style-s8nr9ctzyhw1nzdjl29viwthfpsweebfur2koqrkcsmuig7sa14yoqs4q.min.css" />
+    
+    
+
+    
+      
+    
+  </head>
+  <body>
+    <div id="blog">
+      <header id="header" data-behavior="4">
+  <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+  <div class="header-title">
+    <a class="header-title-link" href="https://ruevko.github.io/hexagonal/">La Galería Hexagonal</a>
+  </div>
+  
+    
+      <a class="header-right-icon "
+         href="#footer">
+    
+    
+      <i class="fa-lg fas fa-chevron-down"></i></a>
+    
+  
+  
+</header>
+      <nav id="sidebar" data-behavior="4">
+  <div class="sidebar-container">
+    
+      <div class="sidebar-profile">
+        <a href="https://ruevko.github.io/hexagonal/#about">
+          <img class="sidebar-profile-picture" src="https://ruevko.github.io/hexagonal/logo.png"/>
+        </a>
+        <a class="sidebar-profile-name" href="https://ruevko.github.io/hexagonal/">La Galería Hexagonal</a>
+      </div>
+    
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://ruevko.github.io/hexagonal/archives">
+    
+      <i class="sidebar-button-icon fas fa-globe-americas fa-lg"></i>
+      
+      <span class="sidebar-button-desc">Archivo</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://ruevko.github.io/hexagonal/categories">
+    
+      <i class="sidebar-button-icon fas fa-map-marked-alt fa-lg"></i>
+      
+      <span class="sidebar-button-desc">Categorías</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://ruevko.github.io/hexagonal/tags">
+    
+      <i class="sidebar-button-icon fas fa-map-marker-alt fa-lg"></i>
+      
+      <span class="sidebar-button-desc">Etiquetas</span>
+    </a>
+  </li>
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://github.com/ruevko" target="_blank" rel="noopener">
+    
+      <i class="sidebar-button-icon fab fa-github-alt fa-lg"></i>
+      
+      <span class="sidebar-button-desc">GitHub</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://twitter.com/ruevko" target="_blank" rel="noopener">
+    
+      <i class="sidebar-button-icon fab fa-twitter fa-lg"></i>
+      
+      <span class="sidebar-button-desc">Twitter</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://ko-fi.com/ruevko" target="_blank" rel="noopener">
+    
+      <i class="sidebar-button-icon fas fa-coffee fa-lg"></i>
+      
+      <span class="sidebar-button-desc">Ko-fi</span>
+    </a>
+  </li>
+
+    </ul>
+    <ul class="sidebar-buttons" style="width:auto;">
+
+  <li class="sidebar-button">
+    <a class="sidebar-button-link" href="https://ruevko.github.io/hexagonal/post/readme">
+      <i class="sidebar-button-icon fas fa-compass fa-lg"></i>
+      <span class="sidebar-button-desc">Acerca de . . .</span>
+    </a>
+  </li>
+
+    </ul>
+  </div>
+</nav>
+      
+
+      
+
+      <div id="main" data-behavior="4"
+        class="
+               hasCoverMetaIn
+               ">
+        <article class="post" itemscope itemType="http://schema.org/BlogPosting">
+          
+          
+            <div class="post-header main-content-wrap text-left">
+  
+    <h1 class="post-title" itemprop="headline">
+      Mejorando nuestro Web Scraping
+    </h1>
+  
+  
+  <div class="postShorten-meta post-meta">
+    
+      <time itemprop="datePublished" datetime="2021-03-10T00:00:00Z">
+        
+  
+  
+  
+  
+    10 de Marzo de 2021
+  
+
+      </time>
+    
+    
+  
+  
+    <span>en</span>
+    
+      <a class="category-link" href="https://ruevko.github.io/hexagonal/categories/openstreetmap">OpenStreetMap</a>
+    
+  
+
+  </div>
+
+</div>
+          
+          <div class="post-content markdown" itemprop="articleBody">
+            <div class="main-content-wrap">
+              
+<script src="https://ruevko.github.io/hexagonal/rmarkdown-libs/accessible-code-block/empty-anchor.js"></script>
+<style type="text/css">
+code.sourceCode > span { display: inline-block; line-height: 1.25; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    background-color: #ffffff;
+    color: #a0a0a0;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #a0a0a0;  padding-left: 4px; }
+div.sourceCode
+  { color: #1f1c1b; background-color: #ffffff; }
+@media screen {
+code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span. { color: #1f1c1b; } /* Normal */
+code span.al { color: #bf0303; background-color: #f7e6e6; font-weight: bold; } /* Alert */
+code span.an { color: #ca60ca; } /* Annotation */
+code span.at { color: #0057ae; } /* Attribute */
+code span.bn { color: #b08000; } /* BaseN */
+code span.bu { color: #644a9b; font-weight: bold; } /* BuiltIn */
+code span.cf { color: #1f1c1b; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #924c9d; } /* Char */
+code span.cn { color: #aa5500; } /* Constant */
+code span.co { color: #898887; } /* Comment */
+code span.cv { color: #0095ff; } /* CommentVar */
+code span.do { color: #607880; } /* Documentation */
+code span.dt { color: #0057ae; } /* DataType */
+code span.dv { color: #b08000; } /* DecVal */
+code span.er { color: #bf0303; text-decoration: underline; } /* Error */
+code span.ex { color: #0095ff; font-weight: bold; } /* Extension */
+code span.fl { color: #b08000; } /* Float */
+code span.fu { color: #644a9b; } /* Function */
+code span.im { color: #ff5500; } /* Import */
+code span.in { color: #b08000; } /* Information */
+code span.kw { color: #1f1c1b; font-weight: bold; } /* Keyword */
+code span.op { color: #1f1c1b; } /* Operator */
+code span.ot { color: #006e28; } /* Other */
+code span.pp { color: #006e28; } /* Preprocessor */
+code span.re { color: #0057ae; background-color: #e0e9f8; } /* RegionMarker */
+code span.sc { color: #3daee9; } /* SpecialChar */
+code span.ss { color: #ff5500; } /* SpecialString */
+code span.st { color: #bf0303; } /* String */
+code span.va { color: #0057ae; } /* Variable */
+code span.vs { color: #bf0303; } /* VerbatimString */
+code span.wa { color: #bf0303; } /* Warning */
+</style>
+
+
+<p>En este artículo vamos a enmendar la metodología <em>web scraping</em> que utilizamos
+anteriormente para obtener, desde <a href="https://osmstats.neis-one.org">OSMstats</a>, los
+nodos OpenStreetMap creados a diario en cada país. Neis Pascal, quien mantiene ese
+sitio web, introdujo el año pasado algunas mejoras que ahora impiden la ejecución de
+<a href="https://ruevko.github.io/hexagonal/post/2020/01/07-estimando-nodos-openstreetmap-pais/#cb1-1"><code>get_day()</code></a>,
+la función que diseñamos para este fin. Aprovechamos esta ocasión para introducir
+el paquete <code>rvest</code>, que simplificará y acelerará todo el proceso; adicionalmente,
+cuantificaremos con <em>benchmarks</em> la magnitud de la mejora.</p>
+<p>En <code>get_day()</code> se utilizaba <code>httr</code> para conectarse a la página web —que en realidad
+se trata de un documento HTML— deseada y obtener su contenido. Los objetos generados
+por <code>httr::content()</code> son de clase <code>xml_document</code>.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a>osmstats =<span class="st"> &quot;https://osmstats.neis-one.org/?item=countries&amp;date=1-3-2021&quot;</span></span>
+<span id="cb1-2"><a href="#cb1-2"></a></span>
+<span id="cb1-3"><a href="#cb1-3"></a>(<span class="dt">httr_doc =</span> httr<span class="op">::</span><span class="kw">content</span>(httr<span class="op">::</span><span class="kw">GET</span>(osmstats), <span class="st">&quot;parsed&quot;</span>, <span class="dt">encoding =</span> <span class="st">&quot;UTF-8&quot;</span>))</span></code></pre></div>
+<pre><code>## {html_document}
+## &lt;html xmlns=&quot;http://www.w3.org/1999/xhtml&quot; lang=&quot;en&quot;&gt;
+## [1] &lt;head&gt;\n&lt;title&gt;OSMstats - Statistics of the free wiki world map&lt;/title&gt;\n ...
+## [2] &lt;body&gt;\n\t\n&lt;script language=&quot;javascript&quot;&gt;function weekendArea(axes) {var ...</code></pre>
+<p>Un <code>xml_document</code> es como una copia de la página en linea, con exactamente la misma
+estructura de <em>tags</em><a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>. En el sitio OSMstats existe una página para cada día —desde
+el primero de noviembre de 2011— con la actividad suscitada en 260 territorios del mundo.
+Nos interesa extraer de cualquiera de esas páginas (es decir, para cualquier día) un <em>tag</em>
+de tipo <code>&lt;table&gt;</code>: una tabla con los elementos creados, modificados y eliminados un día
+específico. La siguiente captura de pantalla presenta la tabla correspondiente<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a> al primero de marzo de 2021.</p>
+<div class="figure"><span id="fig:screen"></span>
+<img src="https://res.cloudinary.com/dodnzqhiz/image/upload/v1615391078/2021post/dpn3dfjlsdgeycxixttu.png" alt="El tag `&lt;table&gt;` en una página de OSMstats"  />
+<p class="caption">
+Figure 1: El tag <code>&lt;table&gt;</code> en una página de OSMstats
+</p>
+</div>
+<p>Originalmente se utilizaba <code>xml2::as_list()</code> para convertir el <code>xml_document</code> en una
+típica lista de R; luego, con funciones escritas específicamente para estos propósitos,
+se buscaba dentro de la lista el miembro correspondiente al <code>&lt;table&gt;</code>, y se procesaba
+cada uno de sus submiembros como filas de una matriz.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>pluck_xml =<span class="st"> </span><span class="cf">function</span>(x) x<span class="op">$</span>html<span class="op">$</span>body[[<span class="dv">12</span>]][[<span class="dv">14</span>]]<span class="op">$</span>div<span class="op">$</span>table[<span class="op">-</span><span class="dv">1</span>]</span>
+<span id="cb3-2"><a href="#cb3-2"></a></span>
+<span id="cb3-3"><a href="#cb3-3"></a>row_xml =<span class="st"> </span><span class="cf">function</span>(x) <span class="kw">matrix</span>(</span>
+<span id="cb3-4"><a href="#cb3-4"></a>  <span class="kw">c</span>( x[[<span class="dv">2</span>]][[<span class="dv">1</span>]][[<span class="dv">1</span>]], x[[<span class="dv">4</span>]][[<span class="dv">1</span>]], x[[<span class="dv">6</span>]][[<span class="dv">1</span>]], x[[<span class="dv">8</span>]][[<span class="dv">1</span>]], x[[<span class="dv">10</span>]][[<span class="dv">1</span>]] ), <span class="dv">1</span>)</span></code></pre></div>
+<p>La manera de utilizar estas funciones es la siguiente:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="kw">library</span>(purrr)</span>
+<span id="cb4-2"><a href="#cb4-2"></a></span>
+<span id="cb4-3"><a href="#cb4-3"></a>httr_table =<span class="st"> </span>xml2<span class="op">::</span><span class="kw">as_list</span>(httr_doc) <span class="op">%&gt;%</span></span>
+<span id="cb4-4"><a href="#cb4-4"></a><span class="st">   </span><span class="kw">pluck_xml</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">map</span>(row_xml) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">reduce</span>(rbind)</span>
+<span id="cb4-5"><a href="#cb4-5"></a></span>
+<span id="cb4-6"><a href="#cb4-6"></a>table_names =<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;country&quot;</span>, <span class="st">&quot;contributors&quot;</span>, <span class="st">&quot;created_e&quot;</span>, <span class="st">&quot;modified_e&quot;</span>, <span class="st">&quot;deleted_e&quot;</span>)</span>
+<span id="cb4-7"><a href="#cb4-7"></a></span>
+<span id="cb4-8"><a href="#cb4-8"></a><span class="kw">colnames</span>(httr_table) =<span class="st"> </span>table_names; <span class="kw">head</span>(httr_table)</span></code></pre></div>
+<pre><code>##      country       contributors created_e modified_e deleted_e
+## [1,] &quot;Puerto Rico&quot; &quot;1 (0%)&quot;     &quot;53&quot;      &quot;15&quot;       &quot;2&quot;      
+## [2,] &quot;Liberia&quot;     &quot;1 (0%)&quot;     &quot;9464&quot;    &quot;1695&quot;     &quot;1852&quot;   
+## [3,] &quot;Vanuatu&quot;     &quot;1 (0%)&quot;     &quot;0&quot;       &quot;4&quot;        &quot;0&quot;      
+## [4,] &quot;Curaçao&quot;     &quot;1 (0%)&quot;     &quot;5&quot;       &quot;2&quot;        &quot;6&quot;      
+## [5,] &quot;Cape Verde&quot;  &quot;1 (0%)&quot;     &quot;12&quot;      &quot;25&quot;       &quot;1&quot;      
+## [6,] &quot;Mauritius&quot;   &quot;1 (0%)&quot;     &quot;0&quot;       &quot;3&quot;        &quot;0&quot;</code></pre>
+<p>Si el código presentado hasta ahora es difícil de comprender, no importa mucho. A
+continuación se demostrará cómo con <code>rvest</code> es posible repetir esas operaciones, de
+una manera más sencilla; este paquete está construido sobre <code>httr</code> y <code>xml2</code>, así que
+también trabaja con objetos <code>xml_document</code>. Ahora obtendremos el contenido de la página
+web deseada vía <code>rvest::read_html()</code>.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="kw">library</span>(rvest)</span>
+<span id="cb6-2"><a href="#cb6-2"></a></span>
+<span id="cb6-3"><a href="#cb6-3"></a>rvest_doc =<span class="st"> </span><span class="kw">read_html</span>(osmstats, <span class="dt">encoding =</span> <span class="st">&quot;UTF-8&quot;</span>)</span>
+<span id="cb6-4"><a href="#cb6-4"></a></span>
+<span id="cb6-5"><a href="#cb6-5"></a><span class="kw">identical</span>(httr_doc, rvest_doc) <span class="co"># documentos obtenidos vía httr y rvest parecen diferentes</span></span></code></pre></div>
+<pre><code>## [1] FALSE</code></pre>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a><span class="kw">identical</span>(<span class="kw">as_list</span>(httr_doc), <span class="kw">as_list</span>(rvest_doc)) <span class="co"># pero sus contenidos son iguales</span></span></code></pre></div>
+<pre><code>## [1] TRUE</code></pre>
+<p>Una vez obtenido el documento, es posible extraer el <code>&lt;table&gt;</code> con <code>rvest::html_node()</code>.
+Esta función ofrece dos opciones para especificar la búsqueda de un <em>tag</em>, que será
+devuelto como un objeto <code>xml_node</code><a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a>. La primera opción es
+suministrar un <em>selector</em> CSS<a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a> que seleccione (valga la
+redundancia) de manera exacta el <em>tag</em> que buscamos.</p>
+<p>Observando la captura de pantalla (figura <a href="#fig:screen">1</a>), descubriremos que el <em>tag</em> de la
+tabla está escrito así: <code>&lt;table id="countrytable"&gt;</code>; puesto que es el único <em>tag</em> con ese <code>id</code>
+en toda la página —además es la única tabla— podemos utilizar el siguiente <em>selector</em>:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a><span class="kw">library</span>(dplyr)</span>
+<span id="cb10-2"><a href="#cb10-2"></a></span>
+<span id="cb10-3"><a href="#cb10-3"></a><span class="kw">html_node</span>(rvest_doc, <span class="st">&quot;#countrytable&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">html_table</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">as_tibble</span>()</span></code></pre></div>
+<pre><code>## # A tibble: 260 x 6
+##      No. Country    `Contributors (organis~ `Created element~ `Modified element~
+##    &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;                               &lt;int&gt;              &lt;int&gt;
+##  1     1 Puerto Ri~ 1 (0%)                                 53                 15
+##  2     2 Liberia    1 (0%)                               9464               1695
+##  3     3 Vanuatu    1 (0%)                                  0                  4
+##  4     4 Curaçao    1 (0%)                                  5                  2
+##  5     5 Cape Verde 1 (0%)                                 12                 25
+##  6     6 Mauritius  1 (0%)                                  0                  3
+##  7     7 Oman       1 (0%)                                  0                  3
+##  8     8 Jordan     1 (0%)                                 47                 10
+##  9     9 Monaco     1 (0%)                                  0                  1
+## 10    10 Haiti      1 (0%)                                216                201
+## # ... with 250 more rows, and 1 more variable: Deleted elements &lt;int&gt;</code></pre>
+<p>En la última línea de código, el xml_node extraído se introduce inmediatamente
+en <code>html_table()</code> y el resultado es un <code>data.frame</code> correspondiente a la tabla con la
+actividad OpenStreetMap del día. Y eso es todo: con tres funciones de <code>rvest</code> hemos
+simplificado la metodología original. Además, como estas funciones han sido optimizadas,
+se ejecutan de manera más rápida. Vamos a realizar un <em>benchmark</em> para cuantificar la
+mejora en la rapidez; definimos una función para contener el método de tabulado original,
+y otra para el nuevo (<code>parse_old()</code> y <code>parse_rvest()</code> respectivamente):</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a>parse_rvest =<span class="st"> </span><span class="cf">function</span>(doc) <span class="kw">html_table</span>(<span class="kw">html_node</span>(doc, <span class="st">&quot;#countrytable&quot;</span>))[<span class="op">-</span><span class="dv">1</span>]</span>
+<span id="cb12-2"><a href="#cb12-2"></a></span>
+<span id="cb12-3"><a href="#cb12-3"></a>parse_old =<span class="st"> </span><span class="cf">function</span>(doc) <span class="kw">as_list</span>(doc) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">pluck_xml</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">map</span>(row_xml) <span class="op">%&gt;%</span></span>
+<span id="cb12-4"><a href="#cb12-4"></a><span class="st">   </span><span class="kw">reduce</span>(rbind) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">as.data.frame</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">set_names</span>(table_names) <span class="op">%&gt;%</span></span>
+<span id="cb12-5"><a href="#cb12-5"></a><span class="st">   </span><span class="kw">mutate</span>(<span class="kw">across</span>(<span class="kw">ends_with</span>(<span class="st">&quot;_e&quot;</span>), as.numeric))</span>
+<span id="cb12-6"><a href="#cb12-6"></a></span>
+<span id="cb12-7"><a href="#cb12-7"></a><span class="kw">summary</span>(<span class="kw">parse_rvest</span>(rvest_doc) <span class="op">==</span><span class="st"> </span><span class="kw">parse_old</span>(rvest_doc)) <span class="co"># generan tablas iguales</span></span></code></pre></div>
+<pre><code>##  Country        Contributors (organised) Created elements Modified elements
+##  Mode:logical   Mode:logical             Mode:logical     Mode:logical     
+##  TRUE:260       TRUE:260                 TRUE:260         TRUE:260         
+##  Deleted elements
+##  Mode:logical    
+##  TRUE:260</code></pre>
+<p>E introducimos ambas funciones en <code>microbenchmark()</code>:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a><span class="kw">library</span>(microbenchmark)</span>
+<span id="cb14-2"><a href="#cb14-2"></a></span>
+<span id="cb14-3"><a href="#cb14-3"></a>(<span class="dt">parsing_bmark =</span> <span class="kw">microbenchmark</span>(<span class="kw">parse_rvest</span>(rvest_doc), <span class="kw">parse_old</span>(rvest_doc)))</span></code></pre></div>
+<pre><code>## Unit: milliseconds
+##                    expr   min    lq  mean median    uq   max neval
+##  parse_rvest(rvest_doc) 158.4 168.6 173.4  173.4 177.7 188.5   100
+##    parse_old(rvest_doc) 326.2 354.8 368.2  366.0 377.8 442.6   100</code></pre>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a><span class="kw">boxplot</span>(<span class="kw">filter</span>(parsing_bmark, time <span class="op">&lt;</span><span class="st"> </span><span class="fl">4.5e8</span>),</span>
+<span id="cb16-2"><a href="#cb16-2"></a>        <span class="dt">main =</span> <span class="st">&quot;Table parsing benchmark&quot;</span>,</span>
+<span id="cb16-3"><a href="#cb16-3"></a>        <span class="dt">ylab =</span> <span class="st">&quot;Milliseconds&quot;</span>)</span></code></pre></div>
+<div class="figure"><span id="fig:parsing-bmark"></span>
+<img src="https://ruevko.github.io/hexagonal/post/2021/03/10-mejorando-nuestro-scraping_files/figure-html/parsing-bmark-1.png" alt="Benchmark de los dos métodos de tabulación" width="499.2" />
+<p class="caption">
+Figure 2: Benchmark de los dos métodos de tabulación
+</p>
+</div>
+<p>Resulta claro que el nuevo método es considerablemente más rápido que el original: el
+tiempo de ejecución se redujo a la mitad (la mediana pasó de 0.37 a 0.18 segundos).
+Por ende, a partir de ahora se aprovechará <code>rvest</code> para realizar <em>web scraping</em>; no
+obstante, todavía existe un aspecto a través del cual podemos introducir una mejora
+en la rapidez de ejecución. Se mencionó que <code>html_node()</code> ofrece dos opciones para
+especificar cuál nodo debe ser extraído. La segunda opción es suministrar una
+expresión <a href="https://www.w3schools.com/xml/xpath_intro.asp">XPath</a>, que funciona
+de manera similar a la ruta de un archivo en un computador.</p>
+<p>Vamos a comparar la rapidez de extracción con un <em>selector</em> CSS y con dos XPaths. La
+expresión <code>"//table"</code> significa buscar una tabla (recordemos que solo hay una en cada
+página de OSMstats), sin importar su ubicación dentro del documento; podemos decir que
+esta es una expresión “fácil”. Con el otro XPath vamos a especificar exactamente dónde
+se encuentra la tabla; esto es comparable a la función <code>pluck_xml()</code> definida en el
+método original y será, en teoría, la expresión más rápida.</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a>easy_css =<span class="st"> </span><span class="cf">function</span>(doc) <span class="kw">html_node</span>(doc, <span class="dt">css =</span> <span class="st">&quot;#countrytable&quot;</span>)</span>
+<span id="cb17-2"><a href="#cb17-2"></a></span>
+<span id="cb17-3"><a href="#cb17-3"></a>easy_xpath =<span class="st"> </span><span class="cf">function</span>(doc) <span class="kw">html_node</span>(doc, <span class="dt">xpath =</span> <span class="st">&quot;//table&quot;</span>)</span>
+<span id="cb17-4"><a href="#cb17-4"></a></span>
+<span id="cb17-5"><a href="#cb17-5"></a>exact_xpath =<span class="st"> </span><span class="cf">function</span>(doc) <span class="kw">html_node</span>(doc, <span class="dt">xpath =</span> <span class="st">&quot;body/div[3]/div[4]/div/table&quot;</span>)</span>
+<span id="cb17-6"><a href="#cb17-6"></a></span>
+<span id="cb17-7"><a href="#cb17-7"></a>extraction_bmark =<span class="st"> </span><span class="kw">microbenchmark</span>(<span class="kw">easy_css</span>(rvest_doc),</span>
+<span id="cb17-8"><a href="#cb17-8"></a>                                  <span class="kw">easy_xpath</span>(rvest_doc),</span>
+<span id="cb17-9"><a href="#cb17-9"></a>                                  <span class="kw">exact_xpath</span>(rvest_doc))</span>
+<span id="cb17-10"><a href="#cb17-10"></a></span>
+<span id="cb17-11"><a href="#cb17-11"></a><span class="kw">boxplot</span>(<span class="kw">filter</span>(extraction_bmark, time <span class="op">&lt;</span><span class="st"> </span><span class="fl">4.5e6</span>),</span>
+<span id="cb17-12"><a href="#cb17-12"></a>        <span class="dt">main =</span> <span class="st">&quot;Table extraction benchmark&quot;</span>,</span>
+<span id="cb17-13"><a href="#cb17-13"></a>        <span class="dt">ylab =</span> <span class="st">&quot;Microseconds&quot;</span>)</span></code></pre></div>
+<div class="figure"><span id="fig:extraction-bmark"></span>
+<img src="https://ruevko.github.io/hexagonal/post/2021/03/10-mejorando-nuestro-scraping_files/figure-html/extraction-bmark-1.png" alt="Benchmark de los tres métodos de extracción" width="748.8" />
+<p class="caption">
+Figure 3: Benchmark de los tres métodos de extracción
+</p>
+</div>
+<p>El resultado es que la extracción es unos 2 milisegundos más lenta cuando se utiliza
+el <em>selector</em>. Cuando se utiliza la expresión XPath exacta existe una pequeña mejora,
+comparada con la expresión fácil; sin embargo, dicha mejora se encuentra en el orden
+de los microsegundos. Como conclusión, en el futuro —cuando necesitemos obtener
+nuevamente los elementos OpenStreetMap creados en un día— usaremos la
+expresión <code>"//table"</code> que es igual de rápida y más fácil de comprender.</p>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>Los <em>tags</em> son los nodos o elementos que componen a un documento
+HTML, como <code>&lt;a&gt;</code> o <code>&lt;tr&gt;</code>.<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn2"><p>En realidad,
+en la pestaña Countries de OSMstats, cada página contiene los datos correspondientes al día
+anterior; así, en este ejemplo, los datos son del 28 de febrero.<a href="#fnref2" class="footnote-back">↩︎</a></p></li>
+<li id="fn3"><p>También existe <code>rvest::html_nodes()</code> que puede
+extraer varios <em>tags</em> a la vez y devuelve un <code>xml_nodeset</code>.<a href="#fnref3" class="footnote-back">↩︎</a></p></li>
+<li id="fn4"><p>Los <em>selectors</em> son reglas para aplicar estilos en
+un documento HTML, como <code>a:hover { }</code> o <code>tr.odd { }</code>.<a href="#fnref4" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
+
+              
+            </div>
+          </div>
+          <div id="post-footer" class="post-footer main-content-wrap">
+            
+              
+                
+                
+                  <div class="post-footer-tags">
+                    <span class="text-color-light text-small">Etiquetado en</span><br/>
+                    
+  <a class="tag tag--primary tag--small" href="https://ruevko.github.io/hexagonal/tags/benchmark/">benchmark</a>
+
+  <a class="tag tag--primary tag--small" href="https://ruevko.github.io/hexagonal/tags/web-scraping/">web scraping</a>
+
+                  </div>
+                
+              
+            
+            <div class="post-actions-wrap">
+  
+      <nav >
+        <ul class="post-actions post-action-nav">
+          
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--disabled">
+              
+                  <i class="fa fa-angle-left"></i>
+                  <span class="hide-xs text-small icon-ml">Siguiente</span>
+                </a>
+            </li>
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip-big" href="https://ruevko.github.io/hexagonal/post/2020/12/28-cordones-coordenadas-tres-dimensiones/" data-tooltip="Cordones y Coordenadas, ahora en tres dimensiones">
+              
+                  <span class="hide-xs text-small icon-mr" style="margin-left: 1.5px;">Anterior</span>
+                  <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+          
+        </ul>
+      </nav>
+    <ul class="post-actions post-action-share" >
+      
+        <li class="post-action hide-lg hide-md">
+          <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions">
+            <i class="fa fa-share-alt"></i>
+          </a>
+        </li>
+        
+          <li class="post-action hide-sm hide-xs">
+            <a class="post-action-btn btn btn--default" href=
+            
+              "https://www.facebook.com/sharer.php?t=Este%20art%c3%adculo%20fue%20publicado%20en%20el%20blog%20La%20Galer%c3%ada%20Hexagonal&amp;u=https://ruevko.github.io/hexagonal/post/2021/03/10-mejorando-nuestro-scraping/" target="_blank"
+              data-tooltip="Compartir en Facebook">
+            
+              <i class="fab fa-facebook"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-sm hide-xs">
+            <a class="post-action-btn btn btn--default" href=
+            
+              "https://twitter.com/intent/tweet?text=Este%20art%c3%adculo%20fue%20publicado%20en%20el%20blog%20La%20Galer%c3%ada%20Hexagonal&amp;url=https://ruevko.github.io/hexagonal/post/2021/03/10-mejorando-nuestro-scraping/" target="_blank"
+              data-tooltip="Compartir en Twitter">
+            
+              <i class="fab fa-twitter"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-sm hide-xs">
+            <a class="post-action-btn btn btn--default" href=
+            
+              "https://github.com/ruevko/hexagonal/blob/master/content/post/2021/03/10-mejorando-nuestro-scraping.Rmd"
+              data-tooltip="Ver código en GitHub">
+            
+              <i class="fab fa-github-alt"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-sm hide-xs">
+            <a class="post-action-btn btn btn--default" href=
+            
+              "https://t.me/share/url?text=Este%20art%c3%adculo%20fue%20publicado%20en%20el%20blog%20La%20Galer%c3%ada%20Hexagonal&amp;url=https://ruevko.github.io/hexagonal/post/2021/03/10-mejorando-nuestro-scraping/" target="_blank"
+              data-tooltip="Compartir en Telegram">
+            
+              <i class="fab fa-telegram-plane"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-sm hide-xs">
+            <a class="post-action-btn btn btn--default" href=
+            
+              "https://api.whatsapp.com/send?text=Este%20art%c3%adculo%20fue%20publicado%20en%20el%20blog%20La%20Galer%c3%ada%20Hexagonal%20https://ruevko.github.io/hexagonal/post/2021/03/10-mejorando-nuestro-scraping/" target="_blank"
+              data-tooltip="Compartir en WhatsApp">
+            
+              <i class="fab fa-whatsapp"></i>
+            </a>
+          </li>
+        
+      
+      
+      
+      <li class="post-action">
+        <a class="btn btn--default" href="#main" data-tooltip="Regresar al inicio">
+          <i class="fa fa-chevron-up"></i>
+        </a>
+      </li>
+    </ul>
+  
+</div>
+            
+              
+            
+          </div>
+        </article>
+        <footer id="footer" class="main-content-wrap">
+  <span class="copyrights">
+    <i class="fab fa-creative-commons"></i>
+    <i class="fab fa-creative-commons-by"></i>
+    <i class="fab fa-creative-commons-sa"></i>
+    2021
+    (CC-BY-SA-4.0)
+    <br>
+    
+      by Rafael Castro <i class="fas fa-lg fa-crow"></i>
+    
+  </span>
+</footer>
+      </div>
+      <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+        <div class="post-actions-wrap">
+  
+      <nav >
+        <ul class="post-actions post-action-nav">
+          
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--disabled">
+              
+                  <i class="fa fa-angle-left"></i>
+                  <span class="hide-xs text-small icon-ml">Siguiente</span>
+                </a>
+            </li>
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip-big" href="https://ruevko.github.io/hexagonal/post/2020/12/28-cordones-coordenadas-tres-dimensiones/" data-tooltip="Cordones y Coordenadas, ahora en tres dimensiones">
+              
+                  <span class="hide-xs text-small icon-mr" style="margin-left: 1.5px;">Anterior</span>
+                  <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+          
+        </ul>
+      </nav>
+    <ul class="post-actions post-action-share" >
+      
+        <li class="post-action hide-lg hide-md">
+          <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions">
+            <i class="fa fa-share-alt"></i>
+          </a>
+        </li>
+        
+          <li class="post-action hide-sm hide-xs">
+            <a class="post-action-btn btn btn--default" href=
+            
+              "https://www.facebook.com/sharer.php?t=Este%20art%c3%adculo%20fue%20publicado%20en%20el%20blog%20La%20Galer%c3%ada%20Hexagonal&amp;u=https://ruevko.github.io/hexagonal/post/2021/03/10-mejorando-nuestro-scraping/" target="_blank"
+              data-tooltip="Compartir en Facebook">
+            
+              <i class="fab fa-facebook"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-sm hide-xs">
+            <a class="post-action-btn btn btn--default" href=
+            
+              "https://twitter.com/intent/tweet?text=Este%20art%c3%adculo%20fue%20publicado%20en%20el%20blog%20La%20Galer%c3%ada%20Hexagonal&amp;url=https://ruevko.github.io/hexagonal/post/2021/03/10-mejorando-nuestro-scraping/" target="_blank"
+              data-tooltip="Compartir en Twitter">
+            
+              <i class="fab fa-twitter"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-sm hide-xs">
+            <a class="post-action-btn btn btn--default" href=
+            
+              "https://github.com/ruevko/hexagonal/blob/master/content/post/2021/03/10-mejorando-nuestro-scraping.Rmd"
+              data-tooltip="Ver código en GitHub">
+            
+              <i class="fab fa-github-alt"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-sm hide-xs">
+            <a class="post-action-btn btn btn--default" href=
+            
+              "https://t.me/share/url?text=Este%20art%c3%adculo%20fue%20publicado%20en%20el%20blog%20La%20Galer%c3%ada%20Hexagonal&amp;url=https://ruevko.github.io/hexagonal/post/2021/03/10-mejorando-nuestro-scraping/" target="_blank"
+              data-tooltip="Compartir en Telegram">
+            
+              <i class="fab fa-telegram-plane"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-sm hide-xs">
+            <a class="post-action-btn btn btn--default" href=
+            
+              "https://api.whatsapp.com/send?text=Este%20art%c3%adculo%20fue%20publicado%20en%20el%20blog%20La%20Galer%c3%ada%20Hexagonal%20https://ruevko.github.io/hexagonal/post/2021/03/10-mejorando-nuestro-scraping/" target="_blank"
+              data-tooltip="Compartir en WhatsApp">
+            
+              <i class="fab fa-whatsapp"></i>
+            </a>
+          </li>
+        
+      
+      
+      
+      <li class="post-action">
+        <a class="btn btn--default" href="#main" data-tooltip="Regresar al inicio">
+          <i class="fa fa-chevron-up"></i>
+        </a>
+      </li>
+    </ul>
+  
+</div>
+      </div>
+      <div id="share-options-bar" class="share-options-bar" data-behavior="4">
+  <i id="btn-close-shareoptions" class="fas fa-times"></i>
+  <ul class="share-options">
+    
+      <li class="share-option">
+            <a class="share-option-btn" href=
+            
+              "https://www.facebook.com/sharer.php?t=Este%20art%c3%adculo%20fue%20publicado%20en%20el%20blog%20La%20Galer%c3%ada%20Hexagonal&amp;u=https://ruevko.github.io/hexagonal/post/2021/03/10-mejorando-nuestro-scraping/" target="_blank"
+              ><span class="icon-mr">Compartir en Facebook</span>
+            
+              <i class="fab fa-facebook"></i>
+            </a>
+      </li>
+    
+      <li class="share-option">
+            <a class="share-option-btn" href=
+            
+              "https://twitter.com/intent/tweet?text=Este%20art%c3%adculo%20fue%20publicado%20en%20el%20blog%20La%20Galer%c3%ada%20Hexagonal&amp;url=https://ruevko.github.io/hexagonal/post/2021/03/10-mejorando-nuestro-scraping/" target="_blank"
+              ><span class="icon-mr">Compartir en Twitter</span>
+            
+              <i class="fab fa-twitter"></i>
+            </a>
+      </li>
+    
+      <li class="share-option">
+            <a class="share-option-btn" href=
+            
+              "https://github.com/ruevko/hexagonal/blob/master/content/post/2021/03/10-mejorando-nuestro-scraping.Rmd"
+              ><span class="icon-mr">Ver código en GitHub</span>
+            
+              <i class="fab fa-github-alt"></i>
+            </a>
+      </li>
+    
+      <li class="share-option">
+            <a class="share-option-btn" href=
+            
+              "https://t.me/share/url?text=Este%20art%c3%adculo%20fue%20publicado%20en%20el%20blog%20La%20Galer%c3%ada%20Hexagonal&amp;url=https://ruevko.github.io/hexagonal/post/2021/03/10-mejorando-nuestro-scraping/" target="_blank"
+              ><span class="icon-mr">Compartir en Telegram</span>
+            
+              <i class="fab fa-telegram-plane"></i>
+            </a>
+      </li>
+    
+      <li class="share-option">
+            <a class="share-option-btn" href=
+            
+              "https://api.whatsapp.com/send?text=Este%20art%c3%adculo%20fue%20publicado%20en%20el%20blog%20La%20Galer%c3%ada%20Hexagonal%20https://ruevko.github.io/hexagonal/post/2021/03/10-mejorando-nuestro-scraping/" target="_blank"
+              ><span class="icon-mr">Compartir en WhatsApp</span>
+            
+              <i class="fab fa-whatsapp"></i>
+            </a>
+      </li>
+    
+  </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+    </div>
+    <div id="about">
+  <div id="about-card">
+    <div id="about-btn-close">
+      <i class="fas fa-times"></i>
+    </div>
+    
+      <img id="about-card-picture" src="https://ruevko.github.io/hexagonal/logo.png"/>
+    
+    
+    <h4 id="about-card-name">La Galería Hexagonal</h4>
+    
+      <div id="about-card-bio">El blog de Rafael Castro, orientado a Cartografía y Análisis de Datos</div>
+    
+    
+      <div id="about-card-job">
+        <i class="fas fa-graduation-cap"></i>
+        <br/>
+        Geógrafo
+      </div>
+    
+    
+      <div id="about-card-location">
+        <i class="fas fa-home"></i>
+        <br/>
+        Ecuador
+      </div>
+    
+  </div>
+</div>
+    
+    
+  
+    <div id="cover" style="background-image:url('https://res.cloudinary.com/dodnzqhiz/image/upload/v1577918037/crv.png');"></div>
+  
+
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.7/js/jquery.fancybox.min.js" integrity="sha256-GEAnjcTqVP+vBp3SSc8bEDQqvWAZMiHyUSIorrWwH50=" crossorigin="anonymous"></script>
+
+
+<script src="https://ruevko.github.io/hexagonal/js/script-z883fwg5omxsxmpkiost9sddu2q3qdvoxrqwd9yadcziti9facq28d0mp.min.js"></script>
+
+
+<script lang="javascript">
+window.onload = updateMinWidth;
+window.onresize = updateMinWidth;
+document.getElementById("sidebar").addEventListener("transitionend", updateMinWidth);
+function updateMinWidth() {
+  var sidebar = document.getElementById("sidebar");
+  var main = document.getElementById("main");
+  main.style.minWidth = "";
+  var w1 = getComputedStyle(main).getPropertyValue("min-width");
+  var w2 = getComputedStyle(sidebar).getPropertyValue("width");
+  var w3 = getComputedStyle(sidebar).getPropertyValue("left");
+  main.style.minWidth = `calc(${w1} - ${w2} - ${w3})`;
+}
+</script>
+
+
+  
+    
+  
+
+
+
+  </body>
+</html>
