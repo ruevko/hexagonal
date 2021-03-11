@@ -143,7 +143,7 @@ boxplot(filter(parsing_bmark, time < 4.5e8),
 ```
 
 Resulta claro que el nuevo método es considerablemente más rápido que el original: el
-tiempo de ejecución se redujo a la mitad (la mediana pasó de 0.37 a 0.18 segundos).
+tiempo de ejecución se redujo a la mitad (la mediana pasó de 0.37 a 0.17 segundos).
 Por ende, a partir de ahora se aprovechará `rvest` para realizar *web scraping*; no
 obstante, todavía existe un aspecto a través del cual podemos introducir una mejora
 en la rapidez de ejecución. Se mencionó que `html_node()` ofrece dos opciones para
