@@ -1,0 +1,349 @@
+---
+title: Mapping Ecuador y las contribuciones a OSM, antes y después del terremoto 16A
+date: '2021-04-16'
+slug: 16-mapping-ecuador-contribuciones
+categories:
+#  - DataJournalism
+tags:
+#  - ecuador
+#  - nodos osm
+#  - regresión
+source: 16-mapping-ecuador-contribuciones.Rmd
+keywords:
+  - ecuador
+  - nodos osm
+  - regresión
+editor_options:
+  chunk_output_type: console
+output:
+  blogdown::html_page:
+    highlight: kate
+    toc: true
+bibliography: ../../babel.bib
+
+summary: El 16 de abril de 2016 un terremoto azotó la costa ecuatoriana; pronto tuvo lugar un proyecto que mejoró la cartografía en las zonas afectadas. Cinco años después de la catástrofe, analizamos varios aspectos de Mapping Ecuador y su relación con las contribuciones a OpenStreetMap en el país.
+---
+
+`r library(tidyverse); knitr::opts_chunk$set(echo=1, fig.height=5)`
+
+El 16 de abril de 2016 a las 18:58 UTC-5 un terremoto de magnitud 7.8 M~w~ azotó
+la costa ecuatoriana. Su epicentro, en el cantón Pedernales, provincia de Manabí,
+ocurrió en una zona sismológicamente activa debido al fenómeno de subducción;
+[según la USGS](http://earthquake.usgs.gov/earthquakes/eventpage/us20005j32), siete
+sismos de magnitud superior a 7 Mw han ocurrido en esta zona desde el inicio del siglo
+XX. El de 2016 fue una catástrofe que provocó mas de 600 fallecidos, miles de heridos y
+varias localidades manabitas afectadas, como Pedernales (con alrededor del 70 % de su
+infraestructura destruida), Manta y Portoviejo. También hubo afectaciones en la vecina
+provincia de Esmeraldas, e incluso en otras más alejadas como Guayas y Pichincha.
+
+En los días siguientes varios proyectos ---de origen nacional e internacional--- contribuyeron
+con rescatistas, médicos, víveres, albergue y conocimiento técnico, entre otras cosas.
+Este artículo, redactado en el quinto aniversario del evento, trata sobre el proyecto
+que contribuyó en el aspecto cartográfico de la gestión de la emergencia:
+[Mapping Ecuador](https://llactalab.ucuenca.edu.ec/eventos-2/mappingecuador) tuvo como
+propósito “crear mejores mapas que apoyen las labores de socorro y reconstrucción”. La
+manera de lograr esto fue insertar en la plataforma OpenStreetMap (OSM) el estado
+pre--terremoto de las zonas afectadas. El proyecto fue organizado por LLACTALAB de
+la Universidad de Cuenca y el Humanitarian OpenStreetMap Team (HOT), recibiendo
+contribuciones de cientos de usuarios OSM de varias partes del mundo.
+
+La primera vez que encontré los resultados de Mapping Ecuador fue en el sitio
+web OSMstats, que reporta información estadística sobre OpenStreetMap. La
+[página de Ecuador](https://osmstats.neis-one.org/?item=countries&country=Ecuador)
+presenta valores atípicos en abril de 2016 que solo pueden ser explicados por un
+evento de contribución masivo. En este artículo^[Este análisis lo conduje antes, para el
+[Open Data Day 2020](https://ruevko.github.io/slides/2020/contribuciones-a-openstreetmap-en-ecuador);
+mi propósito también es identificar nuevos aspectos.] presento un vistazo a algunos
+aspectos de esas contribuciones; particularmente, trato de observar cómo este proyecto
+influyó a la comunidad que mapea en el país. Para esto utilicé dos fuentes: el mismo
+sitio OSMstats, y la API Overpass para obtener datos OSM.
+
+# Datos OSMstats
+
+```{r ecuador-write, echo=FALSE, eval=FALSE}
+dir("data/by_country", "\\.csv$", full.names = TRUE, recursive = TRUE) %>%
+   map( ~ filter(read.csv(.), Country == "Ecuador")[ 2:4 ] ) %>%
+   bind_rows() %>%
+   mutate(Week = as.Date("2011-10-24") + row_number() * 7) %>%
+   relocate(3, .after = 1) %>%
+   write_csv("ecuador_osmstats_2021_week_14.csv")
+```
+
+Para utilizar datos del sitio OSMstats, previamente se aplicó el método *web scraping* y se
+generó un *dataset* con observaciones semanales correspondientes a Ecuador^[OSMstats advierte que
+la manera de averiguar a qué país pertenecen las contribuciones es calcular el centro del *changeset*,
+lo cual puede causar del 2 al 10 % de inexactitud.]. Considerando que en dicho sitio web existen
+observaciones diarias, es claro que se debió aplicar alguna función a cada variable, para reducir
+la periodicidad de las observaciones, de modo que sean semanales. El *dataset* generado es
+[`ecuador_osmstats_2021_week_14.csv`](https://github.com/ruevko/hexagonal/blob/master/content/post/2021/04/ecuador_osmstats_2021_week_14.csv)
+y contiene las siguientes variables:
+
+* `Week` es la fecha correspondiente al inicio de cada semana, de acuerdo al
+[estandar ISO 8601](https://en.wikipedia.org/wiki/ISO_8601#Week_dates); considera que
+las semanas comienzan los días lunes, y la semana que contiene el primero de enero es
+la primera del año, solamente si contiene cuatro o más días en el nuevo año.
+* `Contributors_max` s el máximo de contribuidores activos a diario; es decir, de cada
+semana, cuál fue el número máximo de usuarios que realizaron contribuciones, en un solo
+día de esa semana. Los contribuidores no son deberían ser sumados, porque es posible ---de
+hecho es probable--- que muchos hayan estado activos varios días de una misma semana.
+* `Modified_elements_sum` es la suma de elementos modificados semanalmente. Pueden existir
+elementos repetidos en esta suma ---cualquier elemento OSM puede ser modificado infinitas
+veces--- pero se consideró que la suma es la función adecuada, pues cada modificación
+representa una versión diferente del mismo objeto.
+* `Created_elements_sum` es la suma de elementos creados semanalmente. En este caso sí
+es correcto aplicar la suma porque cada elemento es creado solamente una vez; en este
+análisis no se observarán los elementos eliminados.
+
+Es importante mencionar que OSMstats reporta información desde noviembre de 2011, si bien
+la historia de OpenStreetMap se remonta a 2004. Por ende, no todas las contribuciones
+pueden ser cuantificadas con esta fuente de datos ---en Ecuador también había datos antes
+de 2011--- aunque más del 75 % de las contribuciones sí están disponibles. Ahora el primer
+paso es leer el  *dataset*; utilizaremos `library(tidyverse)` a lo largo del análisis.
+
+```{r ecuador-read}
+Ecuador = read_csv("ecuador_osmstats_2021_week_14.csv") %>%
+   mutate(Created_elements_cum = cumsum(Created_elements_sum),
+          Week_after = Week > as.Date("2016-04-16")) %>%
+   relocate(Week, Week_after)
+```
+
+En este paso también se anadió dos nuevas variables: `Week_after`, un vector
+lógico que es `TRUE` en las observaciones que ocurrieron después del terremoto; y
+`Created_elements_cum`, la suma acumulativa de `Created_elements_sum`, i.e. el
+total estimado de elementos creados (ignorando los eliminados) en el territorio
+ecuatoriano. Observemos una muestra de los datos, correspondientes al periodo
+del 4 de abril al 29 de mayo de 2016:
+
+```{r ecuador-filter}
+filter(Ecuador, Week > as.Date("2016-04-03"), Week < as.Date("2016-05-30")) %>%
+   mutate(across(Week, as.character, format = "%d/%b.")) %>% knitr::kable() %>%
+   kableExtra::scroll_box(width = "auto", extra_css = "margin-bottom:2rem;")
+```
+
+Los resultados de Mapping Ecuador están plasmados en las tres semanas en las cuales se
+creó más de 200 mil elementos. Interpretando estas observaciones entenderemos que, hasta
+el domingo 17 de abril de 2016, se creó alrededor de 3.052 millones de elementos; mientras
+que, hasta el domingo 8 de mayo, esta cifra creció a 5.897 millones. Estamos verificando
+que se efectuó un esfuerzo formidable: en un periodo de tres semanas, el número de
+elementos creados en cuatro años (desde noviembre de 2011) prácticamente fue duplicado.
+
+## Modelos lineales para la tasa de contribución
+
+Tal vez la manera más directa de evaluar la influencia que Mapping Ecuador pudo haber
+tenido en las contribuciones OSM es estimar la tasa o velocidad con que estas ocurrieron.
+Por eso ajustamos una regresión lineal donde la suma acumulativa de elementos creados es la
+variable dependiente, y el tiempo la independiente; la pendiente de esta regresión es la tasa
+de contribución. A continuación presento el comando y el gráfico ---las observaciones azules
+son antes del terremoto, las rojas después--- correspondientes al cálculo de la regresión lineal:
+
+```{r plot-one-model, fig.height=4, fig.cap="Regresión lineal de contribuciones OSM en Ecuador"}
+Model_single = lm(Created_elements_cum ~ Week, Ecuador)
+
+theme_set(theme_light()); Pal = ggthemes::stata_pal()(5)
+
+Plot_quake = function(y_breaks, y_label){
+   ggplot(Ecuador, aes(Week, Created_elements_cum, color = Week_after)) +
+      geom_vline(xintercept = as.Date("2016-04-16"), alpha = .2, size = 3) +
+      scale_x_date(NULL, date_breaks = "year", date_labels = "%Y") +
+      scale_y_continuous(y_label, y_breaks) +
+      ggthemes::scale_color_stata()
+}
+
+Plot_quake_abline = function(a_plot, a_color, a_date, a_model, a_value = 4e6){
+   a_plot = a_plot +
+      geom_abline(intercept = coef(a_model)[1], slope = coef(a_model)[2], color = a_color) +
+      annotate("text", hjust = 0, color = a_color, x = a_date, y = a_value, label = paste(
+         "r squared:", summary(a_model)$r.squared %>% round(5),
+         "\nslope:", coef(a_model)[2] %>% round(3)))
+   return(a_plot)
+}
+
+{ Plot_quake(0:6 * 2e6, "Elementos Creados (suma acumulativa)") +
+      geom_point(alpha = .1, size = 2, show.legend = FALSE) } %>%
+   Plot_quake_abline("black", as.Date("2017-04-01"), Model_single, 55e5)
+```
+
+En el gráfico observamos dos periodos en los que claramente hubo desviaciones del
+crecimiento lineal: el primero, por supuesto, es justo después del terremoto; el
+segundo ocurrió recientemente, al inicio de 2021. De todas maneras la regresión lineal
+tiene buen ajuste, con un R^2^ ≈ 0.95, y sugiere que en territorio ecuatoriano se
+crearon unos 3900 elementos a diario^[La tasa es diaria, a pesar de que las observaciones
+son semanales, porque el día es la unidad de cálculo de fechas.], desde noviembre de 2011.
+
+Como siguiente paso, para evaluar si Mapping Ecuador influyó en la tasa de contribución, ajustamos
+dos regresiones: una para el periodo anterior al terremoto, y otra para el periodo posterior.
+En este paso, la variable `Week_after` es la condición que permite dividir ambos periodos.
+
+```{r plot-two-model, echo=1:3, fig.height=4, fig.cap="Regresiones lineales de contribuciones OSM en Ecuador, antes y despues del terremoto"}
+Model_before = lm(Created_elements_cum ~ Week, filter(Ecuador, !Week_after))
+
+Model_after = lm(Created_elements_cum ~ Week, filter(Ecuador, Week_after))
+
+{ Plot_quake(0:6 * 2e6, "Elementos Creados (suma acumulativa)") +
+      geom_point(alpha = .1, size = 2, show.legend = FALSE) } %>%
+   Plot_quake_abline(Pal[1], as.Date("2019-06-01"), Model_before) %>%
+   Plot_quake_abline(Pal[2], as.Date("2012-01-01"), Model_after)
+```
+
+Hay una mejora en el ajuste, con ambos R^2^ > 0.95, aunque esta no es la razón para afirmar
+que dos regresiones son mejor que una. La razón es que, al dividir las observaciones según
+ocurrieron antes o después del terremoto, se obtienen dos pendientes notablemente diferentes.
+Parece que antes del terremoto había una comunidad que contribuía aproximadamente 1700 elementos
+al día; después del terremoto hay 3100 elementos creados a diario, 1.78 veces la cifra anterior.
+En este punto sería tentador afirmar que, gracias al esfuerzo de Mapping Ecuador, no solo mejoró
+la cartografía, sino que también aumentó la tasa de contribución en todo el país.
+
+Sin embargo tal afirmación sería difícil de sostener; hay que considerar algunos factores.
+Primero, no sabemos si quienes contribuyeron en Mapping Ecuador siguen activos. Más adelante
+visitaremos este aspecto pero, básicamente, es complicado ---de cierta manera, también es
+irrelevante--- saber si los mismos usuarios siguen activos, o si los usuarios actuales son
+nuevos. Segundo, la regresión es una generalización; su pendiente debe verse como una
+tendencia a través de los años y no como una constante de la comunidad que contribuye. Y
+tercero, es posible que el aumento de la pendiente se deba simplemente a que ahora hay
+más usuarios o más objetos que mapear.
+
+Si bien no entendemos todos los factores involucrados, sí es verdad que la tasa de
+contribución es más alta en el periodo posterior a Mapping Ecuador. Esto es verdad
+porque las dos regresiones del gráfico \@ref(fig:plot-two-model) poseen pendientes
+cuya diferencia es estadísticamente significativa. ¿Cómo se demuestra esto? Volviendo
+a ajustar una regresión para todo el *dataset*, como la del gráfico \@ref(fig:plot-one-model),
+añadiendo esta vez dos nuevas variables independientes: una condición (antes o después del
+terremoto), y una interacción^[En estadística, una interacción ocurre cuando la relación entre
+dos variables depende de una tercera, en este caso la condición. La interacción causa que,
+cuando cambia la condición, cambie también la pendiente de la regresión.] de dicha condición
+con el tiempo. En lenguaje R, la interacción entre dos variables se escribe multiplicándolas:
+
+```{r plot-inter-model}
+lm(Created_elements_cum ~ Week + Week * Week_after + Week_after, Ecuador) %>%
+   broom::tidy() %>% knitr::kable(format.args = list(scientific = TRUE)) %>%
+   kableExtra::scroll_box(width = "auto", extra_css = "margin-bottom:2rem;")
+
+#caption = "Resumen de la regresión con interacción",
+```
+
+La tabla demuestra que todos los términos de la regresión son significativos (todos los
+p--value ≈ 0). Los términos `Intercept` y `Week_after` no nos interesan. `Week` (el tiempo) es
+el término que representa la pendiente y fue estimado en 1743, igual que la regresión azul del
+gráfico \@ref(fig:plot-two-model). Y si a este valor sumamos la estimación de `Week:Week_after`
+(la interacción con el tiempo) obtenemos 3102, la pendiente de la regresión roja. Lo que
+acabo de explicar puede resultar confuso; para comprender estos conceptos, recomiendo un
+[artículo de Jim Frost](https://statisticsbyjim.com/regression/comparing-regression-lines)
+sobre la comparación de regresiones lineales.
+
+## Contribuciones a lo largo del tiempo
+
+A continuación vamos a explorar los elementos creados por semana (no la suma acumulativa
+de los mismos), así como los elementos modificados y los contribuidores activos. Antes
+de graficar estas variables, podemos anticipar un montón de líneas irregulares pues, salvo
+durante un evento como Mapping Ecuador, las observaciones de cada semana no guardan relación
+con sus vecinas. Existen varias maneras de suavizar estas irregularidades; en este caso
+calculamos la media móvil ---usando una ventana de nueve semanas--- de cada variable
+con `zoo::rollmean()` y la añadimos al gráfico (las líneas transparentes representan
+los datos; las opacas, las medias móviles).
+
+```{r plot-weekly, fig.cap="Elementos creados y modificados, y contribuidores activos semanalmente en Ecuador"}
+Ecuador_rollmean = mutate(Ecuador, across(3:5, zoo::rollmean, 9, NA))
+
+Plot_weekly = function(y_aes, y_brk, y_lab){
+   y_aes = enquo(y_aes)
+   Plot_quake(y_brk, y_lab) +
+      geom_line(aes(y = !!y_aes), alpha = .4, show.legend = FALSE) +
+      geom_line(aes(y = !!y_aes), Ecuador_rollmean, show.legend = FALSE) +
+      coord_cartesian(ylim = c(0, max(y_brk)))
+}
+
+library(gridExtra)
+
+arrangeGrob(grobs = list(
+   Plot_weekly(Created_elements_sum, 0:4 * 2e4, "Elementos Creados"),
+   Plot_weekly(Modified_elements_sum, 0:4 * 1e4, "Elementos Modificados"),
+   Plot_weekly(Contributors_max, 0:4 * 20, "Contribuidores Activos")
+)) %>% grid.arrange()
+```
+
+El resultado más interesante se observa en los contribuidores activos, cuyo máximo
+semanal es consistentemente mayor después del terremoto. Nuevamente, no sabemos si esto
+se debe solo a Mapping Ecuador, pero sí sabemos que ahora más usuarios ---al menos veinte
+por semana--- están contribuyendo al país. Con respecto a elementos creados o modificados,
+la media móvil sugiere que en ciertos periodos post--terremoto hubo más actividad de lo
+normal. Especialmente, en un periodo a inicios de 2021, se superó los 80 mil elementos
+creados por semana; este hecho solo había ocurrido antes durante Mapping Ecuador. ¿Es
+posible que otro evento de contribución haya sido organizado? Esta interrogante merece
+que investigue ese hecho en el futuro.
+
+El gráfico \@ref(fig:plot-weekly) no es tan difícil de interpretar, pero podríamos
+prescindir de las irregularidades que las líneas causan. Podemos hacer un resumen
+anual de las mismas variables utilizando *boxplots*, pero presentaremos únicamente
+los años con observaciones completas, i.e. de 2012 a 2020.
+
+```{r plot-yearly, fig.cap="Elementos creados y modificados, y contribuidores activos en Ecuador, agregados anualmente"}
+Ecuador = mutate(Ecuador, Week_after = Week > as.Date("2016-01-01")) %>%
+   filter( ! as.character(Week, "%g") %in% c("11", "21"))
+
+Plot_yearly = function(y_aes, y_brk, y_lab){
+   y_aes = enquo(y_aes)
+   Plot_quake(y_brk, y_lab) +
+      geom_boxplot(aes(y = !!y_aes, group = as.character(Week, "%g")), show.legend = FALSE) +
+      coord_cartesian(ylim = c(0, max(y_brk)))
+}
+
+arrangeGrob(grobs = list(
+   Plot_yearly(Created_elements_sum, 0:3 * 2e4, "Elementos Creados"),
+   Plot_yearly(Modified_elements_sum, 0:3 * 1e4, "Elementos Modificados"),
+   Plot_yearly(Contributors_max, 0:3 * 20, "Contribuidores Activos")
+)) %>% grid.arrange()
+```
+
+Aquí debemos mencionar que unos cuantos valores atípicos fueron recortados al limitar
+los ejes verticales. El aumento de contribuidores activos (en comparación a antes de 2016)
+también aparece en los *boxplots*, pero también es evidente que ha habido una disminución
+progresiva desde ese pico en 2016. Por otra parte, con respecto a elementos creados,
+los *boxplots* de 2017 en adelante poseen mediana mayor e IQR más amplio; parece que sí
+hay una tendencia a más contribuciones, aunque estas ocurran en periodos irregulares
+(gráfico \@ref(fig:plot-weekly)). Resultaría interesante investigar si esos periodos
+encierran los esfuerzos de una comunidad organizada.
+
+# Datos Overpass
+
+Como mencioné al principio del artículo, dos fuentes de datos fueron utilizadas para
+analizar las contribuciones a Mapping Ecuador. La segunda fuente fue Overpass, una API
+de solo--lectura que entrega extractos específicos de la base de datos OSM, solicitados
+a través de *queries* (consultas). Estas *queries* son construidas con el
+[Overpass Query Language](https://wiki.openstreetmap.org/wiki/Overpass_API/Overpass_QL),
+el cual es tan poderoso y lleno de funcionalidades, que una introducción a este lenguaje
+merecería su propio artículo. Por lo pronto, presento la *query* que usé: esta devuelve
+todos los elementos creados o modificados en Ecuador, entre el 17 de abril^[Overpass
+interpreta las horas en UTC así que, como en la *query* se especifica las 00:00 del 17
+de abril, esto corresponde en Ecuador a las 19:00 del 16 de abril; es decir, justo
+después del terremoto.] y el 9 de mayo de 2016:
+
+```
+[out:csv(::id,::user,::timestamp,::otype,::lat,::lon)];
+is_in(0,-80); area._[admin_level=2]; nwr(area._);
+nwr._(changed:"2016-04-17T00:00:00Z","2016-05-09T00:00:00Z");
+out meta;
+```
+
+El [sitio web de Overpass](http://www.overpass-api.de) ofrece un formulario donde uno
+puede insertar esta *query* y enviarla a la API, la cual devuelve^[La manera de "recibir"
+el archivo `interpreter` depende del navegador. Lo he intentado en Chrome, que lo descarga
+automáticamente, y en Safari, que lo abre en una pestaña. Considere esto porque es un
+archivo pesado.] un archivo `interpreter` con valores separados por tabulaciones. Cuando
+yo realicé este proceso, el archivo que recibí tuvo un peso de 167.54 MB y por esta razón
+no lo he compartido; el código que utilicé para leerlo es:
+
+```{r overpass-read, echo=TRUE, eval=FALSE}
+Overpass = read_tsv("interpreter", col_types = c("_cTnnn")) %>%
+   rename_with(str_remove, pattern = "@o?") %>%
+   filter(timestamp > as.Date("2016-04-17")) %>%
+   arrange(timestamp) %>%
+   mutate(type = case_when(type==1 ~ "Nodes", type==2 ~ "Ways", type==3 ~ "Relations"))
+```
+
+¿Por qué el archivo `interpreter` es tan pesado? Resulta que contiene 2.750 millones
+de elementos creados en el periodo de tres semanas que culminó el 8 de mayo, una cifra
+congruente con los datos en la primera tabla de este artículo. De esos elementos, 653
+son *relations* (relaciones), 385 mil son *ways* (vías) y el resto ---la gran mayoría,
+como era de esperar--- son *nodes* (nodos). Adicionalmente se identificaron 3729 usuarios
+diferentes; esta es nuestra estimación de la cifra de contribuidores a Mapping Ecuador.
+A continuación vamos a visualizar estos datos en el tiempo y en el espacio.
