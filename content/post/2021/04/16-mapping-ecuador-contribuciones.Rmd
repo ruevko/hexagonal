@@ -21,7 +21,7 @@ output:
     toc: true
 bibliography: ../../babel.bib
 
-summary: El 16 de abril de 2016 un terremoto azotó la costa ecuatoriana; pronto tuvo lugar un proyecto que mejoró la cartografía en las zonas afectadas. Cinco años después de la catástrofe, analizamos varios aspectos de Mapping Ecuador y su relación con las contribuciones a OpenStreetMap en el país.
+summary: El 16 de abril de 2016 un terremoto sacudió la costa ecuatoriana; en respuesta, un proyecto mejoró la cartografía en las zonas afectadas. Cinco años después de la catástrofe, analizamos varios aspectos de Mapping Ecuador y su relación con las contribuciones a OpenStreetMap en el país.
 ---
 
 `r library(tidyverse); knitr::opts_chunk$set(echo=1, fig.height=5)`
@@ -329,21 +329,206 @@ puede insertar esta *query* y enviarla a la API, la cual devuelve^[La manera de 
 el archivo `interpreter` depende del navegador. Lo he intentado en Chrome, que lo descarga
 automáticamente, y en Safari, que lo abre en una pestaña. Considere esto porque es un
 archivo pesado.] un archivo `interpreter` con valores separados por tabulaciones. Cuando
-yo realicé este proceso, el archivo que recibí tuvo un peso de 167.54 MB y por esta razón
+realicé este proceso, el archivo que recibí tuvo un peso de 167.54 MB y por esta razón
 no lo he compartido; el código que utilicé para leerlo es:
 
 ```{r overpass-read, echo=TRUE, eval=FALSE}
 Overpass = read_tsv("interpreter", col_types = c("_cTnnn")) %>%
    rename_with(str_remove, pattern = "@o?") %>%
-   filter(timestamp > as.Date("2016-04-17")) %>%
-   arrange(timestamp) %>%
+   filter(timestamp > as.Date("2016-04-17")) %>% arrange(timestamp) %>%
    mutate(type = case_when(type==1 ~ "Nodes", type==2 ~ "Ways", type==3 ~ "Relations"))
 ```
 
-¿Por qué el archivo `interpreter` es tan pesado? Resulta que contiene 2.750 millones
+¿Por qué el archivo `interpreter` es tan pesado? Resulta que contiene 2.751 millones
 de elementos creados en el periodo de tres semanas que culminó el 8 de mayo, una cifra
 congruente con los datos en la primera tabla de este artículo. De esos elementos, 653
 son *relations* (relaciones), 385 mil son *ways* (vías) y el resto ---la gran mayoría,
-como era de esperar--- son *nodes* (nodos). Adicionalmente se identificaron 3729 usuarios
-diferentes; esta es nuestra estimación de la cifra de contribuidores a Mapping Ecuador.
-A continuación vamos a visualizar estos datos en el tiempo y en el espacio.
+como era de esperar--- son *nodes* (nodos). Adicionalmente se identificaron 3731 usuarios diferentes,
+pero todavía no consideraremos esta cifra como nuestra estimación del total de contribuidores;
+más adelante se verá por qué. Ahora vamos a visualizar los datos en el tiempo y en el espacio.
+
+## Contribuciones a lo largo del tiempo
+
+Como sabía que el archivo `interpreter` no estaría disponible junto con este artículo,
+utilicé una estrategia diferente para compartir los datos: leer este archivo, agregar
+los datos según el aspecto que está siendo analizado, y escribir un nuevo archivo (mucho
+más liviano) con los resultados. Así, para analizar los elementos creados a lo largo del
+tiempo, se creó intervalos de doce horas con ayuda de `lubridate::ceiling_date()` y se
+contó los elementos por tipo en cada interavalo:
+
+```{r overpass-time, echo=1:5, eval=FALSE}
+filter(Overpass, timestamp < as.Date("2016-05-09")) %>%
+   mutate(across(timestamp, lubridate::ceiling_date, "12 hours")) %>%
+   count(timestamp, type, name = "value") %>%
+   pivot_wider(timestamp, type, values_fill = 0) %>%
+   write_csv("ecuador_overpass_2016_by_time.csv")
+
+# Overpass < 2016-04-17
+# 
+# * Users:     125
+# * Relations:  34
+# * Ways:     2596
+# 
+# Overpass > 2016-04-17
+# 
+# * Users:    3731
+# * Relations: 653
+# * Ways:   385190
+# * Nodes: 2364813
+# * Total: 2750656
+# 
+# Overpass > 2016-05-09
+# 
+# * Users:    1144
+# * Relations: 368
+# * Ways:    24843
+# * Nodes:  105256
+# * Total:  130509
+```
+
+También se filtró los datos hasta antes del 9 de mayo. Parece un paso redundante (precisamente
+se solicitó datos hasta esa fecha), pero resulta que la variable `timestamp` guarda la fecha
+y hora de la última vez que el elemento fue modificado. Entonces, aquellos elementos creados
+durante Mapping Ecuador que hayan sido modificados en cualquier momento después del 9 de mayo,
+aparecerán aquí con la fecha de modificación.
+
+Este es el caso de alrededor de 131 mil elementos, de los cuales 368 son *relations*
+y 25 mil son *ways*. Esto es una pequeña fracción del total de 2.751 millones de elementos;
+implica que el 95.26 % de las contribuciones en Mapping Ecuador no han sido modificadas.
+Sin embargo, este porcentaje cambia drásticamente si diferenciamos por tipo de elemento:
+solo el 43.64 % de *relations* no han recibido modificaciones. Tiene sentido, pues estos
+son los elementos OSM más complejos y menos estáticos.
+
+El archivo [`ecuador_overpass_2016_by_time.csv`](https://github.com/ruevko/hexagonal/blob/master/content/post/2021/04/ecuador_overpass_2016_by_time.csv)
+se puede leer fácilmente con `readr::read_csv()`; a continuación se encuentra el gráfico con sus observaciones.
+
+```{r plot-time, fig.height=3.5, fig.cap="Conteo de elementos contribuidos en Mapping Ecuador, en intervalos de doce horas"}
+Overpass_by_time = read_csv("ecuador_overpass_2016_by_time.csv")
+
+Plot_by_time = function(y_aes, y_col){
+   y_aes = enquo(y_aes)
+   ggplot(Overpass_by_time) +
+      geom_line(aes(timestamp, !!y_aes), color = y_col, size = .8) +
+      geom_vline(xintercept = as.POSIXct("2016-04-16 12:00"), alpha = .2, size = 3) +
+      scale_x_datetime(NULL, date_breaks = "4 days", date_labels = "%d/%b. %I%p") +
+      coord_cartesian(xlim = as.POSIXct(c("2016-04-15 12:00", NA)))
+}
+
+arrangeGrob(grobs = list(
+   Plot_by_time(Nodes, Pal[4]),
+   Plot_by_time(Ways, Pal[3]),
+   Plot_by_time(Relations, Pal[5])
+)) %>% grid.arrange()
+```
+
+El gráfico revela como hasta el 23 de abril, una semana después del terremoto, aparecieron
+la mayor cantidad de contribuciones; también revela el ciclo diario de actividad, que es
+mayor entre las 12 PM y las 12 AM. El número de *relations* no disminuye progresivamente
+pero de todas maneras es escaso. En cambio, es interesante como *ways* y *nodes* presentan
+una fuerte correlación; por supuesto esto sucede porque la manera de trazar *ways* ---que
+permiten representar toda clase de objetos, no solo carreteras--- es ubicando *nodes*.
+
+## Contribuciones por usuario
+
+Para analizar los datos con respecto a los usuarios, nuevamente debemos filtrar hasta el 9
+de mayo; toda modificación hecha después de esa fecha tendrá, además del nuevo `timestamp`,
+el nombre del usuario que modificó. Estos nombres no necesariamente están relacionados con
+Mapping Ecuador y por eso los descartamos, reduciendo a 2762 los usuarios; esta es nuestra
+estimación del número de contribuidores al proyecto. Una observación: 175 de los nombres
+descartados también figuran entre las contribuciones antes del 9 de mayo; significa que
+el 6.34 % de usuarios en Mapping Ecuador han vuelto a modificar elementos del proyecto,
+después de que el mismo concluyó. No obstante, no es que este sea el porcentaje que
+sigue activo, porque no consideramos toda la actividad en el país.
+
+En el siguiente paso se cuenta los elementos, por tipo y por usuario, y se escribe los resultados en el archivo
+[`ecuador_overpass_2016_by_user.csv`](https://github.com/ruevko/hexagonal/blob/master/content/post/2021/04/ecuador_overpass_2016_by_user.csv):
+
+```{r overpass-user, echo=TRUE, eval=FALSE}
+filter(Overpass, timestamp < as.Date("2016-05-09")) %>%
+   count(user, type, name = "value", sort = TRUE) %>%
+   pivot_wider(user, type, values_fill = 0) %>%
+   write_csv("ecuador_overpass_2016_by_user.csv")
+```
+
+Manipulando estas observaciones es posible descubrir que, del total de 2762 usuarios,
+solamente 47 contribuyeron diez mil elementos o más cada uno; son pocos, pero sumando
+sus aportes alcanzan la cifra de 1.120 millones, lo que es el 42.76 % de todo Mapping
+Ecuador. Es más, los doce usuarios más activos ---cada uno contribuyó más de 33 mil
+elementos--- son responsables de 529 mil elementos, o el 20.18 % del total. En otras
+palabras: doce personas crearon o modificaron más de medio millón de elementos, una
+quinta parte del proyecto. Este hecho es típico en proyectos colaborativos abiertos:
+unos cuantos usuarios realizan gran parte del trabajo, y la mayoría aportan un poco.
+Los aportes de la mayoría son, sin embargo, lo que logra que el proyecto sea exitoso.
+
+En este punto decidí visualizar las contribuciones de los doce usuarios más activos, experimentando
+con *waffleplots*: una clase de gráficos que presentan el conteo de una variable ---en este caso,
+miles de *nodes* y *ways* creados--- de una manera intuitiva. Utilicé el paquete `waffle` con la
+precaución de instalarlo vía `remotes::install_github("hrbrmstr/waffle")` pues es en la última
+versión donde se encuentra`geom_waffle()`, la geometría que permite graficar *waffleplots*.
+
+```{r plot-user, fig.height=3.5, fig.cap="*Waffleplots* de elementos contribuidos por los doce usuarios mas activos en Mapping Ecuador"}
+Overpass_by_user = read_csv("ecuador_overpass_2016_by_user.csv") %>%
+   filter(Nodes + Ways + Relations > 33e3) %>%
+   mutate(across(Ways:Nodes, ~ round(. / 1e3) )) %>%
+   pivot_longer(Ways:Nodes)
+
+ggplot(Overpass_by_user, aes(fill = name, values = value)) +
+   waffle::geom_waffle(color = "white", n_rows = 5, size = 1, show.legend = FALSE) +
+   labs(caption = "1 cuadrado ≈ 1000 Nodes (naranja) o Ways (verde)") +
+   scale_fill_manual(values = c("#e37e00", "#55752f")) +
+   theme_void() + coord_fixed() + facet_wrap( ~ user, ncol = 3)
+
+# # How to make a waffle()
+# count(Overpass, user, sort = TRUE) %>% filter(n > 33e3) %>% mutate(n = round(n / 1e3)) %>%
+#    waffle(14, FALSE, "Responsables del 20% de elementos creados / modificados\n1 cuadrado ~ 1000 elementos",
+#           "Top 12 Contributors #MappingEcuador", colors = ggthemes::stata_pal()(12), legend_pos = "bottom")
+```
+
+## Contribuciones en el espacio
+
+Finalmente, para analizar el aspecto espacial no es necesario retirar las modificaciones
+posteriores al 9 de mayo porque es improbable que haya cambiado la ubicación de los elementos.
+En cambio, se deben retirar *ways* y *relations*, porque solamente los *nodes* poseen coordenadas
+definidas a través de latitud y longitud. Los otros elementos se componen de varios *nodes* así
+que no poseen una sola coordenada; más bien poseen un *bounding box* que puede ser calculado
+utilizando funcionalidad avanzada del Overpass Query Language, pero esto no fue solicitado.
+De cualquier forma, los *nodes* son el 85.97 % de los elementos, así que podremos graficar
+la distribución espacial sin problemas.
+
+```{r overpass-lat-lon, echo=TRUE, eval=FALSE}
+filter(Overpass, type == "Nodes") %>%
+   mutate(across(lat:lon, round, digits = 1)) %>%
+   count(lat, lon, name = "Nodes") %>%
+   write_csv("ecuador_overpass_2016_by_lat_lon.csv")
+```
+
+En [`ecuador_overpass_2016_by_lat_lon.csv`](https://github.com/ruevko/hexagonal/blob/master/content/post/2021/04/ecuador_overpass_2016_by_lat_lon.csv)
+tenemos el conteo de nodos por celda de 0.1º de latitud y 0.1º de longitud. Estos datos
+pueden transformarse en un objeto espacial usando `sf::st_as_sf()` con el código
+EPSG 4326 (i.e. coordenadas sin proyectar en el dátum WGS 84). Así es como generé
+este *heatmap* (mapa de calor) de *nodes* contribuidos en Mapping Ecuador; podemos
+observar el resultado de este enorme proyecto en las celdas con más de diez
+mil *nodes*, extendiéndose desde Manta hasta Esmeraldas.
+
+```{r plot-lat-lon, fig.width=5, fig.cap="*Heatmap* de nodos contribuidos durante Mapping Ecuador"}
+Overpass_by_lat_lon = read_csv("ecuador_overpass_2016_by_lat_lon.csv") %>%
+   mutate(Nodes = cut(Nodes, c(1, 100, 1e3, 1e4, 24e4), include.lowest = TRUE)) %>%
+   filter(lon >= -81) %>% sf::st_as_sf(coords = c("lon", "lat"), crs = "EPSG:4326")
+
+Ecuador_boundary = "../../2020/07/boundaryl.shp" %>%
+   sf::st_read(crs = "EPSG:32717", quiet = TRUE) %>%
+   sf::st_transform("EPSG:4326")
+
+ggplot(Overpass_by_lat_lon) +
+   geom_sf(data = Ecuador_boundary, alpha = .3) +
+   geom_sf(aes(color = Nodes), shape = 15) +
+   scale_color_manual(values = c("#f2d7b6", "#fcb156", "#e37e00", "#b06100")) +
+   theme_void() + theme(legend.position = "top")
+
+# # How to do it via geom_bin2d()
+# ggplot(filter(Overpass, type == "Nodes", lon > -81), aes(lon, lat)) +
+#    geom_sf(data = Ecuador_boundary, color = "white", size = 1, inherit.aes = FALSE) +
+#    geom_bin2d(color = "grey92", size = .5, binwidth = .1) +
+#    scale_fill_gradient("Nodes", trans = "log10", high = "#e37e00", low = "grey") +
+#    theme_grey() + theme(axis.title = element_blank())
+```
