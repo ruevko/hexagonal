@@ -3,11 +3,11 @@ title: Mapping Ecuador y las contribuciones a OSM, antes y después del terremot
 date: '2021-04-16'
 slug: 16-mapping-ecuador-contribuciones
 categories:
-#  - DataJournalism
+  - DataJournalism
 tags:
-#  - ecuador
-#  - nodos osm
-#  - regresión
+  - ecuador
+  - nodos osm
+  - regresión
 source: 16-mapping-ecuador-contribuciones.Rmd
 keywords:
   - ecuador
@@ -26,11 +26,11 @@ summary: El 16 de abril de 2016 un terremoto sacudió la costa ecuatoriana; en r
 
 `r library(tidyverse); knitr::opts_chunk$set(echo=1, fig.height=5)`
 
-El 16 de abril de 2016 a las 18:58 UTC-5 un terremoto de magnitud 7.8 M~w~ azotó
+El 16 de abril de 2016 a las 18:58UTC-5 un terremoto de magnitud 7.8 M~w~ azotó
 la costa ecuatoriana. Su epicentro, en el cantón Pedernales, provincia de Manabí,
 ocurrió en una zona sismológicamente activa debido al fenómeno de subducción;
 [según la USGS](http://earthquake.usgs.gov/earthquakes/eventpage/us20005j32), siete
-sismos de magnitud superior a 7 Mw han ocurrido en esta zona desde el inicio del siglo
+sismos de magnitud superior a 7 M~w~ han ocurrido en esta zona desde el inicio del siglo
 XX. El de 2016 fue una catástrofe que provocó mas de 600 fallecidos, miles de heridos y
 varias localidades manabitas afectadas, como Pedernales (con alrededor del 70 % de su
 infraestructura destruida), Manta y Portoviejo. También hubo afectaciones en la vecina
