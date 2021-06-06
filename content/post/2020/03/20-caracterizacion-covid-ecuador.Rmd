@@ -27,14 +27,14 @@ summary: Utilizando paquetes desarrollados por el R Epidemics Consortium se esti
 
 `r knitr::opts_chunk$set(echo=FALSE)`
 
-**Actualizado: 23 de abril, 1 p. m.**
-
 En atención a la emergencia en curso causada por el SARS-CoV-2 se presenta una
 caracterización de la epidemia en Ecuador. Se aplicó una metodología sugerida por el R
 Epidemics Consortium [RECON](https://www.repidemicsconsortium.org/) que permite estimar
 tempranamente una variable clave como lo es el ritmo reproductivo; dicha metodología
 requiere conocer ciertas características del virus, y poseer datos de la incidencia
 diaria. Adicionalmente se ha utilizado `library(tidyverse)`.
+
+`r blogdown::shortcode("alert", "info", .content = "Última actualización: 23 de abril, 1 p.m.")`
 
 # Definiciones
 
