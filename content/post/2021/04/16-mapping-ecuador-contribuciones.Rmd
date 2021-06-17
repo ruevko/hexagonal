@@ -24,17 +24,24 @@ coverImage: https://res.cloudinary.com/dodnzqhiz/image/upload/v1623551042/2021po
 summary: El 16 de abril de 2016 un terremoto sacudió la costa ecuatoriana; en respuesta, un proyecto mejoró la cartografía en las zonas afectadas. Cinco años después de la catástrofe, analizamos varios aspectos de Mapping Ecuador y su relación con las contribuciones a OpenStreetMap en el país.
 ---
 
-`r library(tidyverse); knitr::opts_chunk$set(echo=1, fig.height=5)`
-
 El 16 de abril de 2016 a las 18:58UTC-5 un terremoto de magnitud 7.8 M~w~ azotó
 la costa ecuatoriana. Su epicentro, en el cantón Pedernales, provincia de Manabí,
 ocurrió en una zona sismológicamente activa debido al fenómeno de subducción;
 [según la USGS](http://earthquake.usgs.gov/earthquakes/eventpage/us20005j32), siete
 sismos de magnitud superior a 7 M~w~ han ocurrido en esta zona desde el inicio del siglo
-XX. El de 2016 fue una catástrofe que provocó mas de 600 fallecidos, miles de heridos y
+XX. El de 2016 fue una catástrofe que provocó más de 600 fallecidos, miles de heridos y
 varias localidades manabitas afectadas, como Pedernales (con alrededor del 70 % de su
 infraestructura destruida), Manta y Portoviejo. También hubo afectaciones en la vecina
 provincia de Esmeraldas, e incluso en otras más alejadas como Guayas y Pichincha.
+
+```{r setup, echo=FALSE}
+library(tidyverse); knitr::opts_chunk$set(echo=1, fig.height=5)
+
+blogdown::shortcode("alert", "success", .content=paste0(
+   "La imagen de portada fue adaptada a partir de una fotografía de la Agencia de ",
+   "Noticias ANDES, publicada bajo licencia CC BY--SA 2.0, vía [Wikimedia Commons]",
+   "(https://commons.wikimedia.org/wiki/File:VIA_AL_CANT%C3%93N_JAMA_%2826257181260%29.jpg)"))
+```
 
 En los días siguientes varios proyectos ---de origen nacional e internacional--- contribuyeron
 con rescatistas, médicos, víveres, albergue y conocimiento técnico, entre otras cosas.
@@ -532,3 +539,35 @@ ggplot(Overpass_by_lat_lon) +
 #    scale_fill_gradient("Nodes", trans = "log10", high = "#e37e00", low = "grey") +
 #    theme_grey() + theme(axis.title = element_blank())
 ```
+
+# Comentarios
+
+@good07, al acuñar el término Volunteered Geographic Information (VGI) para referirse a
+proyectos como OpenStreetMap, identificó que la gestión de emergencias sería en el futuro
+uno de los escenarios en donde las ventajas de la VGI resultarían más beneficiosas. El
+terremoto 16A y otros desastres atendidos por el HOT dan testimonio de esto. Según Goodchild,
+dichas ventajas ---e.g. que la información se genera rápidamente--- se derivan de datos
+levantados *in situ* por personas locales; pero en la práctica, esto no siempre ocurre.
+Muchos objetos ingresan al mapa al ser dibujados por un usuario remoto, a partir de
+imágenes satelitales. En Mapping Ecuador se utilizó esta estrategia: el sitio web de
+LLACTALAB registra eventos de mapeo en España y Estados Unidos.
+
+Aunque la información extraíble de una imagen satelital es limitada, esta clase de contribuciones
+no deben ser desalentadas, especialmente en una situación de emergencia. Sin embargo, es
+verdad que la información levantada localmente difiere de la remota no solo en calidad, sino
+en los objetos que son creados. @quin16 observó que varios lugares en Sudamérica ---uno de
+los continentes con menos usuarios OSM---  han sido mapeados remotamente, pero en los lugares
+donde la contribución es local abundan los objetos relacionados con la vida cotidiana, como
+escuelas, hospitales y tiendas. Estos objetos hacen que el mapa sea más valioso para sus
+usuarios y por eso son una parte crucial del mismo; a pesar de este hecho, en este artículo
+no analicé la cantidad de contribución local.
+
+Mi propósito fue contabilizar y graficar varios aspectos de Mapping Ecuador, no
+identificar el origen de las contribuciones. Eso sería virtualmente imposible, pues muy
+pocos usuarios ---especialmente entre aquellos que no son europeos--- han creado un perfil
+con información personal [@quin16]. OpenStreetMap es un proyecto que se beneficia enormemente
+del altruismo; no es de extrañar que abunde el anonimato. Por esta razón afirmé que es irrelevante
+tratar de averiguar quiénes siguen activos y quiénes no: porque estas personas actuaron con
+solidaridad, porque más grande es la obra que los nombres. Como conclusión, ¿afirmaremos que
+Mapping Ecuador aumentó la actividad en el país? Para ser que sí, pero lo importante es que
+fue una iniciativa valiosa y oportuna.
