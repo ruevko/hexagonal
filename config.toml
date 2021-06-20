@@ -16,7 +16,7 @@ paginate = 6
 
 [author]
   name = "Roger Rafael Castro Zambrano"
-  picture = "/hexagonal/logo.png"
+  picture = "logo.png"
   location = "Ecuador"
   job = "Geógrafo"
 
@@ -89,7 +89,7 @@ paginate = 6
 
 [params]
 
-  favicon = "/favicon.png"
+  favicon = "favicon.png"
   dateFormat = "2 de January de 2006"
   keywords = ["análisis", "cartografía", "datos", "mapas"]
   description = "El blog de Rafael Castro, orientado a Cartografía y Análisis de Datos"
