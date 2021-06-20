@@ -39,7 +39,7 @@
       <link>https://ruevko.github.io/hexagonal/post/2020/11/11-ejercicio-benchmark-generador-poligonos/</link>
       <pubDate>Wed, 11 Nov 2020</pubDate>
       <guid>https://ruevko.github.io/hexagonal/post/2020/11/11-ejercicio-benchmark-generador-poligonos/</guid>
-      <description>Dos opciones para calcular una misma cosa. ¿Cuál utilizar? Un &lt;em&gt;benchmark&lt;/em&gt; ayudaría a responder esta pregunta, pero se necesitarán datos para ejecutarlo.</description>
+      <description>Dos opciones para calcular una misma cosa. ¿Cuál utilizar? Un &lt;em&gt;benchmark&lt;/em&gt; ayudaría a responder esta pregunta, pero para ejecutarlo necesitamos una muestra de datos.</description>
     </item>
     
     <item>
@@ -55,7 +55,7 @@
       <link>https://ruevko.github.io/hexagonal/post/2020/03/20-caracterizacion-covid-ecuador/</link>
       <pubDate>Fri, 20 Mar 2020</pubDate>
       <guid>https://ruevko.github.io/hexagonal/post/2020/03/20-caracterizacion-covid-ecuador/</guid>
-      <description>Utilizando paquetes desarrollados por el R Epidemics Consortium se estima el ritmo reproductivo básico, así como tres escenarios de crecimiento para los casos confirmados.</description>
+      <description>Utilizando paquetes desarrollados por el R Epidemics Consortium se estima el ritmo reproductivo básico, y se proyecta tres escenarios de crecimiento para el número de casos confirmados.</description>
     </item>
     
     <item>
