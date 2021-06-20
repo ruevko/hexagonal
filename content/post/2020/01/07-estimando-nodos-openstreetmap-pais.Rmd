@@ -19,7 +19,6 @@ editor_options:
 output:
   blogdown::html_page:
     highlight: kate
-link-citations: true
 bibliography: ../../babel.bib
 thumbnailImage: https://res.cloudinary.com/dodnzqhiz/image/upload/v1613341804/2020post/rb72maukaadcmwkgbwke.png
 summary: Se presenta una metodología basada en *web scraping* para generar un mapa coroplético del número de nodos acumulados en cada país.
@@ -248,5 +247,3 @@ proyecto. Por lo pronto, averigüemos cuáles son los diez países con más nodo
 ```{r final}
 slice_max(countries_nodes, nodes, n = 10)
 ```
-
-# Referencias

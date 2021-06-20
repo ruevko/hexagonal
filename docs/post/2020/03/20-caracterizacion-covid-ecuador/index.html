@@ -7,12 +7,12 @@
 <meta name="generator" content="Hugo 0.81.0 with theme Tranquilpeak 0.4.8-BETA">
 <meta name="author" content="Roger Rafael Castro Zambrano">
 <meta name="keywords" content="coronavirus, ecuador, regresión, análisis, cartografía, datos, mapas">
-<meta name="description" content="Utilizando paquetes desarrollados por el R Epidemics Consortium se estima el ritmo reproductivo básico, así como tres escenarios de crecimiento para los casos confirmados.">
+<meta name="description" content="Utilizando paquetes desarrollados por el R Epidemics Consortium se estima el ritmo reproductivo básico, y se proyecta tres escenarios de crecimiento para el número de casos confirmados.">
 
 
 <meta property="og:type" content="article">
 <meta property="og:title" content="Caracterización del COVID-19 en Ecuador">
-<meta property="og:description" content="Utilizando paquetes desarrollados por el R Epidemics Consortium se estima el ritmo reproductivo básico, así como tres escenarios de crecimiento para los casos confirmados.">
+<meta property="og:description" content="Utilizando paquetes desarrollados por el R Epidemics Consortium se estima el ritmo reproductivo básico, y se proyecta tres escenarios de crecimiento para el número de casos confirmados.">
 <meta property="og:url" content="https://ruevko.github.io/hexagonal/post/2020/03/20-caracterizacion-covid-ecuador/">
 <meta property="og:site_name" content="La Galería Hexagonal">
 <meta property="og:locale" content="es">
@@ -304,7 +304,7 @@ code span.vs { color: #bf0303; } /* VerbatimString */
 code span.wa { color: #bf0303; } /* Warning */
 </style>
 
-<div id="TOC"><h1 style="margin: 8px 0px;">Contenido</h1>
+<div id="TOC"><span class="post-meta">Contenido</span>
 <ul>
 <li><a href="#definiciones">Definiciones</a></li>
 <li><a href="#obtención-de-datos">Obtención de Datos</a></li>
@@ -318,7 +318,6 @@ code span.wa { color: #bf0303; } /* Warning */
 <li><a href="#tercer-escenario-r0-al-50">Tercer escenario: R<sub>0</sub> al 50 %</a></li>
 </ul></li>
 <li><a href="#conclusiones">Conclusiones</a></li>
-<li><a href="#referencias">Referencias</a></li>
 </ul>
 </div>
 
@@ -328,8 +327,8 @@ Epidemics Consortium <a href="https://www.repidemicsconsortium.org/">RECON</a> q
 tempranamente una variable clave como lo es el ritmo reproductivo; dicha metodología
 requiere conocer ciertas características del virus, y poseer datos de la incidencia
 diaria. Adicionalmente se ha utilizado <code>library(tidyverse)</code>.</p>
-<div class="alert info ">
-  <p>Última actualización: 23 de abril, 1 p.m.</p>
+<div class="alert warning ">
+  <p>Este artículo fue actualizado por última vez el 23 de abril, 1 p.m.</p>
 </div>
 <div id="definiciones" class="section level1">
 <h1>Definiciones</h1>
@@ -1431,10 +1430,7 @@ salud. También podríamos discernir si el crecimiento dejará de ser exponencia
 cuándo los factores de crecimiento (gráfico <a href="#fig:dat-plot">3</a>) son menores que uno. Por
 último, aunque no se lo ha hecho aquí, mencionar que es posible generar un modelo
 compartimental SIR, para analizar cuándo ocurrirá el pico de individuos infectados.</p>
-</div>
-<div id="referencias" class="section level1 unnumbered">
-<h1>Referencias</h1>
-<div id="refs" class="references">
+<span class="post-meta">Referencias</span><div id="refs" class="references">
 <div id="ref-covic">
 <p>Du, Zhanwei, Lin Wang, Xiaoke Xu, Ye Wu, Benjamin Cowling, and Lauren Meyers. 2020. “Serial Interval of Covid-19 Among Publicly Reported Confirmed Cases.” <em>Emerging Infectious Diseases</em>. <a href="https://doi.org/10.3201/eid2606.200357">https://doi.org/10.3201/eid2606.200357</a>.</p>
 </div>
