@@ -19,7 +19,6 @@ editor_options:
 output:
   blogdown::html_page:
     highlight: kate
-link-citations: true
 bibliography: ../../babel.bib
 thumbnailImage: https://res.cloudinary.com/dodnzqhiz/image/upload/v1613341882/2020post/lnr408agxidsqml6gmpu.png
 summary: Se ha ajustado un modelo lineal para cada país, demostrando el crecimiento de OpenStreetMap en función de los nodos creados a diario.
@@ -283,5 +282,3 @@ my_plot(World) + geom_sf(aes(fill = rsquared), color = NA, inherit.aes = FALSE) 
    scale_fill_viridis_d(na.value = "grey", option = "B", begin = .25) +
    theme(legend.key.width = unit(.025, "npc"), legend.key.height = unit(.045, "npc"))
 ```
-
-# Referencias

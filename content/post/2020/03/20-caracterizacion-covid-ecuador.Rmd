@@ -19,10 +19,9 @@ output:
   blogdown::html_page:
     highlight: kate
     toc: true
-link-citations: true
 bibliography: ../../babel.bib
 coverImage: https://res.cloudinary.com/dodnzqhiz/image/upload/v1595302810/2020post/ecuador-covid19-april23_pnwcqe.jpg
-summary: Utilizando paquetes desarrollados por el R Epidemics Consortium se estima el ritmo reproductivo básico, así como tres escenarios de crecimiento para los casos confirmados.
+summary: Utilizando paquetes desarrollados por el R Epidemics Consortium se estima el ritmo reproductivo básico, y se proyecta tres escenarios de crecimiento para el número de casos confirmados.
 ---
 
 `r knitr::opts_chunk$set(echo=FALSE)`
@@ -34,7 +33,7 @@ tempranamente una variable clave como lo es el ritmo reproductivo; dicha metodol
 requiere conocer ciertas características del virus, y poseer datos de la incidencia
 diaria. Adicionalmente se ha utilizado `library(tidyverse)`.
 
-`r blogdown::shortcode("alert", "info", .content = "Última actualización: 23 de abril, 1 p.m.")`
+`r blogdown::shortcode("alert", "warning", .content = "Este artículo fue actualizado por última vez el 23 de abril, 1 p.m.")`
 
 # Definiciones
 
@@ -474,5 +473,3 @@ salud. También podríamos discernir si el crecimiento dejará de ser exponencia
 cuándo los factores de crecimiento (gráfico \@ref(fig:dat-plot)) son menores que uno. Por
 último, aunque no se lo ha hecho aquí, mencionar que es posible generar un modelo
 compartimental SIR, para analizar cuándo ocurrirá el pico de individuos infectados.
-
-# Referencias

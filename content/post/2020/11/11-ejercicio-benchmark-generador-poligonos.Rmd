@@ -3,8 +3,6 @@ title: Un ejercicio de benchmark (y un generador de polígonos aleatorios)
 author: Roger Rafael Castro Zambrano
 date: '2020-11-11'
 slug: 11-ejercicio-benchmark-generador-poligonos
-#categories:
-#  - Matemáticas
 tags:
   - benchmark
   - calcular áreas
@@ -19,7 +17,7 @@ output:
     highlight: kate
     toc: true
 thumbnailImage: https://ruevko.github.io/hexagonal/post/2020/11/11-ejercicio-benchmark-generador-poligonos_files/figure-html/concav-1.svg
-summary: Dos opciones para calcular una misma cosa. ¿Cuál utilizar? Un *benchmark* ayudaría a responder esta pregunta, pero se necesitarán datos para ejecutarlo.
+summary: Dos opciones para calcular una misma cosa. ¿Cuál utilizar? Un *benchmark* ayudaría a responder esta pregunta, pero para ejecutarlo necesitamos una muestra de datos.
 ---
 
 `r knitr::opts_chunk$set(fig.asp=1/3, dev="svg")`

@@ -16,7 +16,6 @@ output:
   blogdown::html_page:
     highlight: kate
 math: true
-link-citations: true
 bibliography: ../../babel.bib
 thumbnailImage: https://res.cloudinary.com/dodnzqhiz/image/upload/v1609376325/2020post/ikkf4h3a2c1p8xwlbvyu.gif
 summary: Presenta cómo calcular el área de un polígono sobre un plano tridimensional. Incluye un ejemplo utilizando datos topográficos.
@@ -315,5 +314,3 @@ plot_ly(z = volcano_area, type = "surface") %>%
    colorbar(tick0 = 0, dtick = 25) %>%
    my_layout(c(61, 87, 101 / 5) / 52, tick = c(20, 20, 25))
 ```
-
-# Referencias

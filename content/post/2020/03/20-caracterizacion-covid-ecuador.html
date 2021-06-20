@@ -19,10 +19,9 @@ output:
   blogdown::html_page:
     highlight: kate
     toc: true
-link-citations: true
 bibliography: ../../babel.bib
 coverImage: https://res.cloudinary.com/dodnzqhiz/image/upload/v1595302810/2020post/ecuador-covid19-april23_pnwcqe.jpg
-summary: Utilizando paquetes desarrollados por el R Epidemics Consortium se estima el ritmo reproductivo básico, así como tres escenarios de crecimiento para los casos confirmados.
+summary: Utilizando paquetes desarrollados por el R Epidemics Consortium se estima el ritmo reproductivo básico, y se proyecta tres escenarios de crecimiento para el número de casos confirmados.
 ---
 
 <script src="/rmarkdown-libs/accessible-code-block/empty-anchor.js"></script>
@@ -32,6 +31,7 @@ summary: Utilizando paquetes desarrollados por el R Epidemics Consortium se esti
 code.sourceCode > span { display: inline-block; line-height: 1.25; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
 code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
 code.sourceCode { white-space: pre; position: relative; }
 div.sourceCode { margin: 1em 0; }
 pre.sourceCode { margin: 0; }
@@ -96,7 +96,7 @@ code span.vs { color: #bf0303; } /* VerbatimString */
 code span.wa { color: #bf0303; } /* Warning */
 </style>
 
-<div id="TOC"><h1 style="margin: 8px 0px;">Contenido</h1>
+<div id="TOC">
 <ul>
 <li><a href="#definiciones">Definiciones</a></li>
 <li><a href="#obtención-de-datos">Obtención de Datos</a></li>
@@ -110,7 +110,6 @@ code span.wa { color: #bf0303; } /* Warning */
 <li><a href="#tercer-escenario-r0-al-50">Tercer escenario: R<sub>0</sub> al 50 %</a></li>
 </ul></li>
 <li><a href="#conclusiones">Conclusiones</a></li>
-<li><a href="#referencias">Referencias</a></li>
 </ul>
 </div>
 
@@ -120,8 +119,8 @@ Epidemics Consortium <a href="https://www.repidemicsconsortium.org/">RECON</a> q
 tempranamente una variable clave como lo es el ritmo reproductivo; dicha metodología
 requiere conocer ciertas características del virus, y poseer datos de la incidencia
 diaria. Adicionalmente se ha utilizado <code>library(tidyverse)</code>.</p>
-{{% alert "info" %}}
-Última actualización: 23 de abril, 1 p.m.
+{{% alert "warning" %}}
+Este artículo fue actualizado por última vez el 23 de abril, 1 p.m.
 {{% /alert %}}
 <div id="definiciones" class="section level1">
 <h1>Definiciones</h1>
@@ -1223,9 +1222,6 @@ salud. También podríamos discernir si el crecimiento dejará de ser exponencia
 cuándo los factores de crecimiento (gráfico <a href="#fig:dat-plot">3</a>) son menores que uno. Por
 último, aunque no se lo ha hecho aquí, mencionar que es posible generar un modelo
 compartimental SIR, para analizar cuándo ocurrirá el pico de individuos infectados.</p>
-</div>
-<div id="referencias" class="section level1 unnumbered">
-<h1>Referencias</h1>
 <div id="refs" class="references">
 <div id="ref-covic">
 <p>Du, Zhanwei, Lin Wang, Xiaoke Xu, Ye Wu, Benjamin Cowling, and Lauren Meyers. 2020. “Serial Interval of Covid-19 Among Publicly Reported Confirmed Cases.” <em>Emerging Infectious Diseases</em>. <a href="https://doi.org/10.3201/eid2606.200357">https://doi.org/10.3201/eid2606.200357</a>.</p>

@@ -3,8 +3,6 @@ title: Un ejercicio de benchmark (y un generador de polígonos aleatorios)
 author: Roger Rafael Castro Zambrano
 date: '2020-11-11'
 slug: 11-ejercicio-benchmark-generador-poligonos
-#categories:
-#  - Matemáticas
 tags:
   - benchmark
   - calcular áreas
@@ -19,7 +17,7 @@ output:
     highlight: kate
     toc: true
 thumbnailImage: https://ruevko.github.io/hexagonal/post/2020/11/11-ejercicio-benchmark-generador-poligonos_files/figure-html/concav-1.svg
-summary: Dos opciones para calcular una misma cosa. ¿Cuál utilizar? Un *benchmark* ayudaría a responder esta pregunta, pero se necesitarán datos para ejecutarlo.
+summary: Dos opciones para calcular una misma cosa. ¿Cuál utilizar? Un *benchmark* ayudaría a responder esta pregunta, pero para ejecutarlo necesitamos una muestra de datos.
 ---
 
 <script src="/rmarkdown-libs/accessible-code-block/empty-anchor.js"></script>
@@ -27,6 +25,7 @@ summary: Dos opciones para calcular una misma cosa. ¿Cuál utilizar? Un *benchm
 code.sourceCode > span { display: inline-block; line-height: 1.25; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
 code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
 code.sourceCode { white-space: pre; position: relative; }
 div.sourceCode { margin: 1em 0; }
 pre.sourceCode { margin: 0; }
@@ -91,7 +90,7 @@ code span.vs { color: #bf0303; } /* VerbatimString */
 code span.wa { color: #bf0303; } /* Warning */
 </style>
 
-<div id="TOC"><h1 style="margin: 8px 0px;">Contenido</h1>
+<div id="TOC">
 <ul>
 <li><a href="#una-lección-de-geometría">Una lección de geometría</a></li>
 <li><a href="#un-generador-de-polígonos">Un generador de polígonos</a><ul>
