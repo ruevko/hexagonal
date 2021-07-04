@@ -1,5 +1,5 @@
 ---
-title: Mapping Ecuador y las contribuciones a OSM, antes y después del terremoto 16A
+title: 'Mapping Ecuador y las contribuciones a OSM, antes y después del terremoto 16A'
 date: '2021-04-16'
 slug: 16-mapping-ecuador-contribuciones
 categories:
@@ -19,6 +19,7 @@ output:
   blogdown::html_page:
     highlight: kate
     toc: true
+    pandoc_args: ["--metadata", "lang=en-GB"]
 bibliography: ../../babel.bib
 coverImage: https://res.cloudinary.com/dodnzqhiz/image/upload/v1623551042/2021post/vjjmombxouild4vd5on5.jpg
 summary: El 16 de abril de 2016 un terremoto sacudió la costa ecuatoriana; en respuesta, un proyecto mejoró la cartografía en las zonas afectadas. Cinco años después de la catástrofe, analizamos varios aspectos de Mapping Ecuador y su relación con las contribuciones a OpenStreetMap en el país.
@@ -123,7 +124,7 @@ del 4 de abril al 29 de mayo de 2016:
 
 ```{r ecuador-filter}
 filter(Ecuador, Week > as.Date("2016-04-03"), Week < as.Date("2016-05-30")) %>%
-   mutate(across(Week, as.character, format = "%d/%b.")) %>% knitr::kable() %>%
+   mutate(across(Week, as.character, format = "%b.%d")) %>% knitr::kable() %>%
    kableExtra::scroll_box(width = "auto", extra_css = "margin-bottom:2rem;")
 ```
 
@@ -417,7 +418,7 @@ Plot_by_time = function(y_aes, y_col){
    ggplot(Overpass_by_time) +
       geom_line(aes(timestamp, !!y_aes), color = y_col, size = .8) +
       geom_vline(xintercept = as.POSIXct("2016-04-16 12:00"), alpha = .2, size = 3) +
-      scale_x_datetime(NULL, date_breaks = "4 days", date_labels = "%d/%b. %I%p") +
+      scale_x_datetime(NULL, date_breaks = "4 days", date_labels = "%b.%d %I%p") +
       coord_cartesian(xlim = as.POSIXct(c("2016-04-15 12:00", NA)))
 }
 

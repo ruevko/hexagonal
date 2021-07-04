@@ -235,22 +235,22 @@
           <div class="post-content markdown" itemprop="articleBody">
             <div class="main-content-wrap">
               
-<script src="https://ruevko.github.io/hexagonal/rmarkdown-libs/accessible-code-block/empty-anchor.js"></script>
+<script src="https://ruevko.github.io/hexagonal/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 <script src="https://ruevko.github.io/hexagonal/rmarkdown-libs/kePrint/kePrint.js"></script>
 <link href="https://ruevko.github.io/hexagonal/rmarkdown-libs/lightable/lightable.css" rel="stylesheet" />
 <style type="text/css">
-code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
-code.sourceCode > span:empty { height: 1.2em; }
-code.sourceCode { white-space: pre; position: relative; }
 div.sourceCode { margin: 1em 0; }
 pre.sourceCode { margin: 0; }
 @media screen {
 div.sourceCode { overflow: auto; }
 }
 @media print {
-code.sourceCode { white-space: pre-wrap; }
-code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
   { counter-reset: source-line 0; }
@@ -271,9 +271,9 @@ pre.numberSource { margin-left: 3em; border-left: 1px solid #a0a0a0;  padding-le
 div.sourceCode
   { color: #1f1c1b; background-color: #ffffff; }
 @media screen {
-code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-code span. { color: #1f1c1b; } /* Normal */
+code span { color: #1f1c1b; } /* Normal */
 code span.al { color: #bf0303; background-color: #f7e6e6; font-weight: bold; } /* Alert */
 code span.an { color: #ca60ca; } /* Annotation */
 code span.at { color: #0057ae; } /* Attribute */
@@ -308,11 +308,13 @@ code span.wa { color: #bf0303; } /* Warning */
 
 <div id="TOC"><span class="post-meta">Contenido</span>
 <ul>
-<li><a href="#datos-osmstats">Datos OSMstats</a><ul>
+<li><a href="#datos-osmstats">Datos OSMstats</a>
+<ul>
 <li><a href="#modelos-lineales-para-la-tasa-de-contribución">Modelos lineales para la tasa de contribución</a></li>
 <li><a href="#contribuciones-a-lo-largo-del-tiempo">Contribuciones a lo largo del tiempo</a></li>
 </ul></li>
-<li><a href="#datos-overpass">Datos Overpass</a><ul>
+<li><a href="#datos-overpass">Datos Overpass</a>
+<ul>
 <li><a href="#contribuciones-a-lo-largo-del-tiempo-1">Contribuciones a lo largo del tiempo</a></li>
 <li><a href="#contribuciones-por-usuario">Contribuciones por usuario</a></li>
 <li><a href="#contribuciones-en-el-espacio">Contribuciones en el espacio</a></li>
@@ -381,19 +383,19 @@ la historia de OpenStreetMap se remonta a 2004. Por ende, no todas las contribuc
 pueden ser cuantificadas con esta fuente de datos —en Ecuador también había datos antes
 de 2011— aunque más del 75 % de las contribuciones sí están disponibles. Ahora el primer
 paso es leer el <em>dataset</em>; utilizaremos <code>library(tidyverse)</code> a lo largo del análisis.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a>Ecuador =<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;ecuador_osmstats_2021_week_14.csv&quot;</span>) <span class="op">%&gt;%</span></span>
-<span id="cb1-2"><a href="#cb1-2"></a><span class="st">   </span><span class="kw">mutate</span>(<span class="dt">Created_elements_cum =</span> <span class="kw">cumsum</span>(Created_elements_sum),</span>
-<span id="cb1-3"><a href="#cb1-3"></a>          <span class="dt">Week_after =</span> Week <span class="op">&gt;</span><span class="st"> </span><span class="kw">as.Date</span>(<span class="st">&quot;2016-04-16&quot;</span>)) <span class="op">%&gt;%</span></span>
-<span id="cb1-4"><a href="#cb1-4"></a><span class="st">   </span><span class="kw">relocate</span>(Week, Week_after)</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>Ecuador <span class="ot">=</span> <span class="fu">read_csv</span>(<span class="st">&quot;ecuador_osmstats_2021_week_14.csv&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>   <span class="fu">mutate</span>(<span class="at">Created_elements_cum =</span> <span class="fu">cumsum</span>(Created_elements_sum),</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>          <span class="at">Week_after =</span> Week <span class="sc">&gt;</span> <span class="fu">as.Date</span>(<span class="st">&quot;2016-04-16&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>   <span class="fu">relocate</span>(Week, Week_after)</span></code></pre></div>
 <p>En este paso también se anadió dos nuevas variables: <code>Week_after</code>, un vector
 lógico que es <code>TRUE</code> en las observaciones que ocurrieron después del terremoto; y
 <code>Created_elements_cum</code>, la suma acumulativa de <code>Created_elements_sum</code>, i.e. el
 total estimado de elementos creados (ignorando los eliminados) en el territorio
 ecuatoriano. Observemos una muestra de los datos, correspondientes al periodo
 del 4 de abril al 29 de mayo de 2016:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="kw">filter</span>(Ecuador, Week <span class="op">&gt;</span><span class="st"> </span><span class="kw">as.Date</span>(<span class="st">&quot;2016-04-03&quot;</span>), Week <span class="op">&lt;</span><span class="st"> </span><span class="kw">as.Date</span>(<span class="st">&quot;2016-05-30&quot;</span>)) <span class="op">%&gt;%</span></span>
-<span id="cb2-2"><a href="#cb2-2"></a><span class="st">   </span><span class="kw">mutate</span>(<span class="kw">across</span>(Week, as.character, <span class="dt">format =</span> <span class="st">&quot;%d/%b.&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span>knitr<span class="op">::</span><span class="kw">kable</span>() <span class="op">%&gt;%</span></span>
-<span id="cb2-3"><a href="#cb2-3"></a><span class="st">   </span>kableExtra<span class="op">::</span><span class="kw">scroll_box</span>(<span class="dt">width =</span> <span class="st">&quot;auto&quot;</span>, <span class="dt">extra_css =</span> <span class="st">&quot;margin-bottom:2rem;&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">filter</span>(Ecuador, Week <span class="sc">&gt;</span> <span class="fu">as.Date</span>(<span class="st">&quot;2016-04-03&quot;</span>), Week <span class="sc">&lt;</span> <span class="fu">as.Date</span>(<span class="st">&quot;2016-05-30&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>   <span class="fu">mutate</span>(<span class="fu">across</span>(Week, as.character, <span class="at">format =</span> <span class="st">&quot;%b.%d&quot;</span>)) <span class="sc">%&gt;%</span> knitr<span class="sc">::</span><span class="fu">kable</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>   kableExtra<span class="sc">::</span><span class="fu">scroll_box</span>(<span class="at">width =</span> <span class="st">&quot;auto&quot;</span>, <span class="at">extra_css =</span> <span class="st">&quot;margin-bottom:2rem;&quot;</span>)</span></code></pre></div>
 <div style="border: 1px solid #ddd; padding: 5px; margin-bottom:2rem;overflow-x: scroll; width:auto; ">
 <table>
 <thead>
@@ -421,7 +423,7 @@ Created_elements_cum
 <tbody>
 <tr>
 <td style="text-align:left;">
-04/abr..
+Apr.04
 </td>
 <td style="text-align:left;">
 FALSE
@@ -441,7 +443,7 @@ FALSE
 </tr>
 <tr>
 <td style="text-align:left;">
-11/abr..
+Apr.11
 </td>
 <td style="text-align:left;">
 FALSE
@@ -461,7 +463,7 @@ FALSE
 </tr>
 <tr>
 <td style="text-align:left;">
-18/abr..
+Apr.18
 </td>
 <td style="text-align:left;">
 TRUE
@@ -481,7 +483,7 @@ TRUE
 </tr>
 <tr>
 <td style="text-align:left;">
-25/abr..
+Apr.25
 </td>
 <td style="text-align:left;">
 TRUE
@@ -501,7 +503,7 @@ TRUE
 </tr>
 <tr>
 <td style="text-align:left;">
-02/may..
+May.02
 </td>
 <td style="text-align:left;">
 TRUE
@@ -521,7 +523,7 @@ TRUE
 </tr>
 <tr>
 <td style="text-align:left;">
-09/may..
+May.09
 </td>
 <td style="text-align:left;">
 TRUE
@@ -541,7 +543,7 @@ TRUE
 </tr>
 <tr>
 <td style="text-align:left;">
-16/may..
+May.16
 </td>
 <td style="text-align:left;">
 TRUE
@@ -561,7 +563,7 @@ TRUE
 </tr>
 <tr>
 <td style="text-align:left;">
-23/may..
+May.23
 </td>
 <td style="text-align:left;">
 TRUE
@@ -596,7 +598,7 @@ Por eso ajustamos una regresión lineal donde la suma acumulativa de elementos c
 variable dependiente, y el tiempo la independiente; la pendiente de esta regresión es la tasa
 de contribución. A continuación presento el comando y el gráfico —las observaciones azules
 son antes del terremoto, las rojas después— correspondientes al cálculo de la regresión lineal:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>Model_single =<span class="st"> </span><span class="kw">lm</span>(Created_elements_cum <span class="op">~</span><span class="st"> </span>Week, Ecuador)</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>Model_single <span class="ot">=</span> <span class="fu">lm</span>(Created_elements_cum <span class="sc">~</span> Week, Ecuador)</span></code></pre></div>
 <div class="figure"><span id="fig:plot-one-model"></span>
 <img src="https://ruevko.github.io/hexagonal/post/2021/04/16-mapping-ecuador-contribuciones_files/figure-html/plot-one-model-1.png" alt="Regresión lineal de contribuciones OSM en Ecuador" width="672" />
 <p class="caption">
@@ -611,9 +613,9 @@ crearon unos 3900 elementos a diario<a href="#fn3" class="footnote-ref" id="fnre
 <p>Como siguiente paso, para evaluar si Mapping Ecuador influyó en la tasa de contribución, ajustamos
 dos regresiones: una para el periodo anterior al terremoto, y otra para el periodo posterior.
 En este paso, la variable <code>Week_after</code> es la condición que permite dividir ambos periodos.</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>Model_before =<span class="st"> </span><span class="kw">lm</span>(Created_elements_cum <span class="op">~</span><span class="st"> </span>Week, <span class="kw">filter</span>(Ecuador, <span class="op">!</span>Week_after))</span>
-<span id="cb4-2"><a href="#cb4-2"></a></span>
-<span id="cb4-3"><a href="#cb4-3"></a>Model_after =<span class="st"> </span><span class="kw">lm</span>(Created_elements_cum <span class="op">~</span><span class="st"> </span>Week, <span class="kw">filter</span>(Ecuador, Week_after))</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>Model_before <span class="ot">=</span> <span class="fu">lm</span>(Created_elements_cum <span class="sc">~</span> Week, <span class="fu">filter</span>(Ecuador, <span class="sc">!</span>Week_after))</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>Model_after <span class="ot">=</span> <span class="fu">lm</span>(Created_elements_cum <span class="sc">~</span> Week, <span class="fu">filter</span>(Ecuador, Week_after))</span></code></pre></div>
 <div class="figure"><span id="fig:plot-two-model"></span>
 <img src="https://ruevko.github.io/hexagonal/post/2021/04/16-mapping-ecuador-contribuciones_files/figure-html/plot-two-model-1.png" alt="Regresiones lineales de contribuciones OSM en Ecuador, antes y despues del terremoto" width="672" />
 <p class="caption">
@@ -643,9 +645,9 @@ a ajustar una regresión para todo el <em>dataset</em>, como la del gráfico <a 
 añadiendo esta vez dos nuevas variables independientes: una condición (antes o después del
 terremoto), y una interacción<a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a> de dicha condición
 con el tiempo. En lenguaje R, la interacción entre dos variables se escribe multiplicándolas:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="kw">lm</span>(Created_elements_cum <span class="op">~</span><span class="st"> </span>Week <span class="op">+</span><span class="st"> </span>Week <span class="op">*</span><span class="st"> </span>Week_after <span class="op">+</span><span class="st"> </span>Week_after, Ecuador) <span class="op">%&gt;%</span></span>
-<span id="cb5-2"><a href="#cb5-2"></a><span class="st">   </span>broom<span class="op">::</span><span class="kw">tidy</span>() <span class="op">%&gt;%</span><span class="st"> </span>knitr<span class="op">::</span><span class="kw">kable</span>(<span class="dt">format.args =</span> <span class="kw">list</span>(<span class="dt">scientific =</span> <span class="ot">TRUE</span>)) <span class="op">%&gt;%</span></span>
-<span id="cb5-3"><a href="#cb5-3"></a><span class="st">   </span>kableExtra<span class="op">::</span><span class="kw">scroll_box</span>(<span class="dt">width =</span> <span class="st">&quot;auto&quot;</span>, <span class="dt">extra_css =</span> <span class="st">&quot;margin-bottom:2rem;&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lm</span>(Created_elements_cum <span class="sc">~</span> Week <span class="sc">+</span> Week <span class="sc">*</span> Week_after <span class="sc">+</span> Week_after, Ecuador) <span class="sc">%&gt;%</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>   broom<span class="sc">::</span><span class="fu">tidy</span>() <span class="sc">%&gt;%</span> knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="at">format.args =</span> <span class="fu">list</span>(<span class="at">scientific =</span> <span class="cn">TRUE</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>   kableExtra<span class="sc">::</span><span class="fu">scroll_box</span>(<span class="at">width =</span> <span class="st">&quot;auto&quot;</span>, <span class="at">extra_css =</span> <span class="st">&quot;margin-bottom:2rem;&quot;</span>)</span></code></pre></div>
 <div style="border: 1px solid #ddd; padding: 5px; margin-bottom:2rem;overflow-x: scroll; width:auto; ">
 <table>
 <thead>
@@ -758,7 +760,7 @@ con sus vecinas. Existen varias maneras de suavizar estas irregularidades; en es
 calculamos la media móvil —usando una ventana de nueve semanas— de cada variable
 con <code>zoo::rollmean()</code> y la añadimos al gráfico (las líneas transparentes representan
 los datos; las opacas, las medias móviles).</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>Ecuador_rollmean =<span class="st"> </span><span class="kw">mutate</span>(Ecuador, <span class="kw">across</span>(<span class="dv">3</span><span class="op">:</span><span class="dv">5</span>, zoo<span class="op">::</span>rollmean, <span class="dv">9</span>, <span class="ot">NA</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>Ecuador_rollmean <span class="ot">=</span> <span class="fu">mutate</span>(Ecuador, <span class="fu">across</span>(<span class="dv">3</span><span class="sc">:</span><span class="dv">5</span>, zoo<span class="sc">::</span>rollmean, <span class="dv">9</span>, <span class="cn">NA</span>))</span></code></pre></div>
 <div class="figure"><span id="fig:plot-weekly"></span>
 <img src="https://ruevko.github.io/hexagonal/post/2021/04/16-mapping-ecuador-contribuciones_files/figure-html/plot-weekly-1.png" alt="Elementos creados y modificados, y contribuidores activos semanalmente en Ecuador" width="672" />
 <p class="caption">
@@ -778,8 +780,8 @@ que investigue ese hecho en el futuro.</p>
 prescindir de las irregularidades que las líneas causan. Podemos hacer un resumen
 anual de las mismas variables utilizando <em>boxplots</em>, pero presentaremos únicamente
 los años con observaciones completas, i.e. de 2012 a 2020.</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>Ecuador =<span class="st"> </span><span class="kw">mutate</span>(Ecuador, <span class="dt">Week_after =</span> Week <span class="op">&gt;</span><span class="st"> </span><span class="kw">as.Date</span>(<span class="st">&quot;2016-01-01&quot;</span>)) <span class="op">%&gt;%</span></span>
-<span id="cb7-2"><a href="#cb7-2"></a><span class="st">   </span><span class="kw">filter</span>( <span class="op">!</span><span class="st"> </span><span class="kw">as.character</span>(Week, <span class="st">&quot;%g&quot;</span>) <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;11&quot;</span>, <span class="st">&quot;21&quot;</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>Ecuador <span class="ot">=</span> <span class="fu">mutate</span>(Ecuador, <span class="at">Week_after =</span> Week <span class="sc">&gt;</span> <span class="fu">as.Date</span>(<span class="st">&quot;2016-01-01&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>   <span class="fu">filter</span>( <span class="sc">!</span> <span class="fu">as.character</span>(Week, <span class="st">&quot;%g&quot;</span>) <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;11&quot;</span>, <span class="st">&quot;21&quot;</span>))</span></code></pre></div>
 <div class="figure"><span id="fig:plot-yearly"></span>
 <img src="https://ruevko.github.io/hexagonal/post/2021/04/16-mapping-ecuador-contribuciones_files/figure-html/plot-yearly-1.png" alt="Elementos creados y modificados, y contribuidores activos en Ecuador, agregados anualmente" width="672" />
 <p class="caption">
@@ -814,10 +816,10 @@ out meta;</code></pre>
 puede insertar esta <em>query</em> y enviarla a la API, la cual devuelve<a href="#fn6" class="footnote-ref" id="fnref6"><sup>6</sup></a> un archivo <code>interpreter</code> con valores separados por tabulaciones. Cuando
 realicé este proceso, el archivo que recibí tuvo un peso de 167.54 MB y por esta razón
 no lo he compartido; el código que utilicé para leerlo es:</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a>Overpass =<span class="st"> </span><span class="kw">read_tsv</span>(<span class="st">&quot;interpreter&quot;</span>, <span class="dt">col_types =</span> <span class="kw">c</span>(<span class="st">&quot;_cTnnn&quot;</span>)) <span class="op">%&gt;%</span></span>
-<span id="cb9-2"><a href="#cb9-2"></a><span class="st">   </span><span class="kw">rename_with</span>(str_remove, <span class="dt">pattern =</span> <span class="st">&quot;@o?&quot;</span>) <span class="op">%&gt;%</span></span>
-<span id="cb9-3"><a href="#cb9-3"></a><span class="st">   </span><span class="kw">filter</span>(timestamp <span class="op">&gt;</span><span class="st"> </span><span class="kw">as.Date</span>(<span class="st">&quot;2016-04-17&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">arrange</span>(timestamp) <span class="op">%&gt;%</span></span>
-<span id="cb9-4"><a href="#cb9-4"></a><span class="st">   </span><span class="kw">mutate</span>(<span class="dt">type =</span> <span class="kw">case_when</span>(type<span class="op">==</span><span class="dv">1</span> <span class="op">~</span><span class="st"> &quot;Nodes&quot;</span>, type<span class="op">==</span><span class="dv">2</span> <span class="op">~</span><span class="st"> &quot;Ways&quot;</span>, type<span class="op">==</span><span class="dv">3</span> <span class="op">~</span><span class="st"> &quot;Relations&quot;</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>Overpass <span class="ot">=</span> <span class="fu">read_tsv</span>(<span class="st">&quot;interpreter&quot;</span>, <span class="at">col_types =</span> <span class="fu">c</span>(<span class="st">&quot;_cTnnn&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>   <span class="fu">rename_with</span>(str_remove, <span class="at">pattern =</span> <span class="st">&quot;@o?&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>   <span class="fu">filter</span>(timestamp <span class="sc">&gt;</span> <span class="fu">as.Date</span>(<span class="st">&quot;2016-04-17&quot;</span>)) <span class="sc">%&gt;%</span> <span class="fu">arrange</span>(timestamp) <span class="sc">%&gt;%</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>   <span class="fu">mutate</span>(<span class="at">type =</span> <span class="fu">case_when</span>(type<span class="sc">==</span><span class="dv">1</span> <span class="sc">~</span> <span class="st">&quot;Nodes&quot;</span>, type<span class="sc">==</span><span class="dv">2</span> <span class="sc">~</span> <span class="st">&quot;Ways&quot;</span>, type<span class="sc">==</span><span class="dv">3</span> <span class="sc">~</span> <span class="st">&quot;Relations&quot;</span>))</span></code></pre></div>
 <p>¿Por qué el archivo <code>interpreter</code> es tan pesado? Resulta que contiene 2.751 millones
 de elementos creados en el periodo de tres semanas que culminó el 8 de mayo, una cifra
 congruente con los datos en la primera tabla de este artículo. De esos elementos, 653
@@ -833,11 +835,11 @@ los datos según el aspecto que está siendo analizado, y escribir un nuevo arch
 más liviano) con los resultados. Así, para analizar los elementos creados a lo largo del
 tiempo, se creó intervalos de doce horas con ayuda de <code>lubridate::ceiling_date()</code> y se
 contó los elementos por tipo en cada interavalo:</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a><span class="kw">filter</span>(Overpass, timestamp <span class="op">&lt;</span><span class="st"> </span><span class="kw">as.Date</span>(<span class="st">&quot;2016-05-09&quot;</span>)) <span class="op">%&gt;%</span></span>
-<span id="cb10-2"><a href="#cb10-2"></a><span class="st">   </span><span class="kw">mutate</span>(<span class="kw">across</span>(timestamp, lubridate<span class="op">::</span>ceiling_date, <span class="st">&quot;12 hours&quot;</span>)) <span class="op">%&gt;%</span></span>
-<span id="cb10-3"><a href="#cb10-3"></a><span class="st">   </span><span class="kw">count</span>(timestamp, type, <span class="dt">name =</span> <span class="st">&quot;value&quot;</span>) <span class="op">%&gt;%</span></span>
-<span id="cb10-4"><a href="#cb10-4"></a><span class="st">   </span><span class="kw">pivot_wider</span>(timestamp, type, <span class="dt">values_fill =</span> <span class="dv">0</span>) <span class="op">%&gt;%</span></span>
-<span id="cb10-5"><a href="#cb10-5"></a><span class="st">   </span><span class="kw">write_csv</span>(<span class="st">&quot;ecuador_overpass_2016_by_time.csv&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">filter</span>(Overpass, timestamp <span class="sc">&lt;</span> <span class="fu">as.Date</span>(<span class="st">&quot;2016-05-09&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>   <span class="fu">mutate</span>(<span class="fu">across</span>(timestamp, lubridate<span class="sc">::</span>ceiling_date, <span class="st">&quot;12 hours&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>   <span class="fu">count</span>(timestamp, type, <span class="at">name =</span> <span class="st">&quot;value&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>   <span class="fu">pivot_wider</span>(timestamp, type, <span class="at">values_fill =</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>   <span class="fu">write_csv</span>(<span class="st">&quot;ecuador_overpass_2016_by_time.csv&quot;</span>)</span></code></pre></div>
 <p>También se filtró los datos hasta antes del 9 de mayo. Parece un paso redundante (precisamente
 se solicitó datos hasta esa fecha), pero resulta que la variable <code>timestamp</code> guarda la fecha
 y hora de la última vez que el elemento fue modificado. Entonces, aquellos elementos creados
@@ -851,7 +853,7 @@ solo el 43.64 % de <em>relations</em> no han recibido modificaciones. Tiene sent
 son los elementos OSM más complejos y menos estáticos.</p>
 <p>El archivo <a href="https://github.com/ruevko/hexagonal/blob/master/content/post/2021/04/ecuador_overpass_2016_by_time.csv"><code>ecuador_overpass_2016_by_time.csv</code></a>
 se puede leer fácilmente con <code>readr::read_csv()</code>; a continuación se encuentra el gráfico con sus observaciones.</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a>Overpass_by_time =<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;ecuador_overpass_2016_by_time.csv&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>Overpass_by_time <span class="ot">=</span> <span class="fu">read_csv</span>(<span class="st">&quot;ecuador_overpass_2016_by_time.csv&quot;</span>)</span></code></pre></div>
 <div class="figure"><span id="fig:plot-time"></span>
 <img src="https://ruevko.github.io/hexagonal/post/2021/04/16-mapping-ecuador-contribuciones_files/figure-html/plot-time-1.png" alt="Conteo de elementos contribuidos en Mapping Ecuador, en intervalos de doce horas" width="672" />
 <p class="caption">
@@ -878,10 +880,10 @@ después de que el mismo concluyó. No obstante, no es que este sea el porcentaj
 sigue activo, porque no consideramos toda la actividad en el país.</p>
 <p>En el siguiente paso se cuenta los elementos, por tipo y por usuario, y se escribe los resultados en el archivo
 <a href="https://github.com/ruevko/hexagonal/blob/master/content/post/2021/04/ecuador_overpass_2016_by_user.csv"><code>ecuador_overpass_2016_by_user.csv</code></a>:</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a><span class="kw">filter</span>(Overpass, timestamp <span class="op">&lt;</span><span class="st"> </span><span class="kw">as.Date</span>(<span class="st">&quot;2016-05-09&quot;</span>)) <span class="op">%&gt;%</span></span>
-<span id="cb12-2"><a href="#cb12-2"></a><span class="st">   </span><span class="kw">count</span>(user, type, <span class="dt">name =</span> <span class="st">&quot;value&quot;</span>, <span class="dt">sort =</span> <span class="ot">TRUE</span>) <span class="op">%&gt;%</span></span>
-<span id="cb12-3"><a href="#cb12-3"></a><span class="st">   </span><span class="kw">pivot_wider</span>(user, type, <span class="dt">values_fill =</span> <span class="dv">0</span>) <span class="op">%&gt;%</span></span>
-<span id="cb12-4"><a href="#cb12-4"></a><span class="st">   </span><span class="kw">write_csv</span>(<span class="st">&quot;ecuador_overpass_2016_by_user.csv&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">filter</span>(Overpass, timestamp <span class="sc">&lt;</span> <span class="fu">as.Date</span>(<span class="st">&quot;2016-05-09&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>   <span class="fu">count</span>(user, type, <span class="at">name =</span> <span class="st">&quot;value&quot;</span>, <span class="at">sort =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>   <span class="fu">pivot_wider</span>(user, type, <span class="at">values_fill =</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>   <span class="fu">write_csv</span>(<span class="st">&quot;ecuador_overpass_2016_by_user.csv&quot;</span>)</span></code></pre></div>
 <p>Manipulando estas observaciones es posible descubrir que, del total de 2762 usuarios,
 solamente 47 contribuyeron diez mil elementos o más cada uno; son pocos, pero sumando
 sus aportes alcanzan la cifra de 1.120 millones, lo que es el 42.76 % de todo Mapping
@@ -896,10 +898,10 @@ con <em>waffleplots</em>: una clase de gráficos que presentan el conteo de una 
 miles de <em>nodes</em> y <em>ways</em> creados— de una manera intuitiva. Utilicé el paquete <code>waffle</code> con la
 precaución de instalarlo vía <code>remotes::install_github("hrbrmstr/waffle")</code> pues es en la última
 versión donde se encuentra<code>geom_waffle()</code>, la geometría que permite graficar <em>waffleplots</em>.</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a>Overpass_by_user =<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;ecuador_overpass_2016_by_user.csv&quot;</span>) <span class="op">%&gt;%</span></span>
-<span id="cb13-2"><a href="#cb13-2"></a><span class="st">   </span><span class="kw">filter</span>(Nodes <span class="op">+</span><span class="st"> </span>Ways <span class="op">+</span><span class="st"> </span>Relations <span class="op">&gt;</span><span class="st"> </span><span class="fl">33e3</span>) <span class="op">%&gt;%</span></span>
-<span id="cb13-3"><a href="#cb13-3"></a><span class="st">   </span><span class="kw">mutate</span>(<span class="kw">across</span>(Ways<span class="op">:</span>Nodes, <span class="op">~</span><span class="st"> </span><span class="kw">round</span>(. <span class="op">/</span><span class="st"> </span><span class="fl">1e3</span>) )) <span class="op">%&gt;%</span></span>
-<span id="cb13-4"><a href="#cb13-4"></a><span class="st">   </span><span class="kw">pivot_longer</span>(Ways<span class="op">:</span>Nodes)</span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>Overpass_by_user <span class="ot">=</span> <span class="fu">read_csv</span>(<span class="st">&quot;ecuador_overpass_2016_by_user.csv&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>   <span class="fu">filter</span>(Nodes <span class="sc">+</span> Ways <span class="sc">+</span> Relations <span class="sc">&gt;</span> <span class="fl">33e3</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>   <span class="fu">mutate</span>(<span class="fu">across</span>(Ways<span class="sc">:</span>Nodes, <span class="sc">~</span> <span class="fu">round</span>(. <span class="sc">/</span> <span class="fl">1e3</span>) )) <span class="sc">%&gt;%</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>   <span class="fu">pivot_longer</span>(Ways<span class="sc">:</span>Nodes)</span></code></pre></div>
 <div class="figure"><span id="fig:plot-user"></span>
 <img src="https://ruevko.github.io/hexagonal/post/2021/04/16-mapping-ecuador-contribuciones_files/figure-html/plot-user-1.png" alt="*Waffleplots* de elementos contribuidos por los doce usuarios mas activos en Mapping Ecuador" width="672" />
 <p class="caption">
@@ -917,10 +919,10 @@ que no poseen una sola coordenada; más bien poseen un <em>bounding box</em> que
 utilizando funcionalidad avanzada del Overpass Query Language, pero esto no fue solicitado.
 De cualquier forma, los <em>nodes</em> son el 85.97 % de los elementos, así que podremos graficar
 la distribución espacial sin problemas.</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a><span class="kw">filter</span>(Overpass, type <span class="op">==</span><span class="st"> &quot;Nodes&quot;</span>) <span class="op">%&gt;%</span></span>
-<span id="cb14-2"><a href="#cb14-2"></a><span class="st">   </span><span class="kw">mutate</span>(<span class="kw">across</span>(lat<span class="op">:</span>lon, round, <span class="dt">digits =</span> <span class="dv">1</span>)) <span class="op">%&gt;%</span></span>
-<span id="cb14-3"><a href="#cb14-3"></a><span class="st">   </span><span class="kw">count</span>(lat, lon, <span class="dt">name =</span> <span class="st">&quot;Nodes&quot;</span>) <span class="op">%&gt;%</span></span>
-<span id="cb14-4"><a href="#cb14-4"></a><span class="st">   </span><span class="kw">write_csv</span>(<span class="st">&quot;ecuador_overpass_2016_by_lat_lon.csv&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">filter</span>(Overpass, type <span class="sc">==</span> <span class="st">&quot;Nodes&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>   <span class="fu">mutate</span>(<span class="fu">across</span>(lat<span class="sc">:</span>lon, round, <span class="at">digits =</span> <span class="dv">1</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>   <span class="fu">count</span>(lat, lon, <span class="at">name =</span> <span class="st">&quot;Nodes&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>   <span class="fu">write_csv</span>(<span class="st">&quot;ecuador_overpass_2016_by_lat_lon.csv&quot;</span>)</span></code></pre></div>
 <p>En <a href="https://github.com/ruevko/hexagonal/blob/master/content/post/2021/04/ecuador_overpass_2016_by_lat_lon.csv"><code>ecuador_overpass_2016_by_lat_lon.csv</code></a>
 tenemos el conteo de nodos por celda de 0.1º de latitud y 0.1º de longitud. Estos datos
 pueden transformarse en un objeto espacial usando <code>sf::st_as_sf()</code> con el código
@@ -928,9 +930,9 @@ EPSG 4326 (i.e. coordenadas sin proyectar en el dátum WGS 84). Así es como ge
 este <em>heatmap</em> (mapa de calor) de <em>nodes</em> contribuidos en Mapping Ecuador; podemos
 observar el resultado de este enorme proyecto en las celdas con más de diez
 mil <em>nodes</em>, extendiéndose desde Manta hasta Esmeraldas.</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a>Overpass_by_lat_lon =<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;ecuador_overpass_2016_by_lat_lon.csv&quot;</span>) <span class="op">%&gt;%</span></span>
-<span id="cb15-2"><a href="#cb15-2"></a><span class="st">   </span><span class="kw">mutate</span>(<span class="dt">Nodes =</span> <span class="kw">cut</span>(Nodes, <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">100</span>, <span class="fl">1e3</span>, <span class="fl">1e4</span>, <span class="fl">24e4</span>), <span class="dt">include.lowest =</span> <span class="ot">TRUE</span>)) <span class="op">%&gt;%</span></span>
-<span id="cb15-3"><a href="#cb15-3"></a><span class="st">   </span><span class="kw">filter</span>(lon <span class="op">&gt;=</span><span class="st"> </span><span class="dv">-81</span>) <span class="op">%&gt;%</span><span class="st"> </span>sf<span class="op">::</span><span class="kw">st_as_sf</span>(<span class="dt">coords =</span> <span class="kw">c</span>(<span class="st">&quot;lon&quot;</span>, <span class="st">&quot;lat&quot;</span>), <span class="dt">crs =</span> <span class="st">&quot;EPSG:4326&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>Overpass_by_lat_lon <span class="ot">=</span> <span class="fu">read_csv</span>(<span class="st">&quot;ecuador_overpass_2016_by_lat_lon.csv&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>   <span class="fu">mutate</span>(<span class="at">Nodes =</span> <span class="fu">cut</span>(Nodes, <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">100</span>, <span class="fl">1e3</span>, <span class="fl">1e4</span>, <span class="fl">24e4</span>), <span class="at">include.lowest =</span> <span class="cn">TRUE</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>   <span class="fu">filter</span>(lon <span class="sc">&gt;=</span> <span class="sc">-</span><span class="dv">81</span>) <span class="sc">%&gt;%</span> sf<span class="sc">::</span><span class="fu">st_as_sf</span>(<span class="at">coords =</span> <span class="fu">c</span>(<span class="st">&quot;lon&quot;</span>, <span class="st">&quot;lat&quot;</span>), <span class="at">crs =</span> <span class="st">&quot;EPSG:4326&quot;</span>)</span></code></pre></div>
 <div class="figure"><span id="fig:plot-lat-lon"></span>
 <img src="https://ruevko.github.io/hexagonal/post/2021/04/16-mapping-ecuador-contribuciones_files/figure-html/plot-lat-lon-1.png" alt="*Heatmap* de nodos contribuidos durante Mapping Ecuador" width="480" />
 <p class="caption">
@@ -941,7 +943,7 @@ Figure 7: <em>Heatmap</em> de nodos contribuidos durante Mapping Ecuador
 </div>
 <div id="comentarios" class="section level1">
 <h1>Comentarios</h1>
-<p><span class="citation">Goodchild (<a href="#ref-good07" role="doc-biblioref">2007</a>)</span>, al acuñar el término Volunteered Geographic Information (VGI) para referirse a
+<p><span class="citation"><a href="#ref-good07" role="doc-biblioref">Goodchild</a> (<a href="#ref-good07" role="doc-biblioref">2007</a>)</span>, al acuñar el término Volunteered Geographic Information (VGI) para referirse a
 proyectos como OpenStreetMap, identificó que la gestión de emergencias sería en el futuro
 uno de los escenarios en donde las ventajas de la VGI resultarían más beneficiosas. El
 terremoto 16A y otros desastres atendidos por el HOT dan testimonio de esto. Según Goodchild,
@@ -953,7 +955,7 @@ LLACTALAB registra eventos de mapeo en España y Estados Unidos.</p>
 <p>Aunque la información extraíble de una imagen satelital es limitada, esta clase de contribuciones
 no deben ser desalentadas, especialmente en una situación de emergencia. Sin embargo, es
 verdad que la información levantada localmente difiere de la remota no solo en calidad, sino
-en los objetos que son creados. <span class="citation">Quinn (<a href="#ref-quin16" role="doc-biblioref">2016</a>)</span> observó que varios lugares en Sudamérica —uno de
+en los objetos que son creados. <span class="citation"><a href="#ref-quin16" role="doc-biblioref">Quinn</a> (<a href="#ref-quin16" role="doc-biblioref">2016</a>)</span> observó que varios lugares en Sudamérica —uno de
 los continentes con menos usuarios OSM— han sido mapeados remotamente, pero en los lugares
 donde la contribución es local abundan los objetos relacionados con la vida cotidiana, como
 escuelas, hospitales y tiendas. Estos objetos hacen que el mapa sea más valioso para sus
@@ -962,18 +964,18 @@ no analicé la cantidad de contribución local.</p>
 <p>Mi propósito fue contabilizar y graficar varios aspectos de Mapping Ecuador, no
 identificar el origen de las contribuciones. Eso sería virtualmente imposible, pues muy
 pocos usuarios —especialmente entre aquellos que no son europeos— han creado un perfil
-con información personal <span class="citation">(Quinn <a href="#ref-quin16" role="doc-biblioref">2016</a>)</span>. OpenStreetMap es un proyecto que se beneficia enormemente
+con información personal <span class="citation">(<a href="#ref-quin16" role="doc-biblioref">Quinn 2016</a>)</span>. OpenStreetMap es un proyecto que se beneficia enormemente
 del altruismo; no es de extrañar que abunde el anonimato. Por esta razón afirmé que es irrelevante
 tratar de averiguar quiénes siguen activos y quiénes no: porque estas personas actuaron con
 solidaridad, porque más grande es la obra que los nombres. Como conclusión, ¿afirmaremos que
 Mapping Ecuador aumentó la actividad en el país? Para ser que sí, pero lo importante es que
 fue una iniciativa valiosa y oportuna.</p>
-<span class="post-meta">Referencias</span><div id="refs" class="references">
-<div id="ref-good07">
-<p>Goodchild, Michael. 2007. “Citizens as Sensors: The World of Volunteered Geography.” <em>GeoJournal</em> 69 (4): 211–21. <a href="https://doi.org/10.1007/s10708-007-9111-y">https://doi.org/10.1007/s10708-007-9111-y</a>.</p>
+<span class="post-meta">Referencias</span><div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-good07" class="csl-entry">
+Goodchild, Michael. 2007. <span>‘Citizens as Sensors: The World of Volunteered Geography.’</span> <em>GeoJournal</em> 69 (4): 211–21. <a href="https://doi.org/10.1007/s10708-007-9111-y">https://doi.org/10.1007/s10708-007-9111-y</a>.
 </div>
-<div id="ref-quin16">
-<p>Quinn, Sterling. 2016. “A Geolinguistic Approach for Comprehending Local Influence in Openstreetmap.” <em>Cartographica: The International Journal for Geographic Information and Geovisualization</em> 51 (2): 67–83. <a href="https://doi.org/10.3138/cart.51.2.3301">https://doi.org/10.3138/cart.51.2.3301</a>.</p>
+<div id="ref-quin16" class="csl-entry">
+Quinn, Sterling. 2016. <span>‘A Geolinguistic Approach for Comprehending Local Influence in OpenStreetMap.’</span> <em>Cartographica: The International Journal for Geographic Information and Geovisualization</em> 51 (2): 67–83. <a href="https://doi.org/10.3138/cart.51.2.3301">https://doi.org/10.3138/cart.51.2.3301</a>.
 </div>
 </div>
 </div>
