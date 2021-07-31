@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="generator" content="Hugo 0.81.0 with theme Tranquilpeak 0.4.8-BETA">
+<meta name="author" content="Roger Rafael Castro Zambrano">
+<meta name="keywords" content="github actions, análisis, cartografía, datos, mapas">
+<meta name="description" content="GitHub Actions es un servicio que permite automatizar tareas de CI/CD. En este tutorial, sin embargo, lo utilizaré para compartir un tweet cada vez que publique en este blog.">
+
+
+<meta property="og:type" content="article">
+<meta property="og:title" content="Mi primer GitHub Action">
+<meta property="og:description" content="GitHub Actions es un servicio que permite automatizar tareas de CI/CD. En este tutorial, sin embargo, lo utilizaré para compartir un tweet cada vez que publique en este blog.">
+<meta property="og:url" content="https://ruevko.github.io/hexagonal/post/2021/07/30-primer-github-action/">
+<meta property="og:site_name" content="La Galería Hexagonal">
+<meta property="og:locale" content="es">
+<meta name="twitter:card" content="summary">
+
+
+
+<meta property="og:image" content="
+  
+    https://res.cloudinary.com/dodnzqhiz/image/upload/v1627680475/2021post/w2f6ukifljirsfgz2hzv.png
+  
+">
+
+
+  
+    <meta property="article:published_time" content="2021-07-30T00:00:00">
+  
+  
+    <meta property="article:modified_time" content="2021-07-30T00:00:00">
+  
+  
+  
+    
+      <meta property="article:section" content="Twitter">
+    
+  
+  
+
+    <title>
+      
+        Mi primer GitHub Action | La Galería Hexagonal
+      
+    </title>
+
+    <link rel="icon" href="https://ruevko.github.io/hexagonal/favicon.png">
+    
+    
+    <link rel="canonical" href="https://ruevko.github.io/hexagonal/post/2021/07/30-primer-github-action/">
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" integrity="sha256-+N4/V/SbAFiW1MPBCXnfnP9QSN3+Keu+NlB+0ev/YKQ=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/jquery.fancybox.min.css" integrity="sha256-vuXZ9LGmmwtjqFX1F+EKin1ThZMub58gKULUyf0qECk=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/helpers/jquery.fancybox-thumbs.min.css" integrity="sha256-SEa4XYAHihTcEP1f5gARTB2K26Uk8PsndQYHQC1f4jU=" crossorigin="anonymous" />
+    
+    
+    <link rel="stylesheet" href="https://ruevko.github.io/hexagonal/css/style-rpqj1h5cb5terj4l0gi1ixrzeditxx.min.css" />
+    
+    
+
+    
+      
+    
+  </head>
+  <body>
+    <div id="blog">
+      <header id="header" data-behavior="4">
+  <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+  <div class="header-title">
+    <a class="header-title-link" href="https://ruevko.github.io/hexagonal/">La Galería Hexagonal</a>
+  </div>
+  
+    
+      <a class="header-right-icon "
+         href="#footer">
+    
+    
+      <i class="fa-lg fas fa-chevron-down"></i></a>
+    
+  
+  
+</header>
+      <nav id="sidebar" data-behavior="4">
+  <div class="sidebar-container">
+    
+      <div class="sidebar-profile">
+        <a href="https://ruevko.github.io/hexagonal/#about">
+          <img class="sidebar-profile-picture" src="https://ruevko.github.io/hexagonal/logo.png"/>
+        </a>
+        <a class="sidebar-profile-name" href="https://ruevko.github.io/hexagonal/">La Galería Hexagonal</a>
+      </div>
+    
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://ruevko.github.io/hexagonal/archives">
+    
+      <i class="sidebar-button-icon fas fa-globe-americas fa-lg"></i>
+      
+      <span class="sidebar-button-desc">Archivo</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://ruevko.github.io/hexagonal/categories">
+    
+      <i class="sidebar-button-icon fas fa-map-marked-alt fa-lg"></i>
+      
+      <span class="sidebar-button-desc">Categorías</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://ruevko.github.io/hexagonal/tags">
+    
+      <i class="sidebar-button-icon fas fa-map-marker-alt fa-lg"></i>
+      
+      <span class="sidebar-button-desc">Etiquetas</span>
+    </a>
+  </li>
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://github.com/ruevko" target="_blank" rel="noopener">
+    
+      <i class="sidebar-button-icon fab fa-github-alt fa-lg"></i>
+      
+      <span class="sidebar-button-desc">GitHub</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://twitter.com/ruevko" target="_blank" rel="noopener">
+    
+      <i class="sidebar-button-icon fab fa-twitter fa-lg"></i>
+      
+      <span class="sidebar-button-desc">Twitter</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://ko-fi.com/ruevko" target="_blank" rel="noopener">
+    
+      <i class="sidebar-button-icon fas fa-coffee fa-lg"></i>
+      
+      <span class="sidebar-button-desc">Ko-fi</span>
+    </a>
+  </li>
+
+    </ul>
+    <ul class="sidebar-buttons" style="width:auto;">
+
+  <li class="sidebar-button">
+    <a class="sidebar-button-link" href="https://ruevko.github.io/hexagonal/post/readme">
+      <i class="sidebar-button-icon fas fa-compass fa-lg"></i>
+      <span class="sidebar-button-desc">Acerca de . . .</span>
+    </a>
+  </li>
+
+    </ul>
+  </div>
+</nav>
+      
+
+      
+
+      <div id="main" data-behavior="4"
+        class="
+               hasCoverMetaIn
+               ">
+        <article class="post" itemscope itemType="http://schema.org/BlogPosting">
+          
+          
+            <div class="post-header main-content-wrap text-left">
+  
+    <h1 class="post-title" itemprop="headline">
+      Mi primer GitHub Action
+    </h1>
+  
+  
+  <div class="postShorten-meta post-meta">
+    
+      <time itemprop="datePublished" datetime="2021-07-30T00:00:00Z">
+        
+  
+  
+  
+  
+    30 de Julio de 2021
+  
+
+      </time>
+    
+    
+  
+  
+    <span>en</span>
+    
+      <a class="category-link" href="https://ruevko.github.io/hexagonal/categories/twitter">Twitter</a>
+    
+  
+
+  </div>
+
+</div>
+          
+          <div class="post-content markdown" itemprop="articleBody">
+            <div class="main-content-wrap">
+              
+<script src="https://ruevko.github.io/hexagonal/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    background-color: #ffffff;
+    color: #a0a0a0;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #a0a0a0;  padding-left: 4px; }
+div.sourceCode
+  { color: #1f1c1b; background-color: #ffffff; }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span { color: #1f1c1b; } /* Normal */
+code span.al { color: #bf0303; background-color: #f7e6e6; font-weight: bold; } /* Alert */
+code span.an { color: #ca60ca; } /* Annotation */
+code span.at { color: #0057ae; } /* Attribute */
+code span.bn { color: #b08000; } /* BaseN */
+code span.bu { color: #644a9b; font-weight: bold; } /* BuiltIn */
+code span.cf { color: #1f1c1b; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #924c9d; } /* Char */
+code span.cn { color: #aa5500; } /* Constant */
+code span.co { color: #898887; } /* Comment */
+code span.cv { color: #0095ff; } /* CommentVar */
+code span.do { color: #607880; } /* Documentation */
+code span.dt { color: #0057ae; } /* DataType */
+code span.dv { color: #b08000; } /* DecVal */
+code span.er { color: #bf0303; text-decoration: underline; } /* Error */
+code span.ex { color: #0095ff; font-weight: bold; } /* Extension */
+code span.fl { color: #b08000; } /* Float */
+code span.fu { color: #644a9b; } /* Function */
+code span.im { color: #ff5500; } /* Import */
+code span.in { color: #b08000; } /* Information */
+code span.kw { color: #1f1c1b; font-weight: bold; } /* Keyword */
+code span.op { color: #1f1c1b; } /* Operator */
+code span.ot { color: #006e28; } /* Other */
+code span.pp { color: #006e28; } /* Preprocessor */
+code span.re { color: #0057ae; background-color: #e0e9f8; } /* RegionMarker */
+code span.sc { color: #3daee9; } /* SpecialChar */
+code span.ss { color: #ff5500; } /* SpecialString */
+code span.st { color: #bf0303; } /* String */
+code span.va { color: #0057ae; } /* Variable */
+code span.vs { color: #bf0303; } /* VerbatimString */
+code span.wa { color: #bf0303; } /* Warning */
+</style>
+
+<div id="TOC"><span class="post-meta">Contenido</span>
+<ul>
+<li><a href="#requisitos">Requisitos</a>
+<ul>
+<li><a href="#acceso-a-twitter-developer">Acceso a Twitter Developer</a></li>
+<li><a href="#nuevo-repositorio-de-github">Nuevo repositorio de GitHub</a></li>
+</ul></li>
+<li><a href="#utilizar-una-acción-de-github">Utilizar una acción de GitHub</a>
+<ul>
+<li><a href="#el-elemento-on">El elemento on:</a></li>
+<li><a href="#el-elemento-jobs">El elemento jobs:</a></li>
+<li><a href="#el-elemento-steps">El elemento steps:</a></li>
+</ul></li>
+</ul>
+</div>
+
+<p>Este artículo es una introducción a las oportunidades que ofrece GitHub Actions para
+ejecutar código en la nube. El objetivo que queremos lograr es compartir automáticamente
+un <em>tweet</em> cada vez que se publique un nuevo artículo en nuestro blog personal. Es verdad
+que compartir un <em>tweet</em> no es algo difícil, pero si el editor de un blog puede ahorrarse
+un par de minutos automatizando esta tarea, vale la pena aprender sobre las tecnologías
+que nos permiten hacerlo.</p>
+<div id="requisitos" class="section level1">
+<h1>Requisitos</h1>
+<p>Evidentemente debe existir un blog cuyas actualizaciones deseamos compartir; particularmente, el blog
+debe poseer un <em>feed</em> RSS con la <a href="http://validator.w3.org/feed/docs/rss2.html">estructura sugerida</a>
+por el World Wide Web Consortium (W3C). Si usted utiliza un servicio como WordPress, o un
+generador como Hugo, seguramente no tiene que preocuparse por la estructura del <em>feed</em>, solo debe
+encontrar su dirección. Yo utilizaré <a href="https://ruevko.github.io/hexagonal/index.xml">el <em>feed</em></a> de
+este mismo blog. El otro requisito es poseer un perfil de Twitter y de GitHub.</p>
+<div id="acceso-a-twitter-developer" class="section level2">
+<h2>Acceso a Twitter Developer</h2>
+<p>Un perfil de Twitter no basta para automatizar la generación de <em>tweets</em>; es necesario obtener
+acceso a un perfil de Twitter Developer, que ofrece una API gratuita. Para solicitar acceso
+ingresaremos al <a href="https://developer.twitter.com/en/portal/">Developer Portal</a>, donde se nos
+pedirá explicar el uso que daremos a la API; en este punto podemos seleccionar que crearemos
+un <em>bot</em> para que genere <em>tweets</em> en nuestro nombre:</p>
+<p>En los siguientes puntos se nos pedirá más información sobre nuestra solicitud. Explicaremos
+(en inglés) que crearemos una aplicación para compartir nuevos artículos de un blog. Por
+cierto, con la API también tendremos acceso a <em>tweets</em> o <em>timelines</em> de usuarios de Twitter
+así que, si esa aplicación nos interesa, no es mala idea incluirla en nuestra solicitud.</p>
+<p>Cuando la solicitud haya sido aprobada recibiremos un correo de confirmación; entonces vamos a
+regresar al Developer Portal, seleccionar el menú <em>Projects &amp; Apps</em> y el botón <em>Create App</em>. No hay
+que crear un proyecto, solo una aplicación estándar, porque necesitamos la versión 1.1 de la API.</p>
+<p>El siguiente punto es nombrar la aplicación; el nombre no es importante, pero no debe
+haber sido utilizado por ningún otro usuario. A continuación aparecerán en pantalla dos
+valores: <code>API Key</code> y <code>API Secret Key</code>. Estas claves otorgan acceso a la API en nuestro
+nombre, así que las copiaremos en un lugar seguro. Despúes, en la pestaña <em>Settings</em>,
+modificaremos los permisos de la aplicación para que pueda crear <em>tweets</em>:</p>
+<p>Finalmente, en la pestaña <em>Keys and tokens</em>, seleccionaremos el botón <em>Generate</em> ubicado
+al lado de <em>Access Token and Secret</em>. Aparecerán el <code>Access Token</code> y el <code>Access Token Secret</code>;
+en total son cuatro claves secretas que debemos conservar para que la aplicación funcione.
+Si alguna vez las extraviamos, siempre podemos regresar al Developer Portal, revocar y
+regenerar estos valores.</p>
+</div>
+<div id="nuevo-repositorio-de-github" class="section level2">
+<h2>Nuevo repositorio de GitHub</h2>
+<p>GitHub Actions es un servicio diseñado para realizar Continuous Integration y Deployment
+(CI/CD), es decir, para construir, probar y entregar software a través de “acciones”. Una
+acción es un paquete de código capaz de ejecutar una tarea que deseamos automatizar.
+GitHub Actions también permite ejecutar acciones que no tengan nada que ver con CI/CD; en
+el <a href="https://github.com/marketplace?type=actions">GitHub Marketplace</a> existen muchas acciones
+contribuidas por la comunidad, y cualquier usuario puede escribir sus propias acciones.</p>
+<p>Las acciones son controladas utilizando archivos denominados <em>workflows</em>, que describen
+cuándo y cómo se ejecutarán las acciones. Un <em>workflow</em> debe ser escrito en el lenguaje
+de serialización YAML (con extensión <code>.yml</code>) y ubicado en el directorio <code>.github/workflows/</code>
+de un repositorio alojado en GitHub. Si el repositorio es público, obtendremos
+un tiempo ilimitado de ejecución en la nube; si es privado, obtendremos una
+<a href="https://docs.github.com/en/billing/managing-billing-for-github-actions/about-billing-for-github-actions">cuota mensual</a>.</p>
+<p>Independientemente de que el repo sea público o privado, hay que suministrar
+las claves secretas de nuestra aplicación de Twitter. Escribir las claves en
+el <em>workflow</em> no es un método seguro; en vez de eso vamos a crear un
+<a href="https://docs.github.com/en/get-started/quickstart/create-a-repo">nuevo repositorio</a>,
+seleccionar la pestaña <em>Settings</em> y el menú <em>Secrets</em>:</p>
+<p><img src="https://res.cloudinary.com/dodnzqhiz/image/upload/v1627681986/2021post/ontjsbsvzlcopdrnfywe.png" /></p>
+<p>Con el botón <em>New repository secret</em> podemos crear variables encriptadas que solamente
+pueden ser leídas por una acción. Crearemos cuatro variables, una por cada clave de la
+aplicación; los nombres de las variables serán <code>TWITTER_API_KEY</code>, <code>TWITTER_API_KEY_SECRET</code>, <code>TWITTER_ACCESS_TOKEN</code> y <code>TWITTER_ACCESS_TOKEN_SECRET</code> respectivamente. Ahora estamos listos
+para escribir un <em>workflow</em> que genere <em>tweets</em>, y lo haremos paso a paso.</p>
+</div>
+</div>
+<div id="utilizar-una-acción-de-github" class="section level1">
+<h1>Utilizar una acción de GitHub</h1>
+<p>Si buscamos en el GitHub Marketplace encontraremos algunas acciones para crear <em>tweets</em>.
+En este tutorial utilizaremos <a href="https://github.com/marketplace/actions/send-tweet-action">Send Tweet Action</a>,
+escrita por Edward Thomson. El siguiente código YAML representa el <em>workflow</em> más simple
+(solo contiene elementos imprescindibles) que permite ejecutar esa acción; podemos insertar
+el código en un archivo <code>.github/workflows/my_first_workflow.yml</code> de nuestro repositorio.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode yml"><code class="sourceCode yaml"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">on</span><span class="kw">:</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">schedule</span><span class="kw">:</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="fu">cron</span><span class="kw">:</span><span class="at">  </span><span class="st">&#39;0 12 * * *&#39;</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">jobs</span><span class="kw">:</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">tweet</span><span class="kw">:</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">runs-on</span><span class="kw">:</span><span class="at"> ubuntu-latest</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">steps</span><span class="kw">:</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">uses</span><span class="kw">:</span><span class="at"> ethomson/send-tweet-action@v1.0.0</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">with</span><span class="kw">:</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">status</span><span class="kw">:</span><span class="at"> </span><span class="st">&#39;My first #GitHubAction tweet&#39;</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">consumer-key</span><span class="kw">:</span><span class="at"> ${{ secrets.TWITTER_API_KEY }}</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">consumer-secret</span><span class="kw">:</span><span class="at"> ${{ secrets.TWITTER_API_KEY_SECRET }}</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">access-token</span><span class="kw">:</span><span class="at"> ${{ secrets.TWITTER_ACCESS_TOKEN }}</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">access-token-secret</span><span class="kw">:</span><span class="at"> ${{ secrets.TWITTER_ACCESS_TOKEN_SECRET }}</span></span></code></pre></div>
+<div id="el-elemento-on" class="section level2">
+<h2>El elemento on:</h2>
+<p>A continuación explicaremos uno por uno los elementos que forman el <em>workflow</em>. El
+primero, <code>on:</code>, especifica cuáles eventos pueden desencadenar la ejecución del <em>workflow</em>.
+Eventos soportados por GitHub incluyen la actualización del repositorio vía <em>push</em>, la
+creación de <em>pull requests</em> o <em>issues</em>, entre otros. El evento que estamos utilizando,
+<code>schedule:</code>, programa la ejecución a determinadas horas, definidas con una sintaxis <code>cron</code>.</p>
+<p>En el código de arriba, la sintaxis <code>'0 12 * * *'</code> significa ejecutar todos los días a
+las 12:00 UTC. El uso de UTC es una buena práctica al diseñar un servidor, así que uno
+debe calcular el equivalente en su propio huso horario. Esto es importante pues será la
+hora aproximada de creación del <em>tweet</em>; y es aproximada pues hay que considerar la carga
+del servicio en ese momento y el tiempo de ejecución del <em>workflow</em>. En este sentido,
+es aconsejable elegir horas que no sean en punto, por ejemplo las 11:51 UTC con la
+sintaxis <code>'51 11 * * *'</code>. La sintaxis <code>cron</code> permite otros tipos de programación (como
+semanal o mensualmente) y es fácil de entender; para aprenderla puede visitar el sitio
+<a href="https://crontab.guru">crontab.guru</a>.</p>
+</div>
+<div id="el-elemento-jobs" class="section level2">
+<h2>El elemento jobs:</h2>
+<p>El segundo elemento, <code>jobs:</code>, contiene las tareas que el <em>workflow</em> debe realizar. Si son
+varias, las tareas pueden correr en paralelo y en diferentes <em>runners</em>, es decir en diferentes
+tipos de servidor. GitHub ofrece servidores con los sistemas operativos Ubuntu, Windows Server
+y macOS. Nuestro <em>workflow</em> contiene una sola tarea denominada <code>tweet:</code> que correrá en la
+última versión LTS de Ubuntu (<code>runs-on: ubuntu-latest</code>), la 20.04.2 actualmente.</p>
+</div>
+<div id="el-elemento-steps" class="section level2">
+<h2>El elemento steps:</h2>
+<p>El elemento <code>steps:</code> se encuentra dentro de <code>jobs:</code> y es la lista de pasos que conforman la
+tarea actual. Existen dos tipos de pasos: <code>run:</code> permite ejecutar comandos o programas en
+la terminal del <em>runner</em> (<em>bash</em> en el caso de Ubuntu), y <code>uses:</code> permite ejecutar cualquier
+acción disponible en un repositorio de GitHub. La tarea <code>tweet:</code> de nuestro <em>workflow</em>
+contiene un solo paso <code>uses:</code> donde utilizamos Send Tweet Action; la sintaxis para utilizar
+una acción es <code>user/repo@version</code>.</p>
+<p>Algunas acciones necesitan <em>inputs</em> para funcionar y deben ser ingresados como subelementos
+de <code>with:</code>. La acción que estamos utilizando necesita cinco <em>inputs</em> correspondientes al
+contenido del <em>tweet</em> (<code>status:</code>) y a las cuatro claves que guardamos anteriormente como
+variables encriptadas. La sintaxis para acceder a estas variables es <code>${{ secrets.VARIABLE }}</code>;
+las llaves dobles sirven para acceder a entornos, funciones y variables en GitHub Actions.</p>
+<p>En este punto, si añadimos <code>my_first_workflow.yml</code> a nuestro repo, automáticamente generará
+un <em>tweet</em> todos los días, pero el contenido será siempre el mismo (el que definimos en <code>status:</code>).
+Para modificar el contenido, con el enlace a un nuevo artículo de nuestro blog, debemos añadir pasos
+previos a la tarea <code>tweet:</code>. Son varios pasos, así que los discutiremos en el siguiente artículo.</p>
+</div>
+</div>
+
+              
+            </div>
+          </div>
+          <div id="post-footer" class="post-footer main-content-wrap">
+            
+              
+            
+            <div class="post-actions-wrap">
+  
+      <nav >
+        <ul class="post-actions post-action-nav">
+          
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--disabled">
+              
+                  <i class="fa fa-angle-left"></i>
+                  <span class="hide-xs text-small icon-ml">Siguiente</span>
+                </a>
+            </li>
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip-big" href="https://ruevko.github.io/hexagonal/post/2021/04/16-mapping-ecuador-contribuciones/" data-tooltip="Mapping Ecuador y las contribuciones a OSM, antes y después del terremoto 16A">
+              
+                  <span class="hide-xs text-small icon-mr" style="margin-left: 1.5px;">Anterior</span>
+                  <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+          
+        </ul>
+      </nav>
+    <ul class="post-actions post-action-share" >
+      
+        <li class="post-action hide-lg hide-md">
+          <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions">
+            <i class="fa fa-share-alt"></i>
+          </a>
+        </li>
+        
+          <li class="post-action hide-sm hide-xs">
+            <a class="post-action-btn btn btn--default" href=
+            
+              "https://www.facebook.com/sharer.php?t=Este%20art%c3%adculo%20fue%20publicado%20en%20el%20blog%20La%20Galer%c3%ada%20Hexagonal&amp;u=https://ruevko.github.io/hexagonal/post/2021/07/30-primer-github-action/" target="_blank"
+              data-tooltip="Compartir en Facebook">
+            
+              <i class="fab fa-facebook"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-sm hide-xs">
+            <a class="post-action-btn btn btn--default" href=
+            
+              "https://twitter.com/intent/tweet?text=Este%20art%c3%adculo%20fue%20publicado%20en%20el%20blog%20La%20Galer%c3%ada%20Hexagonal&amp;url=https://ruevko.github.io/hexagonal/post/2021/07/30-primer-github-action/" target="_blank"
+              data-tooltip="Compartir en Twitter">
+            
+              <i class="fab fa-twitter"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-sm hide-xs">
+            <a class="post-action-btn btn btn--default" href=
+            
+              "https://github.com/ruevko/hexagonal/blob/master/content/post/2021/07/30-primer-github-action.Rmd"
+              data-tooltip="Ver código en GitHub">
+            
+              <i class="fab fa-github-alt"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-sm hide-xs">
+            <a class="post-action-btn btn btn--default" href=
+            
+              "https://t.me/share/url?text=Este%20art%c3%adculo%20fue%20publicado%20en%20el%20blog%20La%20Galer%c3%ada%20Hexagonal&amp;url=https://ruevko.github.io/hexagonal/post/2021/07/30-primer-github-action/" target="_blank"
+              data-tooltip="Compartir en Telegram">
+            
+              <i class="fab fa-telegram-plane"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-sm hide-xs">
+            <a class="post-action-btn btn btn--default" href=
+            
+              "https://api.whatsapp.com/send?text=Este%20art%c3%adculo%20fue%20publicado%20en%20el%20blog%20La%20Galer%c3%ada%20Hexagonal%20https://ruevko.github.io/hexagonal/post/2021/07/30-primer-github-action/" target="_blank"
+              data-tooltip="Compartir en WhatsApp">
+            
+              <i class="fab fa-whatsapp"></i>
+            </a>
+          </li>
+        
+      
+      
+      
+      <li class="post-action">
+        <a class="btn btn--default" href="#main" data-tooltip="Regresar al inicio">
+          <i class="fa fa-chevron-up"></i>
+        </a>
+      </li>
+    </ul>
+  
+</div>
+            
+              
+            
+          </div>
+        </article>
+        <footer id="footer" class="main-content-wrap">
+  <span class="copyrights">
+    <i class="fab fa-creative-commons"></i>
+    <i class="fab fa-creative-commons-by"></i>
+    <i class="fab fa-creative-commons-sa"></i>
+    2021
+    (CC BY&ndash;SA 4.0)
+    <br>
+    
+      by Rafael Castro <i class="fas fa-lg fa-crow"></i>
+    
+  </span>
+</footer>
+      </div>
+      <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+        <div class="post-actions-wrap">
+  
+      <nav >
+        <ul class="post-actions post-action-nav">
+          
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--disabled">
+              
+                  <i class="fa fa-angle-left"></i>
+                  <span class="hide-xs text-small icon-ml">Siguiente</span>
+                </a>
+            </li>
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip-big" href="https://ruevko.github.io/hexagonal/post/2021/04/16-mapping-ecuador-contribuciones/" data-tooltip="Mapping Ecuador y las contribuciones a OSM, antes y después del terremoto 16A">
+              
+                  <span class="hide-xs text-small icon-mr" style="margin-left: 1.5px;">Anterior</span>
+                  <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+          
+        </ul>
+      </nav>
+    <ul class="post-actions post-action-share" >
+      
+        <li class="post-action hide-lg hide-md">
+          <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions">
+            <i class="fa fa-share-alt"></i>
+          </a>
+        </li>
+        
+          <li class="post-action hide-sm hide-xs">
+            <a class="post-action-btn btn btn--default" href=
+            
+              "https://www.facebook.com/sharer.php?t=Este%20art%c3%adculo%20fue%20publicado%20en%20el%20blog%20La%20Galer%c3%ada%20Hexagonal&amp;u=https://ruevko.github.io/hexagonal/post/2021/07/30-primer-github-action/" target="_blank"
+              data-tooltip="Compartir en Facebook">
+            
+              <i class="fab fa-facebook"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-sm hide-xs">
+            <a class="post-action-btn btn btn--default" href=
+            
+              "https://twitter.com/intent/tweet?text=Este%20art%c3%adculo%20fue%20publicado%20en%20el%20blog%20La%20Galer%c3%ada%20Hexagonal&amp;url=https://ruevko.github.io/hexagonal/post/2021/07/30-primer-github-action/" target="_blank"
+              data-tooltip="Compartir en Twitter">
+            
+              <i class="fab fa-twitter"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-sm hide-xs">
+            <a class="post-action-btn btn btn--default" href=
+            
+              "https://github.com/ruevko/hexagonal/blob/master/content/post/2021/07/30-primer-github-action.Rmd"
+              data-tooltip="Ver código en GitHub">
+            
+              <i class="fab fa-github-alt"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-sm hide-xs">
+            <a class="post-action-btn btn btn--default" href=
+            
+              "https://t.me/share/url?text=Este%20art%c3%adculo%20fue%20publicado%20en%20el%20blog%20La%20Galer%c3%ada%20Hexagonal&amp;url=https://ruevko.github.io/hexagonal/post/2021/07/30-primer-github-action/" target="_blank"
+              data-tooltip="Compartir en Telegram">
+            
+              <i class="fab fa-telegram-plane"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-sm hide-xs">
+            <a class="post-action-btn btn btn--default" href=
+            
+              "https://api.whatsapp.com/send?text=Este%20art%c3%adculo%20fue%20publicado%20en%20el%20blog%20La%20Galer%c3%ada%20Hexagonal%20https://ruevko.github.io/hexagonal/post/2021/07/30-primer-github-action/" target="_blank"
+              data-tooltip="Compartir en WhatsApp">
+            
+              <i class="fab fa-whatsapp"></i>
+            </a>
+          </li>
+        
+      
+      
+      
+      <li class="post-action">
+        <a class="btn btn--default" href="#main" data-tooltip="Regresar al inicio">
+          <i class="fa fa-chevron-up"></i>
+        </a>
+      </li>
+    </ul>
+  
+</div>
+      </div>
+      <div id="share-options-bar" class="share-options-bar" data-behavior="4">
+  <i id="btn-close-shareoptions" class="fas fa-times"></i>
+  <ul class="share-options">
+    
+      <li class="share-option">
+            <a class="share-option-btn" href=
+            
+              "https://www.facebook.com/sharer.php?t=Este%20art%c3%adculo%20fue%20publicado%20en%20el%20blog%20La%20Galer%c3%ada%20Hexagonal&amp;u=https://ruevko.github.io/hexagonal/post/2021/07/30-primer-github-action/" target="_blank"
+              ><span class="icon-mr">Compartir en Facebook</span>
+            
+              <i class="fab fa-facebook"></i>
+            </a>
+      </li>
+    
+      <li class="share-option">
+            <a class="share-option-btn" href=
+            
+              "https://twitter.com/intent/tweet?text=Este%20art%c3%adculo%20fue%20publicado%20en%20el%20blog%20La%20Galer%c3%ada%20Hexagonal&amp;url=https://ruevko.github.io/hexagonal/post/2021/07/30-primer-github-action/" target="_blank"
+              ><span class="icon-mr">Compartir en Twitter</span>
+            
+              <i class="fab fa-twitter"></i>
+            </a>
+      </li>
+    
+      <li class="share-option">
+            <a class="share-option-btn" href=
+            
+              "https://github.com/ruevko/hexagonal/blob/master/content/post/2021/07/30-primer-github-action.Rmd"
+              ><span class="icon-mr">Ver código en GitHub</span>
+            
+              <i class="fab fa-github-alt"></i>
+            </a>
+      </li>
+    
+      <li class="share-option">
+            <a class="share-option-btn" href=
+            
+              "https://t.me/share/url?text=Este%20art%c3%adculo%20fue%20publicado%20en%20el%20blog%20La%20Galer%c3%ada%20Hexagonal&amp;url=https://ruevko.github.io/hexagonal/post/2021/07/30-primer-github-action/" target="_blank"
+              ><span class="icon-mr">Compartir en Telegram</span>
+            
+              <i class="fab fa-telegram-plane"></i>
+            </a>
+      </li>
+    
+      <li class="share-option">
+            <a class="share-option-btn" href=
+            
+              "https://api.whatsapp.com/send?text=Este%20art%c3%adculo%20fue%20publicado%20en%20el%20blog%20La%20Galer%c3%ada%20Hexagonal%20https://ruevko.github.io/hexagonal/post/2021/07/30-primer-github-action/" target="_blank"
+              ><span class="icon-mr">Compartir en WhatsApp</span>
+            
+              <i class="fab fa-whatsapp"></i>
+            </a>
+      </li>
+    
+  </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+    </div>
+    <div id="about">
+  <div id="about-card">
+    <div id="about-btn-close">
+      <i class="fas fa-times"></i>
+    </div>
+    
+      <img id="about-card-picture" src="https://ruevko.github.io/hexagonal/logo.png"/>
+    
+    
+    <h4 id="about-card-name">La Galería Hexagonal</h4>
+    
+      <div id="about-card-bio">El blog de Rafael Castro, orientado a Cartografía y Análisis de Datos</div>
+    
+    
+      <div id="about-card-job">
+        <i class="fas fa-graduation-cap"></i>
+        <br/>
+        Geógrafo
+      </div>
+    
+    
+      <div id="about-card-location">
+        <i class="fas fa-home"></i>
+        <br/>
+        Ecuador
+      </div>
+    
+  </div>
+</div>
+    
+    
+  
+    <div id="cover" style="background-image:url('https://res.cloudinary.com/dodnzqhiz/image/upload/v1577918037/crv.png');"></div>
+  
+
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.7/js/jquery.fancybox.min.js" integrity="sha256-GEAnjcTqVP+vBp3SSc8bEDQqvWAZMiHyUSIorrWwH50=" crossorigin="anonymous"></script>
+
+
+<script src="https://ruevko.github.io/hexagonal/js/script-brfgmdgurld48bpji4eimk0fcikejj.min.js"></script>
+
+
+<script lang="javascript">
+window.onload = updateMinWidth;
+window.onresize = updateMinWidth;
+document.getElementById("sidebar").addEventListener("transitionend", updateMinWidth);
+function updateMinWidth() {
+  var sidebar = document.getElementById("sidebar");
+  var main = document.getElementById("main");
+  main.style.minWidth = "";
+  var w1 = getComputedStyle(main).getPropertyValue("min-width");
+  var w2 = getComputedStyle(sidebar).getPropertyValue("width");
+  var w3 = getComputedStyle(sidebar).getPropertyValue("left");
+  main.style.minWidth = `calc(${w1} - ${w2} - ${w3})`;
+}
+</script>
+
+
+  
+    
+  
+
+
+
+  </body>
+</html>

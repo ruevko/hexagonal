@@ -3,7 +3,19 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://ruevko.github.io/hexagonal/categories/</loc>
-    <lastmod>2021-04-16T00:00:00+00:00</lastmod>
+    <lastmod>2021-07-30T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://ruevko.github.io/hexagonal/</loc>
+    <lastmod>2021-07-30T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://ruevko.github.io/hexagonal/post/2021/07/30-primer-github-action/</loc>
+    <lastmod>2021-07-30T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://ruevko.github.io/hexagonal/post/</loc>
+    <lastmod>2021-07-30T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://ruevko.github.io/hexagonal/categories/twitter/</loc>
+    <lastmod>2021-07-30T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://ruevko.github.io/hexagonal/categories/datajournalism/</loc>
     <lastmod>2021-04-16T00:00:00+00:00</lastmod>
@@ -11,16 +23,10 @@
     <loc>https://ruevko.github.io/hexagonal/tags/ecuador/</loc>
     <lastmod>2021-04-16T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://ruevko.github.io/hexagonal/</loc>
-    <lastmod>2021-04-16T00:00:00+00:00</lastmod>
-  </url><url>
     <loc>https://ruevko.github.io/hexagonal/post/2021/04/16-mapping-ecuador-contribuciones/</loc>
     <lastmod>2021-04-16T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://ruevko.github.io/hexagonal/tags/nodos-osm/</loc>
-    <lastmod>2021-04-16T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://ruevko.github.io/hexagonal/post/</loc>
     <lastmod>2021-04-16T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://ruevko.github.io/hexagonal/tags/regresi%C3%B3n/</loc>
@@ -72,9 +78,6 @@
     <lastmod>2020-02-19T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://ruevko.github.io/hexagonal/post/2020/02/19-sobre-tweets-paro-nacional-parte/</loc>
-    <lastmod>2020-02-19T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://ruevko.github.io/hexagonal/categories/twitter/</loc>
     <lastmod>2020-02-19T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://ruevko.github.io/hexagonal/post/2020/01/23-sobre-tweets-paro-nacional/</loc>

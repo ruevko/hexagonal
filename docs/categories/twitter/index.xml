@@ -6,9 +6,17 @@
     <description>Artículos sobre Twitter en La Galería Hexagonal</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>es</language>
-    <lastBuildDate>Wed, 19 Feb 2020</lastBuildDate>
+    <lastBuildDate>Fri, 30 Jul 2021</lastBuildDate>
     
     <atom:link href="https://ruevko.github.io/hexagonal/categories/twitter/index.xml" rel="self" type="application/rss+xml"/>
+    
+    <item>
+      <title>Mi primer GitHub Action</title>
+      <link>https://ruevko.github.io/hexagonal/post/2021/07/30-primer-github-action/</link>
+      <pubDate>Fri, 30 Jul 2021</pubDate>
+      <guid>https://ruevko.github.io/hexagonal/post/2021/07/30-primer-github-action/</guid>
+      <description>GitHub Actions es un servicio que permite automatizar tareas de CI/CD. En este tutorial, sin embargo, lo utilizaré para compartir un tweet cada vez que publique en este blog.</description>
+    </item>
     
     <item>
       <title>Sobre los Tweets en el Paro Nacional, segunda parte</title>
