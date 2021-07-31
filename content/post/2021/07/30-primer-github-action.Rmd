@@ -1,0 +1,166 @@
+---
+title: Mi primer GitHub Action
+date: '2021-07-30'
+slug: 30-primer-github-action
+categories:
+  - Twitter
+tags:
+#  - github actions
+source: 30-primer-github-action.Rmd
+keywords:
+  - github actions
+editor_options:
+  chunk_output_type: console
+output:
+  blogdown::html_page:
+    highlight: kate
+    toc: true
+thumbnailImage: https://res.cloudinary.com/dodnzqhiz/image/upload/v1627680475/2021post/w2f6ukifljirsfgz2hzv.png
+summary: GitHub Actions es un servicio que permite automatizar tareas de CI/CD. En este tutorial, sin embargo, lo utilizaré para compartir un tweet cada vez que publique en este blog.
+---
+
+Este artículo es una introducción a las oportunidades que ofrece GitHub Actions para
+ejecutar código en la nube. El objetivo que queremos lograr es compartir automáticamente
+un *tweet* cada vez que se publique un nuevo artículo en nuestro blog personal. Es verdad
+que compartir un *tweet* no es algo difícil, pero si el editor de un blog puede ahorrarse
+un par de minutos automatizando esta tarea, vale la pena aprender sobre las tecnologías
+que nos permiten hacerlo.
+
+# Requisitos
+
+Evidentemente debe existir un blog cuyas actualizaciones deseamos compartir; particularmente, el blog
+debe poseer un *feed* RSS con la [estructura sugerida](http://validator.w3.org/feed/docs/rss2.html)
+por el World Wide Web Consortium (W3C). Si usted utiliza un servicio como WordPress, o un
+generador como Hugo, seguramente no tiene que preocuparse por la estructura del *feed*, solo debe
+encontrar su dirección. Yo utilizaré [el *feed*](https://ruevko.github.io/hexagonal/index.xml) de
+este mismo blog. El otro requisito es poseer un perfil de Twitter y de GitHub.
+
+## Acceso a Twitter Developer
+
+Un perfil de Twitter no basta para automatizar la generación de *tweets*; es necesario obtener
+acceso a un perfil de Twitter Developer, que ofrece una API gratuita. Para solicitar acceso
+ingresaremos al [Developer Portal](https://developer.twitter.com/en/portal/), donde se nos
+pedirá explicar el uso que daremos a la API; en este punto podemos seleccionar que crearemos
+un *bot* para que genere *tweets* en nuestro nombre:
+
+En los siguientes puntos se nos pedirá más información sobre nuestra solicitud. Explicaremos
+(en inglés) que crearemos una aplicación para compartir nuevos artículos de un blog. Por
+cierto, con la API también tendremos acceso a *tweets* o *timelines* de usuarios de Twitter
+así que, si esa aplicación nos interesa, no es mala idea incluirla en nuestra solicitud.
+
+Cuando la solicitud haya sido aprobada recibiremos un correo de confirmación; entonces vamos a
+regresar al Developer Portal, seleccionar el menú *Projects & Apps* y el botón *Create App*. No hay
+que crear un proyecto, solo una aplicación estándar, porque necesitamos la versión 1.1 de la API.
+
+El siguiente punto es nombrar la aplicación; el nombre no es importante, pero no debe
+haber sido utilizado por ningún otro usuario. A continuación aparecerán en pantalla dos
+valores: `API Key` y `API Secret Key`. Estas claves otorgan acceso a la API en nuestro
+nombre, así que las copiaremos en un lugar seguro. Despúes, en la pestaña *Settings*,
+modificaremos los permisos de la aplicación para que pueda crear *tweets*:
+
+Finalmente, en la pestaña *Keys and tokens*, seleccionaremos el botón *Generate* ubicado
+al lado de *Access Token and Secret*. Aparecerán el `Access Token` y el `Access Token Secret`;
+en total son cuatro claves secretas que debemos conservar para que la aplicación funcione.
+Si alguna vez las extraviamos, siempre podemos regresar al Developer Portal, revocar y
+regenerar estos valores.
+
+## Nuevo repositorio de GitHub
+
+GitHub Actions es un servicio diseñado para realizar Continuous Integration y Deployment
+(CI/CD), es decir, para construir, probar y entregar software a través de "acciones". Una
+acción es un paquete de código capaz de ejecutar una tarea que deseamos automatizar.
+GitHub Actions también permite ejecutar acciones que no tengan nada que ver con CI/CD; en
+el [GitHub Marketplace](https://github.com/marketplace?type=actions) existen muchas acciones
+contribuidas por la comunidad, y cualquier usuario puede escribir sus propias acciones.
+
+Las acciones son controladas utilizando archivos denominados *workflows*, que describen
+cuándo y cómo se ejecutarán las acciones. Un *workflow* debe ser escrito en el lenguaje
+de serialización YAML (con extensión `.yml`) y ubicado en el directorio `.github/workflows/`
+de un repositorio alojado en GitHub. Si el repositorio es público, obtendremos
+un tiempo ilimitado de ejecución en la nube; si es privado, obtendremos una
+[cuota mensual](https://docs.github.com/en/billing/managing-billing-for-github-actions/about-billing-for-github-actions).
+
+Independientemente de que el repo sea público o privado, hay que suministrar
+las claves secretas de nuestra aplicación de Twitter. Escribir las claves en
+el *workflow* no es un método seguro; en vez de eso vamos a crear un
+[nuevo repositorio](https://docs.github.com/en/get-started/quickstart/create-a-repo),
+seleccionar la pestaña *Settings* y el menú *Secrets*:
+
+![](https://res.cloudinary.com/dodnzqhiz/image/upload/v1627681986/2021post/ontjsbsvzlcopdrnfywe.png)
+
+Con el botón *New repository secret* podemos crear variables encriptadas que solamente
+pueden ser leídas por una acción. Crearemos cuatro variables, una por cada clave de la
+aplicación; los nombres de las variables serán `TWITTER_API_KEY`, `TWITTER_API_KEY_SECRET`, `TWITTER_ACCESS_TOKEN` y `TWITTER_ACCESS_TOKEN_SECRET` respectivamente. Ahora estamos listos
+para escribir un *workflow* que genere *tweets*, y lo haremos paso a paso.
+
+# Utilizar una acción de GitHub
+
+Si buscamos en el GitHub Marketplace encontraremos algunas acciones para crear *tweets*.
+En este tutorial utilizaremos [Send Tweet Action](https://github.com/marketplace/actions/send-tweet-action),
+escrita por Edward Thomson. El siguiente código YAML representa el *workflow* más simple
+(solo contiene elementos imprescindibles) que permite ejecutar esa acción; podemos insertar
+el código en un archivo `.github/workflows/my_first_workflow.yml` de nuestro repositorio.
+
+``` yml
+on:
+  schedule:
+    - cron:  '0 12 * * *'
+
+jobs:
+  tweet:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: ethomson/send-tweet-action@v1.0.0
+        with:
+          status: 'My first #GitHubAction tweet'
+          consumer-key: ${{ secrets.TWITTER_API_KEY }}
+          consumer-secret: ${{ secrets.TWITTER_API_KEY_SECRET }}
+          access-token: ${{ secrets.TWITTER_ACCESS_TOKEN }}
+          access-token-secret: ${{ secrets.TWITTER_ACCESS_TOKEN_SECRET }}
+```
+
+## El elemento on:
+
+A continuación explicaremos uno por uno los elementos que forman el *workflow*. El
+primero, `on:`, especifica cuáles eventos pueden desencadenar la ejecución del *workflow*.
+Eventos soportados por GitHub incluyen la actualización del repositorio vía *push*, la
+creación de *pull requests* o *issues*, entre otros. El evento que estamos utilizando,
+`schedule:`, programa la ejecución a determinadas horas, definidas con una sintaxis `cron`.
+
+En el código de arriba, la sintaxis `'0 12 * * *'` significa ejecutar todos los días a
+las 12:00 UTC. El uso de UTC es una buena práctica al diseñar un servidor, así que uno
+debe calcular el equivalente en su propio huso horario. Esto es importante pues será la
+hora aproximada de creación del *tweet*; y es aproximada pues hay que considerar la carga
+del servicio en ese momento y el tiempo de ejecución del *workflow*. En este sentido,
+es aconsejable elegir horas que no sean en punto, por ejemplo las 11:51 UTC con la
+sintaxis `'51 11 * * *'`. La sintaxis `cron` permite otros tipos de programación (como
+semanal o mensualmente) y es fácil de entender; para aprenderla puede visitar el sitio
+[crontab.guru](https://crontab.guru).
+
+## El elemento jobs:
+
+El segundo elemento, `jobs:`, contiene las tareas que el *workflow* debe realizar. Si son
+varias, las tareas pueden correr en paralelo y en diferentes *runners*, es decir en diferentes
+tipos de servidor. GitHub ofrece servidores con los sistemas operativos Ubuntu, Windows Server
+y macOS. Nuestro *workflow* contiene una sola tarea denominada `tweet:` que correrá en la
+última versión LTS de Ubuntu (`runs-on: ubuntu-latest`), la 20.04.2 actualmente.
+
+## El elemento steps:
+
+El elemento `steps:` se encuentra dentro de `jobs:` y es la lista de pasos que conforman la
+tarea actual. Existen dos tipos de pasos: `run:` permite ejecutar comandos o programas en
+la terminal del *runner* (*bash* en el caso de Ubuntu), y `uses:` permite ejecutar cualquier
+acción disponible en un repositorio de GitHub. La tarea `tweet:` de nuestro *workflow*
+contiene un solo paso `uses:` donde utilizamos Send Tweet Action; la sintaxis para utilizar
+una acción es `user/repo@version`.
+
+Algunas acciones necesitan *inputs* para funcionar y deben ser ingresados como subelementos
+de `with:`. La acción que estamos utilizando necesita cinco *inputs* correspondientes al
+contenido del *tweet* (`status:`) y a las cuatro claves que guardamos anteriormente como
+variables encriptadas. La sintaxis para acceder a estas variables es `${{ secrets.VARIABLE }}`;
+las llaves dobles sirven para acceder a entornos, funciones y variables en GitHub Actions.
+
+En este punto, si añadimos `my_first_workflow.yml` a nuestro repo, automáticamente generará
+un *tweet* todos los días, pero el contenido será siempre el mismo (el que definimos en `status:`).
+Para modificar el contenido, con el enlace a un nuevo artículo de nuestro blog, debemos añadir pasos
+previos a la tarea `tweet:`. Son varios pasos, así que los discutiremos en el siguiente artículo.
