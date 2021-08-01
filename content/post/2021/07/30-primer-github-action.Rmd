@@ -5,7 +5,7 @@ slug: 30-primer-github-action
 categories:
   - Twitter
 tags:
-#  - github actions
+  - github actions
 source: 30-primer-github-action.Rmd
 keywords:
   - github actions
@@ -43,6 +43,8 @@ ingresaremos al [Developer Portal](https://developer.twitter.com/en/portal/), do
 pedirá explicar el uso que daremos a la API; en este punto podemos seleccionar que crearemos
 un *bot* para que genere *tweets* en nuestro nombre:
 
+![](https://res.cloudinary.com/dodnzqhiz/image/upload/v1627778311/2021post/oa1jnp1s9i5fvtnwyzs3.png)
+
 En los siguientes puntos se nos pedirá más información sobre nuestra solicitud. Explicaremos
 (en inglés) que crearemos una aplicación para compartir nuevos artículos de un blog. Por
 cierto, con la API también tendremos acceso a *tweets* o *timelines* de usuarios de Twitter
@@ -52,11 +54,15 @@ Cuando la solicitud haya sido aprobada recibiremos un correo de confirmación; e
 regresar al Developer Portal, seleccionar el menú *Projects & Apps* y el botón *Create App*. No hay
 que crear un proyecto, solo una aplicación estándar, porque necesitamos la versión 1.1 de la API.
 
+![](https://res.cloudinary.com/dodnzqhiz/image/upload/v1627778421/2021post/ir4mfmsb8zbk3jwupuye.png)
+
 El siguiente punto es nombrar la aplicación; el nombre no es importante, pero no debe
 haber sido utilizado por ningún otro usuario. A continuación aparecerán en pantalla dos
 valores: `API Key` y `API Secret Key`. Estas claves otorgan acceso a la API en nuestro
 nombre, así que las copiaremos en un lugar seguro. Despúes, en la pestaña *Settings*,
 modificaremos los permisos de la aplicación para que pueda crear *tweets*:
+
+![](https://res.cloudinary.com/dodnzqhiz/image/upload/v1627778547/2021post/stg8ughcgwjcqz9vqtwb.png)
 
 Finalmente, en la pestaña *Keys and tokens*, seleccionaremos el botón *Generate* ubicado
 al lado de *Access Token and Secret*. Aparecerán el `Access Token` y el `Access Token Secret`;

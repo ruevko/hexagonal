@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>github actions en La Galería Hexagonal</title>
+    <link>https://ruevko.github.io/hexagonal/tags/github-actions/</link>
+    <description>Artículos sobre github actions en La Galería Hexagonal</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>es</language>
+    <lastBuildDate>Fri, 30 Jul 2021</lastBuildDate>
+    
+    <atom:link href="https://ruevko.github.io/hexagonal/tags/github-actions/index.xml" rel="self" type="application/rss+xml"/>
+    
+    <item>
+      <title>Mi primer GitHub Action</title>
+      <link>https://ruevko.github.io/hexagonal/post/2021/07/30-primer-github-action/</link>
+      <pubDate>Fri, 30 Jul 2021</pubDate>
+      <guid>https://ruevko.github.io/hexagonal/post/2021/07/30-primer-github-action/</guid>
+      <description>GitHub Actions es un servicio que permite automatizar tareas de CI/CD. En este tutorial, sin embargo, lo utilizaré para compartir un tweet cada vez que publique en este blog.</description>
+    </item>
+    
+  </channel>
+</rss>
