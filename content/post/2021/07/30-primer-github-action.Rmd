@@ -16,7 +16,7 @@ output:
     highlight: kate
     toc: true
 thumbnailImage: https://res.cloudinary.com/dodnzqhiz/image/upload/v1627680475/2021post/w2f6ukifljirsfgz2hzv.png
-summary: GitHub Actions es un servicio que permite automatizar tareas de CI/CD. En este tutorial, sin embargo, lo utilizaré para compartir un tweet cada vez que publique en este blog.
+summary: GitHub Actions es un servicio que permite automatizar tareas de CI/CD. En este tutorial, sin embargo, lo utilizaré para compartir un *tweet* cada vez que publique en este blog.
 ---
 
 Este artículo es una introducción a las oportunidades que ofrece GitHub Actions para
@@ -138,10 +138,10 @@ las 12:00 UTC. El uso de UTC es una buena práctica al diseñar un servidor, as�
 debe calcular el equivalente en su propio huso horario. Esto es importante pues será la
 hora aproximada de creación del *tweet*; y es aproximada pues hay que considerar la carga
 del servicio en ese momento y el tiempo de ejecución del *workflow*. En este sentido,
-es aconsejable elegir horas que no sean en punto, por ejemplo las 11:51 UTC con la
-sintaxis `'51 11 * * *'`. La sintaxis `cron` permite otros tipos de programación (como
-semanal o mensualmente) y es fácil de entender; para aprenderla puede visitar el sitio
-[crontab.guru](https://crontab.guru).
+es aconsejable elegir horas que no sean en punto, por ejemplo las 11:51 UTC
+especificando `'51 11 * * *'`. La sintaxis `cron` permite otros tipos de programación
+(como semanal o mensualmente) y es fácil de entender; para aprenderla puede visitar el
+sitio [crontab.guru](https://crontab.guru).
 
 ## El elemento jobs:
 
@@ -166,7 +166,146 @@ contenido del *tweet* (`status:`) y a las cuatro claves que guardamos anteriorme
 variables encriptadas. La sintaxis para acceder a estas variables es `${{ secrets.VARIABLE }}`;
 las llaves dobles sirven para acceder a entornos, funciones y variables en GitHub Actions.
 
-En este punto, si añadimos `my_first_workflow.yml` a nuestro repo, automáticamente generará
-un *tweet* todos los días, pero el contenido será siempre el mismo (el que definimos en `status:`).
-Para modificar el contenido, con el enlace a un nuevo artículo de nuestro blog, debemos añadir pasos
-previos a la tarea `tweet:`. Son varios pasos, así que los discutiremos en el siguiente artículo.
+En este punto, si añadimos `my_first_workflow.yml` a nuestro repo, automáticamente
+generará un *tweet* todos los días, pero el contenido será siempre el mismo (el que
+definimos en `status:`). Para modificar el contenido, con la dirección de un nuevo
+artículo de nuestro blog, debemos añadir más pasos a la tarea `tweet:`.
+
+# Insertar pasos en la acción
+
+En GitHub Actions, todos los *runners* poseen varios programas y herramientas útiles ya instalados. Entre los
+[programas incluidos](https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu2004-README.md)
+actualmente en nuestro *runner* `ubuntu-latest` está R versión 4.1.0, así que podré
+escribir un *script* en este lenguaje para ejecutar las tareas que faltan en el *workflow*.
+Debo mencionar que, para que el *script* funcione, el *runner* también debe tener `curl`
+o `libcurl4` instalado (actualmente ambos lo están).
+
+Para obtener el *feed* y el enlace a un nuevo artículo utilizaré el paquete `xml2`.
+El problema es que, dentro del *runner*, uno no tiene acceso al directorio donde R
+normalmente instala un nuevo paquete. Una solución es aprovechar acciones ya existentes ([r-lib/actions](https://github.com/r-lib/actions)) para crear un entorno R funcional.
+Esa es la solución recomendada pero, como solo necesito un paquete, voy a hacer algo
+más simple: instalaré `xml2` en un directorio arbitrario  y crearé un *cache* para
+reusarlo cuando sea necesario. Vamos a modificar `my_first_workflow.yml`: conservaremos
+los elementos `on:` y `jobs:` pero después de `steps:` insertaremos la acción [Cache](https://github.com/marketplace/actions/cache) de la siguiente manera:
+
+``` yml
+      - id: rcache
+        uses: actions/cache@v2.0.0
+        with:
+          path: rlib
+          key: ${{ runner.os }}-Rcache
+```
+
+Este paso, la próxima vez que se ejecute el *workflow*, guardará el contenido del
+directorio `rlib` en un *cache* con la clave `Linux-Rcache`. Mientras no cambie esta
+clave, las ejecuciones subsecuentes automáticamente restaurarán el contenido de `rlib`;
+el siguiente paso consiste en instalar `xml2` en este directorio:
+
+``` yml
+      - if: steps.rcache.outputs.cache-hit != 'true'
+        run: |
+          dir.create("rlib")
+          install.packages("xml2", lib = "rlib")
+        shell: Rscript {0}
+```
+
+El elemento `if:` se encarga de que este paso se ejecute solamente si el *cache* no existe.
+En nuestro caso solo ahorraremos unos segundos, pero este es un procedimiento útil cuando
+hay más paquetes; recordemos que en sistemas Linux la instalación demora más porque se
+hace con el código fuente. Por otra parte, todas las líneas contenidas entre `run: |`
+y `shell: Rscript {0}` serán ejecutadas a través de `Rscript`, la herramienta que permite
+ejecutar código R desde la terminal. Esta sintaxis es útil, pues permite ejecutar código
+multilínea con *bash* u otro programa.
+
+```{r echo=FALSE}
+twt_head = "Nuevo artículo en mi blog:"
+feed_url = "https://ruevko.github.io/hexagonal/index.xml"
+```
+
+Ahora vamos a diseñar el *script*. Dos variables `character` deberán estar definidas: `feed_url`
+(la dirección URL del *feed*) y `twt_head` (un mensaje para iniciar cada *tweet*). De `xml2`
+utilizaremos `read_xml()` para obtener el documento que representa al *feed*, y `xml_find_all()`
+para extraer ciertos nodos de ese documento.
+
+```{r message=TRUE}
+.libPaths("rlib"); message("Using ", R.version.string)
+library("xml2"); message(" & xml2 version ", packageVersion("xml2"))
+items = read_xml(feed_url)
+items_dates = xml_find_all(items, "channel/item/pubDate") |> xml_text() |>
+   as.POSIXct(tryFormats = paste0("%a, %d %b %Y", c("", " %T", " %T %z")))
+(new_items = which(items_dates < Sys.time() & items_dates > Sys.time() - 86400))
+```
+
+En esta primera parte hemos extraído las fechas de publicación (los nodos *pubDate*) de
+todos los artículos presentes en el *feed*; luego hemos filtrado aquellas que han ocurrido
+en el último día. Esto lo hacemos porque el *workflow* fue configurado para ser ejecutado
+diariamente; aunque la hora de ejecución no será exactamente la misma siempre, este método
+funciona (siempre y cuando no se publique a la hora escogida en el *workflow*).
+
+En la segunda parte del *script* se crea el contenido del *tweet*. Desafortunadamente no
+pude resolver cómo compartir varios *tweets* con una sola ejecución del *workflow* así
+que, si varios artículos fueron publicados en el último día, solo se compartirá el primero
+que se encuentre. Noten que, en la línea donde defino `twt_lim`, limito la longitud
+del *tweet* a 240 caracteres, incluyendo `twt_head` y la dirección del artículo (pero no
+incluye los saltos de línea).
+
+```{r message=TRUE}
+if (length(new_items) == 0) message("NO NEW POSTS") else for (x in new_items) {
+   twt_url = xml_find_all(items, sub("X", x, "channel/item[X]/link")) |> xml_text()
+   if (x != new_items[1]) message("IGNORE POST: ", twt_url) else {
+      message("TWEET POST: ", twt_url)
+      twt = xml_find_all(items, sub("X", x, "channel/item[X]/description")) |>xml_text()
+      twt_lim = 240 - nchar(twt_head) - nchar(twt_url)
+      while (nchar(twt) > twt_lim) twt = sub("\\s+\\S*$", "...", twt)
+      c("TWEET=$(cat << EOF", twt_head, twt, twt_url, "EOF", ")",
+         paste("echo ", c("TWEET<<EOF", "$TWEET", "EOF"), " >> $GITHUB_ENV", sep = "\"")
+      ) |> paste(collapse = "\n") |> system()
+   }
+}
+```
+
+El *script* debe ingresar al *workflow* como un nuevo paso, usando la
+sintaxis `shell: Rscript {0}` que ya discutimos. Ahora, enviar el contenido del *tweet*
+al siguiente y último paso no es algo que se pueda hacer directamente, porque cada paso
+del *workflow* es una nueva instancia de la terminal. La manera de hacerlo es utilizar el
+entorno `$GITHUB_ENV` que existe para este propósito (precisamente eso hacemos al final
+del *script*). Por lo tanto debemos modificar el último paso, Send Tweet Action, para que
+busque el *tweet* en dicho entorno:
+
+``` yml
+      - if: ${{ env.TWEET != '' }}
+        uses: ethomson/send-tweet-action@v1.0.0
+        with:
+          status: ${{ env.TWEET }}
+          consumer-key: ${{ secrets.TWITTER_API_KEY }}
+          consumer-secret: ${{ secrets.TWITTER_API_KEY_SECRET }}
+          access-token: ${{ secrets.TWITTER_ACCESS_TOKEN }}
+          access-token-secret: ${{ secrets.TWITTER_ACCESS_TOKEN_SECRET }}
+```
+
+¡Eso es todo! He publicado [mi primer *workflow*](https://github.com/ruevko/auto-tweets/blob/main/.github/workflows/my_first_workflow.yml)
+para demostrar como deben quedar todos los pasos juntos. Es importante respetar la
+indentación, porque en YAML es la manera de indicar la jerarquía de los elementos.
+Solo falta que añada el *workflow* a su propio repositorio y comenzará a ejecutarse.
+
+## El resultado
+
+En la pestaña *Actions* de nuestro repositorio se encuentran los resultados para cada
+ejecución de `my_first_workflow.yml`. Una ejecución exitosa luce más o menos así:
+
+![](https://res.cloudinary.com/dodnzqhiz/image/upload/v1627680475/2021post/w2f6ukifljirsfgz2hzv.png)
+
+Y así luce el *tweet* que generó:
+
+`r blogdown::shortcode("twitter", "1421801188270477314")`
+
+Para finalizar hay algunas observaciones sobre el evento `schedule:` que debo añadir:
+
+* En la pestaña *Actions* es posible desactivar la ejecución automática del *workflow*.
+* Según la documentación de GitHub Actions, si un repositorio público lleva más de 60 días
+sin actividad, los eventos `schedule:` son desactivados automáticamente.
+* En un blog como el mío, donde publico una vez al mes o menos, es un desperdicio ejecutar a
+diario. Es más razonable definir, por ejemplo, `cron:  '0 12 * * 6'` (cada sábado al mediodía)
+pero hay que ajustar el *script* como corresponda (múltiplicar 86400 por 7 en este caso).
+* Si el intervalo definido en `cron:` es mayor a una semana, ya no tiene sentido crear
+un *cache*, dado que ese es el máximo tiempo que perduran.

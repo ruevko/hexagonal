@@ -305,6 +305,10 @@ code span.wa { color: #bf0303; } /* Warning */
 <li><a href="#el-elemento-jobs">El elemento jobs:</a></li>
 <li><a href="#el-elemento-steps">El elemento steps:</a></li>
 </ul></li>
+<li><a href="#insertar-pasos-en-la-acción">Insertar pasos en la acción</a>
+<ul>
+<li><a href="#el-resultado">El resultado</a></li>
+</ul></li>
 </ul>
 </div>
 
@@ -410,10 +414,10 @@ las 12:00 UTC. El uso de UTC es una buena práctica al diseñar un servidor, as�
 debe calcular el equivalente en su propio huso horario. Esto es importante pues será la
 hora aproximada de creación del <em>tweet</em>; y es aproximada pues hay que considerar la carga
 del servicio en ese momento y el tiempo de ejecución del <em>workflow</em>. En este sentido,
-es aconsejable elegir horas que no sean en punto, por ejemplo las 11:51 UTC con la
-sintaxis <code>'51 11 * * *'</code>. La sintaxis <code>cron</code> permite otros tipos de programación (como
-semanal o mensualmente) y es fácil de entender; para aprenderla puede visitar el sitio
-<a href="https://crontab.guru">crontab.guru</a>.</p>
+es aconsejable elegir horas que no sean en punto, por ejemplo las 11:51 UTC
+especificando <code>'51 11 * * *'</code>. La sintaxis <code>cron</code> permite otros tipos de programación
+(como semanal o mensualmente) y es fácil de entender; para aprenderla puede visitar el
+sitio <a href="https://crontab.guru">crontab.guru</a>.</p>
 </div>
 <div id="el-elemento-jobs" class="section level2">
 <h2>El elemento jobs:</h2>
@@ -436,10 +440,124 @@ de <code>with:</code>. La acción que estamos utilizando necesita cinco <em>inpu
 contenido del <em>tweet</em> (<code>status:</code>) y a las cuatro claves que guardamos anteriormente como
 variables encriptadas. La sintaxis para acceder a estas variables es <code>${{ secrets.VARIABLE }}</code>;
 las llaves dobles sirven para acceder a entornos, funciones y variables en GitHub Actions.</p>
-<p>En este punto, si añadimos <code>my_first_workflow.yml</code> a nuestro repo, automáticamente generará
-un <em>tweet</em> todos los días, pero el contenido será siempre el mismo (el que definimos en <code>status:</code>).
-Para modificar el contenido, con el enlace a un nuevo artículo de nuestro blog, debemos añadir pasos
-previos a la tarea <code>tweet:</code>. Son varios pasos, así que los discutiremos en el siguiente artículo.</p>
+<p>En este punto, si añadimos <code>my_first_workflow.yml</code> a nuestro repo, automáticamente
+generará un <em>tweet</em> todos los días, pero el contenido será siempre el mismo (el que
+definimos en <code>status:</code>). Para modificar el contenido, con la dirección de un nuevo
+artículo de nuestro blog, debemos añadir más pasos a la tarea <code>tweet:</code>.</p>
+</div>
+</div>
+<div id="insertar-pasos-en-la-acción" class="section level1">
+<h1>Insertar pasos en la acción</h1>
+<p>En GitHub Actions, todos los <em>runners</em> poseen varios programas y herramientas útiles ya instalados. Entre los
+<a href="https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu2004-README.md">programas incluidos</a>
+actualmente en nuestro <em>runner</em> <code>ubuntu-latest</code> está R versión 4.1.0, así que podré
+escribir un <em>script</em> en este lenguaje para ejecutar las tareas que faltan en el <em>workflow</em>.
+Debo mencionar que, para que el <em>script</em> funcione, el <em>runner</em> también debe tener <code>curl</code>
+o <code>libcurl4</code> instalado (actualmente ambos lo están).</p>
+<p>Para obtener el <em>feed</em> y el enlace a un nuevo artículo utilizaré el paquete <code>xml2</code>.
+El problema es que, dentro del <em>runner</em>, uno no tiene acceso al directorio donde R
+normalmente instala un nuevo paquete. Una solución es aprovechar acciones ya existentes (<a href="https://github.com/r-lib/actions">r-lib/actions</a>) para crear un entorno R funcional.
+Esa es la solución recomendada pero, como solo necesito un paquete, voy a hacer algo
+más simple: instalaré <code>xml2</code> en un directorio arbitrario y crearé un <em>cache</em> para
+reusarlo cuando sea necesario. Vamos a modificar <code>my_first_workflow.yml</code>: conservaremos
+los elementos <code>on:</code> y <code>jobs:</code> pero después de <code>steps:</code> insertaremos la acción <a href="https://github.com/marketplace/actions/cache">Cache</a> de la siguiente manera:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode yml"><code class="sourceCode yaml"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">id</span><span class="kw">:</span><span class="at"> rcache</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">uses</span><span class="kw">:</span><span class="at"> actions/cache@v2.0.0</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">with</span><span class="kw">:</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">path</span><span class="kw">:</span><span class="at"> rlib</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">key</span><span class="kw">:</span><span class="at"> ${{ runner.os }}-Rcache</span></span></code></pre></div>
+<p>Este paso, la próxima vez que se ejecute el <em>workflow</em>, guardará el contenido del
+directorio <code>rlib</code> en un <em>cache</em> con la clave <code>Linux-Rcache</code>. Mientras no cambie esta
+clave, las ejecuciones subsecuentes automáticamente restaurarán el contenido de <code>rlib</code>;
+el siguiente paso consiste en instalar <code>xml2</code> en este directorio:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode yml"><code class="sourceCode yaml"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">if</span><span class="kw">:</span><span class="at"> steps.rcache.outputs.cache-hit != &#39;true&#39;</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">        run</span><span class="kw">: </span><span class="ch">|</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>          dir.create(&quot;rlib&quot;)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>          install.packages(&quot;xml2&quot;, lib = &quot;rlib&quot;)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">shell</span><span class="kw">:</span><span class="at"> Rscript {0}</span></span></code></pre></div>
+<p>El elemento <code>if:</code> se encarga de que este paso se ejecute solamente si el <em>cache</em> no existe.
+En nuestro caso solo ahorraremos unos segundos, pero este es un procedimiento útil cuando
+hay más paquetes; recordemos que en sistemas Linux la instalación demora más porque se
+hace con el código fuente. Por otra parte, todas las líneas contenidas entre <code>run: |</code>
+y <code>shell: Rscript {0}</code> serán ejecutadas a través de <code>Rscript</code>, la herramienta que permite
+ejecutar código R desde la terminal. Esta sintaxis es útil, pues permite ejecutar código
+multilínea con <em>bash</em> u otro programa.</p>
+<p>Ahora vamos a diseñar el <em>script</em>. Dos variables <code>character</code> deberán estar definidas: <code>feed_url</code>
+(la dirección URL del <em>feed</em>) y <code>twt_head</code> (un mensaje para iniciar cada <em>tweet</em>). De <code>xml2</code>
+utilizaremos <code>read_xml()</code> para obtener el documento que representa al <em>feed</em>, y <code>xml_find_all()</code>
+para extraer ciertos nodos de ese documento.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">.libPaths</span>(<span class="st">&quot;rlib&quot;</span>); <span class="fu">message</span>(<span class="st">&quot;Using &quot;</span>, R.version.string)</span></code></pre></div>
+<pre><code>## Using R version 4.1.0 (2021-05-18)</code></pre>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">&quot;xml2&quot;</span>); <span class="fu">message</span>(<span class="st">&quot; &amp; xml2 version &quot;</span>, <span class="fu">packageVersion</span>(<span class="st">&quot;xml2&quot;</span>))</span></code></pre></div>
+<pre><code>##  &amp; xml2 version 1.3.2</code></pre>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>items <span class="ot">=</span> <span class="fu">read_xml</span>(feed_url)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>items_dates <span class="ot">=</span> <span class="fu">xml_find_all</span>(items, <span class="st">&quot;channel/item/pubDate&quot;</span>) <span class="sc">|</span><span class="er">&gt;</span> <span class="fu">xml_text</span>() <span class="sc">|</span><span class="er">&gt;</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>   <span class="fu">as.POSIXct</span>(<span class="at">tryFormats =</span> <span class="fu">paste0</span>(<span class="st">&quot;%a, %d %b %Y&quot;</span>, <span class="fu">c</span>(<span class="st">&quot;&quot;</span>, <span class="st">&quot; %T&quot;</span>, <span class="st">&quot; %T %z&quot;</span>)))</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>(<span class="at">new_items =</span> <span class="fu">which</span>(items_dates <span class="sc">&lt;</span> <span class="fu">Sys.time</span>() <span class="sc">&amp;</span> items_dates <span class="sc">&gt;</span> <span class="fu">Sys.time</span>() <span class="sc">-</span> <span class="dv">86400</span>))</span></code></pre></div>
+<pre><code>## [1] 1</code></pre>
+<p>En esta primera parte hemos extraído las fechas de publicación (los nodos <em>pubDate</em>) de
+todos los artículos presentes en el <em>feed</em>; luego hemos filtrado aquellas que han ocurrido
+en el último día. Esto lo hacemos porque el <em>workflow</em> fue configurado para ser ejecutado
+diariamente; aunque la hora de ejecución no será exactamente la misma siempre, este método
+funciona (siempre y cuando no se publique a la hora escogida en el <em>workflow</em>).</p>
+<p>En la segunda parte del <em>script</em> se crea el contenido del <em>tweet</em>. Desafortunadamente no
+pude resolver cómo compartir varios <em>tweets</em> con una sola ejecución del <em>workflow</em> así
+que, si varios artículos fueron publicados en el último día, solo se compartirá el primero
+que se encuentre. Noten que, en la línea donde defino <code>twt_lim</code>, limito la longitud
+del <em>tweet</em> a 240 caracteres, incluyendo <code>twt_head</code> y la dirección del artículo (pero no
+incluye los saltos de línea).</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">length</span>(new_items) <span class="sc">==</span> <span class="dv">0</span>) <span class="fu">message</span>(<span class="st">&quot;NO NEW POSTS&quot;</span>) <span class="cf">else</span> <span class="cf">for</span> (x <span class="cf">in</span> new_items) {</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>   twt_url <span class="ot">=</span> <span class="fu">xml_find_all</span>(items, <span class="fu">sub</span>(<span class="st">&quot;X&quot;</span>, x, <span class="st">&quot;channel/item[X]/link&quot;</span>)) <span class="sc">|</span><span class="er">&gt;</span> <span class="fu">xml_text</span>()</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>   <span class="cf">if</span> (x <span class="sc">!=</span> new_items[<span class="dv">1</span>]) <span class="fu">message</span>(<span class="st">&quot;IGNORE POST: &quot;</span>, twt_url) <span class="cf">else</span> {</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>      <span class="fu">message</span>(<span class="st">&quot;TWEET POST: &quot;</span>, twt_url)</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>      twt <span class="ot">=</span> <span class="fu">xml_find_all</span>(items, <span class="fu">sub</span>(<span class="st">&quot;X&quot;</span>, x, <span class="st">&quot;channel/item[X]/description&quot;</span>)) <span class="sc">|</span><span class="er">&gt;</span><span class="fu">xml_text</span>()</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>      twt_lim <span class="ot">=</span> <span class="dv">240</span> <span class="sc">-</span> <span class="fu">nchar</span>(twt_head) <span class="sc">-</span> <span class="fu">nchar</span>(twt_url)</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>      <span class="cf">while</span> (<span class="fu">nchar</span>(twt) <span class="sc">&gt;</span> twt_lim) twt <span class="ot">=</span> <span class="fu">sub</span>(<span class="st">&quot;</span><span class="sc">\\</span><span class="st">s+</span><span class="sc">\\</span><span class="st">S*$&quot;</span>, <span class="st">&quot;...&quot;</span>, twt)</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>      <span class="fu">c</span>(<span class="st">&quot;TWEET=$(cat &lt;&lt; EOF&quot;</span>, twt_head, twt, twt_url, <span class="st">&quot;EOF&quot;</span>, <span class="st">&quot;)&quot;</span>,</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>         <span class="fu">paste</span>(<span class="st">&quot;echo &quot;</span>, <span class="fu">c</span>(<span class="st">&quot;TWEET&lt;&lt;EOF&quot;</span>, <span class="st">&quot;$TWEET&quot;</span>, <span class="st">&quot;EOF&quot;</span>), <span class="st">&quot; &gt;&gt; $GITHUB_ENV&quot;</span>, <span class="at">sep =</span> <span class="st">&quot;</span><span class="sc">\&quot;</span><span class="st">&quot;</span>)</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>      ) <span class="sc">|</span><span class="er">&gt;</span> <span class="fu">paste</span>(<span class="at">collapse =</span> <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>) <span class="sc">|</span><span class="er">&gt;</span> <span class="fu">system</span>()</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>   }</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<pre><code>## TWEET POST: https://ruevko.github.io/hexagonal/post/2021/07/30-primer-github-action/</code></pre>
+<p>El <em>script</em> debe ingresar al <em>workflow</em> como un nuevo paso, usando la
+sintaxis <code>shell: Rscript {0}</code> que ya discutimos. Ahora, enviar el contenido del <em>tweet</em>
+al siguiente y último paso no es algo que se pueda hacer directamente, porque cada paso
+del <em>workflow</em> es una nueva instancia de la terminal. La manera de hacerlo es utilizar el
+entorno <code>$GITHUB_ENV</code> que existe para este propósito (precisamente eso hacemos al final
+del <em>script</em>). Por lo tanto debemos modificar el último paso, Send Tweet Action, para que
+busque el <em>tweet</em> en dicho entorno:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode yml"><code class="sourceCode yaml"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">if</span><span class="kw">:</span><span class="at"> ${{ env.TWEET != &#39;&#39; }}</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">uses</span><span class="kw">:</span><span class="at"> ethomson/send-tweet-action@v1.0.0</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">with</span><span class="kw">:</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">status</span><span class="kw">:</span><span class="at"> ${{ env.TWEET }}</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">consumer-key</span><span class="kw">:</span><span class="at"> ${{ secrets.TWITTER_API_KEY }}</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">consumer-secret</span><span class="kw">:</span><span class="at"> ${{ secrets.TWITTER_API_KEY_SECRET }}</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">access-token</span><span class="kw">:</span><span class="at"> ${{ secrets.TWITTER_ACCESS_TOKEN }}</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">access-token-secret</span><span class="kw">:</span><span class="at"> ${{ secrets.TWITTER_ACCESS_TOKEN_SECRET }}</span></span></code></pre></div>
+<p>¡Eso es todo! He publicado <a href="https://github.com/ruevko/auto-tweets/blob/main/.github/workflows/my_first_workflow.yml">mi primer <em>workflow</em></a>
+para demostrar como deben quedar todos los pasos juntos. Es importante respetar la
+indentación, porque en YAML es la manera de indicar la jerarquía de los elementos.
+Solo falta que añada el <em>workflow</em> a su propio repositorio y comenzará a ejecutarse.</p>
+<div id="el-resultado" class="section level2">
+<h2>El resultado</h2>
+<p>En la pestaña <em>Actions</em> de nuestro repositorio se encuentran los resultados para cada
+ejecución de <code>my_first_workflow.yml</code>. Una ejecución exitosa luce más o menos así:</p>
+<p><img src="https://res.cloudinary.com/dodnzqhiz/image/upload/v1627680475/2021post/w2f6ukifljirsfgz2hzv.png" /></p>
+<p>Y así luce el <em>tweet</em> que generó:</p>
+<p><blockquote class="twitter-tweet"><p lang="es" dir="ltr">Nuevo artículo en mi blog:<br>GitHub Actions es un servicio que permite automatizar tareas de CI/CD. En este tutorial, sin embargo, lo utilizaré para compartir un tweet...<a href="https://t.co/mnKo6lfJhG">https://t.co/mnKo6lfJhG</a></p>&mdash; Rafael Castro (@ruevko) <a href="https://twitter.com/ruevko/status/1421801188270477314?ref_src=twsrc%5Etfw">August 1, 2021</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</p>
+<p>Para finalizar hay algunas observaciones sobre el evento <code>schedule:</code> que debo añadir:</p>
+<ul>
+<li>En la pestaña <em>Actions</em> es posible desactivar la ejecución automática del <em>workflow</em>.</li>
+<li>Según la documentación de GitHub Actions, si un repositorio público lleva más de 60 días
+sin actividad, los eventos <code>schedule:</code> son desactivados automáticamente.</li>
+<li>En un blog como el mío, donde publico una vez al mes o menos, es un desperdicio ejecutar a
+diario. Es más razonable definir, por ejemplo, <code>cron:  '0 12 * * 6'</code> (cada sábado al mediodía)
+pero hay que ajustar el <em>script</em> como corresponda (múltiplicar 86400 por 7 en este caso).</li>
+<li>Si el intervalo definido en <code>cron:</code> es mayor a una semana, ya no tiene sentido crear
+un <em>cache</em>, dado que ese es el máximo tiempo que perduran.</li>
+</ul>
 </div>
 </div>
 
