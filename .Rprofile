@@ -12,6 +12,6 @@ my_build_site = function() { stop_server()
         build_site(build_rmd = "timestamp", relativeURLs = FALSE)
 }
 
-my_new_post = function() sys.source("R/my_new_post.R")
+my_new_post = \() source("R/my_new_post.R") #knitr::spin("draft.R", FALSE) #TODO
 
 set.seed(23)
