@@ -1,0 +1,226 @@
+---
+title: Obteniendo datos raster con AppEEARS
+date: '2021-09-06'
+slug: 06-obteniendo-datos-raster-appeears
+source: 06-obteniendo-datos-raster-appeears.Rmd
+keywords:
+  - appeears
+  - modelos de elevación
+output:
+  blogdown::html_page:
+    highlight: pygments
+    toc: true
+---
+
+[AppEEARS](https://lpdaacsvc.cr.usgs.gov/appeears) es una aplicación mantenida por la
+NASA y la USGS que permite extraer y explorar datos geoespaciales listos para el análisis,
+provenientes de varias plataformas de teledetección. Los datos *raster* ---a.k.a. las
+imágenes satelitales--- son extraídos utilizando parámetros espaciales (uno puede
+suministrar Puntos o Áreas de Interés) y temporales. La mayoría de las plataformas
+disponibles son administradas por el Centro [EROS](https://www.usgs.gov/centers/eros)
+de la USGS; en particular, pertenecen al archivo [LP DAAC](https://lpdaac.usgs.gov).
+
+`r knitr::opts_chunk$set(eval=FALSE)`
+
+Además de la interfaz web, AppEEARS ofrece una API con varios *endpoints* para varias operaciones;
+esto significa que podremos utilizar R para comunicarnos con la aplicación. En este tutorial
+vamos a solicitar, descargar y visualizar datos de elevación SRTM. Como referencia utilicé un
+[tutorial oficial](https://git.earthdata.nasa.gov/projects/LPDUR/repos/appeears-api-getting-started_r/browse)
+que me pareció innecesarimente largo, así que mi propósito es simplificarlo. Antes de comenzar,
+el usuario debe registrarse en el [Earthdata Login](https://urs.earthdata.nasa.gov) de la
+NASA^[Earthdata es un sistema que administra el acceso a varias fuentes de datos geoespaciales;
+además de AppEEARS, tenemos [Earthdata Search](https://search.earthdata.nasa.gov/search),
+[LP DAAC Data Pool](https://lpdaac.usgs.gov/tools/data-pool), y muchas más.].
+
+# Definir un área de interés
+
+AppEEARS acepta solicitudes basadas en Puntos (POIs) o Áreas (AOIs) de Interés. Para demostrar
+el funcionamiento de esta aplicación, decidí solicitar datos de elevación correspondientes
+al área del [Monte Santa Helena](https://en.wikipedia.org/wiki/Mount_St._Helens) en Estados
+Unidos^[Originalmente quería solicidar datos correspondientes a mi propio país, pero hay una
+buena razón detrás de mi decisión final; la explicaré en la segunda parte de este artículo.].
+Definiremos nuestro AOI como un polígono delimitado por las longitudes 122.4º W y 122º W,
+y las latitudes 46º N y 46.4º N; lo guardaremos como un archivo GeoJSON con coordenadas
+geodésicas (EPSG:4326).
+
+```{r st-helens, eval=FALSE}
+aoi = c(rep(c(-122.4, -122), each = 2), rep(c(46, 46.4), 2)) |>
+   { \(x) matrix(x, 4)[c(1, 2, 4, 3, 1), ] }() |> list()
+
+library(sf)
+
+st_sfc(st_polygon(aoi), crs = 4326) |>
+   st_write("st_helens_aoi.json.txt", driver = "GeoJSON")
+```
+
+# Cómo comunicarse con la API
+
+```{r get-started}
+library(dplyr)
+library(httr)
+library(jsonlite)
+
+dir.create("appeears_files")
+
+app_url = "https://lpdaacsvc.cr.usgs.gov/appeears/api/"
+```
+
+## Descubrir productos y coberturas
+
+```{r get-products}
+get_products = GET(paste0(app_url, "product"))
+
+status_code(get_products)
+```
+
+```{r products}
+content2DF = function(content) {
+   DF = matrix(unlist(content), length(content), byrow = TRUE)
+   colnames(DF) = names(content[[1]])
+   as.data.frame(DF)
+}
+
+products = content(get_products) |> content2DF() |>
+   select(ProductAndVersion, Platform:TemporalGranularity)
+```
+
+```{r filter-products}
+unique(products$Platform)
+
+select(filter(products, Platform == "SRTM"), -Platform)
+```
+
+```{r get-layers, echo=-7}
+get_product_layers = GET(paste0(app_url, "product/SRTMGL3_NC.003"))
+
+product_layers = lapply(content(get_layers), \(x) x[-5] ) |> content2DF()
+
+select(product_layers, Layer, Description:IsQA, Units:YSize)
+
+# select(product_layers, DataType:Layer, ScaleFactor:YSize) # more info!
+```
+
+## Autenticarse, a.k.a. Log in
+
+```{r post-login}
+if (!file.exists("appeears_files/user_token.RDS")) {
+
+   user_secret = paste0(
+      askpass::askpass("Username:"), ":", askpass::askpass("Password:")
+   ) |> base64_enc()
+
+   post_login = POST(
+      paste0(app_url, "login"),
+      config = add_headers(
+         "Authorization" = paste("Basic", user_secret),
+         "Content-Type" = "application/x-www-form-urlencoded"
+      ),
+      body = "grant_type=client_credentials"
+   )
+   if (floor(status_code(post_login) / 100) != 2) stop(content(post_login)$message)
+
+   saveRDS(user_token <- content(post_login)$token, "appeears_files/user_token.RDS")
+
+} else user_token = readRDS("appeears_files/user_token.RDS")
+```
+
+## Crear y enviar una tarea
+
+```{r task}
+task = list(
+   task_type = "area",
+   task_name = "st_helens_dem",
+   params = list(
+      dates = data.frame(startDate = "09-04-2021", endDate = "09-05-2021"),
+      layers = data.frame(product = "SRTMGL3_NC.003", layer = "SRTMGL3_DEM"),
+      geo = fromJSON("st_helens_aoi.json.txt"),
+      output = list(format = list(type = "geotiff"), projection = "geographic")
+   )
+)
+```
+
+```{r post-task}
+post_task = POST(
+   paste0(app_url, "task"),
+   config = add_headers(
+      "Authorization" = paste("Bearer", user_token),
+      "Content-Type" = "application/json"
+   ),
+   body = toJSON(task, auto_unbox = TRUE, digits = NA)
+)
+if (floor(status_code(post_task) / 100) != 2) stop(content(post_task)$message)
+```
+
+## ¿Cómo le va a mi tarea?
+
+```{r get-status, message=TRUE}
+task_id = content(post_task)$task_id
+
+task_status = "not done"
+
+while (task_status != "done") {
+   
+   Sys.sleep(30)
+   
+   get_task_status = GET(
+      paste0(app_url, "task/", task_id),
+      config = add_headers("Authorization" = paste("Bearer", user_token))
+   )
+   task_status = content(get_task_status)$status
+   
+   message(as.character(Sys.time(), "[%T] "), task$task_name, " status: ", task_status)
+
+   if (task_status == "error") stop(content(get_task_status)$error)
+}
+```
+
+## ¡Está lista! Descargar el contenido
+
+```{r get-bundle}
+get_bundle = GET(paste0(app_url, "bundle/", task_id))
+
+bundle = content2DF(content(get_bundle)$files) |>
+   mutate(file_name = sub("^.+/(.+\\.\\d{3})_(.+)_doy", "\\1-\\2/\\2-doy", file_name))
+
+select(bundle, file_name, file_size)
+```
+
+```{r download-bundle, message=TRUE}
+dir.create(bundle_path <- file.path("appeears_files", task$task_name))
+
+for (file_id in bundle$file_id[1:5]) {
+   
+   file_name = bundle$file_name[bundle$file_id == file_id]
+   
+   message(as.character(Sys.time(), "[%T] download: "), file_name)
+
+   if (!file.path(bundle_path, dirname(file_name)) |> dir.exists()) {
+      file.path(bundle_path, dirname(file_name)) |> dir.create()
+   }
+   get_bundle_file = GET(
+      paste0(app_url, "bundle/", task_id, "/", file_id),
+      # progress(), # opcional, muestra el progreso de la descarga
+      write_disk(file.path(bundle_path, file_name))
+   )
+}
+```
+
+# Leer y visualizar un raster
+
+```{r st-helens-elevation, cache=TRUE, fig.asp=.98}
+library(raster);bundle_path = "appeears_files/st_helens_dem"
+
+file_name = "SRTMGL3_NC.003-SRTMGL3_DEM/SRTMGL3_DEM-doy2000042_aid0001.tif"
+
+aoi_elevation = raster(file.path(bundle_path, file_name))
+
+plot(aoi_elevation, asp = 1, col = grey.colors(64), maxpixels = ncell(aoi_elevation)/4)
+```
+
+```{r st-helens-hillshade, cache=TRUE, fig.asp=.98}
+aoi_terrain = terrain(aoi_elevation, c("slope", "aspect"))
+
+aoi_hillshade = hillShade(aoi_terrain$slope, aoi_terrain$aspect)
+
+plot(aoi_hillshade, asp = 1, col = grey.colors(16, 0, 1), legend = FALSE)
+```
