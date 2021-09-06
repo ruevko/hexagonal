@@ -2,7 +2,7 @@
 # Version : 0.4.8-BETA
 # Author : Thibaud Leprêtre
 
-ignoreFiles = ["\\.csv$", "\\.sh.$", "\\.RDS$", "\\.Rmd$", "_files$", "_cache$"]
+ignoreFiles = ["\\.csv$", "\\.sh.$", "\\.txt$", "\\.RDS$", "\\.Rmd$", "_cache$", "_files$"]
 ignoreErrors = ["error-output-taxonomy"]
 baseURL = "https://ruevko.github.io/hexagonal/"
 title = "La Galería Hexagonal"
