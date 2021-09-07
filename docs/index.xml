@@ -6,9 +6,17 @@
     <description>Artículos en La Galería Hexagonal</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>es</language>
-    <lastBuildDate>Fri, 30 Jul 2021</lastBuildDate>
+    <lastBuildDate>Mon, 06 Sep 2021</lastBuildDate>
     
     <atom:link href="https://ruevko.github.io/hexagonal/index.xml" rel="self" type="application/rss+xml"/>
+    
+    <item>
+      <title>Obteniendo datos raster con AppEEARS</title>
+      <link>https://ruevko.github.io/hexagonal/post/2021/09/06-obteniendo-datos-raster-appeears/</link>
+      <pubDate>Mon, 06 Sep 2021</pubDate>
+      <guid>https://ruevko.github.io/hexagonal/post/2021/09/06-obteniendo-datos-raster-appeears/</guid>
+      <description>Presenta cómo solicitar y descargar datos de elevación, a través de una API desarrollada por la NASA y la USGS, y cómo visualizar el relieve utilizando &lt;code&gt;raster&lt;/code&gt;.</description>
+    </item>
     
     <item>
       <title>Mi primer GitHub Action</title>
