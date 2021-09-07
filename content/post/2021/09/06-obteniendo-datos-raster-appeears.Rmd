@@ -10,6 +10,8 @@ output:
   blogdown::html_page:
     highlight: pygments
     toc: true
+thumbnailImage: https://ruevko.github.io/hexagonal/post/2021/09/06-obteniendo-datos-raster-appeears_files/figure-html/st-helens-hillshade-1.png
+summary: Presenta cómo solicitar y descargar datos de elevación, a través de una API desarrollada por la NASA y la USGS, y cómo visualizar el relieve utilizando `raster`.
 ---
 
 [AppEEARS](https://lpdaacsvc.cr.usgs.gov/appeears) es una aplicación mantenida por la
@@ -28,17 +30,18 @@ vamos a solicitar, descargar y visualizar datos de elevación SRTM. Como referen
 [tutorial oficial](https://git.earthdata.nasa.gov/projects/LPDUR/repos/appeears-api-getting-started_r/browse)
 que me pareció innecesarimente largo, así que mi propósito es simplificarlo. Antes de comenzar,
 el usuario debe registrarse en el [Earthdata Login](https://urs.earthdata.nasa.gov) de la
-NASA^[Earthdata es un sistema que administra el acceso a varias fuentes de datos geoespaciales;
-además de AppEEARS, tenemos [Earthdata Search](https://search.earthdata.nasa.gov/search),
-[LP DAAC Data Pool](https://lpdaac.usgs.gov/tools/data-pool), y muchas más.].
+NASA^[Earthdata es un sistema que administra el acceso a muchas fuentes de datos geoespaciales;
+además de AppEEARS, se encuentran [Earthdata Search](https://search.earthdata.nasa.gov/search),
+[LP DAAC Data Pool](https://lpdaac.usgs.gov/tools/data-pool),
+[ASF Data Search](https://search.asf.alaska.edu), entre otras.].
 
 # Definir un área de interés
 
 AppEEARS acepta solicitudes basadas en Puntos (POIs) o Áreas (AOIs) de Interés. Para demostrar
 el funcionamiento de esta aplicación, decidí solicitar datos de elevación correspondientes
 al área del [Monte Santa Helena](https://en.wikipedia.org/wiki/Mount_St._Helens) en Estados
-Unidos^[Originalmente quería solicidar datos correspondientes a mi propio país, pero hay una
-buena razón detrás de mi decisión final; la explicaré en la segunda parte de este artículo.].
+Unidos^[Originalmente quería solicidar datos correspondientes a mi propio país, pero tengo
+una buena razón para mi decisión final; la explicaré en la segunda parte de este artículo.].
 Definiremos nuestro AOI como un polígono delimitado por las longitudes 122.4º W y 122º W,
 y las latitudes 46º N y 46.4º N; lo guardaremos como un archivo GeoJSON con coordenadas
 geodésicas (EPSG:4326).
@@ -55,7 +58,11 @@ st_sfc(st_polygon(aoi), crs = 4326) |>
 
 # Cómo comunicarse con la API
 
-```{r get-started}
+Vamos comunicarnos con la API a través del paquete `httr`; el paquete `jsonlite` nos ayudará
+a codificar la solicitutes, y `dplyr` a manejar las respuestas. También crearemos un directorio
+para colocar los archivos que descargaremos, y asignaremos la URL de la API a una variable.
+
+```{r get-started, echo=-9}
 library(dplyr)
 library(httr)
 library(jsonlite)
@@ -63,15 +70,33 @@ library(jsonlite)
 dir.create("appeears_files")
 
 app_url = "https://lpdaacsvc.cr.usgs.gov/appeears/api/"
+
+knitr::opts_knit$set(global.par = TRUE)
 ```
 
+Cuando decimos que la API tiene varios *endpoints* significa que, extendiendo su URL, accederemos
+a diferentes funciones de la misma. Cada *endpoint* puede recibir un tipo específico de solicitud
+(que se conoce técnicamente como método HTTP); para nuestros propósitos, solo necesitamos conocer
+dos tipos: `GET()` para recibir información y `POST()` para enviarla.
+
 ## Descubrir productos y coberturas
+
+El primer *endpoint* que vamos a utilizar es *product*, el cual acepta una
+solicitud `GET()` y devuelve la lista de productos^[También puede encontrar la lista
+de productos en [este enlace](https://lpdaacsvc.cr.usgs.gov/appeears/products), pero
+utilizar la API es objetivamente más divertido.] disponibles.
 
 ```{r get-products}
 get_products = GET(paste0(app_url, "product"))
 
 status_code(get_products)
 ```
+
+Toda respuesta de un método HTTP trae un código indicando el tipo de resultado. La convención es
+que los códigos 2XX son :+1: y los 4XX son :-1:. Arriba, el código `r #status_code(get_products)`
+indica una operación exitosa. El resto de la respuesta representa la información que solicitamos;
+como `content()` transforma esa información en `list`, he definido una función para
+transformarla en `data.frame`:
 
 ```{r products}
 content2DF = function(content) {
@@ -84,11 +109,34 @@ products = content(get_products) |> content2DF() |>
    select(ProductAndVersion, Platform:TemporalGranularity)
 ```
 
+En este contexto, por "plataforma" generalmente nos referimos a un satélite artificial
+que orbita la Tierra y porta uno o más sensores; un "producto" es el conjunto de datos
+capturados por alguno de esos sensores y procesados en un centro especializado. Actualmente
+AppEEARS tiene `r #n_distinct(products$ProductAndVersion)` productos correspondientes
+a `r #n_distinct(products$Platform)` plataformas:
+
 ```{r filter-products}
 unique(products$Platform)
 
 select(filter(products, Platform == "SRTM"), -Platform)
 ```
+
+Arriba hemos filtrado los productos correspondientes a la
+[plataforma SRTM](https://lpdaac.usgs.gov/products/srtmgl3v003). Se trata de una misión
+que colocó un radar en órbita, a bordo del Endeavor, en febrero de 2000. El objetivo fue
+generar un Modelo Digital de Elevación (DEM) casi global, aplicando la técnica de
+[interferometría radar](https://en.wikipedia.org/wiki/Interferometric_synthetic-aperture_radar).
+Como productos de esta plataforma tenemos dos^[Aunque al filtrar aparecen cuatro productos,
+los archivos "Source (DEM)" son registros que relacionan la versión tres de SRTM con
+los archivos originales, así que no los he contado como productos.] DEMs, con resolución
+espacial de 1 y 3 segundos de arco (~30 y ~90 metros). Nosotros solicitaremos un extracto
+de datos de 90 metros, `"SRTMGL3_NC.003"`, observando que siempre se debe incluir la
+versión del producto (los últimos tres números).
+
+Cada producto se conforma de una o más coberturas o *layers*; muchas veces cada *layer*
+es una banda espectral del sensor en cuestión. Con el *endpoint product* también podemos
+obtener las coberturas de cierto producto; a continuación, solicitamos las coberturas del
+producto `"SRTMGL3_NC.003"` y seleccionamos las variables más importantes de la respuesta.
 
 ```{r get-layers, echo=-7}
 get_product_layers = GET(paste0(app_url, "product/SRTMGL3_NC.003"))
@@ -100,7 +148,16 @@ select(product_layers, Layer, Description:IsQA, Units:YSize)
 # select(product_layers, DataType:Layer, ScaleFactor:YSize) # more info!
 ```
 
+La única cobertura se llama `"SRTMGL3_DEM"` y precisamente es el DEM. Hasta
+este punto hemos identificado el producto y la cobertura que nos interesa.
+
 ## Autenticarse, a.k.a. Log in
+
+El *endpoint product* no requiere que el usuario se identifique, pero para solicitar
+datos *raster* esto sí será un requisito. La manera de autenticarse es utilizar un segundo
+*endpoint*, *login*, que recibe el nombre de usuario y la contraseña de Earthdata Login,
+y devuelve un *token*. En el siguiente código aprovechamos `askpass()` para que la
+experiencia se parezca a hacer *log in* en un sitio web.
 
 ```{r post-login}
 if (!file.exists("appeears_files/user_token.RDS")) {
@@ -123,6 +180,10 @@ if (!file.exists("appeears_files/user_token.RDS")) {
 
 } else user_token = readRDS("appeears_files/user_token.RDS")
 ```
+
+El *token* es una cadena de caracteres que autoriza nuestro uso de la API a partir de
+ahora. Como es válido por 48 horas, lo guardamos en `user_token.RDS` para poder reusarlo;
+pasado dicho tiempo, hay que eliminarlo y repetir esta operación.
 
 ## Crear y enviar una tarea
 
@@ -207,8 +268,10 @@ for (file_id in bundle$file_id[1:5]) {
 
 # Leer y visualizar un raster
 
-```{r st-helens-elevation, cache=TRUE, fig.asp=.98}
-library(raster);bundle_path = "appeears_files/st_helens_dem"
+```{r st-helens-elevation, fig.asp=.885, echo=-1}
+par(mar = c(2, 2, 1, 1))
+
+library(raster)
 
 file_name = "SRTMGL3_NC.003-SRTMGL3_DEM/SRTMGL3_DEM-doy2000042_aid0001.tif"
 
@@ -217,10 +280,10 @@ aoi_elevation = raster(file.path(bundle_path, file_name))
 plot(aoi_elevation, asp = 1, col = grey.colors(64), maxpixels = ncell(aoi_elevation)/4)
 ```
 
-```{r st-helens-hillshade, cache=TRUE, fig.asp=.98}
+```{r st-helens-hillshade, fig.asp=.885}
 aoi_terrain = terrain(aoi_elevation, c("slope", "aspect"))
 
 aoi_hillshade = hillShade(aoi_terrain$slope, aoi_terrain$aspect)
 
-plot(aoi_hillshade, asp = 1, col = grey.colors(16, 0, 1), legend = FALSE)
+plot(aoi_hillshade, asp = 1, col = grey.colors(16, 0, 1))
 ```
