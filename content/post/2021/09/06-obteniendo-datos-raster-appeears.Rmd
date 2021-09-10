@@ -22,8 +22,6 @@ suministrar Puntos o Áreas de Interés) y temporales. La mayoría de las plataf
 disponibles son administradas por el Centro [EROS](https://www.usgs.gov/centers/eros)
 de la USGS; en particular, pertenecen al archivo [LP DAAC](https://lpdaac.usgs.gov).
 
-`r knitr::opts_chunk$set(eval=FALSE)`
-
 Además de la interfaz web, AppEEARS ofrece una API con varios *endpoints* para varias operaciones;
 esto significa que podremos utilizar R para comunicarnos con la aplicación. En este tutorial
 vamos a solicitar, descargar y visualizar datos de elevación SRTM. Como referencia utilicé un
@@ -40,11 +38,10 @@ además de AppEEARS, se encuentran [Earthdata Search](https://search.earthdata.n
 AppEEARS acepta solicitudes basadas en Puntos (POIs) o Áreas (AOIs) de Interés. Para demostrar
 el funcionamiento de esta aplicación, decidí solicitar datos de elevación correspondientes
 al área del [Monte Santa Helena](https://en.wikipedia.org/wiki/Mount_St._Helens) en Estados
-Unidos^[Originalmente quería solicidar datos correspondientes a mi propio país, pero tengo
-una buena razón para mi decisión final; la explicaré en la segunda parte de este artículo.].
-Definiremos nuestro AOI como un polígono delimitado por las longitudes 122.4º W y 122º W,
-y las latitudes 46º N y 46.4º N; lo guardaremos como un archivo GeoJSON con coordenadas
-geodésicas (EPSG:4326).
+Unidos^[Originalmente quería solicitar datos de una región de mi propio país, pero hay una
+buena razón para esta decisión.]. Definiremos nuestro AOI como un polígono delimitado por
+las longitudes 122.4º W y 122º W, y las latitudes 46º N y 46.4º N; lo guardaremos como un
+archivo GeoJSON con coordenadas geodésicas (EPSG:4326).
 
 ```{r st-helens, eval=FALSE}
 aoi = c(rep(c(-122.4, -122), each = 2), rep(c(46, 46.4), 2)) |>
@@ -93,7 +90,7 @@ status_code(get_products)
 ```
 
 Toda respuesta de un método HTTP trae un código indicando el tipo de resultado. La convención es
-que los códigos 2XX son :+1: y los 4XX son :-1:. Arriba, el código `r #status_code(get_products)`
+que los códigos 2XX son :+1: y los 4XX son :-1:. Arriba, el código `r status_code(get_products)`
 indica una operación exitosa. El resto de la respuesta representa la información que solicitamos;
 como `content()` transforma esa información en `list`, he definido una función para
 transformarla en `data.frame`:
@@ -112,8 +109,8 @@ products = content(get_products) |> content2DF() |>
 En este contexto, por "plataforma" generalmente nos referimos a un satélite artificial
 que orbita la Tierra y porta uno o más sensores; un "producto" es el conjunto de datos
 capturados por alguno de esos sensores y procesados en un centro especializado. Actualmente
-AppEEARS tiene `r #n_distinct(products$ProductAndVersion)` productos correspondientes
-a `r #n_distinct(products$Platform)` plataformas:
+AppEEARS tiene `r n_distinct(products$ProductAndVersion)` productos correspondientes
+a `r n_distinct(products$Platform)` plataformas:
 
 ```{r filter-products}
 unique(products$Platform)
@@ -123,20 +120,23 @@ select(filter(products, Platform == "SRTM"), -Platform)
 
 Arriba hemos filtrado los productos correspondientes a la
 [plataforma SRTM](https://lpdaac.usgs.gov/products/srtmgl3v003). Se trata de una misión
-que colocó un radar en órbita, a bordo del Endeavor, en febrero de 2000. El objetivo fue
-generar un Modelo Digital de Elevación (DEM) casi global, aplicando la técnica de
+que colocó un radar en órbita, a bordo del transbordador espacial Endeavour. El objetivo
+fue crear un Modelo Digital de Elevación (DEM) casi global, aplicando la técnica de
 [interferometría radar](https://en.wikipedia.org/wiki/Interferometric_synthetic-aperture_radar).
-Como productos de esta plataforma tenemos dos^[Aunque al filtrar aparecen cuatro productos,
-los archivos "Source (DEM)" son registros que relacionan la versión tres de SRTM con
-los archivos originales, así que no los he contado como productos.] DEMs, con resolución
-espacial de 1 y 3 segundos de arco (~30 y ~90 metros). Nosotros solicitaremos un extracto
-de datos de 90 metros, `"SRTMGL3_NC.003"`, observando que siempre se debe incluir la
-versión del producto (los últimos tres números).
+Como productos de esta plataforma tenemos dos DEMs^[Un producto "Source (DEM)" indica la
+procedencia para cada *pixel* de un producto "Elevation (DEM)" asociado; por lo tanto, más
+que un producto, es un archivo de calidad.], con resolución espacial de 1 y 3 segundos de
+arco (~30 y ~90 metros). Nosotros solicitaremos un extracto de datos de 90 metros, `"SRTMGL3_NC.003"`,
+observando que siempre se debe incluir la versión del producto (los últimos tres números).
+
+```{r endeavour, fig.cap="Parte del *hardware* de la misión SRTM, fotografiado desde la cabina del Endeavour; vía Wikimedia Commons", echo=-1}
+knitr::include_graphics("https://upload.wikimedia.org/wikipedia/commons/0/0b/Payload_bay_sts-99.jpg")
+```
 
 Cada producto se conforma de una o más coberturas o *layers*; muchas veces cada *layer*
 es una banda espectral del sensor en cuestión. Con el *endpoint product* también podemos
 obtener las coberturas de cierto producto; a continuación, solicitamos las coberturas del
-producto `"SRTMGL3_NC.003"` y seleccionamos las variables más importantes de la respuesta.
+producto `"SRTMGL3_NC.003"` y seleccionamos las variables más importantes de la respuesta:
 
 ```{r get-layers, echo=-7}
 get_product_layers = GET(paste0(app_url, "product/SRTMGL3_NC.003"))
@@ -187,6 +187,9 @@ pasado dicho tiempo, hay que eliminarlo y repetir esta operación.
 
 ## Crear y enviar una tarea
 
+Una tarea es una lista de parámetros que definen cuáles datos solicitaremos a la API. Para
+construir una tarea en R podemos crear un elemento de clase `list` con la siguiente estructura:
+
 ```{r task}
 task = list(
    task_type = "area",
@@ -199,6 +202,28 @@ task = list(
    )
 )
 ```
+
+El parámetro `task_name` es el único que puede ser arbitrario, mientras que `task_type` puede
+ser `area` o `point`; el resto de parámetros que utilizo son obligatorios para una tarea de tipo `area`:
+
+* `dates` define el rango temporal para extraer los datos; en este caso ---como la misión SRTM
+inició y finalizó en febrero de 2000--- podemos definir cualquier intervalo, entre `startDate`
+y `endDate`, posterior a `"02-22-2000"`; ambos valores deben estar en formato `"MM-DD-YYYY"`.
+
+* `layers` se compone de dos vectores, `product` y `layer`, con la misma longitud; aquí
+insertaremos el producto y la cobertura que identificamos anteriormente.
+
+* `geo` define la región espacial, en formato GeoJSON y EPSG:4326, para extraer los
+datos; aquí leeremos con `fromJSON()` el polígono que guardamos en el primer paso.
+
+* `output` define el tipo de *raster* que se obtendrá; `type` puede ser `geotiff` o `netcdf4`,
+y `projection` permite reproyectar^[Hay once proyecciones disponibles. Para conocerlas,
+puede enviar una solicitud `GET()` al *endpoing spatial/proj*.] el *raster*; en este
+caso, `geographic` equivale al EPSG:4326.
+
+Una vez creada la tarea, podemos enviarla a través de una solicitud `POST()` al *endpoint task*.
+Esa solicitud debe ser autorizada con el *token* que obtuvimos en el paso anterior,
+y debe ser codificada como JSON (utilizamos `toJSON()` para transformar la tarea).
 
 ```{r post-task}
 post_task = POST(
@@ -213,6 +238,12 @@ if (floor(status_code(post_task) / 100) != 2) stop(content(post_task)$message)
 ```
 
 ## ¿Cómo le va a mi tarea?
+
+Este paso es opcional. Dependiendo del tamaño de la región espacial, del rango temporal
+y número de coberturas solicitadas, el procesamiento de la tarea puede demorar segundos
+o algunos minutos. El siguiente código consulta el estado del procesamiento cada 30
+segundos, usando el *id* de la tarea. Para tareas más complejas, puede aumentar el
+intervalo de consulta modificando el `Sys.sleep()`.
 
 ```{r get-status, message=TRUE}
 task_id = content(post_task)$task_id
@@ -237,6 +268,12 @@ while (task_status != "done") {
 
 ## ¡Está lista! Descargar el contenido
 
+Cuando la tarea tenga *status done*, los datos solicitados estarán listos para ser
+descargados. Para cada tarea exitosa, AppEEARS crea un paquete o *bundle* de archivos
+que incluye, además del *raster* que necesitamos, información de calidad y *metadata*.
+El *endpoint bundle* ---añadiendo el *id* de la tarea--- recibe una solicitud `GET()` y
+devuelve el contenido del *bundle*.
+
 ```{r get-bundle}
 get_bundle = GET(paste0(app_url, "bundle/", task_id))
 
@@ -245,6 +282,12 @@ bundle = content2DF(content(get_bundle)$files) |>
 
 select(bundle, file_name, file_size)
 ```
+
+Se modificó `file_name` para descargar los archivos en directorios, según producto y
+cobertura. También notarán que este *endpoint* no requiere autenticación; la consecuencia
+es que cualquiera que tenga el *id* de nuestra tarea podrá descargar el contenido asociado.
+Eso es precisamente lo que hace el siguiente código, pero solo descargaremos los cinco
+primeros archivos del *bundle*:
 
 ```{r download-bundle, message=TRUE}
 dir.create(bundle_path <- file.path("appeears_files", task$task_name))
@@ -260,7 +303,7 @@ for (file_id in bundle$file_id[1:5]) {
    }
    get_bundle_file = GET(
       paste0(app_url, "bundle/", task_id, "/", file_id),
-      # progress(), # opcional, muestra el progreso de la descarga
+      # progress(), # opcional
       write_disk(file.path(bundle_path, file_name))
    )
 }
@@ -268,7 +311,14 @@ for (file_id in bundle$file_id[1:5]) {
 
 # Leer y visualizar un raster
 
-```{r st-helens-elevation, fig.asp=.885, echo=-1}
+Entre los archivos descargados, el *raster* de elevación es el único `.tif` ubicado en
+el directorio `SRTMGL3_NC.003-SRTMGL3_DEM` (el producto y la cobertura que solicitamos).
+El otro `.tif` proviene del producto "Source (DEM)" y es entregado por la API de manera
+adicional; el resto son archivos con información estadística. A continuación demuestro
+cómo leer y visualizar el *raster* de elevación utilizando el paquete ---acordemente
+nombrado--- `raster`:
+
+```{r st-helens-elevation, fig.cap="Datos de elevación SRTM del Monte Santa Helena", fig.asp=.885, echo=-1}
 par(mar = c(2, 2, 1, 1))
 
 library(raster)
@@ -280,10 +330,23 @@ aoi_elevation = raster(file.path(bundle_path, file_name))
 plot(aoi_elevation, asp = 1, col = grey.colors(64), maxpixels = ncell(aoi_elevation)/4)
 ```
 
-```{r st-helens-hillshade, fig.asp=.885}
+Una técnica tradicional en cartografía, para visualizar el relieve, es generar lo que se
+conoce como *hillshade*. El algoritmo para calcular el `hillshade()`^[La función `hillshade()`,
+con sus argumentos predeterminados, calcula las sombras cuando el sol se encuentra
+en 45º de elevación y 0º de azimuth. Tal posición es imposible en el Monte Santa Helena,
+pero esto es algo aceptable en cartografía; para aprender más al respecto, puede ver
+[The "Mountain Or Valley?" Illusion](https://www.youtube.com/watch?v=V7C318DGB38) de
+MinutePhysics.] necesita dos *rasters* como insumos: uno de pendiente (*slope*) y otro
+de orientación (*aspect*); ambos pueden ser generados con `terrain()`:
+
+```{r st-helens-hillshade, fig.cap="*Hillshade* elaborado con datos SRTM del Monte Santa Helena", fig.asp=.885}
 aoi_terrain = terrain(aoi_elevation, c("slope", "aspect"))
 
 aoi_hillshade = hillShade(aoi_terrain$slope, aoi_terrain$aspect)
 
 plot(aoi_hillshade, asp = 1, col = grey.colors(16, 0, 1))
 ```
+
+Un *hillshade* es útil para añadir sombras ---y por lo tanto, una sensación de relieve---
+a otro *raster*. En la siguiente parte de este artículo volveré a utilizar AppEEARS para
+demostrar esta técnica.
