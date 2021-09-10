@@ -307,10 +307,9 @@ NASA<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>.</p>
 <p>AppEEARS acepta solicitudes basadas en Puntos (POIs) o Áreas (AOIs) de Interés. Para demostrar
 el funcionamiento de esta aplicación, decidí solicitar datos de elevación correspondientes
 al área del <a href="https://en.wikipedia.org/wiki/Mount_St._Helens">Monte Santa Helena</a> en Estados
-Unidos<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>.
-Definiremos nuestro AOI como un polígono delimitado por las longitudes 122.4º W y 122º W,
-y las latitudes 46º N y 46.4º N; lo guardaremos como un archivo GeoJSON con coordenadas
-geodésicas (EPSG:4326).</p>
+Unidos<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>. Definiremos nuestro AOI como un polígono delimitado por
+las longitudes 122.4º W y 122º W, y las latitudes 46º N y 46.4º N; lo guardaremos como un
+archivo GeoJSON con coordenadas geodésicas (EPSG:4326).</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>aoi <span class="ot">=</span> <span class="fu">c</span>(<span class="fu">rep</span>(<span class="fu">c</span>(<span class="sc">-</span><span class="fl">122.4</span>, <span class="sc">-</span><span class="dv">122</span>), <span class="at">each =</span> <span class="dv">2</span>), <span class="fu">rep</span>(<span class="fu">c</span>(<span class="dv">46</span>, <span class="fl">46.4</span>), <span class="dv">2</span>)) <span class="sc">|</span><span class="er">&gt;</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>   { \(x) <span class="fu">matrix</span>(x, <span class="dv">4</span>)[<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">4</span>, <span class="dv">3</span>, <span class="dv">1</span>), ] }() <span class="sc">|</span><span class="er">&gt;</span> <span class="fu">list</span>()</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -342,45 +341,62 @@ solicitud <code>GET()</code> y devuelve la lista de productos<a href="#fn3" clas
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>get_products <span class="ot">=</span> <span class="fu">GET</span>(<span class="fu">paste0</span>(app_url, <span class="st">&quot;product&quot;</span>))</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">status_code</span>(get_products)</span></code></pre></div>
+<pre><code>## [1] 200</code></pre>
 <p>Toda respuesta de un método HTTP trae un código indicando el tipo de resultado. La convención es
-que los códigos 2XX son 👍 y los 4XX son 👎. Arriba, el código
+que los códigos 2XX son 👍 y los 4XX son 👎. Arriba, el código 200
 indica una operación exitosa. El resto de la respuesta representa la información que solicitamos;
 como <code>content()</code> transforma esa información en <code>list</code>, he definido una función para
 transformarla en <code>data.frame</code>:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>content2DF <span class="ot">=</span> <span class="cf">function</span>(content) {</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>   DF <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">unlist</span>(content), <span class="fu">length</span>(content), <span class="at">byrow =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>   <span class="fu">colnames</span>(DF) <span class="ot">=</span> <span class="fu">names</span>(content[[<span class="dv">1</span>]])</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>   <span class="fu">as.data.frame</span>(DF)</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>products <span class="ot">=</span> <span class="fu">content</span>(get_products) <span class="sc">|</span><span class="er">&gt;</span> <span class="fu">content2DF</span>() <span class="sc">|</span><span class="er">&gt;</span></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>   <span class="fu">select</span>(ProductAndVersion, Platform<span class="sc">:</span>TemporalGranularity)</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>content2DF <span class="ot">=</span> <span class="cf">function</span>(content) {</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>   DF <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">unlist</span>(content), <span class="fu">length</span>(content), <span class="at">byrow =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>   <span class="fu">colnames</span>(DF) <span class="ot">=</span> <span class="fu">names</span>(content[[<span class="dv">1</span>]])</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>   <span class="fu">as.data.frame</span>(DF)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>products <span class="ot">=</span> <span class="fu">content</span>(get_products) <span class="sc">|</span><span class="er">&gt;</span> <span class="fu">content2DF</span>() <span class="sc">|</span><span class="er">&gt;</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>   <span class="fu">select</span>(ProductAndVersion, Platform<span class="sc">:</span>TemporalGranularity)</span></code></pre></div>
 <p>En este contexto, por “plataforma” generalmente nos referimos a un satélite artificial
 que orbita la Tierra y porta uno o más sensores; un “producto” es el conjunto de datos
 capturados por alguno de esos sensores y procesados en un centro especializado. Actualmente
-AppEEARS tiene productos correspondientes
-a plataformas:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">unique</span>(products<span class="sc">$</span>Platform)</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">select</span>(<span class="fu">filter</span>(products, Platform <span class="sc">==</span> <span class="st">&quot;SRTM&quot;</span>), <span class="sc">-</span>Platform)</span></code></pre></div>
+AppEEARS tiene 124 productos correspondientes
+a 14 plataformas:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">unique</span>(products<span class="sc">$</span>Platform)</span></code></pre></div>
+<pre><code>##  [1] &quot;GPW&quot;                  &quot;Combined MODIS&quot;       &quot;Terra MODIS&quot;         
+##  [4] &quot;Aqua MODIS&quot;           &quot;NASADEM&quot;              &quot;SMAP&quot;                
+##  [7] &quot;SRTM&quot;                 &quot;ASTER GDEM&quot;           &quot;S-NPP NASA VIIRS&quot;    
+## [10] &quot;Landsat ARD&quot;          &quot;DAYMET&quot;               &quot;SSEBop ET&quot;           
+## [13] &quot;eMODIS Smoothed NDVI&quot; &quot;ECOSTRESS&quot;</code></pre>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">select</span>(<span class="fu">filter</span>(products, Platform <span class="sc">==</span> <span class="st">&quot;SRTM&quot;</span>), <span class="sc">-</span>Platform)</span></code></pre></div>
+<pre><code>##   ProductAndVersion     Description RasterType Resolution TemporalGranularity
+## 1    SRTMGL1_NC.003 Elevation (DEM)       Tile        30m              Static
+## 2 SRTMGL1_NUMNC.003    Source (DEM)       Tile        30m              Static
+## 3    SRTMGL3_NC.003 Elevation (DEM)       Tile        90m              Static
+## 4 SRTMGL3_NUMNC.003    Source (DEM)       Tile        90m              Static</code></pre>
 <p>Arriba hemos filtrado los productos correspondientes a la
 <a href="https://lpdaac.usgs.gov/products/srtmgl3v003">plataforma SRTM</a>. Se trata de una misión
-que colocó un radar en órbita, a bordo del Endeavor, en febrero de 2000. El objetivo fue
-generar un Modelo Digital de Elevación (DEM) casi global, aplicando la técnica de
+que colocó un radar en órbita, a bordo del transbordador espacial Endeavour. El objetivo
+fue crear un Modelo Digital de Elevación (DEM) casi global, aplicando la técnica de
 <a href="https://en.wikipedia.org/wiki/Interferometric_synthetic-aperture_radar">interferometría radar</a>.
-Como productos de esta plataforma tenemos dos<a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a> DEMs, con resolución
-espacial de 1 y 3 segundos de arco (~30 y ~90 metros). Nosotros solicitaremos un extracto
-de datos de 90 metros, <code>"SRTMGL3_NC.003"</code>, observando que siempre se debe incluir la
-versión del producto (los últimos tres números).</p>
+Como productos de esta plataforma tenemos dos DEMs<a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a>, con resolución espacial de 1 y 3 segundos de
+arco (~30 y ~90 metros). Nosotros solicitaremos un extracto de datos de 90 metros, <code>"SRTMGL3_NC.003"</code>,
+observando que siempre se debe incluir la versión del producto (los últimos tres números).</p>
+<div class="figure"><span id="fig:endeavour"></span>
+<img src="https://upload.wikimedia.org/wikipedia/commons/0/0b/Payload_bay_sts-99.jpg" alt="Parte del *hardware* de la misión SRTM, fotografiado desde la cabina del Endeavour; vía Wikimedia Commons"  />
+<p class="caption">
+Figure 1: Parte del <em>hardware</em> de la misión SRTM, fotografiado desde la cabina del Endeavour; vía Wikimedia Commons
+</p>
+</div>
 <p>Cada producto se conforma de una o más coberturas o <em>layers</em>; muchas veces cada <em>layer</em>
 es una banda espectral del sensor en cuestión. Con el <em>endpoint product</em> también podemos
 obtener las coberturas de cierto producto; a continuación, solicitamos las coberturas del
-producto <code>"SRTMGL3_NC.003"</code> y seleccionamos las variables más importantes de la respuesta.</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>get_product_layers <span class="ot">=</span> <span class="fu">GET</span>(<span class="fu">paste0</span>(app_url, <span class="st">&quot;product/SRTMGL3_NC.003&quot;</span>))</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>product_layers <span class="ot">=</span> <span class="fu">lapply</span>(<span class="fu">content</span>(get_layers), \(x) x[<span class="sc">-</span><span class="dv">5</span>] ) <span class="sc">|</span><span class="er">&gt;</span> <span class="fu">content2DF</span>()</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="fu">select</span>(product_layers, Layer, Description<span class="sc">:</span>IsQA, Units<span class="sc">:</span>YSize)</span></code></pre></div>
+producto <code>"SRTMGL3_NC.003"</code> y seleccionamos las variables más importantes de la respuesta:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>get_product_layers <span class="ot">=</span> <span class="fu">GET</span>(<span class="fu">paste0</span>(app_url, <span class="st">&quot;product/SRTMGL3_NC.003&quot;</span>))</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>product_layers <span class="ot">=</span> <span class="fu">lapply</span>(<span class="fu">content</span>(get_product_layers), \(x) x[<span class="sc">-</span><span class="dv">5</span>] ) <span class="sc">|</span><span class="er">&gt;</span> <span class="fu">content2DF</span>()</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="fu">select</span>(product_layers, Layer, Description<span class="sc">:</span>IsQA, Units<span class="sc">:</span>YSize)</span></code></pre></div>
+<pre><code>##         Layer Description FillValue  IsQA  Units ValidMax ValidMin XSize YSize
+## 1 SRTMGL3_DEM   Elevation    -32768 FALSE Meters    32767   -32767  1201  1201</code></pre>
 <p>La única cobertura se llama <code>"SRTMGL3_DEM"</code> y precisamente es el DEM. Hasta
 este punto hemos identificado el producto y la cobertura que nos interesa.</p>
 </div>
@@ -391,113 +407,188 @@ datos <em>raster</em> esto sí será un requisito. La manera de autenticarse es 
 <em>endpoint</em>, <em>login</em>, que recibe el nombre de usuario y la contraseña de Earthdata Login,
 y devuelve un <em>token</em>. En el siguiente código aprovechamos <code>askpass()</code> para que la
 experiencia se parezca a hacer <em>log in</em> en un sitio web.</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">file.exists</span>(<span class="st">&quot;appeears_files/user_token.RDS&quot;</span>)) {</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>   user_secret <span class="ot">=</span> <span class="fu">paste0</span>(</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>      askpass<span class="sc">::</span><span class="fu">askpass</span>(<span class="st">&quot;Username:&quot;</span>), <span class="st">&quot;:&quot;</span>, askpass<span class="sc">::</span><span class="fu">askpass</span>(<span class="st">&quot;Password:&quot;</span>)</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>   ) <span class="sc">|</span><span class="er">&gt;</span> <span class="fu">base64_enc</span>()</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>   post_login <span class="ot">=</span> <span class="fu">POST</span>(</span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>      <span class="fu">paste0</span>(app_url, <span class="st">&quot;login&quot;</span>),</span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">config =</span> <span class="fu">add_headers</span>(</span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>         <span class="st">&quot;Authorization&quot;</span> <span class="ot">=</span> <span class="fu">paste</span>(<span class="st">&quot;Basic&quot;</span>, user_secret),</span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>         <span class="st">&quot;Content-Type&quot;</span> <span class="ot">=</span> <span class="st">&quot;application/x-www-form-urlencoded&quot;</span></span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>      ),</span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>      <span class="at">body =</span> <span class="st">&quot;grant_type=client_credentials&quot;</span></span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>   )</span>
-<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>   <span class="cf">if</span> (<span class="fu">floor</span>(<span class="fu">status_code</span>(post_login) <span class="sc">/</span> <span class="dv">100</span>) <span class="sc">!=</span> <span class="dv">2</span>) <span class="fu">stop</span>(<span class="fu">content</span>(post_login)<span class="sc">$</span>message)</span>
-<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>   <span class="fu">saveRDS</span>(user_token <span class="ot">&lt;-</span> <span class="fu">content</span>(post_login)<span class="sc">$</span>token, <span class="st">&quot;appeears_files/user_token.RDS&quot;</span>)</span>
-<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> user_token <span class="ot">=</span> <span class="fu">readRDS</span>(<span class="st">&quot;appeears_files/user_token.RDS&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">file.exists</span>(<span class="st">&quot;appeears_files/user_token.RDS&quot;</span>)) {</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>   user_secret <span class="ot">=</span> <span class="fu">paste0</span>(</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>      askpass<span class="sc">::</span><span class="fu">askpass</span>(<span class="st">&quot;Username:&quot;</span>), <span class="st">&quot;:&quot;</span>, askpass<span class="sc">::</span><span class="fu">askpass</span>(<span class="st">&quot;Password:&quot;</span>)</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>   ) <span class="sc">|</span><span class="er">&gt;</span> <span class="fu">base64_enc</span>()</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>   post_login <span class="ot">=</span> <span class="fu">POST</span>(</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>      <span class="fu">paste0</span>(app_url, <span class="st">&quot;login&quot;</span>),</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">config =</span> <span class="fu">add_headers</span>(</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>         <span class="st">&quot;Authorization&quot;</span> <span class="ot">=</span> <span class="fu">paste</span>(<span class="st">&quot;Basic&quot;</span>, user_secret),</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>         <span class="st">&quot;Content-Type&quot;</span> <span class="ot">=</span> <span class="st">&quot;application/x-www-form-urlencoded&quot;</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>      ),</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>      <span class="at">body =</span> <span class="st">&quot;grant_type=client_credentials&quot;</span></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>   )</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>   <span class="cf">if</span> (<span class="fu">floor</span>(<span class="fu">status_code</span>(post_login) <span class="sc">/</span> <span class="dv">100</span>) <span class="sc">!=</span> <span class="dv">2</span>) <span class="fu">stop</span>(<span class="fu">content</span>(post_login)<span class="sc">$</span>message)</span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>   <span class="fu">saveRDS</span>(user_token <span class="ot">&lt;-</span> <span class="fu">content</span>(post_login)<span class="sc">$</span>token, <span class="st">&quot;appeears_files/user_token.RDS&quot;</span>)</span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> user_token <span class="ot">=</span> <span class="fu">readRDS</span>(<span class="st">&quot;appeears_files/user_token.RDS&quot;</span>)</span></code></pre></div>
 <p>El <em>token</em> es una cadena de caracteres que autoriza nuestro uso de la API a partir de
 ahora. Como es válido por 48 horas, lo guardamos en <code>user_token.RDS</code> para poder reusarlo;
 pasado dicho tiempo, hay que eliminarlo y repetir esta operación.</p>
 </div>
 <div id="crear-y-enviar-una-tarea" class="section level2">
 <h2>Crear y enviar una tarea</h2>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>task <span class="ot">=</span> <span class="fu">list</span>(</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>   <span class="at">task_type =</span> <span class="st">&quot;area&quot;</span>,</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>   <span class="at">task_name =</span> <span class="st">&quot;st_helens_dem&quot;</span>,</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>   <span class="at">params =</span> <span class="fu">list</span>(</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>      <span class="at">dates =</span> <span class="fu">data.frame</span>(<span class="at">startDate =</span> <span class="st">&quot;09-04-2021&quot;</span>, <span class="at">endDate =</span> <span class="st">&quot;09-05-2021&quot;</span>),</span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>      <span class="at">layers =</span> <span class="fu">data.frame</span>(<span class="at">product =</span> <span class="st">&quot;SRTMGL3_NC.003&quot;</span>, <span class="at">layer =</span> <span class="st">&quot;SRTMGL3_DEM&quot;</span>),</span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>      <span class="at">geo =</span> <span class="fu">fromJSON</span>(<span class="st">&quot;st_helens_aoi.json.txt&quot;</span>),</span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">output =</span> <span class="fu">list</span>(<span class="at">format =</span> <span class="fu">list</span>(<span class="at">type =</span> <span class="st">&quot;geotiff&quot;</span>), <span class="at">projection =</span> <span class="st">&quot;geographic&quot;</span>)</span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>   )</span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>post_task <span class="ot">=</span> <span class="fu">POST</span>(</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>   <span class="fu">paste0</span>(app_url, <span class="st">&quot;task&quot;</span>),</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>   <span class="at">config =</span> <span class="fu">add_headers</span>(</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>      <span class="st">&quot;Authorization&quot;</span> <span class="ot">=</span> <span class="fu">paste</span>(<span class="st">&quot;Bearer&quot;</span>, user_token),</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>      <span class="st">&quot;Content-Type&quot;</span> <span class="ot">=</span> <span class="st">&quot;application/json&quot;</span></span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>   ),</span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>   <span class="at">body =</span> <span class="fu">toJSON</span>(task, <span class="at">auto_unbox =</span> <span class="cn">TRUE</span>, <span class="at">digits =</span> <span class="cn">NA</span>)</span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">floor</span>(<span class="fu">status_code</span>(post_task) <span class="sc">/</span> <span class="dv">100</span>) <span class="sc">!=</span> <span class="dv">2</span>) <span class="fu">stop</span>(<span class="fu">content</span>(post_task)<span class="sc">$</span>message)</span></code></pre></div>
+<p>Una tarea es una lista de parámetros que definen cuáles datos solicitaremos a la API. Para
+construir una tarea en R podemos crear un elemento de clase <code>list</code> con la siguiente estructura:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>task <span class="ot">=</span> <span class="fu">list</span>(</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>   <span class="at">task_type =</span> <span class="st">&quot;area&quot;</span>,</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>   <span class="at">task_name =</span> <span class="st">&quot;st_helens_dem&quot;</span>,</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>   <span class="at">params =</span> <span class="fu">list</span>(</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>      <span class="at">dates =</span> <span class="fu">data.frame</span>(<span class="at">startDate =</span> <span class="st">&quot;09-04-2021&quot;</span>, <span class="at">endDate =</span> <span class="st">&quot;09-05-2021&quot;</span>),</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>      <span class="at">layers =</span> <span class="fu">data.frame</span>(<span class="at">product =</span> <span class="st">&quot;SRTMGL3_NC.003&quot;</span>, <span class="at">layer =</span> <span class="st">&quot;SRTMGL3_DEM&quot;</span>),</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>      <span class="at">geo =</span> <span class="fu">fromJSON</span>(<span class="st">&quot;st_helens_aoi.json.txt&quot;</span>),</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">output =</span> <span class="fu">list</span>(<span class="at">format =</span> <span class="fu">list</span>(<span class="at">type =</span> <span class="st">&quot;geotiff&quot;</span>), <span class="at">projection =</span> <span class="st">&quot;geographic&quot;</span>)</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>   )</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<p>El parámetro <code>task_name</code> es el único que puede ser arbitrario, mientras que <code>task_type</code> puede
+ser <code>area</code> o <code>point</code>; el resto de parámetros que utilizo son obligatorios para una tarea de tipo <code>area</code>:</p>
+<ul>
+<li><p><code>dates</code> define el rango temporal para extraer los datos; en este caso —como la misión SRTM
+inició y finalizó en febrero de 2000— podemos definir cualquier intervalo, entre <code>startDate</code>
+y <code>endDate</code>, posterior a <code>"02-22-2000"</code>; ambos valores deben estar en formato <code>"MM-DD-YYYY"</code>.</p></li>
+<li><p><code>layers</code> se compone de dos vectores, <code>product</code> y <code>layer</code>, con la misma longitud; aquí
+insertaremos el producto y la cobertura que identificamos anteriormente.</p></li>
+<li><p><code>geo</code> define la región espacial, en formato GeoJSON y EPSG:4326, para extraer los
+datos; aquí leeremos con <code>fromJSON()</code> el polígono que guardamos en el primer paso.</p></li>
+<li><p><code>output</code> define el tipo de <em>raster</em> que se obtendrá; <code>type</code> puede ser <code>geotiff</code> o <code>netcdf4</code>,
+y <code>projection</code> permite reproyectar<a href="#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a> el <em>raster</em>; en este
+caso, <code>geographic</code> equivale al EPSG:4326.</p></li>
+</ul>
+<p>Una vez creada la tarea, podemos enviarla a través de una solicitud <code>POST()</code> al <em>endpoint task</em>.
+Esa solicitud debe ser autorizada con el <em>token</em> que obtuvimos en el paso anterior,
+y debe ser codificada como JSON (utilizamos <code>toJSON()</code> para transformar la tarea).</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>post_task <span class="ot">=</span> <span class="fu">POST</span>(</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>   <span class="fu">paste0</span>(app_url, <span class="st">&quot;task&quot;</span>),</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>   <span class="at">config =</span> <span class="fu">add_headers</span>(</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>      <span class="st">&quot;Authorization&quot;</span> <span class="ot">=</span> <span class="fu">paste</span>(<span class="st">&quot;Bearer&quot;</span>, user_token),</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>      <span class="st">&quot;Content-Type&quot;</span> <span class="ot">=</span> <span class="st">&quot;application/json&quot;</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>   ),</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>   <span class="at">body =</span> <span class="fu">toJSON</span>(task, <span class="at">auto_unbox =</span> <span class="cn">TRUE</span>, <span class="at">digits =</span> <span class="cn">NA</span>)</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">floor</span>(<span class="fu">status_code</span>(post_task) <span class="sc">/</span> <span class="dv">100</span>) <span class="sc">!=</span> <span class="dv">2</span>) <span class="fu">stop</span>(<span class="fu">content</span>(post_task)<span class="sc">$</span>message)</span></code></pre></div>
 </div>
 <div id="cómo-le-va-a-mi-tarea" class="section level2">
 <h2>¿Cómo le va a mi tarea?</h2>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>task_id <span class="ot">=</span> <span class="fu">content</span>(post_task)<span class="sc">$</span>task_id</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>task_status <span class="ot">=</span> <span class="st">&quot;not done&quot;</span></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> (task_status <span class="sc">!=</span> <span class="st">&quot;done&quot;</span>) {</span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>   </span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>   <span class="fu">Sys.sleep</span>(<span class="dv">30</span>)</span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>   </span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>   get_task_status <span class="ot">=</span> <span class="fu">GET</span>(</span>
-<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>      <span class="fu">paste0</span>(app_url, <span class="st">&quot;task/&quot;</span>, task_id),</span>
-<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>      <span class="at">config =</span> <span class="fu">add_headers</span>(<span class="st">&quot;Authorization&quot;</span> <span class="ot">=</span> <span class="fu">paste</span>(<span class="st">&quot;Bearer&quot;</span>, user_token))</span>
-<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>   )</span>
-<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>   task_status <span class="ot">=</span> <span class="fu">content</span>(get_task_status)<span class="sc">$</span>status</span>
-<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>   </span>
-<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>   <span class="fu">message</span>(<span class="fu">as.character</span>(<span class="fu">Sys.time</span>(), <span class="st">&quot;[%T] &quot;</span>), task<span class="sc">$</span>task_name, <span class="st">&quot; status: &quot;</span>, task_status)</span>
-<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>   <span class="cf">if</span> (task_status <span class="sc">==</span> <span class="st">&quot;error&quot;</span>) <span class="fu">stop</span>(<span class="fu">content</span>(get_task_status)<span class="sc">$</span>error)</span>
-<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>Este paso es opcional. Dependiendo del tamaño de la región espacial, del rango temporal
+y número de coberturas solicitadas, el procesamiento de la tarea puede demorar segundos
+o algunos minutos. El siguiente código consulta el estado del procesamiento cada 30
+segundos, usando el <em>id</em> de la tarea. Para tareas más complejas, puede aumentar el
+intervalo de consulta modificando el <code>Sys.sleep()</code>.</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>task_id <span class="ot">=</span> <span class="fu">content</span>(post_task)<span class="sc">$</span>task_id</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>task_status <span class="ot">=</span> <span class="st">&quot;not done&quot;</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> (task_status <span class="sc">!=</span> <span class="st">&quot;done&quot;</span>) {</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>   </span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>   <span class="fu">Sys.sleep</span>(<span class="dv">30</span>)</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>   </span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>   get_task_status <span class="ot">=</span> <span class="fu">GET</span>(</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>      <span class="fu">paste0</span>(app_url, <span class="st">&quot;task/&quot;</span>, task_id),</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>      <span class="at">config =</span> <span class="fu">add_headers</span>(<span class="st">&quot;Authorization&quot;</span> <span class="ot">=</span> <span class="fu">paste</span>(<span class="st">&quot;Bearer&quot;</span>, user_token))</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>   )</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>   task_status <span class="ot">=</span> <span class="fu">content</span>(get_task_status)<span class="sc">$</span>status</span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>   </span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>   <span class="fu">message</span>(<span class="fu">as.character</span>(<span class="fu">Sys.time</span>(), <span class="st">&quot;[%T] &quot;</span>), task<span class="sc">$</span>task_name, <span class="st">&quot; status: &quot;</span>, task_status)</span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>   <span class="cf">if</span> (task_status <span class="sc">==</span> <span class="st">&quot;error&quot;</span>) <span class="fu">stop</span>(<span class="fu">content</span>(get_task_status)<span class="sc">$</span>error)</span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<pre><code>## [16:20:36] st_helens_dem status: processing</code></pre>
+<pre><code>## [16:21:07] st_helens_dem status: done</code></pre>
 </div>
 <div id="está-lista-descargar-el-contenido" class="section level2">
 <h2>¡Está lista! Descargar el contenido</h2>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>get_bundle <span class="ot">=</span> <span class="fu">GET</span>(<span class="fu">paste0</span>(app_url, <span class="st">&quot;bundle/&quot;</span>, task_id))</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>bundle <span class="ot">=</span> <span class="fu">content2DF</span>(<span class="fu">content</span>(get_bundle)<span class="sc">$</span>files) <span class="sc">|</span><span class="er">&gt;</span></span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>   <span class="fu">mutate</span>(<span class="at">file_name =</span> <span class="fu">sub</span>(<span class="st">&quot;^.+/(.+</span><span class="sc">\\</span><span class="st">.</span><span class="sc">\\</span><span class="st">d{3})_(.+)_doy&quot;</span>, <span class="st">&quot;</span><span class="sc">\\</span><span class="st">1-</span><span class="sc">\\</span><span class="st">2/</span><span class="sc">\\</span><span class="st">2-doy&quot;</span>, file_name))</span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="fu">select</span>(bundle, file_name, file_size)</span></code></pre></div>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dir.create</span>(bundle_path <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="st">&quot;appeears_files&quot;</span>, task<span class="sc">$</span>task_name))</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (file_id <span class="cf">in</span> bundle<span class="sc">$</span>file_id[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>]) {</span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>   </span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>   file_name <span class="ot">=</span> bundle<span class="sc">$</span>file_name[bundle<span class="sc">$</span>file_id <span class="sc">==</span> file_id]</span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>   </span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>   <span class="fu">message</span>(<span class="fu">as.character</span>(<span class="fu">Sys.time</span>(), <span class="st">&quot;[%T] download: &quot;</span>), file_name)</span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>   <span class="cf">if</span> (<span class="sc">!</span><span class="fu">file.path</span>(bundle_path, <span class="fu">dirname</span>(file_name)) <span class="sc">|</span><span class="er">&gt;</span> <span class="fu">dir.exists</span>()) {</span>
-<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>      <span class="fu">file.path</span>(bundle_path, <span class="fu">dirname</span>(file_name)) <span class="sc">|</span><span class="er">&gt;</span> <span class="fu">dir.create</span>()</span>
-<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>   }</span>
-<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>   get_bundle_file <span class="ot">=</span> <span class="fu">GET</span>(</span>
-<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>      <span class="fu">paste0</span>(app_url, <span class="st">&quot;bundle/&quot;</span>, task_id, <span class="st">&quot;/&quot;</span>, file_id),</span>
-<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>      <span class="co"># progress(), # opcional, muestra el progreso de la descarga</span></span>
-<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>      <span class="fu">write_disk</span>(<span class="fu">file.path</span>(bundle_path, file_name))</span>
-<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>   )</span>
-<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>Cuando la tarea tenga <em>status done</em>, los datos solicitados estarán listos para ser
+descargados. Para cada tarea exitosa, AppEEARS crea un paquete o <em>bundle</em> de archivos
+que incluye, además del <em>raster</em> que necesitamos, información de calidad y <em>metadata</em>.
+El <em>endpoint bundle</em> —añadiendo el <em>id</em> de la tarea— recibe una solicitud <code>GET()</code> y
+devuelve el contenido del <em>bundle</em>.</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>get_bundle <span class="ot">=</span> <span class="fu">GET</span>(<span class="fu">paste0</span>(app_url, <span class="st">&quot;bundle/&quot;</span>, task_id))</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>bundle <span class="ot">=</span> <span class="fu">content2DF</span>(<span class="fu">content</span>(get_bundle)<span class="sc">$</span>files) <span class="sc">|</span><span class="er">&gt;</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>   <span class="fu">mutate</span>(<span class="at">file_name =</span> <span class="fu">sub</span>(<span class="st">&quot;^.+/(.+</span><span class="sc">\\</span><span class="st">.</span><span class="sc">\\</span><span class="st">d{3})_(.+)_doy&quot;</span>, <span class="st">&quot;</span><span class="sc">\\</span><span class="st">1-</span><span class="sc">\\</span><span class="st">2/</span><span class="sc">\\</span><span class="st">2-doy&quot;</span>, file_name))</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="fu">select</span>(bundle, file_name, file_size)</span></code></pre></div>
+<pre><code>##                                                          file_name file_size
+## 1    SRTMGL3_NC.003-SRTMGL3_DEM/SRTMGL3_DEM-doy2000042_aid0001.tif    396174
+## 2 SRTMGL3_NUMNC.003-SRTMGL3_NUM/SRTMGL3_NUM-doy2000042_aid0001.tif     49808
+## 3                         SRTMGL3-NUMNC-003-SRTMGL3-NUM-lookup.csv      1974
+## 4                  SRTMGL3-NUMNC-003-SRTMGL3-NUM-Statistics-QA.csv       536
+## 5                                    SRTMGL3-NC-003-Statistics.csv       340
+## 6                                   st-helens-dem-granule-list.txt       776
+## 7                                       st-helens-dem-request.json      1059
+## 8                        st-helens-dem-SRTMGL3-NC-003-metadata.xml     22031
+## 9                                                        README.md     23442</code></pre>
+<p>Se modificó <code>file_name</code> para descargar los archivos en directorios, según producto y
+cobertura. También notarán que este <em>endpoint</em> no requiere autenticación; la consecuencia
+es que cualquiera que tenga el <em>id</em> de nuestra tarea podrá descargar el contenido asociado.
+Eso es precisamente lo que hace el siguiente código, pero solo descargaremos los cinco
+primeros archivos del <em>bundle</em>:</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dir.create</span>(bundle_path <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="st">&quot;appeears_files&quot;</span>, task<span class="sc">$</span>task_name))</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (file_id <span class="cf">in</span> bundle<span class="sc">$</span>file_id[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>]) {</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>   </span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>   file_name <span class="ot">=</span> bundle<span class="sc">$</span>file_name[bundle<span class="sc">$</span>file_id <span class="sc">==</span> file_id]</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>   </span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>   <span class="fu">message</span>(<span class="fu">as.character</span>(<span class="fu">Sys.time</span>(), <span class="st">&quot;[%T] download: &quot;</span>), file_name)</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>   <span class="cf">if</span> (<span class="sc">!</span><span class="fu">file.path</span>(bundle_path, <span class="fu">dirname</span>(file_name)) <span class="sc">|</span><span class="er">&gt;</span> <span class="fu">dir.exists</span>()) {</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>      <span class="fu">file.path</span>(bundle_path, <span class="fu">dirname</span>(file_name)) <span class="sc">|</span><span class="er">&gt;</span> <span class="fu">dir.create</span>()</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>   }</span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>   get_bundle_file <span class="ot">=</span> <span class="fu">GET</span>(</span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>      <span class="fu">paste0</span>(app_url, <span class="st">&quot;bundle/&quot;</span>, task_id, <span class="st">&quot;/&quot;</span>, file_id),</span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>      <span class="co"># progress(), # opcional</span></span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>      <span class="fu">write_disk</span>(<span class="fu">file.path</span>(bundle_path, file_name))</span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>   )</span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<pre><code>## [16:21:07] download: SRTMGL3_NC.003-SRTMGL3_DEM/SRTMGL3_DEM-doy2000042_aid0001.tif</code></pre>
+<pre><code>## [16:21:11] download: SRTMGL3_NUMNC.003-SRTMGL3_NUM/SRTMGL3_NUM-doy2000042_aid0001.tif</code></pre>
+<pre><code>## [16:21:11] download: SRTMGL3-NUMNC-003-SRTMGL3-NUM-lookup.csv</code></pre>
+<pre><code>## [16:21:11] download: SRTMGL3-NUMNC-003-SRTMGL3-NUM-Statistics-QA.csv</code></pre>
+<pre><code>## [16:21:12] download: SRTMGL3-NC-003-Statistics.csv</code></pre>
 </div>
 </div>
 <div id="leer-y-visualizar-un-raster" class="section level1">
 <h1>Leer y visualizar un raster</h1>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(raster)</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>file_name <span class="ot">=</span> <span class="st">&quot;SRTMGL3_NC.003-SRTMGL3_DEM/SRTMGL3_DEM-doy2000042_aid0001.tif&quot;</span></span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>aoi_elevation <span class="ot">=</span> <span class="fu">raster</span>(<span class="fu">file.path</span>(bundle_path, file_name))</span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(aoi_elevation, <span class="at">asp =</span> <span class="dv">1</span>, <span class="at">col =</span> <span class="fu">grey.colors</span>(<span class="dv">64</span>), <span class="at">maxpixels =</span> <span class="fu">ncell</span>(aoi_elevation)<span class="sc">/</span><span class="dv">4</span>)</span></code></pre></div>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>aoi_terrain <span class="ot">=</span> <span class="fu">terrain</span>(aoi_elevation, <span class="fu">c</span>(<span class="st">&quot;slope&quot;</span>, <span class="st">&quot;aspect&quot;</span>))</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>aoi_hillshade <span class="ot">=</span> <span class="fu">hillShade</span>(aoi_terrain<span class="sc">$</span>slope, aoi_terrain<span class="sc">$</span>aspect)</span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(aoi_hillshade, <span class="at">asp =</span> <span class="dv">1</span>, <span class="at">col =</span> <span class="fu">grey.colors</span>(<span class="dv">16</span>, <span class="dv">0</span>, <span class="dv">1</span>))</span></code></pre></div>
+<p>Entre los archivos descargados, el <em>raster</em> de elevación es el único <code>.tif</code> ubicado en
+el directorio <code>SRTMGL3_NC.003-SRTMGL3_DEM</code> (el producto y la cobertura que solicitamos).
+El otro <code>.tif</code> proviene del producto “Source (DEM)” y es entregado por la API de manera
+adicional; el resto son archivos con información estadística. A continuación demuestro
+cómo leer y visualizar el <em>raster</em> de elevación utilizando el paquete —acordemente
+nombrado— <code>raster</code>:</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(raster)</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>file_name <span class="ot">=</span> <span class="st">&quot;SRTMGL3_NC.003-SRTMGL3_DEM/SRTMGL3_DEM-doy2000042_aid0001.tif&quot;</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>aoi_elevation <span class="ot">=</span> <span class="fu">raster</span>(<span class="fu">file.path</span>(bundle_path, file_name))</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(aoi_elevation, <span class="at">asp =</span> <span class="dv">1</span>, <span class="at">col =</span> <span class="fu">grey.colors</span>(<span class="dv">64</span>), <span class="at">maxpixels =</span> <span class="fu">ncell</span>(aoi_elevation)<span class="sc">/</span><span class="dv">4</span>)</span></code></pre></div>
+<div class="figure"><span id="fig:st-helens-elevation"></span>
+<img src="https://ruevko.github.io/hexagonal/post/2021/09/06-obteniendo-datos-raster-appeears_files/figure-html/st-helens-elevation-1.png" alt="Datos de elevación SRTM del Monte Santa Helena" width="672" />
+<p class="caption">
+Figure 2: Datos de elevación SRTM del Monte Santa Helena
+</p>
+</div>
+<p>Una técnica tradicional en cartografía, para visualizar el relieve, es generar lo que se
+conoce como <em>hillshade</em>. El algoritmo para calcular el <code>hillshade()</code><a href="#fn6" class="footnote-ref" id="fnref6"><sup>6</sup></a> necesita dos <em>rasters</em> como insumos: uno de pendiente (<em>slope</em>) y otro
+de orientación (<em>aspect</em>); ambos pueden ser generados con <code>terrain()</code>:</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>aoi_terrain <span class="ot">=</span> <span class="fu">terrain</span>(aoi_elevation, <span class="fu">c</span>(<span class="st">&quot;slope&quot;</span>, <span class="st">&quot;aspect&quot;</span>))</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>aoi_hillshade <span class="ot">=</span> <span class="fu">hillShade</span>(aoi_terrain<span class="sc">$</span>slope, aoi_terrain<span class="sc">$</span>aspect)</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(aoi_hillshade, <span class="at">asp =</span> <span class="dv">1</span>, <span class="at">col =</span> <span class="fu">grey.colors</span>(<span class="dv">16</span>, <span class="dv">0</span>, <span class="dv">1</span>))</span></code></pre></div>
+<div class="figure"><span id="fig:st-helens-hillshade"></span>
+<img src="https://ruevko.github.io/hexagonal/post/2021/09/06-obteniendo-datos-raster-appeears_files/figure-html/st-helens-hillshade-1.png" alt="*Hillshade* elaborado con datos SRTM del Monte Santa Helena" width="672" />
+<p class="caption">
+Figure 3: <em>Hillshade</em> elaborado con datos SRTM del Monte Santa Helena
+</p>
+</div>
+<p>Un <em>hillshade</em> es útil para añadir sombras —y por lo tanto, una sensación de relieve—
+a otro <em>raster</em>. En la siguiente parte de este artículo volveré a utilizar AppEEARS para
+demostrar esta técnica.</p>
 </div>
 <div class="footnotes">
 <hr />
@@ -506,14 +597,22 @@ pasado dicho tiempo, hay que eliminarlo y repetir esta operación.</p>
 además de AppEEARS, se encuentran <a href="https://search.earthdata.nasa.gov/search">Earthdata Search</a>,
 <a href="https://lpdaac.usgs.gov/tools/data-pool">LP DAAC Data Pool</a>,
 <a href="https://search.asf.alaska.edu">ASF Data Search</a>, entre otras.<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
-<li id="fn2"><p>Originalmente quería solicidar datos correspondientes a mi propio país, pero tengo
-una buena razón para mi decisión final; la explicaré en la segunda parte de este artículo.<a href="#fnref2" class="footnote-back">↩︎</a></p></li>
+<li id="fn2"><p>Originalmente quería solicitar datos de una región de mi propio país, pero hay una
+buena razón para esta decisión.<a href="#fnref2" class="footnote-back">↩︎</a></p></li>
 <li id="fn3"><p>También puede encontrar la lista
 de productos en <a href="https://lpdaacsvc.cr.usgs.gov/appeears/products">este enlace</a>, pero
 utilizar la API es objetivamente más divertido.<a href="#fnref3" class="footnote-back">↩︎</a></p></li>
-<li id="fn4"><p>Aunque al filtrar aparecen cuatro productos,
-los archivos “Source (DEM)” son registros que relacionan la versión tres de SRTM con
-los archivos originales, así que no los he contado como productos.<a href="#fnref4" class="footnote-back">↩︎</a></p></li>
+<li id="fn4"><p>Un producto “Source (DEM)” indica la
+procedencia para cada <em>pixel</em> de un producto “Elevation (DEM)” asociado; por lo tanto, más
+que un producto, es un archivo de calidad.<a href="#fnref4" class="footnote-back">↩︎</a></p></li>
+<li id="fn5"><p>Hay once proyecciones disponibles. Para conocerlas,
+puede enviar una solicitud <code>GET()</code> al <em>endpoing spatial/proj</em>.<a href="#fnref5" class="footnote-back">↩︎</a></p></li>
+<li id="fn6"><p>La función <code>hillshade()</code>,
+con sus argumentos predeterminados, calcula las sombras cuando el sol se encuentra
+en 45º de elevación y 0º de azimuth. Tal posición es imposible en el Monte Santa Helena,
+pero esto es algo aceptable en cartografía; para aprender más al respecto, puede ver
+<a href="https://www.youtube.com/watch?v=V7C318DGB38">The “Mountain Or Valley?” Illusion</a> de
+MinutePhysics.<a href="#fnref6" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
 

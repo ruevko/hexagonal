@@ -141,7 +141,7 @@ producto `"SRTMGL3_NC.003"` y seleccionamos las variables más importantes de la
 ```{r get-layers, echo=-7}
 get_product_layers = GET(paste0(app_url, "product/SRTMGL3_NC.003"))
 
-product_layers = lapply(content(get_layers), \(x) x[-5] ) |> content2DF()
+product_layers = lapply(content(get_product_layers), \(x) x[-5] ) |> content2DF()
 
 select(product_layers, Layer, Description:IsQA, Units:YSize)
 
