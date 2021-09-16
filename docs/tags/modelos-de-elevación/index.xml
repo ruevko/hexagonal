@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>modelos de elevación en La Galería Hexagonal</title>
+    <link>https://ruevko.github.io/hexagonal/tags/modelos-de-elevaci%C3%B3n/</link>
+    <description>Artículos sobre modelos de elevación en La Galería Hexagonal</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>es</language>
+    <lastBuildDate>Mon, 06 Sep 2021</lastBuildDate>
+    
+    <atom:link href="https://ruevko.github.io/hexagonal/tags/modelos-de-elevaci%C3%B3n/index.xml" rel="self" type="application/rss+xml"/>
+    
+    <item>
+      <title>Obteniendo datos raster con AppEEARS</title>
+      <link>https://ruevko.github.io/hexagonal/post/2021/09/06-obteniendo-datos-raster-appeears/</link>
+      <pubDate>Mon, 06 Sep 2021</pubDate>
+      <guid>https://ruevko.github.io/hexagonal/post/2021/09/06-obteniendo-datos-raster-appeears/</guid>
+      <description>Presenta cómo solicitar y descargar datos de elevación, a través de una API desarrollada por la NASA y la USGS, y cómo visualizar el relieve utilizando &lt;code&gt;raster&lt;/code&gt;.</description>
+    </item>
+    
+  </channel>
+</rss>

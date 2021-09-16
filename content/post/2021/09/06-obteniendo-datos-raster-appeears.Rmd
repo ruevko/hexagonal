@@ -2,10 +2,10 @@
 title: Obteniendo datos raster con AppEEARS
 date: '2021-09-06'
 slug: 06-obteniendo-datos-raster-appeears
-source: 06-obteniendo-datos-raster-appeears.Rmd
-keywords:
+tags:
   - appeears
   - modelos de elevación
+source: 06-obteniendo-datos-raster-appeears.Rmd
 output:
   blogdown::html_page:
     highlight: pygments

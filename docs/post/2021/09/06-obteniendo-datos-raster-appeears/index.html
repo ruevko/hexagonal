@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="generator" content="Hugo 0.81.0 with theme Tranquilpeak 0.4.8-BETA">
 <meta name="author" content="Roger Rafael Castro Zambrano">
-<meta name="keywords" content="appeears, modelos de elevación, análisis, cartografía, datos, mapas">
+<meta name="keywords" content="análisis, cartografía, datos, mapas">
 <meta name="description" content="Presenta cómo solicitar y descargar datos de elevación, a través de una API desarrollada por la NASA y la USGS, y cómo visualizar el relieve utilizando raster.">
 
 
@@ -35,6 +35,12 @@
   
   
   
+  
+    
+      <meta property="article:tag" content="appeears">
+    
+      <meta property="article:tag" content="modelos de elevación">
+    
   
 
     <title>
@@ -255,7 +261,7 @@ code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* Comme
 code span.do { color: #ba2121; font-style: italic; } /* Documentation */
 code span.dt { color: #902000; } /* DataType */
 code span.dv { color: #40a070; } /* DecVal */
-code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.er { color: #4070a0; } /* Error { color: #ff0000; font-weight: bold; } */
 code span.ex { } /* Extension */
 code span.fl { color: #40a070; } /* Float */
 code span.fu { color: #06287e; } /* Function */
@@ -361,10 +367,10 @@ capturados por alguno de esos sensores y procesados en un centro especializado. 
 AppEEARS tiene 124 productos correspondientes
 a 14 plataformas:</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">unique</span>(products<span class="sc">$</span>Platform)</span></code></pre></div>
-<pre><code>##  [1] &quot;GPW&quot;                  &quot;Combined MODIS&quot;       &quot;Terra MODIS&quot;         
-##  [4] &quot;Aqua MODIS&quot;           &quot;NASADEM&quot;              &quot;SMAP&quot;                
-##  [7] &quot;SRTM&quot;                 &quot;ASTER GDEM&quot;           &quot;S-NPP NASA VIIRS&quot;    
-## [10] &quot;Landsat ARD&quot;          &quot;DAYMET&quot;               &quot;SSEBop ET&quot;           
+<pre><code>##  [1] &quot;GPW&quot;                  &quot;Combined MODIS&quot;       &quot;Terra MODIS&quot;
+##  [4] &quot;Aqua MODIS&quot;           &quot;NASADEM&quot;              &quot;SMAP&quot;
+##  [7] &quot;SRTM&quot;                 &quot;ASTER GDEM&quot;           &quot;S-NPP NASA VIIRS&quot;
+## [10] &quot;Landsat ARD&quot;          &quot;DAYMET&quot;               &quot;SSEBop ET&quot;
 ## [13] &quot;eMODIS Smoothed NDVI&quot; &quot;ECOSTRESS&quot;</code></pre>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">select</span>(<span class="fu">filter</span>(products, Platform <span class="sc">==</span> <span class="st">&quot;SRTM&quot;</span>), <span class="sc">-</span>Platform)</span></code></pre></div>
 <pre><code>##   ProductAndVersion     Description RasterType Resolution TemporalGranularity
@@ -621,6 +627,18 @@ MinutePhysics.<a href="#fnref6" class="footnote-back">↩︎</a></p></li>
           </div>
           <div id="post-footer" class="post-footer main-content-wrap">
             
+              
+                
+                
+                  <div class="post-footer-tags">
+                    <span class="text-color-light text-small">Etiquetado en</span><br/>
+                    
+  <a class="tag tag--primary tag--small" href="https://ruevko.github.io/hexagonal/tags/appeears/">appeears</a>
+
+  <a class="tag tag--primary tag--small" href="https://ruevko.github.io/hexagonal/tags/modelos-de-elevaci%C3%B3n/">modelos de elevación</a>
+
+                  </div>
+                
               
             
             <div class="post-actions-wrap">
