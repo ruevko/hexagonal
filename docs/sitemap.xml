@@ -2,10 +2,25 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://ruevko.github.io/hexagonal/categories/</loc>
+    <lastmod>2021-11-02T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://ruevko.github.io/hexagonal/tags/github-actions/</loc>
+    <lastmod>2021-11-02T00:00:00+00:00</lastmod>
+  </url><url>
     <loc>https://ruevko.github.io/hexagonal/</loc>
     <lastmod>2021-11-02T00:00:00+00:00</lastmod>
   </url><url>
+    <loc>https://ruevko.github.io/hexagonal/categories/openstreetmap/</loc>
+    <lastmod>2021-11-02T00:00:00+00:00</lastmod>
+  </url><url>
     <loc>https://ruevko.github.io/hexagonal/post/</loc>
+    <lastmod>2021-11-02T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://ruevko.github.io/hexagonal/tags/</loc>
+    <lastmod>2021-11-02T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://ruevko.github.io/hexagonal/tags/web-scraping/</loc>
     <lastmod>2021-11-02T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://ruevko.github.io/hexagonal/post/2021/11/02-weekly-osm-actualizaciones-datos-osmstats/</loc>
@@ -19,15 +34,6 @@
   </url><url>
     <loc>https://ruevko.github.io/hexagonal/post/2021/09/06-obteniendo-datos-raster-appeears/</loc>
     <lastmod>2021-09-06T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://ruevko.github.io/hexagonal/tags/</loc>
-    <lastmod>2021-09-06T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://ruevko.github.io/hexagonal/categories/</loc>
-    <lastmod>2021-07-30T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://ruevko.github.io/hexagonal/tags/github-actions/</loc>
-    <lastmod>2021-07-30T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://ruevko.github.io/hexagonal/post/2021/07/30-primer-github-action/</loc>
     <lastmod>2021-07-30T00:00:00+00:00</lastmod>
@@ -54,12 +60,6 @@
     <lastmod>2021-03-10T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://ruevko.github.io/hexagonal/post/2021/03/10-mejorando-nuestro-scraping/</loc>
-    <lastmod>2021-03-10T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://ruevko.github.io/hexagonal/categories/openstreetmap/</loc>
-    <lastmod>2021-03-10T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://ruevko.github.io/hexagonal/tags/web-scraping/</loc>
     <lastmod>2021-03-10T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://ruevko.github.io/hexagonal/tags/calcular-%C3%A1reas/</loc>

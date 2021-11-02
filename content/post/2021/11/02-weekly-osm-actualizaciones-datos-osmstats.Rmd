@@ -2,12 +2,11 @@
 title: 'Weekly OSM: actualizaciones de los datos OSMstats'
 date: '2021-11-02'
 slug: 02-weekly-osm-actualizaciones-datos-osmstats
-# categories:
-#   - OpenStreetMap
-# tags:
-#   - github actions
-#   - web scraping
-# Weekly OSM: updates of OSMstats data
+categories:
+  - OpenStreetMap
+tags:
+  - github actions
+  - web scraping
 source: 02-weekly-osm-actualizaciones-datos-osmstats.Rmd
 output:
   blogdown::html_page:
