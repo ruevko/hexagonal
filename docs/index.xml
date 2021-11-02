@@ -6,9 +6,17 @@
     <description>Artículos en La Galería Hexagonal</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>es</language>
-    <lastBuildDate>Mon, 06 Sep 2021</lastBuildDate>
+    <lastBuildDate>Tue, 02 Nov 2021</lastBuildDate>
     
     <atom:link href="https://ruevko.github.io/hexagonal/index.xml" rel="self" type="application/rss+xml"/>
+    
+    <item>
+      <title>Weekly OSM: actualizaciones de los datos OSMstats</title>
+      <link>https://ruevko.github.io/hexagonal/post/2021/11/02-weekly-osm-actualizaciones-datos-osmstats/</link>
+      <pubDate>Tue, 02 Nov 2021</pubDate>
+      <guid>https://ruevko.github.io/hexagonal/post/2021/11/02-weekly-osm-actualizaciones-datos-osmstats/</guid>
+      <description>Recientemente el sitio OSMstats alcanzó la cifra de diez años de datos; para celebrarlo (y para aplicar nuevos métodos) estoy desarrollando un repositorio que recoge esos datos, y actualiza su propia base de datos.</description>
+    </item>
     
     <item>
       <title>Obteniendo datos raster con AppEEARS</title>
