@@ -1,0 +1,795 @@
+---
+title: 'Mapping Ecuador y las contribuciones a OSM, antes y después del terremoto 16A'
+date: '2021-04-16'
+slug: 16-mapping-ecuador-contribuciones
+categories:
+  - DataJournalism
+tags:
+  - ecuador
+  - nodos osm
+  - regresión
+source: 16-mapping-ecuador-contribuciones.Rmd
+keywords:
+  - ecuador
+  - nodos osm
+  - regresión
+editor_options:
+  chunk_output_type: console
+output:
+  blogdown::html_page:
+    highlight: kate
+    toc: true
+    pandoc_args: ["--metadata", "lang=en-GB"]
+bibliography: ../../babel.bib
+coverImage: https://res.cloudinary.com/dodnzqhiz/image/upload/v1623551042/2021post/vjjmombxouild4vd5on5.jpg
+summary: El 16 de abril de 2016 un terremoto sacudió la costa ecuatoriana; en respuesta, un proyecto mejoró la cartografía en las zonas afectadas. Cinco años después de la catástrofe, analizamos varios aspectos de Mapping Ecuador y su relación con las contribuciones a OpenStreetMap en el país.
+---
+
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<script src="/rmarkdown-libs/kePrint/kePrint.js"></script>
+<link href="/rmarkdown-libs/lightable/lightable.css" rel="stylesheet" />
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    background-color: #ffffff;
+    color: #a0a0a0;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #a0a0a0;  padding-left: 4px; }
+div.sourceCode
+  { color: #1f1c1b; background-color: #ffffff; }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span { color: #1f1c1b; } /* Normal */
+code span.al { color: #bf0303; background-color: #f7e6e6; font-weight: bold; } /* Alert */
+code span.an { color: #ca60ca; } /* Annotation */
+code span.at { color: #0057ae; } /* Attribute */
+code span.bn { color: #b08000; } /* BaseN */
+code span.bu { color: #644a9b; font-weight: bold; } /* BuiltIn */
+code span.cf { color: #1f1c1b; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #924c9d; } /* Char */
+code span.cn { color: #aa5500; } /* Constant */
+code span.co { color: #898887; } /* Comment */
+code span.cv { color: #0095ff; } /* CommentVar */
+code span.do { color: #607880; } /* Documentation */
+code span.dt { color: #0057ae; } /* DataType */
+code span.dv { color: #b08000; } /* DecVal */
+code span.er { color: #bf0303; text-decoration: underline; } /* Error */
+code span.ex { color: #0095ff; font-weight: bold; } /* Extension */
+code span.fl { color: #b08000; } /* Float */
+code span.fu { color: #644a9b; } /* Function */
+code span.im { color: #ff5500; } /* Import */
+code span.in { color: #b08000; } /* Information */
+code span.kw { color: #1f1c1b; font-weight: bold; } /* Keyword */
+code span.op { color: #1f1c1b; } /* Operator */
+code span.ot { color: #006e28; } /* Other */
+code span.pp { color: #006e28; } /* Preprocessor */
+code span.re { color: #0057ae; background-color: #e0e9f8; } /* RegionMarker */
+code span.sc { color: #3daee9; } /* SpecialChar */
+code span.ss { color: #ff5500; } /* SpecialString */
+code span.st { color: #bf0303; } /* String */
+code span.va { color: #0057ae; } /* Variable */
+code span.vs { color: #bf0303; } /* VerbatimString */
+code span.wa { color: #bf0303; } /* Warning */
+</style>
+
+<div id="TOC"><span class="post-meta">Contenido</span>
+<ul>
+<li><a href="#datos-osmstats">Datos OSMstats</a>
+<ul>
+<li><a href="#modelos-lineales-para-la-tasa-de-contribución">Modelos lineales para la tasa de contribución</a></li>
+<li><a href="#contribuciones-a-lo-largo-del-tiempo">Contribuciones a lo largo del tiempo</a></li>
+</ul></li>
+<li><a href="#datos-overpass">Datos Overpass</a>
+<ul>
+<li><a href="#contribuciones-a-lo-largo-del-tiempo-1">Contribuciones a lo largo del tiempo</a></li>
+<li><a href="#contribuciones-por-usuario">Contribuciones por usuario</a></li>
+<li><a href="#contribuciones-en-el-espacio">Contribuciones en el espacio</a></li>
+</ul></li>
+<li><a href="#comentarios">Comentarios</a></li>
+</ul>
+</div>
+
+<p>El 16 de abril de 2016 a las 18:58UTC-5 un terremoto de magnitud 7.8 M<sub>w</sub> azotó
+la costa ecuatoriana. Su epicentro, en el cantón Pedernales, provincia de Manabí,
+ocurrió en una zona sismológicamente activa debido al fenómeno de subducción;
+<a href="http://earthquake.usgs.gov/earthquakes/eventpage/us20005j32">según la USGS</a>, siete
+sismos de magnitud superior a 7 M<sub>w</sub> han ocurrido en esta zona desde el inicio del siglo
+XX. El de 2016 fue una catástrofe que provocó más de 600 fallecidos, miles de heridos y
+varias localidades manabitas afectadas, como Pedernales (con alrededor del 70 % de su
+infraestructura destruida), Manta y Portoviejo. También hubo afectaciones en la vecina
+provincia de Esmeraldas, e incluso en otras más alejadas como Guayas y Pichincha.</p>
+{{% alert "success" %}}
+La imagen de portada fue adaptada a partir de una fotografía de la Agencia de Noticias ANDES, publicada bajo licencia CC BY--SA 2.0, vía [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:VIA_AL_CANT%C3%93N_JAMA_%2826257181260%29.jpg)
+{{% /alert %}}
+<p>En los días siguientes varios proyectos —de origen nacional e internacional— contribuyeron
+con rescatistas, médicos, víveres, albergue y conocimiento técnico, entre otras cosas.
+Este artículo, redactado en el quinto aniversario del evento, trata sobre el proyecto
+que contribuyó en el aspecto cartográfico de la gestión de la emergencia:
+<a href="https://llactalab.ucuenca.edu.ec/eventos-2/mappingecuador">Mapping Ecuador</a> tuvo como
+propósito “crear mejores mapas que apoyen las labores de socorro y reconstrucción”. La
+manera de lograr esto fue insertar en la plataforma OpenStreetMap (OSM) el estado
+pre–terremoto de las zonas afectadas. El proyecto fue organizado por LLACTALAB de
+la Universidad de Cuenca y el Humanitarian OpenStreetMap Team (HOT), recibiendo
+contribuciones de cientos de usuarios OSM de varias partes del mundo.</p>
+<p>La primera vez que encontré los resultados de Mapping Ecuador fue en el sitio
+web OSMstats, que reporta información estadística sobre OpenStreetMap. La
+<a href="https://osmstats.neis-one.org/?item=countries&amp;country=Ecuador">página de Ecuador</a>
+presenta valores atípicos en abril de 2016 que solo pueden ser explicados por un
+evento de contribución masivo. En este artículo<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> presento un vistazo a algunos
+aspectos de esas contribuciones; particularmente, trato de observar cómo este proyecto
+influyó a la comunidad que mapea en el país. Para esto utilicé dos fuentes: el mismo
+sitio OSMstats, y la API Overpass para obtener datos OSM.</p>
+<div id="datos-osmstats" class="section level1">
+<h1>Datos OSMstats</h1>
+<p>Para utilizar datos del sitio OSMstats, previamente se aplicó el método <em>web scraping</em> y se
+generó un <em>dataset</em> con observaciones semanales correspondientes a Ecuador<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>. Considerando que en dicho sitio web existen
+observaciones diarias, es claro que se debió aplicar alguna función a cada variable, para reducir
+la periodicidad de las observaciones, de modo que sean semanales. El <em>dataset</em> generado es
+<a href="https://github.com/ruevko/hexagonal/blob/master/content/post/2021/04/ecuador_osmstats_2021_week_14.csv"><code>ecuador_osmstats_2021_week_14.csv</code></a>
+y contiene las siguientes variables:</p>
+<ul>
+<li><code>Week</code> es la fecha correspondiente al inicio de cada semana, de acuerdo al
+<a href="https://en.wikipedia.org/wiki/ISO_8601#Week_dates">estandar ISO 8601</a>; considera que
+las semanas comienzan los días lunes, y la semana que contiene el primero de enero es
+la primera del año, solamente si contiene cuatro o más días en el nuevo año.</li>
+<li><code>Contributors_max</code> s el máximo de contribuidores activos a diario; es decir, de cada
+semana, cuál fue el número máximo de usuarios que realizaron contribuciones, en un solo
+día de esa semana. Los contribuidores no son deberían ser sumados, porque es posible —de
+hecho es probable— que muchos hayan estado activos varios días de una misma semana.</li>
+<li><code>Modified_elements_sum</code> es la suma de elementos modificados semanalmente. Pueden existir
+elementos repetidos en esta suma —cualquier elemento OSM puede ser modificado infinitas
+veces— pero se consideró que la suma es la función adecuada, pues cada modificación
+representa una versión diferente del mismo objeto.</li>
+<li><code>Created_elements_sum</code> es la suma de elementos creados semanalmente. En este caso sí
+es correcto aplicar la suma porque cada elemento es creado solamente una vez; en este
+análisis no se observarán los elementos eliminados.</li>
+</ul>
+<p>Es importante mencionar que OSMstats reporta información desde noviembre de 2011, si bien
+la historia de OpenStreetMap se remonta a 2004. Por ende, no todas las contribuciones
+pueden ser cuantificadas con esta fuente de datos —en Ecuador también había datos antes
+de 2011— aunque más del 75 % de las contribuciones sí están disponibles. Ahora el primer
+paso es leer el <em>dataset</em>; utilizaremos <code>library(tidyverse)</code> a lo largo del análisis.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>Ecuador <span class="ot">=</span> <span class="fu">read_csv</span>(<span class="st">&quot;ecuador_osmstats_2021_week_14.csv&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>   <span class="fu">mutate</span>(<span class="at">Created_elements_cum =</span> <span class="fu">cumsum</span>(Created_elements_sum),</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>          <span class="at">Week_after =</span> Week <span class="sc">&gt;</span> <span class="fu">as.Date</span>(<span class="st">&quot;2016-04-16&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>   <span class="fu">relocate</span>(Week, Week_after)</span></code></pre></div>
+<p>En este paso también se anadió dos nuevas variables: <code>Week_after</code>, un vector
+lógico que es <code>TRUE</code> en las observaciones que ocurrieron después del terremoto; y
+<code>Created_elements_cum</code>, la suma acumulativa de <code>Created_elements_sum</code>, i.e. el
+total estimado de elementos creados (ignorando los eliminados) en el territorio
+ecuatoriano. Observemos una muestra de los datos, correspondientes al periodo
+del 4 de abril al 29 de mayo de 2016:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">filter</span>(Ecuador, Week <span class="sc">&gt;</span> <span class="fu">as.Date</span>(<span class="st">&quot;2016-04-03&quot;</span>), Week <span class="sc">&lt;</span> <span class="fu">as.Date</span>(<span class="st">&quot;2016-05-30&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>   <span class="fu">mutate</span>(<span class="fu">across</span>(Week, as.character, <span class="at">format =</span> <span class="st">&quot;%b.%d&quot;</span>)) <span class="sc">%&gt;%</span> knitr<span class="sc">::</span><span class="fu">kable</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>   kableExtra<span class="sc">::</span><span class="fu">scroll_box</span>(<span class="at">width =</span> <span class="st">&quot;auto&quot;</span>, <span class="at">extra_css =</span> <span class="st">&quot;margin-bottom:2rem;&quot;</span>)</span></code></pre></div>
+<div style="border: 1px solid #ddd; padding: 5px; margin-bottom:2rem;overflow-x: scroll; width:auto; ">
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+Week
+</th>
+<th style="text-align:left;">
+Week_after
+</th>
+<th style="text-align:right;">
+Contributors_max
+</th>
+<th style="text-align:right;">
+Modified_elements_sum
+</th>
+<th style="text-align:right;">
+Created_elements_sum
+</th>
+<th style="text-align:right;">
+Created_elements_cum
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Apr.04
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:right;">
+37
+</td>
+<td style="text-align:right;">
+11134
+</td>
+<td style="text-align:right;">
+9852
+</td>
+<td style="text-align:right;">
+2955785
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Apr.11
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:right;">
+92
+</td>
+<td style="text-align:right;">
+14065
+</td>
+<td style="text-align:right;">
+96743
+</td>
+<td style="text-align:right;">
+3052528
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Apr.18
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:right;">
+779
+</td>
+<td style="text-align:right;">
+284127
+</td>
+<td style="text-align:right;">
+1910560
+</td>
+<td style="text-align:right;">
+4963088
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Apr.25
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:right;">
+240
+</td>
+<td style="text-align:right;">
+134601
+</td>
+<td style="text-align:right;">
+691181
+</td>
+<td style="text-align:right;">
+5654269
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+May.02
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:right;">
+109
+</td>
+<td style="text-align:right;">
+66039
+</td>
+<td style="text-align:right;">
+242967
+</td>
+<td style="text-align:right;">
+5897236
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+May.09
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:right;">
+95
+</td>
+<td style="text-align:right;">
+22999
+</td>
+<td style="text-align:right;">
+111833
+</td>
+<td style="text-align:right;">
+6009069
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+May.16
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:right;">
+73
+</td>
+<td style="text-align:right;">
+27739
+</td>
+<td style="text-align:right;">
+90811
+</td>
+<td style="text-align:right;">
+6099880
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+May.23
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:right;">
+51
+</td>
+<td style="text-align:right;">
+36895
+</td>
+<td style="text-align:right;">
+32570
+</td>
+<td style="text-align:right;">
+6132450
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Los resultados de Mapping Ecuador están plasmados en las tres semanas en las cuales se
+creó más de 200 mil elementos. Interpretando estas observaciones entenderemos que, hasta
+el domingo 17 de abril de 2016, se creó alrededor de 3.052 millones de elementos; mientras
+que, hasta el domingo 8 de mayo, esta cifra creció a 5.897 millones. Estamos verificando
+que se efectuó un esfuerzo formidable: en un periodo de tres semanas, el número de
+elementos creados en cuatro años (desde noviembre de 2011) prácticamente fue duplicado.</p>
+<div id="modelos-lineales-para-la-tasa-de-contribución" class="section level2">
+<h2>Modelos lineales para la tasa de contribución</h2>
+<p>Tal vez la manera más directa de evaluar la influencia que Mapping Ecuador pudo haber
+tenido en las contribuciones OSM es estimar la tasa o velocidad con que estas ocurrieron.
+Por eso ajustamos una regresión lineal donde la suma acumulativa de elementos creados es la
+variable dependiente, y el tiempo la independiente; la pendiente de esta regresión es la tasa
+de contribución. A continuación presento el comando y el gráfico —las observaciones azules
+son antes del terremoto, las rojas después— correspondientes al cálculo de la regresión lineal:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>Model_single <span class="ot">=</span> <span class="fu">lm</span>(Created_elements_cum <span class="sc">~</span> Week, Ecuador)</span></code></pre></div>
+<div class="figure"><span id="fig:plot-one-model"></span>
+<img src="/post/2021/04/16-mapping-ecuador-contribuciones_files/figure-html/plot-one-model-1.png" alt="Regresión lineal de contribuciones OSM en Ecuador" width="672" />
+<p class="caption">
+Figure 1: Regresión lineal de contribuciones OSM en Ecuador
+</p>
+</div>
+<p>En el gráfico observamos dos periodos en los que claramente hubo desviaciones del
+crecimiento lineal: el primero, por supuesto, es justo después del terremoto; el
+segundo ocurrió recientemente, al inicio de 2021. De todas maneras la regresión lineal
+tiene buen ajuste, con un R<sup>2</sup> ≈ 0.95, y sugiere que en territorio ecuatoriano se
+crearon unos 3900 elementos a diario<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a>, desde noviembre de 2011.</p>
+<p>Como siguiente paso, para evaluar si Mapping Ecuador influyó en la tasa de contribución, ajustamos
+dos regresiones: una para el periodo anterior al terremoto, y otra para el periodo posterior.
+En este paso, la variable <code>Week_after</code> es la condición que permite dividir ambos periodos.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>Model_before <span class="ot">=</span> <span class="fu">lm</span>(Created_elements_cum <span class="sc">~</span> Week, <span class="fu">filter</span>(Ecuador, <span class="sc">!</span>Week_after))</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>Model_after <span class="ot">=</span> <span class="fu">lm</span>(Created_elements_cum <span class="sc">~</span> Week, <span class="fu">filter</span>(Ecuador, Week_after))</span></code></pre></div>
+<div class="figure"><span id="fig:plot-two-model"></span>
+<img src="/post/2021/04/16-mapping-ecuador-contribuciones_files/figure-html/plot-two-model-1.png" alt="Regresiones lineales de contribuciones OSM en Ecuador, antes y despues del terremoto" width="672" />
+<p class="caption">
+Figure 2: Regresiones lineales de contribuciones OSM en Ecuador, antes y despues del terremoto
+</p>
+</div>
+<p>Hay una mejora en el ajuste, con ambos R<sup>2</sup> &gt; 0.95, aunque esta no es la razón para afirmar
+que dos regresiones son mejor que una. La razón es que, al dividir las observaciones según
+ocurrieron antes o después del terremoto, se obtienen dos pendientes notablemente diferentes.
+Parece que antes del terremoto había una comunidad que contribuía aproximadamente 1700 elementos
+al día; después del terremoto hay 3100 elementos creados a diario, 1.78 veces la cifra anterior.
+En este punto sería tentador afirmar que, gracias al esfuerzo de Mapping Ecuador, no solo mejoró
+la cartografía, sino que también aumentó la tasa de contribución en todo el país.</p>
+<p>Sin embargo tal afirmación sería difícil de sostener; hay que considerar algunos factores.
+Primero, no sabemos si quienes contribuyeron en Mapping Ecuador siguen activos. Más adelante
+visitaremos este aspecto pero, básicamente, es complicado —de cierta manera, también es
+irrelevante— saber si los mismos usuarios siguen activos, o si los usuarios actuales son
+nuevos. Segundo, la regresión es una generalización; su pendiente debe verse como una
+tendencia a través de los años y no como una constante de la comunidad que contribuye. Y
+tercero, es posible que el aumento de la pendiente se deba simplemente a que ahora hay
+más usuarios o más objetos que mapear.</p>
+<p>Si bien no entendemos todos los factores involucrados, sí es verdad que la tasa de
+contribución es más alta en el periodo posterior a Mapping Ecuador. Esto es verdad
+porque las dos regresiones del gráfico <a href="#fig:plot-two-model">2</a> poseen pendientes
+cuya diferencia es estadísticamente significativa. ¿Cómo se demuestra esto? Volviendo
+a ajustar una regresión para todo el <em>dataset</em>, como la del gráfico <a href="#fig:plot-one-model">1</a>,
+añadiendo esta vez dos nuevas variables independientes: una condición (antes o después del
+terremoto), y una interacción<a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a> de dicha condición
+con el tiempo. En lenguaje R, la interacción entre dos variables se escribe multiplicándolas:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lm</span>(Created_elements_cum <span class="sc">~</span> Week <span class="sc">+</span> Week <span class="sc">*</span> Week_after <span class="sc">+</span> Week_after, Ecuador) <span class="sc">%&gt;%</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>   broom<span class="sc">::</span><span class="fu">tidy</span>() <span class="sc">%&gt;%</span> knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="at">format.args =</span> <span class="fu">list</span>(<span class="at">scientific =</span> <span class="cn">TRUE</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>   kableExtra<span class="sc">::</span><span class="fu">scroll_box</span>(<span class="at">width =</span> <span class="st">&quot;auto&quot;</span>, <span class="at">extra_css =</span> <span class="st">&quot;margin-bottom:2rem;&quot;</span>)</span></code></pre></div>
+<div style="border: 1px solid #ddd; padding: 5px; margin-bottom:2rem;overflow-x: scroll; width:auto; ">
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+term
+</th>
+<th style="text-align:right;">
+estimate
+</th>
+<th style="text-align:right;">
+std.error
+</th>
+<th style="text-align:right;">
+statistic
+</th>
+<th style="text-align:right;">
+p.value
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+(Intercept)
+</td>
+<td style="text-align:right;">
+-2.678e+07
+</td>
+<td style="text-align:right;">
+5.606e+05
+</td>
+<td style="text-align:right;">
+-4.777e+01
+</td>
+<td style="text-align:right;">
+0e+00
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Week
+</td>
+<td style="text-align:right;">
+1.743e+03
+</td>
+<td style="text-align:right;">
+3.483e+01
+</td>
+<td style="text-align:right;">
+5.004e+01
+</td>
+<td style="text-align:right;">
+0e+00
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Week_afterTRUE
+</td>
+<td style="text-align:right;">
+-1.964e+07
+</td>
+<td style="text-align:right;">
+7.691e+05
+</td>
+<td style="text-align:right;">
+-2.554e+01
+</td>
+<td style="text-align:right;">
+0e+00
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Week:Week_afterTRUE
+</td>
+<td style="text-align:right;">
+1.359e+03
+</td>
+<td style="text-align:right;">
+4.567e+01
+</td>
+<td style="text-align:right;">
+2.976e+01
+</td>
+<td style="text-align:right;">
+0e+00
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>La tabla demuestra que todos los términos de la regresión son significativos (todos los
+p–value ≈ 0). Los términos <code>Intercept</code> y <code>Week_after</code> no nos interesan. <code>Week</code> (el tiempo) es
+el término que representa la pendiente y fue estimado en 1743, igual que la regresión azul del
+gráfico <a href="#fig:plot-two-model">2</a>. Y si a este valor sumamos la estimación de <code>Week:Week_after</code>
+(la interacción con el tiempo) obtenemos 3102, la pendiente de la regresión roja. Lo que
+acabo de explicar puede resultar confuso; para comprender estos conceptos, recomiendo un
+<a href="https://statisticsbyjim.com/regression/comparing-regression-lines">artículo de Jim Frost</a>
+sobre la comparación de regresiones lineales.</p>
+</div>
+<div id="contribuciones-a-lo-largo-del-tiempo" class="section level2">
+<h2>Contribuciones a lo largo del tiempo</h2>
+<p>A continuación vamos a explorar los elementos creados por semana (no la suma acumulativa
+de los mismos), así como los elementos modificados y los contribuidores activos. Antes
+de graficar estas variables, podemos anticipar un montón de líneas irregulares pues, salvo
+durante un evento como Mapping Ecuador, las observaciones de cada semana no guardan relación
+con sus vecinas. Existen varias maneras de suavizar estas irregularidades; en este caso
+calculamos la media móvil —usando una ventana de nueve semanas— de cada variable
+con <code>zoo::rollmean()</code> y la añadimos al gráfico (las líneas transparentes representan
+los datos; las opacas, las medias móviles).</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>Ecuador_rollmean <span class="ot">=</span> <span class="fu">mutate</span>(Ecuador, <span class="fu">across</span>(<span class="dv">3</span><span class="sc">:</span><span class="dv">5</span>, zoo<span class="sc">::</span>rollmean, <span class="dv">9</span>, <span class="cn">NA</span>))</span></code></pre></div>
+<div class="figure"><span id="fig:plot-weekly"></span>
+<img src="/post/2021/04/16-mapping-ecuador-contribuciones_files/figure-html/plot-weekly-1.png" alt="Elementos creados y modificados, y contribuidores activos semanalmente en Ecuador" width="672" />
+<p class="caption">
+Figure 3: Elementos creados y modificados, y contribuidores activos semanalmente en Ecuador
+</p>
+</div>
+<p>El resultado más interesante se observa en los contribuidores activos, cuyo máximo
+semanal es consistentemente mayor después del terremoto. Nuevamente, no sabemos si esto
+se debe solo a Mapping Ecuador, pero sí sabemos que ahora más usuarios —al menos veinte
+por semana— están contribuyendo al país. Con respecto a elementos creados o modificados,
+la media móvil sugiere que en ciertos periodos post–terremoto hubo más actividad de lo
+normal. Especialmente, en un periodo a inicios de 2021, se superó los 80 mil elementos
+creados por semana; este hecho solo había ocurrido antes durante Mapping Ecuador. ¿Es
+posible que otro evento de contribución haya sido organizado? Esta interrogante merece
+que investigue ese hecho en el futuro.</p>
+<p>El gráfico <a href="#fig:plot-weekly">3</a> no es tan difícil de interpretar, pero podríamos
+prescindir de las irregularidades que las líneas causan. Podemos hacer un resumen
+anual de las mismas variables utilizando <em>boxplots</em>, pero presentaremos únicamente
+los años con observaciones completas, i.e. de 2012 a 2020.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>Ecuador <span class="ot">=</span> <span class="fu">mutate</span>(Ecuador, <span class="at">Week_after =</span> Week <span class="sc">&gt;</span> <span class="fu">as.Date</span>(<span class="st">&quot;2016-01-01&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>   <span class="fu">filter</span>( <span class="sc">!</span> <span class="fu">as.character</span>(Week, <span class="st">&quot;%g&quot;</span>) <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;11&quot;</span>, <span class="st">&quot;21&quot;</span>))</span></code></pre></div>
+<div class="figure"><span id="fig:plot-yearly"></span>
+<img src="/post/2021/04/16-mapping-ecuador-contribuciones_files/figure-html/plot-yearly-1.png" alt="Elementos creados y modificados, y contribuidores activos en Ecuador, agregados anualmente" width="672" />
+<p class="caption">
+Figure 4: Elementos creados y modificados, y contribuidores activos en Ecuador, agregados anualmente
+</p>
+</div>
+<p>Aquí debemos mencionar que unos cuantos valores atípicos fueron recortados al limitar
+los ejes verticales. El aumento de contribuidores activos (en comparación a antes de 2016)
+también aparece en los <em>boxplots</em>, pero también es evidente que ha habido una disminución
+progresiva desde ese pico en 2016. Por otra parte, con respecto a elementos creados,
+los <em>boxplots</em> de 2017 en adelante poseen mediana mayor e IQR más amplio; parece que sí
+hay una tendencia a más contribuciones, aunque estas ocurran en periodos irregulares
+(gráfico <a href="#fig:plot-weekly">3</a>). Resultaría interesante investigar si esos periodos
+encierran los esfuerzos de una comunidad organizada.</p>
+</div>
+</div>
+<div id="datos-overpass" class="section level1">
+<h1>Datos Overpass</h1>
+<p>Como mencioné al principio del artículo, dos fuentes de datos fueron utilizadas para
+analizar las contribuciones a Mapping Ecuador. La segunda fuente fue Overpass, una API
+de solo–lectura que entrega extractos específicos de la base de datos OSM, solicitados
+a través de <em>queries</em> (consultas). Estas <em>queries</em> son construidas con el
+<a href="https://wiki.openstreetmap.org/wiki/Overpass_API/Overpass_QL">Overpass Query Language</a>,
+el cual es tan poderoso y lleno de funcionalidades, que una introducción a este lenguaje
+merecería su propio artículo. Por lo pronto, presento la <em>query</em> que usé: esta devuelve
+todos los elementos creados o modificados en Ecuador, entre el 17 de abril<a href="#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a> y el 9 de mayo de 2016:</p>
+<pre><code>[out:csv(::id,::user,::timestamp,::otype,::lat,::lon)];
+is_in(0,-80); area._[admin_level=2]; nwr(area._);
+nwr._(changed:&quot;2016-04-17T00:00:00Z&quot;,&quot;2016-05-09T00:00:00Z&quot;);
+out meta;</code></pre>
+<p>El <a href="http://www.overpass-api.de">sitio web de Overpass</a> ofrece un formulario donde uno
+puede insertar esta <em>query</em> y enviarla a la API, la cual devuelve<a href="#fn6" class="footnote-ref" id="fnref6"><sup>6</sup></a> un archivo <code>interpreter</code> con valores separados por tabulaciones. Cuando
+realicé este proceso, el archivo que recibí tuvo un peso de 167.54 MB y por esta razón
+no lo he compartido; el código que utilicé para leerlo es:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>Overpass <span class="ot">=</span> <span class="fu">read_tsv</span>(<span class="st">&quot;interpreter&quot;</span>, <span class="at">col_types =</span> <span class="fu">c</span>(<span class="st">&quot;_cTnnn&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>   <span class="fu">rename_with</span>(str_remove, <span class="at">pattern =</span> <span class="st">&quot;@o?&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>   <span class="fu">filter</span>(timestamp <span class="sc">&gt;</span> <span class="fu">as.Date</span>(<span class="st">&quot;2016-04-17&quot;</span>)) <span class="sc">%&gt;%</span> <span class="fu">arrange</span>(timestamp) <span class="sc">%&gt;%</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>   <span class="fu">mutate</span>(<span class="at">type =</span> <span class="fu">case_when</span>(type<span class="sc">==</span><span class="dv">1</span> <span class="sc">~</span> <span class="st">&quot;Nodes&quot;</span>, type<span class="sc">==</span><span class="dv">2</span> <span class="sc">~</span> <span class="st">&quot;Ways&quot;</span>, type<span class="sc">==</span><span class="dv">3</span> <span class="sc">~</span> <span class="st">&quot;Relations&quot;</span>))</span></code></pre></div>
+<p>¿Por qué el archivo <code>interpreter</code> es tan pesado? Resulta que contiene 2.751 millones
+de elementos creados en el periodo de tres semanas que culminó el 8 de mayo, una cifra
+congruente con los datos en la primera tabla de este artículo. De esos elementos, 653
+son <em>relations</em> (relaciones), 385 mil son <em>ways</em> (vías) y el resto —la gran mayoría,
+como era de esperar— son <em>nodes</em> (nodos). Adicionalmente se identificaron 3731 usuarios diferentes,
+pero todavía no consideraremos esta cifra como nuestra estimación del total de contribuidores;
+más adelante se verá por qué. Ahora vamos a visualizar los datos en el tiempo y en el espacio.</p>
+<div id="contribuciones-a-lo-largo-del-tiempo-1" class="section level2">
+<h2>Contribuciones a lo largo del tiempo</h2>
+<p>Como sabía que el archivo <code>interpreter</code> no estaría disponible junto con este artículo,
+utilicé una estrategia diferente para compartir los datos: leer este archivo, agregar
+los datos según el aspecto que está siendo analizado, y escribir un nuevo archivo (mucho
+más liviano) con los resultados. Así, para analizar los elementos creados a lo largo del
+tiempo, se creó intervalos de doce horas con ayuda de <code>lubridate::ceiling_date()</code> y se
+contó los elementos por tipo en cada interavalo:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">filter</span>(Overpass, timestamp <span class="sc">&lt;</span> <span class="fu">as.Date</span>(<span class="st">&quot;2016-05-09&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>   <span class="fu">mutate</span>(<span class="fu">across</span>(timestamp, lubridate<span class="sc">::</span>ceiling_date, <span class="st">&quot;12 hours&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>   <span class="fu">count</span>(timestamp, type, <span class="at">name =</span> <span class="st">&quot;value&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>   <span class="fu">pivot_wider</span>(timestamp, type, <span class="at">values_fill =</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>   <span class="fu">write_csv</span>(<span class="st">&quot;ecuador_overpass_2016_by_time.csv&quot;</span>)</span></code></pre></div>
+<p>También se filtró los datos hasta antes del 9 de mayo. Parece un paso redundante (precisamente
+se solicitó datos hasta esa fecha), pero resulta que la variable <code>timestamp</code> guarda la fecha
+y hora de la última vez que el elemento fue modificado. Entonces, aquellos elementos creados
+durante Mapping Ecuador que hayan sido modificados en cualquier momento después del 9 de mayo,
+aparecerán aquí con la fecha de modificación.</p>
+<p>Este es el caso de alrededor de 131 mil elementos, de los cuales 368 son <em>relations</em>
+y 25 mil son <em>ways</em>. Esto es una pequeña fracción del total de 2.751 millones de elementos;
+implica que el 95.26 % de las contribuciones en Mapping Ecuador no han sido modificadas.
+Sin embargo, este porcentaje cambia drásticamente si diferenciamos por tipo de elemento:
+solo el 43.64 % de <em>relations</em> no han recibido modificaciones. Tiene sentido, pues estos
+son los elementos OSM más complejos y menos estáticos.</p>
+<p>El archivo <a href="https://github.com/ruevko/hexagonal/blob/master/content/post/2021/04/ecuador_overpass_2016_by_time.csv"><code>ecuador_overpass_2016_by_time.csv</code></a>
+se puede leer fácilmente con <code>readr::read_csv()</code>; a continuación se encuentra el gráfico con sus observaciones.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>Overpass_by_time <span class="ot">=</span> <span class="fu">read_csv</span>(<span class="st">&quot;ecuador_overpass_2016_by_time.csv&quot;</span>)</span></code></pre></div>
+<div class="figure"><span id="fig:plot-time"></span>
+<img src="/post/2021/04/16-mapping-ecuador-contribuciones_files/figure-html/plot-time-1.png" alt="Conteo de elementos contribuidos en Mapping Ecuador, en intervalos de doce horas" width="672" />
+<p class="caption">
+Figure 5: Conteo de elementos contribuidos en Mapping Ecuador, en intervalos de doce horas
+</p>
+</div>
+<p>El gráfico revela como hasta el 23 de abril, una semana después del terremoto, aparecieron
+la mayor cantidad de contribuciones; también revela el ciclo diario de actividad, que es
+mayor entre las 12 PM y las 12 AM. El número de <em>relations</em> no disminuye progresivamente
+pero de todas maneras es escaso. En cambio, es interesante como <em>ways</em> y <em>nodes</em> presentan
+una fuerte correlación; por supuesto esto sucede porque la manera de trazar <em>ways</em> —que
+permiten representar toda clase de objetos, no solo carreteras— es ubicando <em>nodes</em>.</p>
+</div>
+<div id="contribuciones-por-usuario" class="section level2">
+<h2>Contribuciones por usuario</h2>
+<p>Para analizar los datos con respecto a los usuarios, nuevamente debemos filtrar hasta el 9
+de mayo; toda modificación hecha después de esa fecha tendrá, además del nuevo <code>timestamp</code>,
+el nombre del usuario que modificó. Estos nombres no necesariamente están relacionados con
+Mapping Ecuador y por eso los descartamos, reduciendo a 2762 los usuarios; esta es nuestra
+estimación del número de contribuidores al proyecto. Una observación: 175 de los nombres
+descartados también figuran entre las contribuciones antes del 9 de mayo; significa que
+el 6.34 % de usuarios en Mapping Ecuador han vuelto a modificar elementos del proyecto,
+después de que el mismo concluyó. No obstante, no es que este sea el porcentaje que
+sigue activo, porque no consideramos toda la actividad en el país.</p>
+<p>En el siguiente paso se cuenta los elementos, por tipo y por usuario, y se escribe los resultados en el archivo
+<a href="https://github.com/ruevko/hexagonal/blob/master/content/post/2021/04/ecuador_overpass_2016_by_user.csv"><code>ecuador_overpass_2016_by_user.csv</code></a>:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">filter</span>(Overpass, timestamp <span class="sc">&lt;</span> <span class="fu">as.Date</span>(<span class="st">&quot;2016-05-09&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>   <span class="fu">count</span>(user, type, <span class="at">name =</span> <span class="st">&quot;value&quot;</span>, <span class="at">sort =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>   <span class="fu">pivot_wider</span>(user, type, <span class="at">values_fill =</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>   <span class="fu">write_csv</span>(<span class="st">&quot;ecuador_overpass_2016_by_user.csv&quot;</span>)</span></code></pre></div>
+<p>Manipulando estas observaciones es posible descubrir que, del total de 2762 usuarios,
+solamente 47 contribuyeron diez mil elementos o más cada uno; son pocos, pero sumando
+sus aportes alcanzan la cifra de 1.120 millones, lo que es el 42.76 % de todo Mapping
+Ecuador. Es más, los doce usuarios más activos —cada uno contribuyó más de 33 mil
+elementos— son responsables de 529 mil elementos, o el 20.18 % del total. En otras
+palabras: doce personas crearon o modificaron más de medio millón de elementos, una
+quinta parte del proyecto. Este hecho es típico en proyectos colaborativos abiertos:
+unos cuantos usuarios realizan gran parte del trabajo, y la mayoría aportan un poco.
+Los aportes de la mayoría son, sin embargo, lo que logra que el proyecto sea exitoso.</p>
+<p>En este punto decidí visualizar las contribuciones de los doce usuarios más activos, experimentando
+con <em>waffleplots</em>: una clase de gráficos que presentan el conteo de una variable —en este caso,
+miles de <em>nodes</em> y <em>ways</em> creados— de una manera intuitiva. Utilicé el paquete <code>waffle</code> con la
+precaución de instalarlo vía <code>remotes::install_github("hrbrmstr/waffle")</code> pues es en la última
+versión donde se encuentra<code>geom_waffle()</code>, la geometría que permite graficar <em>waffleplots</em>.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>Overpass_by_user <span class="ot">=</span> <span class="fu">read_csv</span>(<span class="st">&quot;ecuador_overpass_2016_by_user.csv&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>   <span class="fu">filter</span>(Nodes <span class="sc">+</span> Ways <span class="sc">+</span> Relations <span class="sc">&gt;</span> <span class="fl">33e3</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>   <span class="fu">mutate</span>(<span class="fu">across</span>(Ways<span class="sc">:</span>Nodes, <span class="sc">~</span> <span class="fu">round</span>(. <span class="sc">/</span> <span class="fl">1e3</span>) )) <span class="sc">%&gt;%</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>   <span class="fu">pivot_longer</span>(Ways<span class="sc">:</span>Nodes)</span></code></pre></div>
+<div class="figure"><span id="fig:plot-user"></span>
+<img src="/post/2021/04/16-mapping-ecuador-contribuciones_files/figure-html/plot-user-1.png" alt="*Waffleplots* de elementos contribuidos por los doce usuarios mas activos en Mapping Ecuador" width="672" />
+<p class="caption">
+Figure 6: <em>Waffleplots</em> de elementos contribuidos por los doce usuarios mas activos en Mapping Ecuador
+</p>
+</div>
+</div>
+<div id="contribuciones-en-el-espacio" class="section level2">
+<h2>Contribuciones en el espacio</h2>
+<p>Finalmente, para analizar el aspecto espacial no es necesario retirar las modificaciones
+posteriores al 9 de mayo porque es improbable que haya cambiado la ubicación de los elementos.
+En cambio, se deben retirar <em>ways</em> y <em>relations</em>, porque solamente los <em>nodes</em> poseen coordenadas
+definidas a través de latitud y longitud. Los otros elementos se componen de varios <em>nodes</em> así
+que no poseen una sola coordenada; más bien poseen un <em>bounding box</em> que puede ser calculado
+utilizando funcionalidad avanzada del Overpass Query Language, pero esto no fue solicitado.
+De cualquier forma, los <em>nodes</em> son el 85.97 % de los elementos, así que podremos graficar
+la distribución espacial sin problemas.</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">filter</span>(Overpass, type <span class="sc">==</span> <span class="st">&quot;Nodes&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>   <span class="fu">mutate</span>(<span class="fu">across</span>(lat<span class="sc">:</span>lon, round, <span class="at">digits =</span> <span class="dv">1</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>   <span class="fu">count</span>(lat, lon, <span class="at">name =</span> <span class="st">&quot;Nodes&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>   <span class="fu">write_csv</span>(<span class="st">&quot;ecuador_overpass_2016_by_lat_lon.csv&quot;</span>)</span></code></pre></div>
+<p>En <a href="https://github.com/ruevko/hexagonal/blob/master/content/post/2021/04/ecuador_overpass_2016_by_lat_lon.csv"><code>ecuador_overpass_2016_by_lat_lon.csv</code></a>
+tenemos el conteo de nodos por celda de 0.1º de latitud y 0.1º de longitud. Estos datos
+pueden transformarse en un objeto espacial usando <code>sf::st_as_sf()</code> con el código
+EPSG 4326 (i.e. coordenadas sin proyectar en el dátum WGS 84). Así es como generé
+este <em>heatmap</em> (mapa de calor) de <em>nodes</em> contribuidos en Mapping Ecuador; podemos
+observar el resultado de este enorme proyecto en las celdas con más de diez
+mil <em>nodes</em>, extendiéndose desde Manta hasta Esmeraldas.</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>Overpass_by_lat_lon <span class="ot">=</span> <span class="fu">read_csv</span>(<span class="st">&quot;ecuador_overpass_2016_by_lat_lon.csv&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>   <span class="fu">mutate</span>(<span class="at">Nodes =</span> <span class="fu">cut</span>(Nodes, <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">100</span>, <span class="fl">1e3</span>, <span class="fl">1e4</span>, <span class="fl">24e4</span>), <span class="at">include.lowest =</span> <span class="cn">TRUE</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>   <span class="fu">filter</span>(lon <span class="sc">&gt;=</span> <span class="sc">-</span><span class="dv">81</span>) <span class="sc">%&gt;%</span> sf<span class="sc">::</span><span class="fu">st_as_sf</span>(<span class="at">coords =</span> <span class="fu">c</span>(<span class="st">&quot;lon&quot;</span>, <span class="st">&quot;lat&quot;</span>), <span class="at">crs =</span> <span class="st">&quot;EPSG:4326&quot;</span>)</span></code></pre></div>
+<div class="figure"><span id="fig:plot-lat-lon"></span>
+<img src="/post/2021/04/16-mapping-ecuador-contribuciones_files/figure-html/plot-lat-lon-1.png" alt="*Heatmap* de nodos contribuidos durante Mapping Ecuador" width="480" />
+<p class="caption">
+Figure 7: <em>Heatmap</em> de nodos contribuidos durante Mapping Ecuador
+</p>
+</div>
+</div>
+</div>
+<div id="comentarios" class="section level1">
+<h1>Comentarios</h1>
+<p><span class="citation"><a href="#ref-good07" role="doc-biblioref">Goodchild</a> (<a href="#ref-good07" role="doc-biblioref">2007</a>)</span>, al acuñar el término Volunteered Geographic Information (VGI) para referirse a
+proyectos como OpenStreetMap, identificó que la gestión de emergencias sería en el futuro
+uno de los escenarios en donde las ventajas de la VGI resultarían más beneficiosas. El
+terremoto 16A y otros desastres atendidos por el HOT dan testimonio de esto. Según Goodchild,
+dichas ventajas —e.g. que la información se genera rápidamente— se derivan de datos
+levantados <em>in situ</em> por personas locales; pero en la práctica, esto no siempre ocurre.
+Muchos objetos ingresan al mapa al ser dibujados por un usuario remoto, a partir de
+imágenes satelitales. En Mapping Ecuador se utilizó esta estrategia: el sitio web de
+LLACTALAB registra eventos de mapeo en España y Estados Unidos.</p>
+<p>Aunque la información extraíble de una imagen satelital es limitada, esta clase de contribuciones
+no deben ser desalentadas, especialmente en una situación de emergencia. Sin embargo, es
+verdad que la información levantada localmente difiere de la remota no solo en calidad, sino
+en los objetos que son creados. <span class="citation"><a href="#ref-quin16" role="doc-biblioref">Quinn</a> (<a href="#ref-quin16" role="doc-biblioref">2016</a>)</span> observó que varios lugares en Sudamérica —uno de
+los continentes con menos usuarios OSM— han sido mapeados remotamente, pero en los lugares
+donde la contribución es local abundan los objetos relacionados con la vida cotidiana, como
+escuelas, hospitales y tiendas. Estos objetos hacen que el mapa sea más valioso para sus
+usuarios y por eso son una parte crucial del mismo; a pesar de este hecho, en este artículo
+no analicé la cantidad de contribución local.</p>
+<p>Mi propósito fue contabilizar y graficar varios aspectos de Mapping Ecuador, no
+identificar el origen de las contribuciones. Eso sería virtualmente imposible, pues muy
+pocos usuarios —especialmente entre aquellos que no son europeos— han creado un perfil
+con información personal <span class="citation">(<a href="#ref-quin16" role="doc-biblioref">Quinn 2016</a>)</span>. OpenStreetMap es un proyecto que se beneficia enormemente
+del altruismo; no es de extrañar que abunde el anonimato. Por esta razón afirmé que es irrelevante
+tratar de averiguar quiénes siguen activos y quiénes no: porque estas personas actuaron con
+solidaridad, porque más grande es la obra que los nombres. Como conclusión, ¿afirmaremos que
+Mapping Ecuador aumentó la actividad en el país? Para ser que sí, pero lo importante es que
+fue una iniciativa valiosa y oportuna.</p>
+<span class="post-meta">Referencias</span><div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-good07" class="csl-entry">
+Goodchild, Michael. 2007. <span>‘Citizens as Sensors: The World of Volunteered Geography.’</span> <em>GeoJournal</em> 69 (4): 211–21. <a href="https://doi.org/10.1007/s10708-007-9111-y">https://doi.org/10.1007/s10708-007-9111-y</a>.
+</div>
+<div id="ref-quin16" class="csl-entry">
+Quinn, Sterling. 2016. <span>‘A Geolinguistic Approach for Comprehending Local Influence in OpenStreetMap.’</span> <em>Cartographica: The International Journal for Geographic Information and Geovisualization</em> 51 (2): 67–83. <a href="https://doi.org/10.3138/cart.51.2.3301">https://doi.org/10.3138/cart.51.2.3301</a>.
+</div>
+</div>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>Este análisis lo conduje antes, para el
+<a href="https://ruevko.github.io/slides/2020/contribuciones-a-openstreetmap-en-ecuador">Open Data Day 2020</a>;
+mi propósito también es identificar nuevos aspectos.<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn2"><p>OSMstats advierte que
+la manera de averiguar a qué país pertenecen las contribuciones es calcular el centro del <em>changeset</em>,
+lo cual puede causar del 2 al 10 % de inexactitud.<a href="#fnref2" class="footnote-back">↩︎</a></p></li>
+<li id="fn3"><p>La tasa es diaria, a pesar de que las observaciones
+son semanales, porque el día es la unidad de cálculo de fechas.<a href="#fnref3" class="footnote-back">↩︎</a></p></li>
+<li id="fn4"><p>En estadística, una interacción ocurre cuando la relación entre
+dos variables depende de una tercera, en este caso la condición. La interacción causa que,
+cuando cambia la condición, cambie también la pendiente de la regresión.<a href="#fnref4" class="footnote-back">↩︎</a></p></li>
+<li id="fn5"><p>Overpass
+interpreta las horas en UTC así que, como en la <em>query</em> se especifica las 00:00 del 17
+de abril, esto corresponde en Ecuador a las 19:00 del 16 de abril; es decir, justo
+después del terremoto.<a href="#fnref5" class="footnote-back">↩︎</a></p></li>
+<li id="fn6"><p>La manera de “recibir”
+el archivo <code>interpreter</code> depende del navegador. Lo he intentado en Chrome, que lo descarga
+automáticamente, y en Safari, que lo abre en una pestaña. Considere esto porque es un
+archivo pesado.<a href="#fnref6" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>

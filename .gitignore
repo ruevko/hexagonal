@@ -6,5 +6,4 @@
 docs/post/babel.bib
 static/post
 static/rmarkdown-libs
-content/post/2021/*/*.html
 content/post/**/*_files
