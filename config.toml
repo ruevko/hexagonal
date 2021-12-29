@@ -67,7 +67,7 @@ paginate = 6
     identifier = "github"
     name = "GitHub"
     pre = "fab fa-github-alt"
-    url = "https://github.com/ruevko"
+    url = "https://github.com/ruevko/hexagonal"
   [[menu.links]]
     weight = 2
     identifier = "twitter"
