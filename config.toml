@@ -55,12 +55,6 @@ paginate = 6
     name = "Tags"
     pre = "fas fa-map-marker-alt"
     url = "/tags"
-  #[[menu.main]]
-    #weight = 4
-    #identifier = "rss"
-    #name = "RSS"
-    #pre = "fas fa-atlas"
-    #url = "/index.xml"
 
   [[menu.links]]
     weight = 1
@@ -76,16 +70,10 @@ paginate = 6
     url = "https://twitter.com/ruevko"
   [[menu.links]]
     weight = 3
-    identifier = "kofi"
-    name = "Ko-fi"
-    pre = "fas fa-coffee"
-    url = "https://ko-fi.com/ruevko"
-  #[[menu.links]]
-    #weight = 4
-    #identifier = "rbloggers"
-    #name = "R-bloggers"
-    #pre = "fas fa-rss"
-    #url = "https://www.r-bloggers.com"
+    identifier = "rss"
+    name = "RSS"
+    pre = "fas fa-rss"
+    url = "/index.xml"
 
 [params]
 
