@@ -116,21 +116,16 @@ paginate = 6
 
 [params.miscellaneous]
 
-  #[[params.miscellaneousMenu]]
-    #name = "Suscripción"
-    #icon = "fas fa-envelope"
-    #url = "https://follow.it/ruevko"
   [[params.miscellaneousMenu]]
-    name = "Acerca de . . ."
+    name = "Acerca de este blog"
     icon = "fas fa-compass"
-    url = "/post/readme"
-  #[[params.miscellaneousMenu]]
-    #name = "The english blog . . ."
-    #icon = "fas fa-map-signs"
-    #url = "en"
+    url = "https://ruevko.github.io/hexagonal/post/readme"
+  [[params.miscellaneousMenu]]
+    name = "The blog in English"
+    icon = "fas fa-map-signs"
+    url = "https://ruevko.github.io/hexagonal/en"
 
 [params.header]
-  #icon = "fas fa-map-signs"
   icon = "fas fa-chevron-down"
   url = "#footer"
 
