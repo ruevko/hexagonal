@@ -34,7 +34,6 @@ paginate = 6
   [languages.es]
     weight = 1
     languageName = "Español"
-
   [languages.en]
     weight = 2
     languageName = "English"
