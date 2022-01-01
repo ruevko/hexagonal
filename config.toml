@@ -35,6 +35,24 @@ paginate = 6
     weight = 1
     languageName = "Español"
 
+  [languages.en]
+    weight = 2
+    languageName = "English"
+    title = "Hexagonal Gallery"
+    [languages.en.params]
+      dateformat = "January 2, 2006"
+      keywords = ["analysis", "cartography", "data", "maps"]
+      description = "A blog by Rafael Castro, dealing with Cartography and Data Analysis"
+      sharingMessage = "This post was first published on the blog Hexagonal Gallery"
+      [[languages.en.params.miscellaneousMenu]]
+        name = "About this blog"
+        icon = "fas fa-compass"
+        url = "https://ruevko.github.io/hexagonal/en/post/readme"
+      [[languages.en.params.miscellaneousMenu]]
+        name = "El blog en Español"
+        icon = "fas fa-map-signs"
+        url = "https://ruevko.github.io/hexagonal"
+
 [menus]
 
   [[menu.main]]
