@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="generator" content="Hugo 0.81.0 with theme Tranquilpeak 0.4.8-BETA">
+<meta name="author" content="Roger Rafael Castro Zambrano">
+<meta name="keywords" content="analysis, cartography, data, maps">
+<meta name="description" content="A linear model was fitted for each country, showing the evolution of OpenStreetMap through its daily created nodes.">
+
+
+<meta property="og:type" content="article">
+<meta property="og:title" content="The daily growth of OSM nodes">
+<meta property="og:description" content="A linear model was fitted for each country, showing the evolution of OpenStreetMap through its daily created nodes.">
+<meta property="og:url" content="https://ruevko.github.io/hexagonal/en/post/2020/03/daily-growth-openstreetmap-nodes/">
+<meta property="og:site_name" content="Hexagonal Gallery">
+<meta property="og:locale" content="en">
+<meta name="twitter:card" content="summary">
+
+
+
+<meta property="og:image" content="
+  
+    https://res.cloudinary.com/dodnzqhiz/image/upload/v1613341882/2020post/lnr408agxidsqml6gmpu.png
+  
+">
+
+
+  
+    <meta property="article:published_time" content="2020-03-04T00:00:00">
+  
+  
+    <meta property="article:modified_time" content="2020-03-04T00:00:00">
+  
+  
+  
+    
+      <meta property="article:section" content="OpenStreetMap">
+    
+  
+  
+
+    <title>
+      
+        The daily growth of OSM nodes | Hexagonal Gallery
+      
+    </title>
+
+    <link rel="icon" href="https://ruevko.github.io/hexagonal/favicon.png">
+    
+    
+    <link rel="canonical" href="https://ruevko.github.io/hexagonal/en/post/2020/03/daily-growth-openstreetmap-nodes/">
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" integrity="sha256-+N4/V/SbAFiW1MPBCXnfnP9QSN3+Keu+NlB+0ev/YKQ=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/jquery.fancybox.min.css" integrity="sha256-vuXZ9LGmmwtjqFX1F+EKin1ThZMub58gKULUyf0qECk=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/helpers/jquery.fancybox-thumbs.min.css" integrity="sha256-SEa4XYAHihTcEP1f5gARTB2K26Uk8PsndQYHQC1f4jU=" crossorigin="anonymous" />
+    
+    
+    <link rel="stylesheet" href="https://ruevko.github.io/hexagonal/css/style-rpqj1h5cb5terj4l0gi1ixrzeditxx.min.css" />
+    
+    
+
+    
+      
+    
+  </head>
+  <body>
+    <div id="blog">
+      <header id="header" data-behavior="4">
+  <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+  <div class="header-title">
+    <a class="header-title-link" href="https://ruevko.github.io/hexagonal/en/">Hexagonal Gallery</a>
+  </div>
+  
+    
+      <a class="header-right-icon "
+         href="#footer">
+    
+    
+      <i class="fa-lg fas fa-chevron-down"></i></a>
+    
+  
+  
+</header>
+      <nav id="sidebar" data-behavior="4">
+  <div class="sidebar-container">
+    
+      <div class="sidebar-profile">
+        <a href="https://ruevko.github.io/hexagonal/#about">
+          <img class="sidebar-profile-picture" src="https://ruevko.github.io/hexagonal/logo.png"/>
+        </a>
+        <a class="sidebar-profile-name" href="https://ruevko.github.io/hexagonal/en/">Hexagonal Gallery</a>
+      </div>
+    
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://ruevko.github.io/hexagonal/en/archives">
+    
+      <i class="sidebar-button-icon fas fa-globe-americas fa-lg"></i>
+      
+      <span class="sidebar-button-desc">Archive</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://ruevko.github.io/hexagonal/en/categories">
+    
+      <i class="sidebar-button-icon fas fa-map-marked-alt fa-lg"></i>
+      
+      <span class="sidebar-button-desc">Categories</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://ruevko.github.io/hexagonal/en/tags">
+    
+      <i class="sidebar-button-icon fas fa-map-marker-alt fa-lg"></i>
+      
+      <span class="sidebar-button-desc">Tags</span>
+    </a>
+  </li>
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://github.com/ruevko/hexagonal" target="_blank" rel="noopener">
+    
+      <i class="sidebar-button-icon fab fa-github-alt fa-lg"></i>
+      
+      <span class="sidebar-button-desc">GitHub</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://twitter.com/ruevko" target="_blank" rel="noopener">
+    
+      <i class="sidebar-button-icon fab fa-twitter fa-lg"></i>
+      
+      <span class="sidebar-button-desc">Twitter</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://ruevko.github.io/hexagonal/en/index.xml">
+    
+      <i class="sidebar-button-icon fas fa-rss fa-lg"></i>
+      
+      <span class="sidebar-button-desc">RSS</span>
+    </a>
+  </li>
+
+    </ul>
+    <ul class="sidebar-buttons" style="width:auto;">
+
+  <li class="sidebar-button">
+    <a class="sidebar-button-link" href="https://ruevko.github.io/hexagonal/en/en/post/readme">
+      <i class="sidebar-button-icon fas fa-compass fa-lg"></i>
+      <span class="sidebar-button-desc">About this blog</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    <a class="sidebar-button-link" href="https://ruevko.github.io/hexagonal">
+      <i class="sidebar-button-icon fas fa-map-signs fa-lg"></i>
+      <span class="sidebar-button-desc">El blog en Español</span>
+    </a>
+  </li>
+
+    </ul>
+  </div>
+</nav>
+      
+
+      
+
+      <div id="main" data-behavior="4"
+        class="
+               hasCoverMetaIn
+               ">
+        <article class="post" itemscope itemType="http://schema.org/BlogPosting">
+          
+          
+            <div class="post-header main-content-wrap text-left">
+  
+    <h1 class="post-title" itemprop="headline">
+      The daily growth of OSM nodes
+    </h1>
+  
+  
+  <div class="postShorten-meta post-meta">
+    
+      <time itemprop="datePublished" datetime="2020-03-04T00:00:00Z">
+        
+  
+  
+  
+  
+    March 4, 2020
+  
+
+      </time>
+    
+    
+  
+  
+    <span>in</span>
+    
+      <a class="category-link" href="https://ruevko.github.io/hexagonal/en/categories/openstreetmap">OpenStreetMap</a>
+    
+  
+
+  </div>
+
+</div>
+          
+          <div class="post-content markdown" itemprop="articleBody">
+            <div class="main-content-wrap">
+              
+<style type="text/css">
+code.sourceCode > span { display: inline-block; line-height: 1.25; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+code.sourceCode > span:empty { height: 1.2em; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    background-color: #ffffff;
+    color: #a0a0a0;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #a0a0a0;  padding-left: 4px; }
+div.sourceCode
+  { color: #1f1c1b; background-color: #ffffff; }
+@media screen {
+code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span. { color: #1f1c1b; } /* Normal */
+code span.al { color: #bf0303; background-color: #f7e6e6; font-weight: bold; } /* Alert */
+code span.an { color: #ca60ca; } /* Annotation */
+code span.at { color: #0057ae; } /* Attribute */
+code span.bn { color: #b08000; } /* BaseN */
+code span.bu { color: #644a9b; font-weight: bold; } /* BuiltIn */
+code span.cf { color: #1f1c1b; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #924c9d; } /* Char */
+code span.cn { color: #aa5500; } /* Constant */
+code span.co { color: #898887; } /* Comment */
+code span.cv { color: #0095ff; } /* CommentVar */
+code span.do { color: #607880; } /* Documentation */
+code span.dt { color: #0057ae; } /* DataType */
+code span.dv { color: #b08000; } /* DecVal */
+code span.er { color: #bf0303; text-decoration: underline; } /* Error */
+code span.ex { color: #0095ff; font-weight: bold; } /* Extension */
+code span.fl { color: #b08000; } /* Float */
+code span.fu { color: #644a9b; } /* Function */
+code span.im { color: #ff5500; } /* Import */
+code span.in { color: #b08000; } /* Information */
+code span.kw { color: #1f1c1b; font-weight: bold; } /* Keyword */
+code span.op { color: #1f1c1b; } /* Operator */
+code span.ot { color: #006e28; } /* Other */
+code span.pp { color: #006e28; } /* Preprocessor */
+code span.re { color: #0057ae; background-color: #e0e9f8; } /* RegionMarker */
+code span.sc { color: #3daee9; } /* SpecialChar */
+code span.ss { color: #ff5500; } /* SpecialString */
+code span.st { color: #bf0303; } /* String */
+code span.va { color: #0057ae; } /* Variable */
+code span.vs { color: #bf0303; } /* VerbatimString */
+code span.wa { color: #bf0303; } /* Warning */
+</style>
+
+<p>In my first blog post, I presented how to create a choropleth map of OpenStreetMap
+contributions; by using the <em>web scraping</em> technique, I was able to count up to 75 % of
+all the existing nodes, a good initial estimate. Even so, just summing the nodes in each
+country is not a complete exploitation of the data; after all, we are talking about 738 thousand
+observations. So now we are going to estimate the rate of growth of the contributions in each
+country. We will use <code>tidyverse</code> to simultaneously load several packages that we need.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw">library</span>(sf)</span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="kw">library</span>(tidyverse) <span class="co"># loads dplyr, ggplot2, purrr, tidyr</span></span>
+<span id="cb1-3"><a href="#cb1-3"></a></span>
+<span id="cb1-4"><a href="#cb1-4"></a><span class="kw">data</span>(<span class="st">&quot;World&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;tmap&quot;</span>)</span>
+<span id="cb1-5"><a href="#cb1-5"></a></span>
+<span id="cb1-6"><a href="#cb1-6"></a>countries =<span class="st"> </span><span class="kw">select</span>(<span class="kw">st_drop_geometry</span>(World), <span class="dt">country =</span> name, continent) <span class="op">%&gt;%</span></span>
+<span id="cb1-7"><a href="#cb1-7"></a><span class="st">   </span><span class="kw">left_join</span>(countries) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># countries dataset as created in my first post</span></span>
+<span id="cb1-8"><a href="#cb1-8"></a><span class="st">   </span><span class="kw">filter</span>(date <span class="op">!=</span><span class="st"> </span><span class="kw">as.Date</span>(<span class="st">&quot;2019-11-01&quot;</span>))</span></code></pre></div>
+<p>In this first step I discarded the territories that cannot be represented in the map
+(reducing them from 253 to 173), and I also added the continent to which each one belongs.
+Before computing the rate of growth, a valid argument is that we have more observations than
+needed, because of the daily periodicity. One strategy to reduce the amount of observations
+is to aggregate (group) them into a less frequent periodicity; therefore, in the next step,
+I compute the sum<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> and the
+cumulative sum of created nodes, by the end of each month.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>countries_month =<span class="st"> </span><span class="kw">mutate</span>(countries, <span class="kw">across</span>(date, lubridate<span class="op">::</span>ceiling_date, <span class="st">&quot;month&quot;</span>)) <span class="op">%&gt;%</span></span>
+<span id="cb2-2"><a href="#cb2-2"></a><span class="st">   </span><span class="kw">group_by</span>(continent, country, date) <span class="op">%&gt;%</span></span>
+<span id="cb2-3"><a href="#cb2-3"></a><span class="st">   </span><span class="kw">summarise</span>(<span class="dt">nodes_sum =</span> <span class="kw">sum</span>(created)) <span class="op">%&gt;%</span></span>
+<span id="cb2-4"><a href="#cb2-4"></a><span class="st">   </span><span class="kw">mutate</span>(<span class="dt">nodes_cum =</span> <span class="kw">cumsum</span>(nodes_sum), <span class="dt">date =</span> date <span class="op">-</span><span class="st"> </span><span class="dv">1</span>) <span class="co"># last day from each month</span></span>
+<span id="cb2-5"><a href="#cb2-5"></a></span>
+<span id="cb2-6"><a href="#cb2-6"></a><span class="kw">head</span>(countries_month)</span></code></pre></div>
+<pre><code>## # A tibble: 6 x 5
+## # Groups:   continent, country [1]
+##   continent country date       nodes_sum nodes_cum
+##   &lt;fct&gt;     &lt;chr&gt;   &lt;date&gt;         &lt;dbl&gt;     &lt;dbl&gt;
+## 1 Africa    Algeria 2011-11-30     45598     45598
+## 2 Africa    Algeria 2011-12-31     60887    106485
+## 3 Africa    Algeria 2012-01-31     46259    152744
+## 4 Africa    Algeria 2012-02-29     33228    185972
+## 5 Africa    Algeria 2012-03-31     24461    210433
+## 6 Africa    Algeria 2012-04-30     15374    225807</code></pre>
+<p>After the aggregation there are 96 monthly observations for each territory. This amount
+of data is now adequate to fit a model, but it is still too large to plot. For the graphic
+below I aggregated the data even more: I computed the mean monthly created nodes in each
+continent<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>,
+except Antarctica.</p>
+<div class="figure"><span id="fig:nodes-mean"></span>
+<img src="https://ruevko.github.io/hexagonal/post/2020/03/04-crecimiento-diario-nodos_files/figure-html/nodes-mean-1.png" alt="Mean monthly created nodes in each continent" width="672" />
+<p class="caption">
+Figure 1: Mean monthly created nodes in each continent
+</p>
+</div>
+<p>Here we can verify that the greatest levels of contribution occur in european countries. And
+while in Africa, Asia and South America participation has historically been lesser, it has
+increased through the years. Now, if we wanted to plot the evolution for every country, that would
+be an illegible graphic. Instead, let's select, from every continent, the two countries with the
+most nodes; in decreasing order, these countries are:</p>
+<ol style="list-style-type: decimal">
+<li>United States 🇺🇸</li>
+<li>Russia 🇷🇺</li>
+<li>Canada 🇨🇦</li>
+<li>France 🇫🇷</li>
+<li>Indonesia 🇮🇩</li>
+<li>Japan 🇯🇵</li>
+<li>Brazil 🇧🇷</li>
+<li>Tanzania 🇹🇿</li>
+<li>Australia 🇦🇺</li>
+<li>Nigeria 🇳🇬</li>
+<li>New Zealand 🇳🇿</li>
+<li>Argentina 🇦🇷</li>
+</ol>
+<div class="figure"><span id="fig:nodes-cumsum"></span>
+<img src="https://ruevko.github.io/hexagonal/post/2020/03/04-crecimiento-diario-nodos_files/figure-html/nodes-cumsum-1.png" alt="Sum 👆 and cumulative sum 👇 of monthly created nodes in selected countries" width="672" />
+<p class="caption">
+Figure 2: Sum 👆 and cumulative sum 👇 of monthly created nodes in selected countries
+</p>
+</div>
+<p>As expected, european and north american countries are where created nodes reach the highest
+values; there were few times when they were surpassed by a country from another continent. If we
+look to cumulative sums, rather than just monthly sums, we will realize that they seem to have a
+linear evolution, with United States having the steepest slope, followed by a group comprised of
+Russia, Canada, France. Arguably in most projects, quantities such as number of members or
+contributions will always have linear or exponential growth; whether it is the former or the
+latter, it depends on how the project operates.</p>
+<p>Prior research in OpenStreetMap have already revealed a linear behavior. <span class="citation">Neis,
+Zielstra, and Zipf (<a href="#ref-neis13" role="doc-biblioref">2013</a>)</span>, while comparing
+the contributions in twelve big cities around the globe, observed a linear increase of contributing
+members from January 2007 and September 2012; this was discovered when they normalized the number of
+members with respect to the total population or the area of the city. The cities, in decreasing
+order of growth of contributors, were:</p>
+<ol style="list-style-type: decimal">
+<li>Berlin (🇩🇪)</li>
+<li>Paris (🇫🇷)</li>
+<li>Moscow (🇷🇺)</li>
+<li>London (🇬🇧)</li>
+<li>Los Angeles (🇺🇸)</li>
+<li>Sydney (🇦🇺)</li>
+<li>Johannesburg (🇿🇦)</li>
+<li>Buenos Aires (🇦🇷)</li>
+<li>Osaka (🇯🇵)</li>
+<li>Istanbul (🇹🇷)</li>
+<li>Seoul (🇰🇷)</li>
+<li>Cairo (🇪🇬)</li>
+</ol>
+<p>Again, the european cities occupy the first places, and then one city from North America.
+A similiar order appears in the graphic below <span class="citation">(Neis, Zielstra, and
+Zipf <a href="#ref-neis13" role="doc-biblioref">2013</a>)</span>, which depicts the number
+of objects -normalized with respect to the area- that existed in those cities.</p>
+<div class="figure">
+<img src="https://tinyurl.com/1txoab65" alt="Density of OpenStreetMap elements in several cities up to October 2012" />
+<p class="caption">Density of OpenStreetMap elements in several cities up to October 2012; by Pascal Neis, Dennis Zielstra, Alexander Zipf</p>
+</div>
+<p>With these antecedents, I decided to fit a linear regression<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a>
+for each country; the cumulative sum of nodes will be the output variable, and time will be the
+input, along the eight years (from November 1, 2011 to October 31, 2019) worth of observations.
+A tidy way to do this task is to <code>tidyr::nest()</code> (encase) the observations by
+country, and then execute <code>lm()</code> in each nested group.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>countries_model =<span class="st"> </span><span class="kw">nest</span>(countries_month) <span class="op">%&gt;%</span></span>
+<span id="cb4-2"><a href="#cb4-2"></a><span class="st">   </span><span class="kw">mutate</span>(<span class="dt">model =</span> <span class="kw">map</span>(data, <span class="op">~</span><span class="kw">lm</span>(nodes_cum <span class="op">~</span><span class="st"> </span>date, <span class="dt">data =</span> .)),</span>
+<span id="cb4-3"><a href="#cb4-3"></a>          <span class="dt">model =</span> <span class="kw">map</span>(model, <span class="op">~</span><span class="kw">c</span>(<span class="kw">coef</span>(.), <span class="kw">summary</span>(.)<span class="op">$</span>r.squared)),</span>
+<span id="cb4-4"><a href="#cb4-4"></a>          <span class="dt">name =</span> <span class="kw">list</span>(<span class="kw">c</span>(<span class="st">&quot;intercept&quot;</span>, <span class="st">&quot;rate&quot;</span>, <span class="st">&quot;rsquared&quot;</span>))) <span class="op">%&gt;%</span></span>
+<span id="cb4-5"><a href="#cb4-5"></a><span class="st">   </span><span class="kw">unnest</span>(<span class="dt">cols =</span> <span class="kw">c</span>(model, name)) <span class="op">%&gt;%</span></span>
+<span id="cb4-6"><a href="#cb4-6"></a><span class="st">   </span><span class="kw">pivot_wider</span>(<span class="dt">values_from =</span> model)</span>
+<span id="cb4-7"><a href="#cb4-7"></a></span>
+<span id="cb4-8"><a href="#cb4-8"></a><span class="kw">head</span>(countries_model)</span></code></pre></div>
+<pre><code>## # A tibble: 6 x 6
+## # Groups:   continent, country [6]
+##   continent country      data               intercept  rate rsquared
+##   &lt;fct&gt;     &lt;chr&gt;        &lt;list&gt;                 &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;
+## 1 Africa    Algeria      &lt;tibble [96 x 3]&gt; -65540524. 4211.    0.982
+## 2 Africa    Angola       &lt;tibble [96 x 3]&gt; -38861484. 2443.    0.740
+## 3 Africa    Benin        &lt;tibble [96 x 3]&gt; -28410417. 1791.    0.909
+## 4 Africa    Botswana     &lt;tibble [96 x 3]&gt; -56111053. 3536.    0.898
+## 5 Africa    Burkina Faso &lt;tibble [96 x 3]&gt; -46220666. 2921.    0.927
+## 6 Africa    Burundi      &lt;tibble [96 x 3]&gt; -13142257.  843.    0.857</code></pre>
+<p>To illustrate the results, here are the regressions for the previously selected countries:</p>
+<div class="figure"><span id="fig:model-select"></span>
+<img src="https://ruevko.github.io/hexagonal/post/2020/03/04-crecimiento-diario-nodos_files/figure-html/model-select-1.png" alt="Fitted linear regressions in selected countries" width="672" />
+<p class="caption">
+Figure 3: Fitted linear regressions in selected countries
+</p>
+</div>
+<p>In most cases a fair fit was achieved, according to the determination coefficient R<sup>2</sup>;
+the mean of this coefficient across the 173 territories was 0.8957. Only in nine countries (their
+regressions are plotted below) the R<sup>2</sup> coefficient was less than 0.70; probably those
+countries were recently recognized in our data source, or received contributions in a sudden manner.</p>
+<div class="figure"><span id="fig:model-rsmall"></span>
+<img src="https://ruevko.github.io/hexagonal/post/2020/03/04-crecimiento-diario-nodos_files/figure-html/model-rsmall-1.png" alt="Fitted linear regressions with R<sup>2</sup> coefficient less than 0.70" width="672" />
+<p class="caption">
+Figure 4: Fitted linear regressions with R<sup>2</sup> coefficient less than 0.70
+</p>
+</div>
+<p>For those territories that had a good fit, the regression's slope will be the estimated
+parameter that characterizes the growth of contributions; this value represents the
+daily<a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a> rate of nodes creation.
+The intercept, on the other hand, is not relevant in this analysis. The mean slope was 9275 and the
+maximum was 159555 daily nodes; the latter corresponds to the United States and is an outlier.</p>
+<p>How can we measure the accuracy of these estimates? <span class="citation">Neis
+and Zipf (<a href="#ref-neis12" role="doc-biblioref">2012</a>)</span> reported that, in
+January 2012, the global rate of contributions was about 1.2 million nodes, 130 thousand
+ways and 1500 relations created every day. If we add all the slopes that we estimated,
+a global rate of 1.605 million daily nodes is obtained; this is greater than the rate
+reported in 2012, which makes sense since now there are more contributors.</p>
+<p>To finish this post I present the choropleth maps of slopes (which we already
+know represent the rates of growth of nodes) and R<sup>2</sup> coefficients, of
+the fitted regressions for each country.</p>
+<div class="figure"><span id="fig:map-slope"></span>
+<img src="https://ruevko.github.io/hexagonal/post/2020/03/04-crecimiento-diario-nodos_files/figure-html/map-slope-1.svg" alt="Estimated daily rate of OpenStreetMap nodes creation by country" width="672" />
+<p class="caption">
+Figure 5: Estimated daily rate of OpenStreetMap nodes creation by country
+</p>
+</div>
+<div class="figure"><span id="fig:map-coeff"></span>
+<img src="https://ruevko.github.io/hexagonal/post/2020/03/04-crecimiento-diario-nodos_files/figure-html/map-coeff-1.svg" alt="R<sup>2</sup> coefficient of the fitted linear regressions by country" width="672" />
+<p class="caption">
+Figure 6: R<sup>2</sup> coefficient of the fitted linear regressions by country
+</p>
+</div>
+<span class="post-meta">References</span><div id="refs" class="references">
+
+<div id="ref-neis13">
+<p>Neis, Pascal, Dennis Zielstra, and Alexander Zipf. 2013. “Comparison of Volunteered Geographic Information Data Contributions and Community Development for Selected World Regions.” <em>Future Internet</em> 5 (June): 282–300. <a href="https://doi.org/10.3390/fi5020282">https://doi.org/10.3390/fi5020282</a>.</p>
+</div>
+<div id="ref-neis12">
+<p>Neis, Pascal, and Alexander Zipf. 2012. “Analyzing the Contributor Activity of a Volunteered Geographic Information Project — the Case of Openstreetmap.” <em>ISPRS International Journal of Geo-Information</em> 1 (December): 146–65. <a href="https://doi.org/10.3390/ijgi1020146">https://doi.org/10.3390/ijgi1020146</a>.</p>
+</div>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>I simply computed the sum of created nodes, without subtracting the deleted ones.
+As a consequence, the rates of growth I present by the end of this post cannot be used to compute
+the final amount of nodes in any country.<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn2"><p>Bear in mind that the number of countries amptly varies among continents,
+from 7 in Oceania, to 50 in Africa.<a href="#fnref2" class="footnote-back">↩︎</a></p></li>
+<li id="fn3"><p>Since the initial amount of nodes is zero, it makes sense to compute a regression
+through the origin (one where the intercept is fixed at zero). That option was assessed too, but it
+did not produce better fits, compared to the typical linear regression. Seems like this is one of
+those cases where the simpler model is adequate.<a href="#fnref3" class="footnote-back">↩︎</a></p></li>
+<li id="fn4"><p>It is true that the data became monthly but, due to the way R handles dates, the rate will
+indicate the change in nodes when the date increases by one day.<a href="#fnref4" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
+
+              
+            </div>
+          </div>
+          <div id="post-footer" class="post-footer main-content-wrap">
+            
+              
+            
+            <div class="post-actions-wrap">
+  
+      <nav >
+        <ul class="post-actions post-action-nav">
+          
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--disabled">
+              
+                  <i class="fa fa-angle-left"></i>
+                  <span class="hide-xs text-small icon-ml">Next post</span>
+                </a>
+            </li>
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip-big" href="https://ruevko.github.io/hexagonal/en/post/2020/01/estimating-openstreetmap-nodes-country/" data-tooltip="Estimating OpenStreetMap nodes by Country">
+              
+                  <span class="hide-xs text-small icon-mr" style="margin-left: 1.5px;">Prev post</span>
+                  <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+          
+        </ul>
+      </nav>
+    <ul class="post-actions post-action-share" >
+      
+        <li class="post-action hide-lg hide-md">
+          <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions">
+            <i class="fa fa-share-alt"></i>
+          </a>
+        </li>
+        
+          <li class="post-action hide-sm hide-xs">
+            <a class="post-action-btn btn btn--default" href=
+            
+              "https://www.facebook.com/sharer.php?t=This%20post%20was%20first%20published%20on%20the%20blog%20Hexagonal%20Gallery&amp;u=https://ruevko.github.io/hexagonal/en/post/2020/03/daily-growth-openstreetmap-nodes/" target="_blank"
+              data-tooltip="Share with Facebook">
+            
+              <i class="fab fa-facebook"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-sm hide-xs">
+            <a class="post-action-btn btn btn--default" href=
+            
+              "https://twitter.com/intent/tweet?text=This%20post%20was%20first%20published%20on%20the%20blog%20Hexagonal%20Gallery&amp;url=https://ruevko.github.io/hexagonal/en/post/2020/03/daily-growth-openstreetmap-nodes/" target="_blank"
+              data-tooltip="Share with Twitter">
+            
+              <i class="fab fa-twitter"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-sm hide-xs">
+            <a class="post-action-btn btn btn--default" href=
+            
+              "https://github.com/ruevko/hexagonal/blob/master/content/post/2020/03/%25!s%28%3cnil%3e%29"
+              data-tooltip="View source on GitHub">
+            
+              <i class="fab fa-github-alt"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-sm hide-xs">
+            <a class="post-action-btn btn btn--default" href=
+            
+              "https://t.me/share/url?text=This%20post%20was%20first%20published%20on%20the%20blog%20Hexagonal%20Gallery&amp;url=https://ruevko.github.io/hexagonal/en/post/2020/03/daily-growth-openstreetmap-nodes/" target="_blank"
+              data-tooltip="Share with Telegram">
+            
+              <i class="fab fa-telegram-plane"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-sm hide-xs">
+            <a class="post-action-btn btn btn--default" href=
+            
+              "https://api.whatsapp.com/send?text=This%20post%20was%20first%20published%20on%20the%20blog%20Hexagonal%20Gallery%20https://ruevko.github.io/hexagonal/en/post/2020/03/daily-growth-openstreetmap-nodes/" target="_blank"
+              data-tooltip="Share with WhatsApp">
+            
+              <i class="fab fa-whatsapp"></i>
+            </a>
+          </li>
+        
+      
+      
+      
+      <li class="post-action">
+        <a class="btn btn--default" href="#main" data-tooltip="Back to the top">
+          <i class="fa fa-chevron-up"></i>
+        </a>
+      </li>
+    </ul>
+  
+</div>
+            
+              
+            
+          </div>
+        </article>
+        <footer id="footer" class="main-content-wrap">
+  <span class="copyrights">
+    <i class="fab fa-creative-commons"></i>
+    <i class="fab fa-creative-commons-by"></i>
+    <i class="fab fa-creative-commons-sa"></i>
+    2022
+    (CC BY&ndash;SA 4.0)
+    <br>
+    
+      by Rafael Castro <i class="fas fa-lg fa-crow"></i>
+    
+  </span>
+</footer>
+      </div>
+      <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+        <div class="post-actions-wrap">
+  
+      <nav >
+        <ul class="post-actions post-action-nav">
+          
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--disabled">
+              
+                  <i class="fa fa-angle-left"></i>
+                  <span class="hide-xs text-small icon-ml">Next post</span>
+                </a>
+            </li>
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip-big" href="https://ruevko.github.io/hexagonal/en/post/2020/01/estimating-openstreetmap-nodes-country/" data-tooltip="Estimating OpenStreetMap nodes by Country">
+              
+                  <span class="hide-xs text-small icon-mr" style="margin-left: 1.5px;">Prev post</span>
+                  <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+          
+        </ul>
+      </nav>
+    <ul class="post-actions post-action-share" >
+      
+        <li class="post-action hide-lg hide-md">
+          <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions">
+            <i class="fa fa-share-alt"></i>
+          </a>
+        </li>
+        
+          <li class="post-action hide-sm hide-xs">
+            <a class="post-action-btn btn btn--default" href=
+            
+              "https://www.facebook.com/sharer.php?t=This%20post%20was%20first%20published%20on%20the%20blog%20Hexagonal%20Gallery&amp;u=https://ruevko.github.io/hexagonal/en/post/2020/03/daily-growth-openstreetmap-nodes/" target="_blank"
+              data-tooltip="Share with Facebook">
+            
+              <i class="fab fa-facebook"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-sm hide-xs">
+            <a class="post-action-btn btn btn--default" href=
+            
+              "https://twitter.com/intent/tweet?text=This%20post%20was%20first%20published%20on%20the%20blog%20Hexagonal%20Gallery&amp;url=https://ruevko.github.io/hexagonal/en/post/2020/03/daily-growth-openstreetmap-nodes/" target="_blank"
+              data-tooltip="Share with Twitter">
+            
+              <i class="fab fa-twitter"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-sm hide-xs">
+            <a class="post-action-btn btn btn--default" href=
+            
+              "https://github.com/ruevko/hexagonal/blob/master/content/post/2020/03/%25!s%28%3cnil%3e%29"
+              data-tooltip="View source on GitHub">
+            
+              <i class="fab fa-github-alt"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-sm hide-xs">
+            <a class="post-action-btn btn btn--default" href=
+            
+              "https://t.me/share/url?text=This%20post%20was%20first%20published%20on%20the%20blog%20Hexagonal%20Gallery&amp;url=https://ruevko.github.io/hexagonal/en/post/2020/03/daily-growth-openstreetmap-nodes/" target="_blank"
+              data-tooltip="Share with Telegram">
+            
+              <i class="fab fa-telegram-plane"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-sm hide-xs">
+            <a class="post-action-btn btn btn--default" href=
+            
+              "https://api.whatsapp.com/send?text=This%20post%20was%20first%20published%20on%20the%20blog%20Hexagonal%20Gallery%20https://ruevko.github.io/hexagonal/en/post/2020/03/daily-growth-openstreetmap-nodes/" target="_blank"
+              data-tooltip="Share with WhatsApp">
+            
+              <i class="fab fa-whatsapp"></i>
+            </a>
+          </li>
+        
+      
+      
+      
+      <li class="post-action">
+        <a class="btn btn--default" href="#main" data-tooltip="Back to the top">
+          <i class="fa fa-chevron-up"></i>
+        </a>
+      </li>
+    </ul>
+  
+</div>
+      </div>
+      <div id="share-options-bar" class="share-options-bar" data-behavior="4">
+  <i id="btn-close-shareoptions" class="fas fa-times"></i>
+  <ul class="share-options">
+    
+      <li class="share-option">
+            <a class="share-option-btn" href=
+            
+              "https://www.facebook.com/sharer.php?t=This%20post%20was%20first%20published%20on%20the%20blog%20Hexagonal%20Gallery&amp;u=https://ruevko.github.io/hexagonal/en/post/2020/03/daily-growth-openstreetmap-nodes/" target="_blank"
+              ><span class="icon-mr">Share with Facebook</span>
+            
+              <i class="fab fa-facebook"></i>
+            </a>
+      </li>
+    
+      <li class="share-option">
+            <a class="share-option-btn" href=
+            
+              "https://twitter.com/intent/tweet?text=This%20post%20was%20first%20published%20on%20the%20blog%20Hexagonal%20Gallery&amp;url=https://ruevko.github.io/hexagonal/en/post/2020/03/daily-growth-openstreetmap-nodes/" target="_blank"
+              ><span class="icon-mr">Share with Twitter</span>
+            
+              <i class="fab fa-twitter"></i>
+            </a>
+      </li>
+    
+      <li class="share-option">
+            <a class="share-option-btn" href=
+            
+              "https://github.com/ruevko/hexagonal/blob/master/content/post/2020/03/%25!s%28%3cnil%3e%29"
+              ><span class="icon-mr">View source on GitHub</span>
+            
+              <i class="fab fa-github-alt"></i>
+            </a>
+      </li>
+    
+      <li class="share-option">
+            <a class="share-option-btn" href=
+            
+              "https://t.me/share/url?text=This%20post%20was%20first%20published%20on%20the%20blog%20Hexagonal%20Gallery&amp;url=https://ruevko.github.io/hexagonal/en/post/2020/03/daily-growth-openstreetmap-nodes/" target="_blank"
+              ><span class="icon-mr">Share with Telegram</span>
+            
+              <i class="fab fa-telegram-plane"></i>
+            </a>
+      </li>
+    
+      <li class="share-option">
+            <a class="share-option-btn" href=
+            
+              "https://api.whatsapp.com/send?text=This%20post%20was%20first%20published%20on%20the%20blog%20Hexagonal%20Gallery%20https://ruevko.github.io/hexagonal/en/post/2020/03/daily-growth-openstreetmap-nodes/" target="_blank"
+              ><span class="icon-mr">Share with WhatsApp</span>
+            
+              <i class="fab fa-whatsapp"></i>
+            </a>
+      </li>
+    
+  </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+    </div>
+    <div id="about">
+  <div id="about-card">
+    <div id="about-btn-close">
+      <i class="fas fa-times"></i>
+    </div>
+    
+      <img id="about-card-picture" src="https://ruevko.github.io/hexagonal/logo.png"/>
+    
+    
+    <h4 id="about-card-name">Hexagonal Gallery</h4>
+    
+      <div id="about-card-bio">A blog by Rafael Castro, dealing with Cartography and Data Analysis</div>
+    
+    
+      <div id="about-card-job">
+        <i class="fas fa-graduation-cap"></i>
+        <br/>
+        Geógrafo
+      </div>
+    
+    
+      <div id="about-card-location">
+        <i class="fas fa-home"></i>
+        <br/>
+        Ecuador
+      </div>
+    
+  </div>
+</div>
+    
+    
+  
+    <div id="cover" style="background-image:url('https://res.cloudinary.com/dodnzqhiz/image/upload/v1577918037/crv.png');"></div>
+  
+
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.7/js/jquery.fancybox.min.js" integrity="sha256-GEAnjcTqVP+vBp3SSc8bEDQqvWAZMiHyUSIorrWwH50=" crossorigin="anonymous"></script>
+
+
+<script src="https://ruevko.github.io/hexagonal/js/script-brfgmdgurld48bpji4eimk0fcikejj.min.js"></script>
+
+
+<script lang="javascript">
+window.onload = updateMinWidth;
+window.onresize = updateMinWidth;
+document.getElementById("sidebar").addEventListener("transitionend", updateMinWidth);
+function updateMinWidth() {
+  var sidebar = document.getElementById("sidebar");
+  var main = document.getElementById("main");
+  main.style.minWidth = "";
+  var w1 = getComputedStyle(main).getPropertyValue("min-width");
+  var w2 = getComputedStyle(sidebar).getPropertyValue("width");
+  var w3 = getComputedStyle(sidebar).getPropertyValue("left");
+  main.style.minWidth = `calc(${w1} - ${w2} - ${w3})`;
+}
+</script>
+
+
+  
+    
+  
+
+
+
+  </body>
+</html>
