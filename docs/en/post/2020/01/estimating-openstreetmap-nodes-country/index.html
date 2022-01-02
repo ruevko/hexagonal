@@ -40,6 +40,14 @@
     
   
   
+    
+      <meta property="article:tag" content="choropleths">
+    
+      <meta property="article:tag" content="osm nodes">
+    
+      <meta property="article:tag" content="web scraping">
+    
+  
 
     <title>
       
@@ -379,12 +387,12 @@ by using <code>dplyr</code>:</p>
 <span id="cb3-5"><a href="#cb3-5"></a><span class="st">   </span><span class="kw">summarise</span>(<span class="dt">nodes =</span> <span class="kw">sum</span>(created <span class="op">-</span><span class="st"> </span>deleted), <span class="dt">dates =</span> <span class="kw">n_distinct</span>(date))</span>
 <span id="cb3-6"><a href="#cb3-6"></a></span>
 <span id="cb3-7"><a href="#cb3-7"></a><span class="kw">summary</span>(countries_nodes)</span></code></pre></div>
-<pre><code>##    country              nodes               dates
-##  Length:253         Min.   :       -2   Min.   :2917
-##  Class :character   1st Qu.:   259873   1st Qu.:2917
-##  Mode  :character   Median :  2756173   Median :2917
-##                     Mean   : 16590188   Mean   :2917
-##                     3rd Qu.: 13561870   3rd Qu.:2917
+<pre><code>##    country              nodes               dates     
+##  Length:253         Min.   :       -2   Min.   :2917  
+##  Class :character   1st Qu.:   259873   1st Qu.:2917  
+##  Mode  :character   Median :  2756173   Median :2917  
+##                     Mean   : 16590188   Mean   :2917  
+##                     3rd Qu.: 13561870   3rd Qu.:2917  
 ##                     Max.   :388753376   Max.   :2917</code></pre>
 <p>Finally, in order to generate the map, the values computed in the previous step must be joined to
 geometries that represent the countries. The <code>World</code> <em>dataset</em> contains simplified
@@ -408,14 +416,14 @@ Figure 1: First attempt to generate the map
 Republics of Korea and the two of Congo. This problem is caused by the different names with which these
 countries figure in <code>World</code> and in OSMstats; to solve this, we first should find out which
 names are those, an we can do so by executing <code>setdiff(World$name, countries_nodes$country)</code>:</p>
-<pre><code>##  [1] &quot;Fr. S. Antarctic Lands&quot; &quot;Bahamas&quot;                &quot;Bosnia and Herz.&quot;
-##  [4] &quot;Central African Rep.&quot;   &quot;Cote d&#39;Ivoire&quot;          &quot;Dem. Rep. Congo&quot;
-##  [7] &quot;Congo&quot;                  &quot;N. Cyprus&quot;              &quot;Czech Rep.&quot;
-## [10] &quot;Dominican Rep.&quot;         &quot;Falkland Is.&quot;           &quot;Gambia&quot;
-## [13] &quot;Eq. Guinea&quot;             &quot;Korea&quot;                  &quot;Kosovo&quot;
-## [16] &quot;Lao PDR&quot;                &quot;Myanmar&quot;                &quot;Dem. Rep. Korea&quot;
-## [19] &quot;Palestine&quot;              &quot;W. Sahara&quot;              &quot;S. Sudan&quot;
-## [22] &quot;Solomon Is.&quot;            &quot;Somaliland&quot;             &quot;Timor-Leste&quot;
+<pre><code>##  [1] &quot;Fr. S. Antarctic Lands&quot; &quot;Bahamas&quot;                &quot;Bosnia and Herz.&quot;      
+##  [4] &quot;Central African Rep.&quot;   &quot;Cote d&#39;Ivoire&quot;          &quot;Dem. Rep. Congo&quot;       
+##  [7] &quot;Congo&quot;                  &quot;N. Cyprus&quot;              &quot;Czech Rep.&quot;            
+## [10] &quot;Dominican Rep.&quot;         &quot;Falkland Is.&quot;           &quot;Gambia&quot;                
+## [13] &quot;Eq. Guinea&quot;             &quot;Korea&quot;                  &quot;Kosovo&quot;                
+## [16] &quot;Lao PDR&quot;                &quot;Myanmar&quot;                &quot;Dem. Rep. Korea&quot;       
+## [19] &quot;Palestine&quot;              &quot;W. Sahara&quot;              &quot;S. Sudan&quot;              
+## [22] &quot;Solomon Is.&quot;            &quot;Somaliland&quot;             &quot;Timor-Leste&quot;           
 ## [25] &quot;Tanzania&quot;</code></pre>
 <p>Next, the names obtained from OSMstats have to be modified to coincide with the ones above.</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>countries_nodes =<span class="st"> </span><span class="kw">mutate</span>(countries_nodes, <span class="kw">across</span>(country, <span class="op">~</span><span class="kw">case_when</span>(</span>
@@ -496,6 +504,20 @@ countries with more nodes:</p>
           </div>
           <div id="post-footer" class="post-footer main-content-wrap">
             
+              
+                
+                
+                  <div class="post-footer-tags">
+                    <span class="text-color-light text-small">Tagged in</span><br/>
+                    
+  <a class="tag tag--primary tag--small" href="https://ruevko.github.io/hexagonal/en/tags/choropleths/">choropleths</a>
+
+  <a class="tag tag--primary tag--small" href="https://ruevko.github.io/hexagonal/en/tags/osm-nodes/">osm nodes</a>
+
+  <a class="tag tag--primary tag--small" href="https://ruevko.github.io/hexagonal/en/tags/web-scraping/">web scraping</a>
+
+                  </div>
+                
               
             
             <div class="post-actions-wrap">

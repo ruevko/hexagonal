@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>regression in Hexagonal Gallery</title>
+    <link>https://ruevko.github.io/hexagonal/en/tags/regression/</link>
+    <description>Posts about regression in Hexagonal Gallery</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Wed, 04 Mar 2020</lastBuildDate>
+    
+    <atom:link href="https://ruevko.github.io/hexagonal/en/tags/regression/index.xml" rel="self" type="application/rss+xml"/>
+    
+    <item>
+      <title>The daily growth of OSM nodes</title>
+      <link>https://ruevko.github.io/hexagonal/en/post/2020/03/daily-growth-openstreetmap-nodes/</link>
+      <pubDate>Wed, 04 Mar 2020</pubDate>
+      <guid>https://ruevko.github.io/hexagonal/en/post/2020/03/daily-growth-openstreetmap-nodes/</guid>
+      <description>A linear model was fitted for each country, showing the evolution of OpenStreetMap through its daily created nodes.</description>
+    </item>
+    
+  </channel>
+</rss>

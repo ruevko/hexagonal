@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>osm nodes in Hexagonal Gallery</title>
+    <link>https://ruevko.github.io/hexagonal/en/tags/osm-nodes/</link>
+    <description>Posts about osm nodes in Hexagonal Gallery</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Wed, 04 Mar 2020</lastBuildDate>
+    
+    <atom:link href="https://ruevko.github.io/hexagonal/en/tags/osm-nodes/index.xml" rel="self" type="application/rss+xml"/>
+    
+    <item>
+      <title>The daily growth of OSM nodes</title>
+      <link>https://ruevko.github.io/hexagonal/en/post/2020/03/daily-growth-openstreetmap-nodes/</link>
+      <pubDate>Wed, 04 Mar 2020</pubDate>
+      <guid>https://ruevko.github.io/hexagonal/en/post/2020/03/daily-growth-openstreetmap-nodes/</guid>
+      <description>A linear model was fitted for each country, showing the evolution of OpenStreetMap through its daily created nodes.</description>
+    </item>
+    
+    <item>
+      <title>Estimating OpenStreetMap nodes by Country</title>
+      <link>https://ruevko.github.io/hexagonal/en/post/2020/01/estimating-openstreetmap-nodes-country/</link>
+      <pubDate>Tue, 07 Jan 2020</pubDate>
+      <guid>https://ruevko.github.io/hexagonal/en/post/2020/01/estimating-openstreetmap-nodes-country/</guid>
+      <description>A methodology based in &lt;em&gt;web scraping&lt;/em&gt; is presented, in order to generate a choropleth map of accumulated nodes in each country.</description>
+    </item>
+    
+  </channel>
+</rss>
