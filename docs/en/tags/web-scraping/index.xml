@@ -6,9 +6,17 @@
     <description>Posts about web scraping in Hexagonal Gallery</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Tue, 07 Jan 2020</lastBuildDate>
+    <lastBuildDate>Wed, 10 Mar 2021</lastBuildDate>
     
     <atom:link href="https://ruevko.github.io/hexagonal/en/tags/web-scraping/index.xml" rel="self" type="application/rss+xml"/>
+    
+    <item>
+      <title>Enhancin&#39; our Web Scrapin&#39;</title>
+      <link>https://ruevko.github.io/hexagonal/en/post/2021/03/enhancing-web-scraping/</link>
+      <pubDate>Wed, 10 Mar 2021</pubDate>
+      <guid>https://ruevko.github.io/hexagonal/en/post/2021/03/enhancing-web-scraping/</guid>
+      <description>There&amp;rsquo;ve been changes in OSMstats, the website from which we obtained OpenStreetMap statistics; this is an opportunity to introduce &lt;code&gt;rvest&lt;/code&gt; and obtain such data more easily.</description>
+    </item>
     
     <item>
       <title>Estimating OpenStreetMap nodes by Country</title>

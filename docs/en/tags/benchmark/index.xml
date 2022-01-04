@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>benchmark in Hexagonal Gallery</title>
+    <link>https://ruevko.github.io/hexagonal/en/tags/benchmark/</link>
+    <description>Posts about benchmark in Hexagonal Gallery</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Wed, 10 Mar 2021</lastBuildDate>
+    
+    <atom:link href="https://ruevko.github.io/hexagonal/en/tags/benchmark/index.xml" rel="self" type="application/rss+xml"/>
+    
+    <item>
+      <title>Enhancin&#39; our Web Scrapin&#39;</title>
+      <link>https://ruevko.github.io/hexagonal/en/post/2021/03/enhancing-web-scraping/</link>
+      <pubDate>Wed, 10 Mar 2021</pubDate>
+      <guid>https://ruevko.github.io/hexagonal/en/post/2021/03/enhancing-web-scraping/</guid>
+      <description>There&amp;rsquo;ve been changes in OSMstats, the website from which we obtained OpenStreetMap statistics; this is an opportunity to introduce &lt;code&gt;rvest&lt;/code&gt; and obtain such data more easily.</description>
+    </item>
+    
+  </channel>
+</rss>
