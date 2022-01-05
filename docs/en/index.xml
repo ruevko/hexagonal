@@ -6,9 +6,17 @@
     <description>Posts in Hexagonal Gallery</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Wed, 10 Mar 2021</lastBuildDate>
+    <lastBuildDate>Mon, 06 Sep 2021</lastBuildDate>
     
     <atom:link href="https://ruevko.github.io/hexagonal/en/index.xml" rel="self" type="application/rss+xml"/>
+    
+    <item>
+      <title>Obtaining raster data with AppEEARS</title>
+      <link>https://ruevko.github.io/hexagonal/en/post/2021/09/obtaining-raster-data-appeears/</link>
+      <pubDate>Mon, 06 Sep 2021</pubDate>
+      <guid>https://ruevko.github.io/hexagonal/en/post/2021/09/obtaining-raster-data-appeears/</guid>
+      <description>Presents how to request and download elevation data, through an API developed by NASA and USGS, and how to visualize the terrain using &lt;code&gt;raster&lt;/code&gt;.</description>
+    </item>
     
     <item>
       <title>Enhancin&#39; our Web Scrapin&#39;</title>
