@@ -46,7 +46,7 @@ paginate = 6
       [[languages.en.params.miscellaneousMenu]]
         name = "About this blog"
         icon = "fas fa-compass"
-        url = "https://ruevko.github.io/hexagonal/en/post/readme"
+        url = "/en/post/readme"
       [[languages.en.params.miscellaneousMenu]]
         name = "El blog en Español"
         icon = "fas fa-map-signs"
@@ -136,11 +136,11 @@ paginate = 6
   [[params.miscellaneousMenu]]
     name = "Acerca de este blog"
     icon = "fas fa-compass"
-    url = "https://ruevko.github.io/hexagonal/post/readme"
+    url = "/post/readme"
   [[params.miscellaneousMenu]]
     name = "The blog in English"
     icon = "fas fa-map-signs"
-    url = "https://ruevko.github.io/hexagonal/en"
+    url = "/en"
 
 [params.header]
   icon = "fas fa-chevron-down"
