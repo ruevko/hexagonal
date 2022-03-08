@@ -1,0 +1,144 @@
+---
+title: 'Weekly OSM: actualizaciones de los datos OSMstats (continuación)'
+date: '2021-11-25'
+slug: 25-weekly-osm-actualizaciones-datos-osmstats-continuacion
+categories:
+  - OpenStreetMap
+tags:
+  - coropletas
+  - weekly osm
+source: 25-weekly-osm-actualizaciones-datos-osmstats-continuacion.Rmd
+output:
+  blogdown::html_page:
+    toc: true
+    highlight: pygments
+    pandoc_args: ['--metadata', 'lang=en-GB']
+---
+
+```{bash clone-repo, eval=!dir.exists("weekly_osm_files")}
+git clone --depth 1 https://github.com/ruevko/weekly-osm weekly_osm_files
+```
+
+```{r read-all-data, message=TRUE}
+setwd("weekly_osm_files")
+source("R/read_all_data.R")
+```
+
+```{r filter-data, echo=FALSE}
+# use this to complete missing obs., i.e. countries without contributions in some weeks
+# weekly_osm_data = tidyr::complete(weekly_osm_data, tidyr::nesting(Year, Week), Country)
+# use this to add the start of week, since the year and week can't be coerced into a date
+weekly_osm_data = tibble(Week_start = seq(as.Date("2011-10-31"), Sys.Date(), by = 7)) %>%
+   mutate(Year = as.character(Week_start, "%G") %>% as.integer,
+          Week = as.character(Week_start, "%V") %>% as.integer) %>%
+   right_join(weekly_osm_data, by = c("Year", "Week"))
+# in this post, I will only use data up to Nov 1st 2021
+weekly_osm_data = select(filter(weekly_osm_data, Week_start < "2021-10-31"), -Week_start)
+```
+
+```{r relabel-data}
+library(forcats)
+
+weekly_osm_data$Country = weekly_osm_data$Country %>%
+   fct_relabel(~ sub("ublic", ".", .)) %>%
+   fct_relabel(~ sub("Islands?", "Is.", .)) %>%
+   fct_relabel(~ sub("\\s\\(.+\\)", "", .)) %>%
+   fct_recode(
+      "Tanzania" = "United Rep. of Tanzania",
+      "eSwatini" = "Swaziland",
+      "North Macedonia" = "Macedonia",
+      "Congo-Brazzaville" = "Rep. of the Congo"
+   )
+```
+
+```{r summarise-data}
+weekly_osm_summary = group_by(weekly_osm_data, Country) %>%
+   summarise(Estimated_total_elements = sum(Created_elements_sum - Deleted_elements_sum))
+
+arrange(weekly_osm_summary, desc(Estimated_total_elements))
+```
+
+```{r write-gpkg, echo=FALSE, eval=!file.exists("ne_110m_admin_0_countries_lakes_modified.gpkg")}
+# get nearth countrie ####
+library(sf)
+
+ne_dir = "ne_110m_admin_0_countries_lakes"
+
+if(! dir.exists(ne_dir)) {
+   dir.create(ne_dir)
+   "//www.naturalearthdata.com/" %>%
+      paste0("https:", ., "http", ., "download/110m/cultural/", ne_dir, ".zip") %>%
+      download.file(paste0(ne_dir, ".zip"))
+   unzip(paste0(ne_dir, ".zip"), exdir = ne_dir)
+}
+# read downloaded shp ####
+ne_countries = read_sf(ne_dir) %>% transmute(
+   Country = NAME %>% forcats::fct_recode(
+      "West Bank" = "Palestine",
+      "Czech Rep." = "Czechia",
+      "East Timor" = "Timor-Leste",
+      "The Gambia" = "Gambia",
+      "Ivory Coast" = "Côte d'Ivoire",
+      "South Sudan" = "S. Sudan",
+      "The Bahamas" = "Bahamas",
+      "United States" = "United States of America",
+      "Congo-Kinshasa" = "Dem. Rep. Congo",
+      "Rep. of Kosovo" = "Kosovo",
+      "Western Sahara" = "W. Sahara",
+      "Northern Cyprus" = "N. Cyprus",
+      "Congo-Brazzaville" = "Congo",
+      "Equatorial Guinea" = "Eq. Guinea",
+      "Bosnia and Herzegovina" = "Bosnia and Herz."
+   ) %>% as.character
+)
+# trim part of antarc ####
+ne_ans = st_cast(ne_countries$geometry[ ne_countries$Country == "Antarctica" ], "POLYGON")
+
+ne_an = as.matrix(ne_ans[[ which.max(st_area(ne_ans)) ]])
+
+ne_an[ which(ne_an == -90) ] = -86.5; ne_an = ne_an[ ne_an[ , 1 ] > -168.5, ]
+
+ne_an = rbind(ne_an[ 1:2, ], matrix(c(ne_an[ 3, 1 ], ne_an[ 2, 2 ]), 1), ne_an[ -(1:2), ])
+
+ne_ans[[ which.max(st_area(ne_ans)) ]] = st_polygon(list(ne_an))
+
+ne_countries$geometry[ ne_countries$Country == "Antarctica" ] = st_combine(ne_ans)
+
+# use this to fix russia geometry, but you won't be able to plot directly, i.e. +lon_0=0
+ne_countries = st_make_valid(ne_countries)
+# split two countries ####
+ne_france = filter(ne_countries, Country == "France") %>%
+   st_cast("POLYGON") %>% mutate(
+      group = st_area(geometry),
+      group = group %in% range(group),
+      Country = if_else(group, Country, "French Guiana")
+   )
+
+ne_norway = filter(ne_countries, Country == "Norway") %>%
+   st_cast("POLYGON") %>% mutate(
+      group = st_area(geometry),
+      group = group != max(group),
+      Country = if_else(group, "Svalbard", Country)
+   )
+
+ne_countries = filter(ne_countries, ! Country %in% c("France", "Norway")) %>%
+   mutate(Country = if_else(Country == "Somaliland", "Somalia", Country)) %>%
+   bind_rows(ne_france, ne_norway) %>% group_by(Country) %>% summarise %>% st_cast
+# write as geopackage ####
+setdiff(ne_countries$Country, weekly_osm_data$Country)
+
+write_sf(ne_countries, paste0(ne_dir, "_modified.gpkg"))
+
+rm(list = ls(pattern = "^ne_"))
+```
+
+```{r est-osm-elements, message=TRUE, fig.asp=5/6, dev="svglite"}
+library(sf)
+
+ne_countries = read_sf("ne_110m_admin_0_countries_lakes_modified.gpkg") %>%
+   left_join(weekly_osm_summary)
+
+st_transform(ne_countries["Estimated_total_elements"], "+proj=gall +lon_0=11.5") %>%
+   plot(at = 6:9, key.pos = 1, logz = TRUE,
+        main = "Estimated OpenStreetMap elements by country")# (Nov 2011 — Oct 2021)
+```
