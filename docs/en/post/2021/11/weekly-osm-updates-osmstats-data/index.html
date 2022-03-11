@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="generator" content="Hugo 0.81.0 with theme Tranquilpeak 0.4.8-BETA">
+<meta name="author" content="Roger Rafael Castro Zambrano">
+<meta name="keywords" content="analysis, cartography, data, maps">
+<meta name="description" content="Recently the OSMstats site achieved ten years worth of data; to celebrate it (and to apply new methods I&rsquo;ve learned) I am currently developing a repository that gathers that data on a weekly basis, and uses it to update its own database.">
+
+
+<meta property="og:type" content="article">
+<meta property="og:title" content="Weekly OSM: updates of OSMstats data">
+<meta property="og:description" content="Recently the OSMstats site achieved ten years worth of data; to celebrate it (and to apply new methods I&rsquo;ve learned) I am currently developing a repository that gathers that data on a weekly basis, and uses it to update its own database.">
+<meta property="og:url" content="https://ruevko.github.io/hexagonal/en/post/2021/11/weekly-osm-updates-osmstats-data/">
+<meta property="og:site_name" content="Hexagonal Gallery">
+<meta property="og:locale" content="en">
+<meta name="twitter:card" content="summary">
+
+
+
+<meta property="og:image" content="
+  
+    https://ruevko.github.io/hexagonal/logo.png
+  
+">
+
+
+  
+    <meta property="article:published_time" content="2021-11-02T00:00:00">
+  
+  
+    <meta property="article:modified_time" content="2021-11-02T00:00:00">
+  
+  
+  
+    
+      <meta property="article:section" content="OpenStreetMap">
+    
+  
+  
+    
+      <meta property="article:tag" content="github actions">
+    
+      <meta property="article:tag" content="web scraping">
+    
+  
+
+    <title>
+      
+        Weekly OSM: updates of OSMstats data | Hexagonal Gallery
+      
+    </title>
+
+    <link rel="icon" href="https://ruevko.github.io/hexagonal/favicon.png">
+    
+    
+    <link rel="canonical" href="https://ruevko.github.io/hexagonal/en/post/2021/11/weekly-osm-updates-osmstats-data/">
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" integrity="sha256-+N4/V/SbAFiW1MPBCXnfnP9QSN3+Keu+NlB+0ev/YKQ=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/jquery.fancybox.min.css" integrity="sha256-vuXZ9LGmmwtjqFX1F+EKin1ThZMub58gKULUyf0qECk=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/helpers/jquery.fancybox-thumbs.min.css" integrity="sha256-SEa4XYAHihTcEP1f5gARTB2K26Uk8PsndQYHQC1f4jU=" crossorigin="anonymous" />
+    
+    
+    <link rel="stylesheet" href="https://ruevko.github.io/hexagonal/css/style-rpqj1h5cb5terj4l0gi1ixrzeditxx.min.css" />
+    
+    
+
+    
+      
+    
+  </head>
+  <body>
+    <div id="blog">
+      <header id="header" data-behavior="4">
+  <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+  <div class="header-title">
+    <a class="header-title-link" href="https://ruevko.github.io/hexagonal/en/">Hexagonal Gallery</a>
+  </div>
+  
+    
+      <a class="header-right-icon "
+         href="#footer">
+    
+    
+      <i class="fa-lg fas fa-chevron-down"></i></a>
+    
+  
+  
+</header>
+      <nav id="sidebar" data-behavior="4">
+  <div class="sidebar-container">
+    
+      <div class="sidebar-profile">
+        <a href="https://ruevko.github.io/hexagonal/#about">
+          <img class="sidebar-profile-picture" src="https://ruevko.github.io/hexagonal/logo.png"/>
+        </a>
+        <a class="sidebar-profile-name" href="https://ruevko.github.io/hexagonal/en/">Hexagonal Gallery</a>
+      </div>
+    
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://ruevko.github.io/hexagonal/en/archives">
+    
+      <i class="sidebar-button-icon fas fa-globe-americas fa-lg"></i>
+      
+      <span class="sidebar-button-desc">Archive</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://ruevko.github.io/hexagonal/en/categories">
+    
+      <i class="sidebar-button-icon fas fa-map-marked-alt fa-lg"></i>
+      
+      <span class="sidebar-button-desc">Categories</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://ruevko.github.io/hexagonal/en/tags">
+    
+      <i class="sidebar-button-icon fas fa-map-marker-alt fa-lg"></i>
+      
+      <span class="sidebar-button-desc">Tags</span>
+    </a>
+  </li>
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://github.com/ruevko/hexagonal" target="_blank" rel="noopener">
+    
+      <i class="sidebar-button-icon fab fa-github-alt fa-lg"></i>
+      
+      <span class="sidebar-button-desc">GitHub</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://twitter.com/ruevko" target="_blank" rel="noopener">
+    
+      <i class="sidebar-button-icon fab fa-twitter fa-lg"></i>
+      
+      <span class="sidebar-button-desc">Twitter</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://ruevko.github.io/hexagonal/en/index.xml">
+    
+      <i class="sidebar-button-icon fas fa-rss fa-lg"></i>
+      
+      <span class="sidebar-button-desc">RSS</span>
+    </a>
+  </li>
+
+    </ul>
+    <ul class="sidebar-buttons" style="width:auto;">
+
+  <li class="sidebar-button">
+    <a class="sidebar-button-link" href="https://ruevko.github.io/hexagonal/en/post/readme">
+      <i class="sidebar-button-icon fas fa-compass fa-lg"></i>
+      <span class="sidebar-button-desc">About this blog</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    <a class="sidebar-button-link" href="https://ruevko.github.io/hexagonal">
+      <i class="sidebar-button-icon fas fa-map-signs fa-lg"></i>
+      <span class="sidebar-button-desc">El blog en Español</span>
+    </a>
+  </li>
+
+    </ul>
+  </div>
+</nav>
+      
+
+      
+
+      <div id="main" data-behavior="4"
+        class="
+               hasCoverMetaIn
+               ">
+        <article class="post" itemscope itemType="http://schema.org/BlogPosting">
+          
+          
+            <div class="post-header main-content-wrap text-left">
+  
+    <h1 class="post-title" itemprop="headline">
+      Weekly OSM: updates of OSMstats data
+    </h1>
+  
+  
+  <div class="postShorten-meta post-meta">
+    
+      <time itemprop="datePublished" datetime="2021-11-02T00:00:00Z">
+        
+  
+  
+  
+  
+    November 2, 2021
+  
+
+      </time>
+    
+    
+  
+  
+    <span>in</span>
+    
+      <a class="category-link" href="https://ruevko.github.io/hexagonal/en/categories/openstreetmap">OpenStreetMap</a>
+    
+  
+
+  </div>
+
+</div>
+          
+          <div class="post-content markdown" itemprop="articleBody">
+            <div class="main-content-wrap">
+              <p>When I started this blog, I decided to do so by sharing my first data analysis
+project: obtaining information about OpenStreetMap (OSM) by means of <em>web scraping</em>
+in the <a href="https://osmstats.neis-one.org">OSMstats</a> website, developed by
+<a href="https://neis-one.org/about">Pascal Neis</a>. Since then &mdash;while learning more
+about R and how to properly code&mdash; I&rsquo;ve discovered new methods that would
+allow me to replicate that project, but in a more concise and reproducible manner.</p>
+<p>That&rsquo;s why I am currently developing a GitHub repository with this purpose: to maintain
+a database of summarized information from OSMstats. Data would be obtained every week and
+would show the activity that has happened in all available countries. Before explaining
+what is the procedure, I must mention that OpenStreetMap &mdash;as well as anything derived
+from it&mdash; is <em>open data</em>, is a property of its contributors (© OpenStreetMap contributors),
+and possesses an <a href="https://www.openstreetmap.org/copyright">ODC Open Database License</a>. The
+database I will generate will therefore have the same license.</p>
+<p>In a nutshell, the procedure I am doing is:</p>
+<ol>
+<li>Create the repository in GitHub and <code>git clone</code> it</li>
+<li>Transform it to a RStudio project, with a <code>renv</code> private environment</li>
+<li>Program 😼</li>
+<li>Create the database, with data since the beginning of OSMstats until today</li>
+<li>Update the repository and the database via <code>git push</code></li>
+<li>Create the mechanism for the repository to update itself onward</li>
+</ol>
+<p>Regarding the first step, the repository <a href="https://github.com/ruevko/weekly-osm">Weekly OSM</a> is
+already online; I chose that name to signify the fact that it will be updated once per week.
+Such frequency has two advantages: to reduce the granularity of the observations, and to maintain
+a <em>cache</em> &mdash;the service GitHub Actions keeps them one week at most&mdash; of required packages.</p>
+<p>After cloning the repository, the second step was to launch RStudio and associate the <code>Weekly-OSM</code>
+directory with a new project. Once this was done, the first commands I executed in the project were:</p>
+<pre><code>install.packages(&quot;renv&quot;)
+renv::init(bare = TRUE)
+</code></pre><p>The purpose of <a href="https://rstudio.github.io/renv"><code>renv</code></a> is to generate a reproducible
+working environment. What this means is that, during development, my project will have
+its own R packages library, isolated from other projects that I may develop in the same
+computer. It also means that I can easily reproduce this library in another computer,
+which is crucial, since it will allow the execution of <em>scripts</em> from the project as
+part of a GitHub Actions <em>workflow</em>.</p>
+<p>The third step is, precisely, to write those <em>scripts</em>. In this post I
+will not delve into how does Weekly OSM function; that information is in the
+<a href="https://github.com/ruevko/Weekly-OSM/blob/main/readme.md">README</a> and each of the
+<em>scripts</em>, which are thoroughly commented. However I will mention that, after programming,
+one should run <code>renv::snapshot()</code> to write <code>renv.lock</code>, a file registering all the packages
+that have been used &mdash;<code>dplyr</code> and <code>rvest</code> in my case&mdash; and their dependencies too. The
+registries it writes look like this:</p>
+<pre><code>    &quot;magrittr&quot;: {
+      &quot;Package&quot;: &quot;magrittr&quot;,
+      &quot;Version&quot;: &quot;2.0.1&quot;,
+      &quot;Source&quot;: &quot;Repository&quot;,
+      &quot;Repository&quot;: &quot;CRAN&quot;,
+      &quot;Hash&quot;: &quot;41287f1ac7d28a92f0a286ed507928d3&quot;
+    }
+</code></pre><p>To accomplish the fourth step I wrote the <a href="https://github.com/ruevko/Weekly-OSM/blob/main/R/main_yearly.R"><code>main_yearly.R</code></a> <em>script</em>;
+when executed, it obtains from OSMstats all the observations of certain year, i.e. of
+every date and every country that had activity during those dates. Then it computes a
+weekly summary of the observations &mdash;applying functions such as <code>sum()</code> and <code>max()</code>&mdash;
+and writes the results to <code>.csv</code> files; hence, there will be 52 o 53 files per year. Once
+that I ran the <em>script</em> for each year from 2011 to 2021, I added all those files to the
+online repository, and so I accomplished the fifth step.</p>
+<p>Finally, the sixth step consisted in writing
+<a href="https://github.com/ruevko/Weekly-OSM/blob/main/.github/workflows/main.yaml"><code>main.yaml</code></a>,
+a <em>workflow</em> that will run every Monday at 03:13 UTC approximately, through GitHub Actions.
+I won&rsquo;t talk about <em>workflow</em> syntax, but I do want to show some of the steps; for instance,
+the one below serves to create a <em>cache</em> with installed packages. While the first <em>workflow</em>
+run took several minutes, thanks to the <em>cache</em> subsequent runs were completed in less than
+a minute. Furthermore, as long as <code>renv.lock</code> doesn&rsquo;t change, the <em>cache</em> will remain valid.</p>
+<pre><code>    # create/restore cache
+    - name: Cache packages
+      uses: actions/cache@v2
+      with:
+        path: ${{ env.RENV_PATHS_ROOT }}
+        key: renv-${{ hashFiles('renv.lock') }}
+</code></pre><p>In the next step the <code>renv::restore()</code> function is executed, and it performs
+the installation (or, if a <em>cache</em> already exists, the restoration) of the
+packages registered in <code>renv.lock</code>. And the last step I show here executes
+<a href="https://github.com/ruevko/Weekly-OSM/blob/main/R/main.R"><code>main.R</code></a>, a <em>script</em>
+containing all the operations that need to be done every week in the repository.</p>
+<pre><code>    # install/restore packages
+    - name: Restore packages
+      run: Rscript -e 'renv::restore()'
+    # source main script
+    - name: Obtain weekly data
+      run: Rscript R/main.R
+</code></pre><p>That&rsquo;s about everything I can say regarding Weekly OSM up to now. Since I added <code>main.yaml</code>
+the database has correctly been updated; now I just need to keep in mind that the <em>workflow</em>
+must be renewed every now and then, because otherwise GitHub Actions will disable it 😹.
+This post will have a continuation, where I will demonstrate how to utilize the database.</p>
+
+              
+            </div>
+          </div>
+          <div id="post-footer" class="post-footer main-content-wrap">
+            
+              
+                
+                
+                  <div class="post-footer-tags">
+                    <span class="text-color-light text-small">Tagged in</span><br/>
+                    
+  <a class="tag tag--primary tag--small" href="https://ruevko.github.io/hexagonal/en/tags/github-actions/">github actions</a>
+
+  <a class="tag tag--primary tag--small" href="https://ruevko.github.io/hexagonal/en/tags/web-scraping/">web scraping</a>
+
+                  </div>
+                
+              
+            
+            <div class="post-actions-wrap">
+  
+      <nav >
+        <ul class="post-actions post-action-nav">
+          
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--disabled">
+              
+                  <i class="fa fa-angle-left"></i>
+                  <span class="hide-xs text-small icon-ml">Next post</span>
+                </a>
+            </li>
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip-big" href="https://ruevko.github.io/hexagonal/en/post/2021/09/obtaining-raster-data-appeears/" data-tooltip="Obtaining raster data with AppEEARS">
+              
+                  <span class="hide-xs text-small icon-mr" style="margin-left: 1.5px;">Prev post</span>
+                  <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+          
+        </ul>
+      </nav>
+    <ul class="post-actions post-action-share" >
+      
+        <li class="post-action hide-lg hide-md">
+          <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions">
+            <i class="fa fa-share-alt"></i>
+          </a>
+        </li>
+        
+          <li class="post-action hide-sm hide-xs">
+            <a class="post-action-btn btn btn--default" href=
+            
+              "https://www.facebook.com/sharer.php?t=This%20post%20was%20first%20published%20on%20the%20blog%20Hexagonal%20Gallery&amp;u=https://ruevko.github.io/hexagonal/en/post/2021/11/weekly-osm-updates-osmstats-data/" target="_blank"
+              data-tooltip="Share with Facebook">
+            
+              <i class="fab fa-facebook"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-sm hide-xs">
+            <a class="post-action-btn btn btn--default" href=
+            
+              "https://twitter.com/intent/tweet?text=This%20post%20was%20first%20published%20on%20the%20blog%20Hexagonal%20Gallery&amp;url=https://ruevko.github.io/hexagonal/en/post/2021/11/weekly-osm-updates-osmstats-data/" target="_blank"
+              data-tooltip="Share with Twitter">
+            
+              <i class="fab fa-twitter"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-sm hide-xs">
+            <a class="post-action-btn btn btn--default" href=
+            
+              "https://github.com/ruevko/hexagonal/blob/master/content/post/2021/11/02-weekly-osm-actualizaciones-datos-osmstats.md"
+              data-tooltip="View source on GitHub">
+            
+              <i class="fab fa-github-alt"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-sm hide-xs">
+            <a class="post-action-btn btn btn--default" href=
+            
+              "https://t.me/share/url?text=This%20post%20was%20first%20published%20on%20the%20blog%20Hexagonal%20Gallery&amp;url=https://ruevko.github.io/hexagonal/en/post/2021/11/weekly-osm-updates-osmstats-data/" target="_blank"
+              data-tooltip="Share with Telegram">
+            
+              <i class="fab fa-telegram-plane"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-sm hide-xs">
+            <a class="post-action-btn btn btn--default" href=
+            
+              "https://api.whatsapp.com/send?text=This%20post%20was%20first%20published%20on%20the%20blog%20Hexagonal%20Gallery%20https://ruevko.github.io/hexagonal/en/post/2021/11/weekly-osm-updates-osmstats-data/" target="_blank"
+              data-tooltip="Share with WhatsApp">
+            
+              <i class="fab fa-whatsapp"></i>
+            </a>
+          </li>
+        
+      
+      
+      
+      <li class="post-action">
+        <a class="btn btn--default" href="#main" data-tooltip="Back to the top">
+          <i class="fa fa-chevron-up"></i>
+        </a>
+      </li>
+    </ul>
+  
+</div>
+            
+              
+            
+          </div>
+        </article>
+        <footer id="footer" class="main-content-wrap">
+  <span class="copyrights">
+    <i class="fab fa-creative-commons"></i>
+    <i class="fab fa-creative-commons-by"></i>
+    <i class="fab fa-creative-commons-sa"></i>
+    2022
+    (CC BY&ndash;SA 4.0)
+    <br>
+    
+      by Rafael Castro <i class="fas fa-lg fa-crow"></i>
+    
+  </span>
+</footer>
+      </div>
+      <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+        <div class="post-actions-wrap">
+  
+      <nav >
+        <ul class="post-actions post-action-nav">
+          
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--disabled">
+              
+                  <i class="fa fa-angle-left"></i>
+                  <span class="hide-xs text-small icon-ml">Next post</span>
+                </a>
+            </li>
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip-big" href="https://ruevko.github.io/hexagonal/en/post/2021/09/obtaining-raster-data-appeears/" data-tooltip="Obtaining raster data with AppEEARS">
+              
+                  <span class="hide-xs text-small icon-mr" style="margin-left: 1.5px;">Prev post</span>
+                  <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+          
+        </ul>
+      </nav>
+    <ul class="post-actions post-action-share" >
+      
+        <li class="post-action hide-lg hide-md">
+          <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions">
+            <i class="fa fa-share-alt"></i>
+          </a>
+        </li>
+        
+          <li class="post-action hide-sm hide-xs">
+            <a class="post-action-btn btn btn--default" href=
+            
+              "https://www.facebook.com/sharer.php?t=This%20post%20was%20first%20published%20on%20the%20blog%20Hexagonal%20Gallery&amp;u=https://ruevko.github.io/hexagonal/en/post/2021/11/weekly-osm-updates-osmstats-data/" target="_blank"
+              data-tooltip="Share with Facebook">
+            
+              <i class="fab fa-facebook"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-sm hide-xs">
+            <a class="post-action-btn btn btn--default" href=
+            
+              "https://twitter.com/intent/tweet?text=This%20post%20was%20first%20published%20on%20the%20blog%20Hexagonal%20Gallery&amp;url=https://ruevko.github.io/hexagonal/en/post/2021/11/weekly-osm-updates-osmstats-data/" target="_blank"
+              data-tooltip="Share with Twitter">
+            
+              <i class="fab fa-twitter"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-sm hide-xs">
+            <a class="post-action-btn btn btn--default" href=
+            
+              "https://github.com/ruevko/hexagonal/blob/master/content/post/2021/11/02-weekly-osm-actualizaciones-datos-osmstats.md"
+              data-tooltip="View source on GitHub">
+            
+              <i class="fab fa-github-alt"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-sm hide-xs">
+            <a class="post-action-btn btn btn--default" href=
+            
+              "https://t.me/share/url?text=This%20post%20was%20first%20published%20on%20the%20blog%20Hexagonal%20Gallery&amp;url=https://ruevko.github.io/hexagonal/en/post/2021/11/weekly-osm-updates-osmstats-data/" target="_blank"
+              data-tooltip="Share with Telegram">
+            
+              <i class="fab fa-telegram-plane"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-sm hide-xs">
+            <a class="post-action-btn btn btn--default" href=
+            
+              "https://api.whatsapp.com/send?text=This%20post%20was%20first%20published%20on%20the%20blog%20Hexagonal%20Gallery%20https://ruevko.github.io/hexagonal/en/post/2021/11/weekly-osm-updates-osmstats-data/" target="_blank"
+              data-tooltip="Share with WhatsApp">
+            
+              <i class="fab fa-whatsapp"></i>
+            </a>
+          </li>
+        
+      
+      
+      
+      <li class="post-action">
+        <a class="btn btn--default" href="#main" data-tooltip="Back to the top">
+          <i class="fa fa-chevron-up"></i>
+        </a>
+      </li>
+    </ul>
+  
+</div>
+      </div>
+      <div id="share-options-bar" class="share-options-bar" data-behavior="4">
+  <i id="btn-close-shareoptions" class="fas fa-times"></i>
+  <ul class="share-options">
+    
+      <li class="share-option">
+            <a class="share-option-btn" href=
+            
+              "https://www.facebook.com/sharer.php?t=This%20post%20was%20first%20published%20on%20the%20blog%20Hexagonal%20Gallery&amp;u=https://ruevko.github.io/hexagonal/en/post/2021/11/weekly-osm-updates-osmstats-data/" target="_blank"
+              ><span class="icon-mr">Share with Facebook</span>
+            
+              <i class="fab fa-facebook"></i>
+            </a>
+      </li>
+    
+      <li class="share-option">
+            <a class="share-option-btn" href=
+            
+              "https://twitter.com/intent/tweet?text=This%20post%20was%20first%20published%20on%20the%20blog%20Hexagonal%20Gallery&amp;url=https://ruevko.github.io/hexagonal/en/post/2021/11/weekly-osm-updates-osmstats-data/" target="_blank"
+              ><span class="icon-mr">Share with Twitter</span>
+            
+              <i class="fab fa-twitter"></i>
+            </a>
+      </li>
+    
+      <li class="share-option">
+            <a class="share-option-btn" href=
+            
+              "https://github.com/ruevko/hexagonal/blob/master/content/post/2021/11/02-weekly-osm-actualizaciones-datos-osmstats.md"
+              ><span class="icon-mr">View source on GitHub</span>
+            
+              <i class="fab fa-github-alt"></i>
+            </a>
+      </li>
+    
+      <li class="share-option">
+            <a class="share-option-btn" href=
+            
+              "https://t.me/share/url?text=This%20post%20was%20first%20published%20on%20the%20blog%20Hexagonal%20Gallery&amp;url=https://ruevko.github.io/hexagonal/en/post/2021/11/weekly-osm-updates-osmstats-data/" target="_blank"
+              ><span class="icon-mr">Share with Telegram</span>
+            
+              <i class="fab fa-telegram-plane"></i>
+            </a>
+      </li>
+    
+      <li class="share-option">
+            <a class="share-option-btn" href=
+            
+              "https://api.whatsapp.com/send?text=This%20post%20was%20first%20published%20on%20the%20blog%20Hexagonal%20Gallery%20https://ruevko.github.io/hexagonal/en/post/2021/11/weekly-osm-updates-osmstats-data/" target="_blank"
+              ><span class="icon-mr">Share with WhatsApp</span>
+            
+              <i class="fab fa-whatsapp"></i>
+            </a>
+      </li>
+    
+  </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+    </div>
+    <div id="about">
+  <div id="about-card">
+    <div id="about-btn-close">
+      <i class="fas fa-times"></i>
+    </div>
+    
+      <img id="about-card-picture" src="https://ruevko.github.io/hexagonal/logo.png"/>
+    
+    
+    <h4 id="about-card-name">Hexagonal Gallery</h4>
+    
+      <div id="about-card-bio">A blog by Rafael Castro, dealing with Cartography and Data Analysis</div>
+    
+    
+      <div id="about-card-job">
+        <i class="fas fa-graduation-cap"></i>
+        <br/>
+        Geógrafo
+      </div>
+    
+    
+      <div id="about-card-location">
+        <i class="fas fa-home"></i>
+        <br/>
+        Ecuador
+      </div>
+    
+  </div>
+</div>
+    
+    
+  
+    <div id="cover" style="background-image:url('https://res.cloudinary.com/dodnzqhiz/image/upload/v1577918037/crv.png');"></div>
+  
+
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.7/js/jquery.fancybox.min.js" integrity="sha256-GEAnjcTqVP+vBp3SSc8bEDQqvWAZMiHyUSIorrWwH50=" crossorigin="anonymous"></script>
+
+
+<script src="https://ruevko.github.io/hexagonal/js/script-brfgmdgurld48bpji4eimk0fcikejj.min.js"></script>
+
+
+<script lang="javascript">
+window.onload = updateMinWidth;
+window.onresize = updateMinWidth;
+document.getElementById("sidebar").addEventListener("transitionend", updateMinWidth);
+function updateMinWidth() {
+  var sidebar = document.getElementById("sidebar");
+  var main = document.getElementById("main");
+  main.style.minWidth = "";
+  var w1 = getComputedStyle(main).getPropertyValue("min-width");
+  var w2 = getComputedStyle(sidebar).getPropertyValue("width");
+  var w3 = getComputedStyle(sidebar).getPropertyValue("left");
+  main.style.minWidth = `calc(${w1} - ${w2} - ${w3})`;
+}
+</script>
+
+
+  
+    
+  
+
+
+
+  </body>
+</html>

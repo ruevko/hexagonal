@@ -6,9 +6,17 @@
     <description>Posts about web scraping in Hexagonal Gallery</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Wed, 10 Mar 2021</lastBuildDate>
+    <lastBuildDate>Tue, 02 Nov 2021</lastBuildDate>
     
     <atom:link href="https://ruevko.github.io/hexagonal/en/tags/web-scraping/index.xml" rel="self" type="application/rss+xml"/>
+    
+    <item>
+      <title>Weekly OSM: updates of OSMstats data</title>
+      <link>https://ruevko.github.io/hexagonal/en/post/2021/11/weekly-osm-updates-osmstats-data/</link>
+      <pubDate>Tue, 02 Nov 2021</pubDate>
+      <guid>https://ruevko.github.io/hexagonal/en/post/2021/11/weekly-osm-updates-osmstats-data/</guid>
+      <description>Recently the OSMstats site achieved ten years worth of data; to celebrate it (and to apply new methods I&amp;rsquo;ve learned) I am currently developing a repository that gathers that data on a weekly basis, and uses it to update its own database.</description>
+    </item>
     
     <item>
       <title>Enhancin&#39; our Web Scrapin&#39;</title>
