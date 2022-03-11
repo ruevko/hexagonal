@@ -2,19 +2,8 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://ruevko.github.io/hexagonal/en/archives/</loc>
-    <xhtml:link
-                rel="alternate"
-                hreflang="es"
-                href="https://ruevko.github.io/hexagonal/archives/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://ruevko.github.io/hexagonal/en/archives/"
-                />
-  </url><url>
     <loc>https://ruevko.github.io/hexagonal/en/categories/</loc>
+    <lastmod>2021-11-02T00:00:00+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="es"
@@ -26,7 +15,21 @@
                 href="https://ruevko.github.io/hexagonal/en/categories/"
                 />
   </url><url>
+    <loc>https://ruevko.github.io/hexagonal/en/tags/github-actions/</loc>
+    <lastmod>2021-11-02T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="es"
+                href="https://ruevko.github.io/hexagonal/tags/github-actions/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://ruevko.github.io/hexagonal/en/tags/github-actions/"
+                />
+  </url><url>
     <loc>https://ruevko.github.io/hexagonal/en/</loc>
+    <lastmod>2021-11-02T00:00:00+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="es"
@@ -38,7 +41,34 @@
                 href="https://ruevko.github.io/hexagonal/en/"
                 />
   </url><url>
+    <loc>https://ruevko.github.io/hexagonal/en/categories/openstreetmap/</loc>
+    <lastmod>2021-11-02T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="es"
+                href="https://ruevko.github.io/hexagonal/categories/openstreetmap/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://ruevko.github.io/hexagonal/en/categories/openstreetmap/"
+                />
+  </url><url>
+    <loc>https://ruevko.github.io/hexagonal/en/post/</loc>
+    <lastmod>2021-11-02T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="es"
+                href="https://ruevko.github.io/hexagonal/post/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://ruevko.github.io/hexagonal/en/post/"
+                />
+  </url><url>
     <loc>https://ruevko.github.io/hexagonal/en/tags/</loc>
+    <lastmod>2021-11-02T00:00:00+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="es"
@@ -48,6 +78,134 @@
                 rel="alternate"
                 hreflang="en"
                 href="https://ruevko.github.io/hexagonal/en/tags/"
+                />
+  </url><url>
+    <loc>https://ruevko.github.io/hexagonal/en/tags/web-scraping/</loc>
+    <lastmod>2021-11-02T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="es"
+                href="https://ruevko.github.io/hexagonal/tags/web-scraping/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://ruevko.github.io/hexagonal/en/tags/web-scraping/"
+                />
+  </url><url>
+    <loc>https://ruevko.github.io/hexagonal/en/post/2021/11/weekly-osm-updates-osmstats-data/</loc>
+    <lastmod>2021-11-02T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="es"
+                href="https://ruevko.github.io/hexagonal/post/2021/11/02-weekly-osm-actualizaciones-datos-osmstats/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://ruevko.github.io/hexagonal/en/post/2021/11/weekly-osm-updates-osmstats-data/"
+                />
+  </url><url>
+    <loc>https://ruevko.github.io/hexagonal/en/tags/appeears/</loc>
+    <lastmod>2021-09-06T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="es"
+                href="https://ruevko.github.io/hexagonal/tags/appeears/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://ruevko.github.io/hexagonal/en/tags/appeears/"
+                />
+  </url><url>
+    <loc>https://ruevko.github.io/hexagonal/en/tags/elevation-models/</loc>
+    <lastmod>2021-09-06T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://ruevko.github.io/hexagonal/en/post/2021/09/obtaining-raster-data-appeears/</loc>
+    <lastmod>2021-09-06T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="es"
+                href="https://ruevko.github.io/hexagonal/post/2021/09/06-obteniendo-datos-raster-appeears/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://ruevko.github.io/hexagonal/en/post/2021/09/obtaining-raster-data-appeears/"
+                />
+  </url><url>
+    <loc>https://ruevko.github.io/hexagonal/en/tags/benchmark/</loc>
+    <lastmod>2021-03-10T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="es"
+                href="https://ruevko.github.io/hexagonal/tags/benchmark/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://ruevko.github.io/hexagonal/en/tags/benchmark/"
+                />
+  </url><url>
+    <loc>https://ruevko.github.io/hexagonal/en/post/2021/03/enhancing-web-scraping/</loc>
+    <lastmod>2021-03-10T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="es"
+                href="https://ruevko.github.io/hexagonal/post/2021/03/10-mejorando-nuestro-scraping/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://ruevko.github.io/hexagonal/en/post/2021/03/enhancing-web-scraping/"
+                />
+  </url><url>
+    <loc>https://ruevko.github.io/hexagonal/en/tags/choropleths/</loc>
+    <lastmod>2020-03-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://ruevko.github.io/hexagonal/en/tags/osm-nodes/</loc>
+    <lastmod>2020-03-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://ruevko.github.io/hexagonal/en/tags/regression/</loc>
+    <lastmod>2020-03-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://ruevko.github.io/hexagonal/en/post/2020/03/daily-growth-openstreetmap-nodes/</loc>
+    <lastmod>2020-03-04T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="es"
+                href="https://ruevko.github.io/hexagonal/post/2020/03/04-crecimiento-diario-nodos/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://ruevko.github.io/hexagonal/en/post/2020/03/daily-growth-openstreetmap-nodes/"
+                />
+  </url><url>
+    <loc>https://ruevko.github.io/hexagonal/en/post/2020/01/estimating-openstreetmap-nodes-country/</loc>
+    <lastmod>2020-01-07T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="es"
+                href="https://ruevko.github.io/hexagonal/post/2020/01/07-estimando-nodos-openstreetmap-pais/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://ruevko.github.io/hexagonal/en/post/2020/01/estimating-openstreetmap-nodes-country/"
+                />
+  </url><url>
+    <loc>https://ruevko.github.io/hexagonal/en/archives/</loc>
+    <xhtml:link
+                rel="alternate"
+                hreflang="es"
+                href="https://ruevko.github.io/hexagonal/archives/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://ruevko.github.io/hexagonal/en/archives/"
                 />
   </url>
 </urlset>
