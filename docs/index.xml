@@ -6,9 +6,17 @@
     <description>Artículos en La Galería Hexagonal</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>es</language>
-    <lastBuildDate>Tue, 02 Nov 2021</lastBuildDate>
+    <lastBuildDate>Thu, 14 Apr 2022</lastBuildDate>
     
     <atom:link href="https://ruevko.github.io/hexagonal/index.xml" rel="self" type="application/rss+xml"/>
+    
+    <item>
+      <title>Cómo insertar un feed RSS en RMarkdown</title>
+      <link>https://ruevko.github.io/hexagonal/post/2022/04/14-como-insertar-feed-rmarkdown/</link>
+      <pubDate>Thu, 14 Apr 2022</pubDate>
+      <guid>https://ruevko.github.io/hexagonal/post/2022/04/14-como-insertar-feed-rmarkdown/</guid>
+      <description>Explica cómo usar &lt;em&gt;javascript&lt;/em&gt; en RMarkdown, particularmente, para obtener los artículos más recientes de un blog.</description>
+    </item>
     
     <item>
       <title>Weekly OSM: actualizaciones de los datos OSMstats</title>

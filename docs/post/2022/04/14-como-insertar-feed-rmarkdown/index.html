@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="generator" content="Hugo 0.94.0 with theme Tranquilpeak 0.4.8-BETA">
+<meta name="author" content="Roger Rafael Castro Zambrano">
+<meta name="keywords" content="análisis, cartografía, datos, mapas">
+<meta name="description" content="Explica cómo usar javascript en RMarkdown, particularmente, para obtener los artículos más recientes de un blog.">
+
+
+<meta property="og:type" content="article">
+<meta property="og:title" content="Cómo insertar un feed RSS en RMarkdown">
+<meta property="og:description" content="Explica cómo usar javascript en RMarkdown, particularmente, para obtener los artículos más recientes de un blog.">
+<meta property="og:url" content="https://ruevko.github.io/hexagonal/post/2022/04/14-como-insertar-feed-rmarkdown/">
+<meta property="og:site_name" content="La Galería Hexagonal">
+<meta property="og:locale" content="es">
+<meta name="twitter:card" content="summary">
+
+
+
+<meta property="og:image" content="
+  
+    https://res.cloudinary.com/dodnzqhiz/image/upload/2022post/mjbtzu42ghlpfnlbiemu.png
+  
+">
+
+
+  
+    <meta property="article:published_time" content="2022-04-14T00:00:00">
+  
+  
+    <meta property="article:modified_time" content="2022-04-14T00:00:00">
+  
+  
+  
+  
+    
+      <meta property="article:tag" content="javascript">
+    
+  
+
+    <title>
+      
+        Cómo insertar un feed RSS en RMarkdown | La Galería Hexagonal
+      
+    </title>
+
+    <link rel="icon" href="https://ruevko.github.io/hexagonal/favicon.png">
+    
+    
+    <link rel="canonical" href="https://ruevko.github.io/hexagonal/post/2022/04/14-como-insertar-feed-rmarkdown/">
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" integrity="sha256-+N4/V/SbAFiW1MPBCXnfnP9QSN3+Keu+NlB+0ev/YKQ=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/jquery.fancybox.min.css" integrity="sha256-vuXZ9LGmmwtjqFX1F+EKin1ThZMub58gKULUyf0qECk=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/helpers/jquery.fancybox-thumbs.min.css" integrity="sha256-SEa4XYAHihTcEP1f5gARTB2K26Uk8PsndQYHQC1f4jU=" crossorigin="anonymous" />
+    
+    
+    <link rel="stylesheet" href="https://ruevko.github.io/hexagonal/css/style-rpqj1h5cb5terj4l0gi1ixrzeditxx.min.css" />
+    
+    
+
+    
+      
+    
+  </head>
+  <body>
+    <div id="blog">
+      <header id="header" data-behavior="4">
+  <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+  <div class="header-title">
+    <a class="header-title-link" href="https://ruevko.github.io/hexagonal/">La Galería Hexagonal</a>
+  </div>
+  
+    
+      <a class="header-right-icon "
+         href="#footer">
+    
+    
+      <i class="fa-lg fas fa-chevron-down"></i></a>
+    
+  
+  
+</header>
+      <nav id="sidebar" data-behavior="4">
+  <div class="sidebar-container">
+    
+      <div class="sidebar-profile">
+        <a href="https://ruevko.github.io/hexagonal/#about">
+          <img class="sidebar-profile-picture" src="https://ruevko.github.io/hexagonal/logo.png"/>
+        </a>
+        <a class="sidebar-profile-name" href="https://ruevko.github.io/hexagonal/">La Galería Hexagonal</a>
+      </div>
+    
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://ruevko.github.io/hexagonal/archives">
+    
+      <i class="sidebar-button-icon fas fa-globe-americas fa-lg"></i>
+      
+      <span class="sidebar-button-desc">Archivo</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://ruevko.github.io/hexagonal/categories">
+    
+      <i class="sidebar-button-icon fas fa-map-marked-alt fa-lg"></i>
+      
+      <span class="sidebar-button-desc">Categorías</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://ruevko.github.io/hexagonal/tags">
+    
+      <i class="sidebar-button-icon fas fa-map-marker-alt fa-lg"></i>
+      
+      <span class="sidebar-button-desc">Etiquetas</span>
+    </a>
+  </li>
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://github.com/ruevko/hexagonal" target="_blank" rel="noopener">
+    
+      <i class="sidebar-button-icon fab fa-github-alt fa-lg"></i>
+      
+      <span class="sidebar-button-desc">GitHub</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://twitter.com/ruevko" target="_blank" rel="noopener">
+    
+      <i class="sidebar-button-icon fab fa-twitter fa-lg"></i>
+      
+      <span class="sidebar-button-desc">Twitter</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://ruevko.github.io/hexagonal/index.xml">
+    
+      <i class="sidebar-button-icon fas fa-rss fa-lg"></i>
+      
+      <span class="sidebar-button-desc">RSS</span>
+    </a>
+  </li>
+
+    </ul>
+    <ul class="sidebar-buttons" style="width:auto;">
+
+  <li class="sidebar-button">
+    <a class="sidebar-button-link" href="https://ruevko.github.io/hexagonal/post/readme">
+      <i class="sidebar-button-icon fas fa-compass fa-lg"></i>
+      <span class="sidebar-button-desc">Acerca de este blog</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    <a class="sidebar-button-link" href="https://ruevko.github.io/hexagonal/en">
+      <i class="sidebar-button-icon fas fa-map-signs fa-lg"></i>
+      <span class="sidebar-button-desc">The blog in English</span>
+    </a>
+  </li>
+
+    </ul>
+  </div>
+</nav>
+      
+
+      
+
+      <div id="main" data-behavior="4"
+        class="
+               hasCoverMetaIn
+               ">
+        <article class="post" itemscope itemType="http://schema.org/BlogPosting">
+          
+          
+            <div class="post-header main-content-wrap text-left">
+  
+    <h1 class="post-title" itemprop="headline">
+      Cómo insertar un feed RSS en RMarkdown
+    </h1>
+  
+  
+  <div class="postShorten-meta post-meta">
+    
+      <time itemprop="datePublished" datetime="2022-04-14T00:00:00Z">
+        
+  
+  
+  
+  
+    14 de Abril de 2022
+  
+
+      </time>
+    
+    
+  </div>
+
+</div>
+          
+          <div class="post-content markdown" itemprop="articleBody">
+            <div class="main-content-wrap">
+              
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<div id="TOC"><span class="post-meta">Contenido</span>
+<ul>
+<li><a href="#cómo-hacerlo">Cómo hacerlo</a></li>
+<li><a href="#una-solución">Una solución</a></li>
+<li><a href="#el-resultado">El resultado</a></li>
+<li><a href="#conclusión">Conclusión</a></li>
+</ul>
+</div>
+
+<p>Un <em>feed</em> RSS es un archivo XML donde se registran las páginas de un sitio web, e.g. los
+artículos de un blog; otros sitios web o aplicaciones pueden leer el <em>feed</em> regularmente
+para conocer cuándo hay nuevos artículos. Digamos que queremos insertar enlaces a esos
+artículos en un documento HTML generado con <a href="https://rmarkdown.rstudio.com">RMarkdown</a>.</p>
+<div id="cómo-hacerlo" class="section level1">
+<h1>Cómo hacerlo</h1>
+<p>Por supuesto, podríamos hacerlo con código R, pero entonces los enlaces solo serían actualizados
+al renderizar el <em>script</em> RMarkdown, es decir, al producir el formato de salida. Por suerte
+RMarkdown soporta <em>javascript</em>, así que (sabiendo nada sobre este lenguaje) busqué algún
+método en línea; claro está, esto solo funcionará con formatos de salida de tipo HTML.</p>
+<p>En el blog CSS-Tricks encontré
+<a href="https://css-tricks.com/how-to-fetch-and-parse-rss-feeds-in-javascript">un método</a> que permite
+obtener e insertar los <em>items</em> de un <em>feed</em> en una página HTML. Para utilizarlo en RMarkdown
+bastaría (al menos en teoría) copiar y pegar el código dentro de un bloque como este:</p>
+<pre><code>```{js}<br>// some javascript<br>```</code></pre>
+<p>También sería bueno escribir <code>{js echo=FALSE}</code> para que el código se ejecute sin
+ser mostrado. Hice esto en un nuevo <em>script</em> RMarkdown y este es el resultado:</p>
+<p><img src="https://res.cloudinary.com/dodnzqhiz/image/upload/2022post/l7f5zajzzti6w6nkssjv.png" /></p>
+</div>
+<div id="una-solución" class="section level1">
+<h1>Una solución</h1>
+<p>Tras leer un poco sobre cómo este método funciona, entendí que <code>insertAdjacentHTML()</code>
+estaba insertando el contenido del <em>feed</em> justo antes de que termine el elemento <code>&lt;body&gt;</code>.
+Esto no es ideal, pero la solución es sencilla: aplicar el mismo <code>insertAdjacentHTML()</code>
+para colocar contenido en la sección que yo desee.</p>
+<p>Para identificar en qué secciones podemos insertar contenido, es útil entender que RMarkdown
+utiliza <a href="http://pandoc.org">pandoc</a> para producir el documento final. Cuando existe un título,
+e.g. <code># Mi título</code>, y el documento debe ser de tipo HTML, pandoc genera algo así:</p>
+<pre><code>&lt;div id=&quot;mi-título&quot; class=&quot;section level1&quot;&gt;
+&lt;h1&gt;Mi título&lt;/h1&gt;
+&lt;/div&gt;</code></pre>
+<p>Lo útil de esto es que podemos usar <code>getElementById()</code> para seleccionar precisamente el
+<code>&lt;div&gt;</code> donde queremos insertar el <em>feed</em>. A continuación presento el método que encontré
+en CSS-Tricks, modificado para que: permita insertar el <em>feed</em> en una sección específica;
+permita definir un número máximo de <em>items</em> para insertar; y permita insertar también un texto
+explicativo. En este ejemplo estoy utilizando <a href="https://yihui.org/en">el blog</a> de Yihui Xie.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode js"><code class="sourceCode javascript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> FEED <span class="op">=</span> <span class="st">&#39;https://yihui.org/en/index.xml&#39;</span><span class="op">;</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> TEXT1 <span class="op">=</span> <span class="st">&#39;Yihui’s blog currently has&#39;</span><span class="op">;</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> TEXT2 <span class="op">=</span> <span class="st">&#39;posts. Here are the last&#39;</span><span class="op">;</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> SECTION <span class="op">=</span> <span class="st">&#39;el-resultado&#39;</span><span class="op">;</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> MAXITEMS <span class="op">=</span> <span class="dv">5</span><span class="op">;</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="fu">fetch</span>(FEED)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">then</span>(response <span class="kw">=&gt;</span> response<span class="op">.</span><span class="fu">text</span>())</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">then</span>(str <span class="kw">=&gt;</span> <span class="kw">new</span> <span class="bu">window</span><span class="op">.</span><span class="fu">DOMParser</span>()<span class="op">.</span><span class="fu">parseFromString</span>(str<span class="op">,</span> <span class="st">&#39;text/xml&#39;</span>))</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">then</span>(data <span class="kw">=&gt;</span> {</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> ITEMS <span class="op">=</span> data<span class="op">.</span><span class="fu">querySelectorAll</span>(<span class="st">&#39;item&#39;</span>)<span class="op">;</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> CONTENT <span class="op">=</span> <span class="vs">`&lt;p&gt;</span><span class="sc">${</span>TEXT1<span class="sc">}</span><span class="vs"> </span><span class="sc">${</span>ITEMS<span class="op">.</span><span class="at">length</span><span class="sc">}</span><span class="vs"> </span><span class="sc">${</span>TEXT2<span class="sc">}</span><span class="vs"> </span><span class="sc">${</span>MAXITEMS<span class="sc">}</span><span class="vs">:&lt;/p&gt;&lt;ol&gt;`</span><span class="op">;</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (<span class="kw">let</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> MAXITEMS<span class="op">;</span> i<span class="op">++</span>) {</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>      CONTENT <span class="op">+=</span> <span class="vs">`&lt;li&gt;&lt;a href=&quot;</span><span class="sc">${</span>ITEMS[i]<span class="op">.</span><span class="fu">querySelector</span>(<span class="st">&#39;link&#39;</span>)<span class="op">.</span><span class="at">innerHTML</span><span class="sc">}</span><span class="vs">&quot;&gt;`</span><span class="op">;</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>      CONTENT <span class="op">+=</span> <span class="vs">`</span><span class="sc">${</span>ITEMS[i]<span class="op">.</span><span class="fu">querySelector</span>(<span class="st">&#39;title&#39;</span>)<span class="op">.</span><span class="at">innerHTML</span><span class="sc">}</span><span class="vs">&lt;/a&gt;&lt;/li&gt;`</span><span class="op">;</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    CONTENT <span class="op">+=</span> <span class="st">&#39;&lt;/ol&gt;&#39;</span><span class="op">;</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>    <span class="bu">document</span><span class="op">.</span><span class="fu">getElementById</span>(SECTION)<span class="op">.</span><span class="fu">insertAdjacentHTML</span>(<span class="st">&#39;afterend&#39;</span><span class="op">,</span> CONTENT)<span class="op">;</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>  })<span class="op">;</span></span></code></pre></div>
+<script type="text/javascript">
+const FEED = 'https://yihui.org/en/index.xml';
+const TEXT1 = 'Yihui’s blog currently has';
+const TEXT2 = 'posts. Here are the last';
+const SECTION = 'el-resultado';
+const MAXITEMS = 5;
+
+fetch(FEED)
+  .then(response => response.text())
+  .then(str => new window.DOMParser().parseFromString(str, 'text/xml'))
+  .then(data => {
+    const ITEMS = data.querySelectorAll('item');
+    let CONTENT = `<p>${TEXT1} ${ITEMS.length} ${TEXT2} ${MAXITEMS}:</p><ol>`;
+    for (let i = 0; i < MAXITEMS; i++) {
+      CONTENT += `<li><a href="${ITEMS[i].querySelector('link').innerHTML}">`;
+      CONTENT += `${ITEMS[i].querySelector('title').innerHTML}</a></li>`;
+    }
+    CONTENT += '</ol>';
+    document.getElementById(SECTION).insertAdjacentHTML('afterend', CONTENT);
+  });
+</script>
+</div>
+<div id="el-resultado" class="section level1">
+<h1>El resultado</h1>
+</div>
+<div id="conclusión" class="section level1">
+<h1>Conclusión</h1>
+<p>Este método también funciona en otros convertidores, además de pandoc. Para usarlo
+en <a href="https://github.com/yuin/goldmark">goldmark</a>, por ejemplo, se debe insertar el
+código <em>javascript</em> en un elemento <code>&lt;script lang="javascript"&gt;</code> y aplicar la opción
+<code>html.WithUnsafe</code> (de lo contrario, goldmark ignorará los elementos HTML). A diferencia
+de pandoc, goldmark transforma <code># Mi título</code> en:</p>
+<pre><code>&lt;h1 id=&quot;mi-título&quot;&gt;Mi título&lt;/h1&gt;</code></pre>
+<p>El método funciona de igual manera. No funciona, en cambio, con <em>feeds</em> Atom, un formato
+diferente a RSS; sin embargo, debería ser fácil adaptarlo a Atom (pista: cambian los
+elementos <em>item</em> y <em>link</em>). Finalmente, muchos <em>feeds</em> no pueden ser accedidos debido
+a una política denominada CORS. ¿Cuál es la solución? Desafortunamente no lo sé, por
+ahora terminaron mis experimentos con <em>javascript</em>.</p>
+</div>
+
+              
+            </div>
+          </div>
+          <div id="post-footer" class="post-footer main-content-wrap">
+            
+              
+                
+                
+                  <div class="post-footer-tags">
+                    <span class="text-color-light text-small">Etiquetado en</span><br/>
+                    
+  <a class="tag tag--primary tag--small" href="https://ruevko.github.io/hexagonal/tags/javascript/">javascript</a>
+
+                  </div>
+                
+              
+            
+            <div class="post-actions-wrap">
+  
+      <nav >
+        <ul class="post-actions post-action-nav">
+          
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--disabled">
+              
+                  <i class="fa fa-angle-left"></i>
+                  <span class="hide-xs text-small icon-ml">Siguiente</span>
+                </a>
+            </li>
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip-big" href="https://ruevko.github.io/hexagonal/post/2021/11/02-weekly-osm-actualizaciones-datos-osmstats/" data-tooltip="Weekly OSM: actualizaciones de los datos OSMstats">
+              
+                  <span class="hide-xs text-small icon-mr" style="margin-left: 1.5px;">Anterior</span>
+                  <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+          
+        </ul>
+      </nav>
+    <ul class="post-actions post-action-share" >
+      
+        <li class="post-action hide-lg hide-md">
+          <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions">
+            <i class="fa fa-share-alt"></i>
+          </a>
+        </li>
+        
+          <li class="post-action hide-sm hide-xs">
+            <a class="post-action-btn btn btn--default" href=
+            
+              "https://www.facebook.com/sharer.php?t=Este%20art%c3%adculo%20fue%20publicado%20en%20el%20blog%20La%20Galer%c3%ada%20Hexagonal&amp;u=https://ruevko.github.io/hexagonal/post/2022/04/14-como-insertar-feed-rmarkdown/" target="_blank"
+              data-tooltip="Compartir en Facebook">
+            
+              <i class="fab fa-facebook"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-sm hide-xs">
+            <a class="post-action-btn btn btn--default" href=
+            
+              "https://twitter.com/intent/tweet?text=Este%20art%c3%adculo%20fue%20publicado%20en%20el%20blog%20La%20Galer%c3%ada%20Hexagonal&amp;url=https://ruevko.github.io/hexagonal/post/2022/04/14-como-insertar-feed-rmarkdown/" target="_blank"
+              data-tooltip="Compartir en Twitter">
+            
+              <i class="fab fa-twitter"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-sm hide-xs">
+            <a class="post-action-btn btn btn--default" href=
+            
+              "https://github.com/ruevko/hexagonal/blob/master/content/post/2022/04/14-como-insertar-feed-rmarkdown.Rmd"
+              data-tooltip="Ver código en GitHub">
+            
+              <i class="fab fa-github-alt"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-sm hide-xs">
+            <a class="post-action-btn btn btn--default" href=
+            
+              "https://t.me/share/url?text=Este%20art%c3%adculo%20fue%20publicado%20en%20el%20blog%20La%20Galer%c3%ada%20Hexagonal&amp;url=https://ruevko.github.io/hexagonal/post/2022/04/14-como-insertar-feed-rmarkdown/" target="_blank"
+              data-tooltip="Compartir en Telegram">
+            
+              <i class="fab fa-telegram-plane"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-sm hide-xs">
+            <a class="post-action-btn btn btn--default" href=
+            
+              "https://api.whatsapp.com/send?text=Este%20art%c3%adculo%20fue%20publicado%20en%20el%20blog%20La%20Galer%c3%ada%20Hexagonal%20https://ruevko.github.io/hexagonal/post/2022/04/14-como-insertar-feed-rmarkdown/" target="_blank"
+              data-tooltip="Compartir en WhatsApp">
+            
+              <i class="fab fa-whatsapp"></i>
+            </a>
+          </li>
+        
+      
+      
+      
+      <li class="post-action">
+        <a class="btn btn--default" href="#main" data-tooltip="Regresar al inicio">
+          <i class="fa fa-chevron-up"></i>
+        </a>
+      </li>
+    </ul>
+  
+</div>
+            
+              
+            
+          </div>
+        </article>
+        <footer id="footer" class="main-content-wrap">
+  <span class="copyrights">
+    <i class="fab fa-creative-commons"></i>
+    <i class="fab fa-creative-commons-by"></i>
+    <i class="fab fa-creative-commons-sa"></i>
+    2022
+    (CC BY&ndash;SA 4.0)
+    <br>
+    
+      by Rafael Castro <i class="fas fa-lg fa-crow"></i>
+    
+  </span>
+</footer>
+      </div>
+      <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+        <div class="post-actions-wrap">
+  
+      <nav >
+        <ul class="post-actions post-action-nav">
+          
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--disabled">
+              
+                  <i class="fa fa-angle-left"></i>
+                  <span class="hide-xs text-small icon-ml">Siguiente</span>
+                </a>
+            </li>
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip-big" href="https://ruevko.github.io/hexagonal/post/2021/11/02-weekly-osm-actualizaciones-datos-osmstats/" data-tooltip="Weekly OSM: actualizaciones de los datos OSMstats">
+              
+                  <span class="hide-xs text-small icon-mr" style="margin-left: 1.5px;">Anterior</span>
+                  <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+          
+        </ul>
+      </nav>
+    <ul class="post-actions post-action-share" >
+      
+        <li class="post-action hide-lg hide-md">
+          <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions">
+            <i class="fa fa-share-alt"></i>
+          </a>
+        </li>
+        
+          <li class="post-action hide-sm hide-xs">
+            <a class="post-action-btn btn btn--default" href=
+            
+              "https://www.facebook.com/sharer.php?t=Este%20art%c3%adculo%20fue%20publicado%20en%20el%20blog%20La%20Galer%c3%ada%20Hexagonal&amp;u=https://ruevko.github.io/hexagonal/post/2022/04/14-como-insertar-feed-rmarkdown/" target="_blank"
+              data-tooltip="Compartir en Facebook">
+            
+              <i class="fab fa-facebook"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-sm hide-xs">
+            <a class="post-action-btn btn btn--default" href=
+            
+              "https://twitter.com/intent/tweet?text=Este%20art%c3%adculo%20fue%20publicado%20en%20el%20blog%20La%20Galer%c3%ada%20Hexagonal&amp;url=https://ruevko.github.io/hexagonal/post/2022/04/14-como-insertar-feed-rmarkdown/" target="_blank"
+              data-tooltip="Compartir en Twitter">
+            
+              <i class="fab fa-twitter"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-sm hide-xs">
+            <a class="post-action-btn btn btn--default" href=
+            
+              "https://github.com/ruevko/hexagonal/blob/master/content/post/2022/04/14-como-insertar-feed-rmarkdown.Rmd"
+              data-tooltip="Ver código en GitHub">
+            
+              <i class="fab fa-github-alt"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-sm hide-xs">
+            <a class="post-action-btn btn btn--default" href=
+            
+              "https://t.me/share/url?text=Este%20art%c3%adculo%20fue%20publicado%20en%20el%20blog%20La%20Galer%c3%ada%20Hexagonal&amp;url=https://ruevko.github.io/hexagonal/post/2022/04/14-como-insertar-feed-rmarkdown/" target="_blank"
+              data-tooltip="Compartir en Telegram">
+            
+              <i class="fab fa-telegram-plane"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-sm hide-xs">
+            <a class="post-action-btn btn btn--default" href=
+            
+              "https://api.whatsapp.com/send?text=Este%20art%c3%adculo%20fue%20publicado%20en%20el%20blog%20La%20Galer%c3%ada%20Hexagonal%20https://ruevko.github.io/hexagonal/post/2022/04/14-como-insertar-feed-rmarkdown/" target="_blank"
+              data-tooltip="Compartir en WhatsApp">
+            
+              <i class="fab fa-whatsapp"></i>
+            </a>
+          </li>
+        
+      
+      
+      
+      <li class="post-action">
+        <a class="btn btn--default" href="#main" data-tooltip="Regresar al inicio">
+          <i class="fa fa-chevron-up"></i>
+        </a>
+      </li>
+    </ul>
+  
+</div>
+      </div>
+      <div id="share-options-bar" class="share-options-bar" data-behavior="4">
+  <i id="btn-close-shareoptions" class="fas fa-times"></i>
+  <ul class="share-options">
+    
+      <li class="share-option">
+            <a class="share-option-btn" href=
+            
+              "https://www.facebook.com/sharer.php?t=Este%20art%c3%adculo%20fue%20publicado%20en%20el%20blog%20La%20Galer%c3%ada%20Hexagonal&amp;u=https://ruevko.github.io/hexagonal/post/2022/04/14-como-insertar-feed-rmarkdown/" target="_blank"
+              ><span class="icon-mr">Compartir en Facebook</span>
+            
+              <i class="fab fa-facebook"></i>
+            </a>
+      </li>
+    
+      <li class="share-option">
+            <a class="share-option-btn" href=
+            
+              "https://twitter.com/intent/tweet?text=Este%20art%c3%adculo%20fue%20publicado%20en%20el%20blog%20La%20Galer%c3%ada%20Hexagonal&amp;url=https://ruevko.github.io/hexagonal/post/2022/04/14-como-insertar-feed-rmarkdown/" target="_blank"
+              ><span class="icon-mr">Compartir en Twitter</span>
+            
+              <i class="fab fa-twitter"></i>
+            </a>
+      </li>
+    
+      <li class="share-option">
+            <a class="share-option-btn" href=
+            
+              "https://github.com/ruevko/hexagonal/blob/master/content/post/2022/04/14-como-insertar-feed-rmarkdown.Rmd"
+              ><span class="icon-mr">Ver código en GitHub</span>
+            
+              <i class="fab fa-github-alt"></i>
+            </a>
+      </li>
+    
+      <li class="share-option">
+            <a class="share-option-btn" href=
+            
+              "https://t.me/share/url?text=Este%20art%c3%adculo%20fue%20publicado%20en%20el%20blog%20La%20Galer%c3%ada%20Hexagonal&amp;url=https://ruevko.github.io/hexagonal/post/2022/04/14-como-insertar-feed-rmarkdown/" target="_blank"
+              ><span class="icon-mr">Compartir en Telegram</span>
+            
+              <i class="fab fa-telegram-plane"></i>
+            </a>
+      </li>
+    
+      <li class="share-option">
+            <a class="share-option-btn" href=
+            
+              "https://api.whatsapp.com/send?text=Este%20art%c3%adculo%20fue%20publicado%20en%20el%20blog%20La%20Galer%c3%ada%20Hexagonal%20https://ruevko.github.io/hexagonal/post/2022/04/14-como-insertar-feed-rmarkdown/" target="_blank"
+              ><span class="icon-mr">Compartir en WhatsApp</span>
+            
+              <i class="fab fa-whatsapp"></i>
+            </a>
+      </li>
+    
+  </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+    </div>
+    <div id="about">
+  <div id="about-card">
+    <div id="about-btn-close">
+      <i class="fas fa-times"></i>
+    </div>
+    
+      <img id="about-card-picture" src="https://ruevko.github.io/hexagonal/logo.png"/>
+    
+    
+    <h4 id="about-card-name">La Galería Hexagonal</h4>
+    
+      <div id="about-card-bio">El blog de Rafael Castro, orientado a Cartografía y Análisis de Datos</div>
+    
+    
+      <div id="about-card-job">
+        <i class="fas fa-graduation-cap"></i>
+        <br/>
+        Geógrafo
+      </div>
+    
+    
+      <div id="about-card-location">
+        <i class="fas fa-home"></i>
+        <br/>
+        Ecuador
+      </div>
+    
+  </div>
+</div>
+    
+    
+  
+    <div id="cover" style="background-image:url('https://res.cloudinary.com/dodnzqhiz/image/upload/v1577918037/crv.png');"></div>
+  
+
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.7/js/jquery.fancybox.min.js" integrity="sha256-GEAnjcTqVP+vBp3SSc8bEDQqvWAZMiHyUSIorrWwH50=" crossorigin="anonymous"></script>
+
+
+<script src="https://ruevko.github.io/hexagonal/js/script-brfgmdgurld48bpji4eimk0fcikejj.min.js"></script>
+
+
+<script lang="javascript">
+window.onload = updateMinWidth;
+window.onresize = updateMinWidth;
+document.getElementById("sidebar").addEventListener("transitionend", updateMinWidth);
+function updateMinWidth() {
+  var sidebar = document.getElementById("sidebar");
+  var main = document.getElementById("main");
+  main.style.minWidth = "";
+  var w1 = getComputedStyle(main).getPropertyValue("min-width");
+  var w2 = getComputedStyle(sidebar).getPropertyValue("width");
+  var w3 = getComputedStyle(sidebar).getPropertyValue("left");
+  main.style.minWidth = `calc(${w1} - ${w2} - ${w3})`;
+}
+</script>
+
+
+  
+    
+  
+
+
+
+  </body>
+</html>
