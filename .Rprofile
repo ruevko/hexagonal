@@ -4,7 +4,7 @@ knitr::opts_chunk$set(message = FALSE, warning = FALSE)
 
 options(stringsAsFactors = FALSE, digits = 4,
         blogdown.knit.serve_site = FALSE,
-        blogdown.hugo.version = "0.81.0",
+        blogdown.hugo.version = "0.94.0",
         blogdown.hugo.server = "-F")
 
 my_build_site = function() { stop_server()

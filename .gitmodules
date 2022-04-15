@@ -2,7 +2,3 @@
 	path = themes/tranquilpeak
 	url = https://github.com/ruevko/hugo-tranquilpeak-theme.git
 	branch = custom
-[submodule "themes/tqp"]
-	path = themes/tqp
-	url = https://github.com/ruevko/ruevko.tranquilpeak
-	branch = custom
