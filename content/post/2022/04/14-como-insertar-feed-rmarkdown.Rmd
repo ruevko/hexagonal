@@ -1,0 +1,102 @@
+---
+title: "Cómo insertar un feed RSS en RMarkdown"
+date: 2022-04-14
+slug: 14-como-insertar-feed-rmarkdown
+tags: [javascript]
+source: 14-como-insertar-feed-rmarkdown.Rmd
+output:
+  blogdown::html_page:
+    toc: true
+    highlight: pygments
+thumbnailImage: https://res.cloudinary.com/dodnzqhiz/image/upload/2022post/mjbtzu42ghlpfnlbiemu.png
+summary: Explica cómo usar *javascript* en RMarkdown, particularmente, para obtener los artículos más recientes de un blog.
+---
+
+Un *feed* RSS es un archivo XML donde se registran las páginas de un sitio web, e.g. los
+artículos de un blog; otros sitios web o aplicaciones pueden leer el *feed* regularmente
+para conocer cuándo hay nuevos artículos. Digamos que queremos insertar enlaces a esos
+artículos en un documento HTML generado con [RMarkdown](https://rmarkdown.rstudio.com).
+
+# Cómo hacerlo
+
+Por supuesto, podríamos hacerlo con código R, pero entonces los enlaces solo serían actualizados
+al renderizar el *script* RMarkdown, es decir, al producir el formato de salida. Por suerte
+RMarkdown soporta *javascript*, así que (sabiendo nada sobre este lenguaje) busqué algún
+método en línea; claro está, esto solo funcionará con formatos de salida de tipo HTML.
+
+En el blog CSS-Tricks encontré
+[un método](https://css-tricks.com/how-to-fetch-and-parse-rss-feeds-in-javascript) que permite
+obtener e insertar los *items* de un *feed* en una página HTML. Para utilizarlo en RMarkdown
+bastaría (al menos en teoría) copiar y pegar el código dentro de un bloque como este:
+
+<pre><code>```{js}<br>// some javascript<br>```</code></pre>
+
+También sería bueno escribir `{js echo=FALSE}` para que el código se ejecute sin
+ser mostrado. Hice esto en un nuevo *script* RMarkdown y este es el resultado:
+
+![](https://res.cloudinary.com/dodnzqhiz/image/upload/2022post/l7f5zajzzti6w6nkssjv.png)
+
+# Una solución
+
+Tras leer un poco sobre cómo este método funciona, entendí que `insertAdjacentHTML()`
+estaba insertando el contenido del *feed* justo antes de que termine el elemento `<body>`.
+Esto no es ideal, pero la solución es sencilla: aplicar el mismo `insertAdjacentHTML()`
+para colocar contenido en la sección que yo desee.
+
+Para identificar en qué secciones podemos insertar contenido, es útil entender que RMarkdown
+utiliza [pandoc](http://pandoc.org) para producir el documento final. Cuando existe un título,
+e.g. `# Mi título`, y el documento debe ser de tipo HTML, pandoc genera algo así:
+
+```
+<div id="mi-título" class="section level1">
+<h1>Mi título</h1>
+</div>
+```
+
+Lo útil de esto es que podemos usar `getElementById()` para seleccionar precisamente el
+`<div>` donde queremos insertar el *feed*. A continuación presento el método que encontré
+en CSS-Tricks, modificado para que: permita insertar el *feed* en una sección específica;
+permita definir un número máximo de *items* para insertar; y permita insertar también un texto
+explicativo. En este ejemplo estoy utilizando [el blog](https://yihui.org/en) de Yihui Xie.
+
+```{js}
+const FEED = 'https://yihui.org/en/index.xml';
+const TEXT1 = 'Yihui’s blog currently has';
+const TEXT2 = 'posts. Here are the last';
+const SECTION = 'el-resultado';
+const MAXITEMS = 5;
+
+fetch(FEED)
+  .then(response => response.text())
+  .then(str => new window.DOMParser().parseFromString(str, 'text/xml'))
+  .then(data => {
+    const ITEMS = data.querySelectorAll('item');
+    let CONTENT = `<p>${TEXT1} ${ITEMS.length} ${TEXT2} ${MAXITEMS}:</p><ol>`;
+    for (let i = 0; i < MAXITEMS; i++) {
+      CONTENT += `<li><a href="${ITEMS[i].querySelector('link').innerHTML}">`;
+      CONTENT += `${ITEMS[i].querySelector('title').innerHTML}</a></li>`;
+    }
+    CONTENT += '</ol>';
+    document.getElementById(SECTION).insertAdjacentHTML('afterend', CONTENT);
+  });
+```
+
+# El resultado
+
+# Conclusión
+
+Este método también funciona en otros convertidores, además de pandoc. Para usarlo
+en [goldmark](https://github.com/yuin/goldmark), por ejemplo, se debe insertar el
+código *javascript* en un elemento `<script lang="javascript">` y aplicar la opción
+`html.WithUnsafe` (de lo contrario, goldmark ignorará los elementos HTML). A diferencia
+de pandoc, goldmark transforma `# Mi título` en:
+
+```
+<h1 id="mi-título">Mi título</h1>
+```
+
+El método funciona de igual manera. No funciona, en cambio, con *feeds* Atom, un formato
+diferente a RSS; sin embargo, debería ser fácil adaptarlo a Atom (pista: cambian los
+elementos *item* y *link*). Finalmente, muchos *feeds* no pueden ser accedidos debido
+a una política denominada CORS. ¿Cuál es la solución? Desafortunamente no lo sé, por
+ahora terminaron mis experimentos con *javascript*.
