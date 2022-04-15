@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="generator" content="Hugo 0.81.0 with theme Tranquilpeak 0.4.8-BETA">
+<meta name="generator" content="Hugo 0.94.0 with theme Tranquilpeak 0.4.8-BETA">
 <meta name="author" content="Roger Rafael Castro Zambrano">
 <meta name="keywords" content="análisis, cartografía, datos, mapas">
 <meta name="description" content="Recientemente el sitio OSMstats alcanzó la cifra de diez años de datos; para celebrarlo (y para aplicar nuevos métodos) estoy desarrollando un repositorio que recoge esos datos, y actualiza su propia base de datos.">
@@ -260,7 +260,7 @@ y mantener un <em>cache</em> &mdash;que el servicio GitHub Actions conserva una 
 los paquetes necesarios.</p>
 <p>Después de clonar el repo, el segundo paso fue abrir RStudio y asociar el directorio <code>Weekly-OSM</code>
 con un nuevo proyecto. Una vez creado el proyecto, los primeros comandos que ejecuté fueron:</p>
-<pre><code>install.packages(&quot;renv&quot;)
+<pre tabindex="0"><code>install.packages(&#34;renv&#34;)
 renv::init(bare = TRUE)
 </code></pre><p>El propósito de <a href="https://rstudio.github.io/renv"><code>renv</code></a> es generar un ambiente de
 trabajo reproducible. Lo que esto significa es que, durante su desarrollo, mi proyecto
@@ -275,12 +275,12 @@ los <em>scripts</em>, con sus respectivos comentarios. Lo que sí explicaré es 
 de programar, uno debería utilizar <code>renv::snapshot()</code> para crear <code>renv.lock</code>, un
 archivo que registra los paquetes que han sido utilizados &mdash;<code>dplyr</code> y <code>rvest</code> en
 mi caso&mdash;, así como sus dependencias. Así luce un registro:</p>
-<pre><code>    &quot;magrittr&quot;: {
-      &quot;Package&quot;: &quot;magrittr&quot;,
-      &quot;Version&quot;: &quot;2.0.1&quot;,
-      &quot;Source&quot;: &quot;Repository&quot;,
-      &quot;Repository&quot;: &quot;CRAN&quot;,
-      &quot;Hash&quot;: &quot;41287f1ac7d28a92f0a286ed507928d3&quot;
+<pre tabindex="0"><code>    &#34;magrittr&#34;: {
+      &#34;Package&#34;: &#34;magrittr&#34;,
+      &#34;Version&#34;: &#34;2.0.1&#34;,
+      &#34;Source&#34;: &#34;Repository&#34;,
+      &#34;Repository&#34;: &#34;CRAN&#34;,
+      &#34;Hash&#34;: &#34;41287f1ac7d28a92f0a286ed507928d3&#34;
     }
 </code></pre><p>Para cumplir el cuarto paso escribí el <em>script</em>
 <a href="https://github.com/ruevko/Weekly-OSM/blob/main/R/main_yearly.R"><code>main_yearly.R</code></a>; al
@@ -298,19 +298,19 @@ sus pasos; por ejemplo, el que se encuentra a continuación sirve para crear un 
 los paquetes instalados. Si bien la primera ejecución del <em>workflow</em> demoró varios minutos,
 gracias al <em>cache</em> las ejecuciones posteriores han demorado menos de un minuto. Además,
 mientras no cambie <code>renv.lock</code>, el <em>cache</em> seguirá siendo válido.</p>
-<pre><code>    # create/restore cache
+<pre tabindex="0"><code>    # create/restore cache
     - name: Cache packages
       uses: actions/cache@v2
       with:
         path: ${{ env.RENV_PATHS_ROOT }}
-        key: renv-${{ hashFiles('renv.lock') }}
+        key: renv-${{ hashFiles(&#39;renv.lock&#39;) }}
 </code></pre><p>En el siguiente paso se ejecuta <code>renv::restore()</code>, una función que ordena la instalación
 (o, si ya existe un <em>cache</em>, la restauración) de los paquetes registrados en <code>renv.lock</code>.
 Y en el último paso de los que aquí demuestro se ejecuta el <em>script</em> <a href="https://github.com/ruevko/Weekly-OSM/blob/main/R/main.R"><code>main.R</code></a>, que contiene
 todas las operaciones que deben realizarse semanalmente en el repositorio.</p>
-<pre><code>    # install/restore packages
+<pre tabindex="0"><code>    # install/restore packages
     - name: Restore packages
-      run: Rscript -e 'renv::restore()'
+      run: Rscript -e &#39;renv::restore()&#39;
     # source main script
     - name: Obtain weekly data
       run: Rscript R/main.R

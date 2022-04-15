@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="generator" content="Hugo 0.81.0 with theme Tranquilpeak 0.4.8-BETA">
+<meta name="generator" content="Hugo 0.94.0 with theme Tranquilpeak 0.4.8-BETA">
 <meta name="author" content="Roger Rafael Castro Zambrano">
 <meta name="keywords" content="analysis, cartography, data, maps">
 <meta name="description" content="Recently the OSMstats site achieved ten years worth of data; to celebrate it (and to apply new methods I&rsquo;ve learned) I am currently developing a repository that gathers that data on a weekly basis, and uses it to update its own database.">
@@ -259,7 +259,7 @@ Such frequency has two advantages: to reduce the granularity of the observations
 a <em>cache</em> &mdash;the service GitHub Actions keeps them one week at most&mdash; of required packages.</p>
 <p>After cloning the repository, the second step was to launch RStudio and associate the <code>Weekly-OSM</code>
 directory with a new project. Once this was done, the first commands I executed in the project were:</p>
-<pre><code>install.packages(&quot;renv&quot;)
+<pre tabindex="0"><code>install.packages(&#34;renv&#34;)
 renv::init(bare = TRUE)
 </code></pre><p>The purpose of <a href="https://rstudio.github.io/renv"><code>renv</code></a> is to generate a reproducible
 working environment. What this means is that, during development, my project will have
@@ -274,12 +274,12 @@ will not delve into how does Weekly OSM function; that information is in the
 one should run <code>renv::snapshot()</code> to write <code>renv.lock</code>, a file registering all the packages
 that have been used &mdash;<code>dplyr</code> and <code>rvest</code> in my case&mdash; and their dependencies too. The
 registries it writes look like this:</p>
-<pre><code>    &quot;magrittr&quot;: {
-      &quot;Package&quot;: &quot;magrittr&quot;,
-      &quot;Version&quot;: &quot;2.0.1&quot;,
-      &quot;Source&quot;: &quot;Repository&quot;,
-      &quot;Repository&quot;: &quot;CRAN&quot;,
-      &quot;Hash&quot;: &quot;41287f1ac7d28a92f0a286ed507928d3&quot;
+<pre tabindex="0"><code>    &#34;magrittr&#34;: {
+      &#34;Package&#34;: &#34;magrittr&#34;,
+      &#34;Version&#34;: &#34;2.0.1&#34;,
+      &#34;Source&#34;: &#34;Repository&#34;,
+      &#34;Repository&#34;: &#34;CRAN&#34;,
+      &#34;Hash&#34;: &#34;41287f1ac7d28a92f0a286ed507928d3&#34;
     }
 </code></pre><p>To accomplish the fourth step I wrote the <a href="https://github.com/ruevko/Weekly-OSM/blob/main/R/main_yearly.R"><code>main_yearly.R</code></a> <em>script</em>;
 when executed, it obtains from OSMstats all the observations of certain year, i.e. of
@@ -295,20 +295,20 @@ I won&rsquo;t talk about <em>workflow</em> syntax, but I do want to show some of
 the one below serves to create a <em>cache</em> with installed packages. While the first <em>workflow</em>
 run took several minutes, thanks to the <em>cache</em> subsequent runs were completed in less than
 a minute. Furthermore, as long as <code>renv.lock</code> doesn&rsquo;t change, the <em>cache</em> will remain valid.</p>
-<pre><code>    # create/restore cache
+<pre tabindex="0"><code>    # create/restore cache
     - name: Cache packages
       uses: actions/cache@v2
       with:
         path: ${{ env.RENV_PATHS_ROOT }}
-        key: renv-${{ hashFiles('renv.lock') }}
+        key: renv-${{ hashFiles(&#39;renv.lock&#39;) }}
 </code></pre><p>In the next step the <code>renv::restore()</code> function is executed, and it performs
 the installation (or, if a <em>cache</em> already exists, the restoration) of the
 packages registered in <code>renv.lock</code>. And the last step I show here executes
 <a href="https://github.com/ruevko/Weekly-OSM/blob/main/R/main.R"><code>main.R</code></a>, a <em>script</em>
 containing all the operations that need to be done every week in the repository.</p>
-<pre><code>    # install/restore packages
+<pre tabindex="0"><code>    # install/restore packages
     - name: Restore packages
-      run: Rscript -e 'renv::restore()'
+      run: Rscript -e &#39;renv::restore()&#39;
     # source main script
     - name: Obtain weekly data
       run: Rscript R/main.R
