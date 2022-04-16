@@ -31,8 +31,9 @@ bastaría (al menos en teoría) copiar y pegar el código dentro de un bloque co
 
 <pre><code>```{js}<br>// some javascript<br>```</code></pre>
 
-También sería bueno escribir `{js echo=FALSE}` para que el código se ejecute sin
-ser mostrado. Hice esto en un nuevo *script* RMarkdown y este es el resultado:
+También sería bueno escribir `{js echo=FALSE}` para que el código se ejecute sin ser
+mostrado. Hice esto en un nuevo *script* RMarkdown (obteniendo el *feed* de mi blog
+en inglés) y este es el resultado:
 
 ![](https://res.cloudinary.com/dodnzqhiz/image/upload/2022post/l7f5zajzzti6w6nkssjv.png)
 
