@@ -1,4 +1,0 @@
-[submodule "themes/tranquilpeak"]
-	path = themes/tranquilpeak
-	url = https://github.com/ruevko/hugo-tranquilpeak-theme.git
-	branch = custom
