@@ -21,58 +21,58 @@
 
 
 <meta property="og:image" content="
-  
-    https://res.cloudinary.com/dodnzqhiz/image/upload/v1613341804/2020post/rb72maukaadcmwkgbwke.png
-  
+
+    https://ruevko.github.io/hexagonal/post/2020/01/07-estimando-nodos-openstreetmap-pais_files/figure-html/rb72maukaadcmwkgbwke.png
+
 ">
 
 
-  
+
     <meta property="article:published_time" content="2020-01-07T00:00:00">
-  
-  
+
+
     <meta property="article:modified_time" content="2020-01-07T00:00:00">
-  
-  
-  
-    
+
+
+
+
       <meta property="article:section" content="OpenStreetMap">
-    
-  
-  
-    
+
+
+
+
       <meta property="article:tag" content="choropleths">
-    
+
       <meta property="article:tag" content="osm nodes">
-    
+
       <meta property="article:tag" content="web scraping">
-    
-  
+
+
 
     <title>
-      
+
         Estimating OpenStreetMap nodes by Country | Hexagonal Gallery
-      
+
     </title>
 
     <link rel="icon" href="https://ruevko.github.io/hexagonal/favicon.png">
-    
-    
+
+
     <link rel="canonical" href="https://ruevko.github.io/hexagonal/en/post/2020/01/estimating-openstreetmap-nodes-country/">
 
-    
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" integrity="sha256-+N4/V/SbAFiW1MPBCXnfnP9QSN3+Keu+NlB+0ev/YKQ=" crossorigin="anonymous" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/jquery.fancybox.min.css" integrity="sha256-vuXZ9LGmmwtjqFX1F+EKin1ThZMub58gKULUyf0qECk=" crossorigin="anonymous" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/helpers/jquery.fancybox-thumbs.min.css" integrity="sha256-SEa4XYAHihTcEP1f5gARTB2K26Uk8PsndQYHQC1f4jU=" crossorigin="anonymous" />
-    
-    
-    <link rel="stylesheet" href="https://ruevko.github.io/hexagonal/css/style-rpqj1h5cb5terj4l0gi1ixrzeditxx.min.css" />
-    
-    
 
-    
-      
-    
+
+    <link rel="stylesheet" href="https://ruevko.github.io/hexagonal/css/style-rpqj1h5cb5terj4l0gi1ixrzeditxx.min.css" />
+
+
+
+
+
+
   </head>
   <body>
     <div id="blog">
@@ -81,88 +81,88 @@
   <div class="header-title">
     <a class="header-title-link" href="https://ruevko.github.io/hexagonal/en/">Hexagonal Gallery</a>
   </div>
-  
-    
+
+
       <a class="header-right-icon "
          href="#footer">
-    
-    
+
+
       <i class="fa-lg fas fa-chevron-down"></i></a>
-    
-  
-  
+
+
+
 </header>
       <nav id="sidebar" data-behavior="4">
   <div class="sidebar-container">
-    
+
       <div class="sidebar-profile">
         <a href="https://ruevko.github.io/hexagonal/#about">
           <img class="sidebar-profile-picture" src="https://ruevko.github.io/hexagonal/logo.png"/>
         </a>
         <a class="sidebar-profile-name" href="https://ruevko.github.io/hexagonal/en/">Hexagonal Gallery</a>
       </div>
-    
+
     <ul class="sidebar-buttons">
-      
+
   <li class="sidebar-button">
-    
+
       <a class="sidebar-button-link " href="https://ruevko.github.io/hexagonal/en/archives">
-    
+
       <i class="sidebar-button-icon fas fa-globe-americas fa-lg"></i>
-      
+
       <span class="sidebar-button-desc">Archive</span>
     </a>
   </li>
 
   <li class="sidebar-button">
-    
+
       <a class="sidebar-button-link " href="https://ruevko.github.io/hexagonal/en/categories">
-    
+
       <i class="sidebar-button-icon fas fa-map-marked-alt fa-lg"></i>
-      
+
       <span class="sidebar-button-desc">Categories</span>
     </a>
   </li>
 
   <li class="sidebar-button">
-    
+
       <a class="sidebar-button-link " href="https://ruevko.github.io/hexagonal/en/tags">
-    
+
       <i class="sidebar-button-icon fas fa-map-marker-alt fa-lg"></i>
-      
+
       <span class="sidebar-button-desc">Tags</span>
     </a>
   </li>
 
     </ul>
     <ul class="sidebar-buttons">
-      
+
   <li class="sidebar-button">
-    
+
       <a class="sidebar-button-link " href="https://github.com/ruevko/hexagonal" target="_blank" rel="noopener">
-    
+
       <i class="sidebar-button-icon fab fa-github-alt fa-lg"></i>
-      
+
       <span class="sidebar-button-desc">GitHub</span>
     </a>
   </li>
 
   <li class="sidebar-button">
-    
+
       <a class="sidebar-button-link " href="https://twitter.com/ruevko" target="_blank" rel="noopener">
-    
+
       <i class="sidebar-button-icon fab fa-twitter fa-lg"></i>
-      
+
       <span class="sidebar-button-desc">Twitter</span>
     </a>
   </li>
 
   <li class="sidebar-button">
-    
+
       <a class="sidebar-button-link " href="https://ruevko.github.io/hexagonal/en/index.xml">
-    
+
       <i class="sidebar-button-icon fas fa-rss fa-lg"></i>
-      
+
       <span class="sidebar-button-desc">RSS</span>
     </a>
   </li>
@@ -187,53 +187,53 @@
     </ul>
   </div>
 </nav>
-      
 
-      
+
+
 
       <div id="main" data-behavior="4"
         class="
                hasCoverMetaIn
                ">
         <article class="post" itemscope itemType="http://schema.org/BlogPosting">
-          
-          
+
+
             <div class="post-header main-content-wrap text-left">
-  
+
     <h1 class="post-title" itemprop="headline">
       Estimating OpenStreetMap nodes by Country
     </h1>
-  
-  
+
+
   <div class="postShorten-meta post-meta">
-    
+
       <time itemprop="datePublished" datetime="2020-01-07T00:00:00Z">
-        
-  
-  
-  
-  
+
+
+
+
+
     January 7, 2020
-  
+
 
       </time>
-    
-    
-  
-  
+
+
+
+
     <span>in</span>
-    
+
       <a class="category-link" href="https://ruevko.github.io/hexagonal/en/categories/openstreetmap">OpenStreetMap</a>
-    
-  
+
+
 
   </div>
 
 </div>
-          
+
           <div class="post-content markdown" itemprop="articleBody">
             <div class="main-content-wrap">
-              
+
 <style type="text/css">
 code.sourceCode > span { display: inline-block; line-height: 1.25; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -387,12 +387,12 @@ by using <code>dplyr</code>:</p>
 <span id="cb3-5"><a href="#cb3-5"></a><span class="st">   </span><span class="kw">summarise</span>(<span class="dt">nodes =</span> <span class="kw">sum</span>(created <span class="op">-</span><span class="st"> </span>deleted), <span class="dt">dates =</span> <span class="kw">n_distinct</span>(date))</span>
 <span id="cb3-6"><a href="#cb3-6"></a></span>
 <span id="cb3-7"><a href="#cb3-7"></a><span class="kw">summary</span>(countries_nodes)</span></code></pre></div>
-<pre><code>##    country              nodes               dates     
-##  Length:253         Min.   :       -2   Min.   :2917  
-##  Class :character   1st Qu.:   259873   1st Qu.:2917  
-##  Mode  :character   Median :  2756173   Median :2917  
-##                     Mean   : 16590188   Mean   :2917  
-##                     3rd Qu.: 13561870   3rd Qu.:2917  
+<pre><code>##    country              nodes               dates
+##  Length:253         Min.   :       -2   Min.   :2917
+##  Class :character   1st Qu.:   259873   1st Qu.:2917
+##  Mode  :character   Median :  2756173   Median :2917
+##                     Mean   : 16590188   Mean   :2917
+##                     3rd Qu.: 13561870   3rd Qu.:2917
 ##                     Max.   :388753376   Max.   :2917</code></pre>
 <p>Finally, in order to generate the map, the values computed in the previous step must be joined to
 geometries that represent the countries. The <code>World</code> <em>dataset</em> contains simplified
@@ -416,14 +416,14 @@ Figure 1: First attempt to generate the map
 Republics of Korea and the two of Congo. This problem is caused by the different names with which these
 countries figure in <code>World</code> and in OSMstats; to solve this, we first should find out which
 names are those, an we can do so by executing <code>setdiff(World$name, countries_nodes$country)</code>:</p>
-<pre><code>##  [1] &quot;Fr. S. Antarctic Lands&quot; &quot;Bahamas&quot;                &quot;Bosnia and Herz.&quot;      
-##  [4] &quot;Central African Rep.&quot;   &quot;Cote d&#39;Ivoire&quot;          &quot;Dem. Rep. Congo&quot;       
-##  [7] &quot;Congo&quot;                  &quot;N. Cyprus&quot;              &quot;Czech Rep.&quot;            
-## [10] &quot;Dominican Rep.&quot;         &quot;Falkland Is.&quot;           &quot;Gambia&quot;                
-## [13] &quot;Eq. Guinea&quot;             &quot;Korea&quot;                  &quot;Kosovo&quot;                
-## [16] &quot;Lao PDR&quot;                &quot;Myanmar&quot;                &quot;Dem. Rep. Korea&quot;       
-## [19] &quot;Palestine&quot;              &quot;W. Sahara&quot;              &quot;S. Sudan&quot;              
-## [22] &quot;Solomon Is.&quot;            &quot;Somaliland&quot;             &quot;Timor-Leste&quot;           
+<pre><code>##  [1] &quot;Fr. S. Antarctic Lands&quot; &quot;Bahamas&quot;                &quot;Bosnia and Herz.&quot;
+##  [4] &quot;Central African Rep.&quot;   &quot;Cote d&#39;Ivoire&quot;          &quot;Dem. Rep. Congo&quot;
+##  [7] &quot;Congo&quot;                  &quot;N. Cyprus&quot;              &quot;Czech Rep.&quot;
+## [10] &quot;Dominican Rep.&quot;         &quot;Falkland Is.&quot;           &quot;Gambia&quot;
+## [13] &quot;Eq. Guinea&quot;             &quot;Korea&quot;                  &quot;Kosovo&quot;
+## [16] &quot;Lao PDR&quot;                &quot;Myanmar&quot;                &quot;Dem. Rep. Korea&quot;
+## [19] &quot;Palestine&quot;              &quot;W. Sahara&quot;              &quot;S. Sudan&quot;
+## [22] &quot;Solomon Is.&quot;            &quot;Somaliland&quot;             &quot;Timor-Leste&quot;
 ## [25] &quot;Tanzania&quot;</code></pre>
 <p>Next, the names obtained from OSMstats have to be modified to coincide with the ones above.</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>countries_nodes =<span class="st"> </span><span class="kw">mutate</span>(countries_nodes, <span class="kw">across</span>(country, <span class="op">~</span><span class="kw">case_when</span>(</span>
@@ -499,17 +499,17 @@ countries with more nodes:</p>
 </div>
 </div>
 
-              
+
             </div>
           </div>
           <div id="post-footer" class="post-footer main-content-wrap">
-            
-              
-                
-                
+
+
+
+
                   <div class="post-footer-tags">
                     <span class="text-color-light text-small">Tagged in</span><br/>
-                    
+
   <a class="tag tag--primary tag--small" href="https://ruevko.github.io/hexagonal/en/tags/choropleths/">choropleths</a>
 
   <a class="tag tag--primary tag--small" href="https://ruevko.github.io/hexagonal/en/tags/osm-nodes/">osm nodes</a>
@@ -517,105 +517,105 @@ countries with more nodes:</p>
   <a class="tag tag--primary tag--small" href="https://ruevko.github.io/hexagonal/en/tags/web-scraping/">web scraping</a>
 
                   </div>
-                
-              
-            
+
+
+
             <div class="post-actions-wrap">
-  
+
       <nav >
         <ul class="post-actions post-action-nav">
-          
+
             <li class="post-action">
-              
+
                 <a class="post-action-btn btn btn--default tooltip-big" href="https://ruevko.github.io/hexagonal/en/post/2020/03/daily-growth-openstreetmap-nodes/" data-tooltip="The daily growth of OSM nodes">
-              
+
                   <i class="fa fa-angle-left"></i>
                   <span class="hide-xs text-small icon-ml">Next post</span>
                 </a>
             </li>
             <li class="post-action">
-              
+
                 <a class="post-action-btn btn btn--disabled">
-              
+
                   <span class="hide-xs text-small icon-mr" style="margin-left: 1.5px;">Prev post</span>
                   <i class="fa fa-angle-right"></i>
                 </a>
             </li>
-          
+
         </ul>
       </nav>
     <ul class="post-actions post-action-share" >
-      
+
         <li class="post-action hide-lg hide-md">
           <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions">
             <i class="fa fa-share-alt"></i>
           </a>
         </li>
-        
+
           <li class="post-action hide-sm hide-xs">
             <a class="post-action-btn btn btn--default" href=
-            
+
               "https://www.facebook.com/sharer.php?t=This%20post%20was%20first%20published%20on%20the%20blog%20Hexagonal%20Gallery&amp;u=https://ruevko.github.io/hexagonal/en/post/2020/01/estimating-openstreetmap-nodes-country/" target="_blank"
               data-tooltip="Share with Facebook">
-            
+
               <i class="fab fa-facebook"></i>
             </a>
           </li>
-        
+
           <li class="post-action hide-sm hide-xs">
             <a class="post-action-btn btn btn--default" href=
-            
+
               "https://twitter.com/intent/tweet?text=This%20post%20was%20first%20published%20on%20the%20blog%20Hexagonal%20Gallery&amp;url=https://ruevko.github.io/hexagonal/en/post/2020/01/estimating-openstreetmap-nodes-country/" target="_blank"
               data-tooltip="Share with Twitter">
-            
+
               <i class="fab fa-twitter"></i>
             </a>
           </li>
-        
+
           <li class="post-action hide-sm hide-xs">
             <a class="post-action-btn btn btn--default" href=
-            
+
               "https://github.com/ruevko/hexagonal/blob/master/content/post/2020/01/%25!s%28%3cnil%3e%29"
               data-tooltip="View source on GitHub">
-            
+
               <i class="fab fa-github-alt"></i>
             </a>
           </li>
-        
+
           <li class="post-action hide-sm hide-xs">
             <a class="post-action-btn btn btn--default" href=
-            
+
               "https://t.me/share/url?text=This%20post%20was%20first%20published%20on%20the%20blog%20Hexagonal%20Gallery&amp;url=https://ruevko.github.io/hexagonal/en/post/2020/01/estimating-openstreetmap-nodes-country/" target="_blank"
               data-tooltip="Share with Telegram">
-            
+
               <i class="fab fa-telegram-plane"></i>
             </a>
           </li>
-        
+
           <li class="post-action hide-sm hide-xs">
             <a class="post-action-btn btn btn--default" href=
-            
+
               "https://api.whatsapp.com/send?text=This%20post%20was%20first%20published%20on%20the%20blog%20Hexagonal%20Gallery%20https://ruevko.github.io/hexagonal/en/post/2020/01/estimating-openstreetmap-nodes-country/" target="_blank"
               data-tooltip="Share with WhatsApp">
-            
+
               <i class="fab fa-whatsapp"></i>
             </a>
           </li>
-        
-      
-      
-      
+
+
+
+
       <li class="post-action">
         <a class="btn btn--default" href="#main" data-tooltip="Back to the top">
           <i class="fa fa-chevron-up"></i>
         </a>
       </li>
     </ul>
-  
+
 </div>
-            
-              
-            
+
+
+
           </div>
         </article>
         <footer id="footer" class="main-content-wrap">
@@ -626,161 +626,161 @@ countries with more nodes:</p>
     2022
     (CC BY&ndash;SA 4.0)
     <br>
-    
+
       by Rafael Castro <i class="fas fa-lg fa-crow"></i>
-    
+
   </span>
 </footer>
       </div>
       <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
         <div class="post-actions-wrap">
-  
+
       <nav >
         <ul class="post-actions post-action-nav">
-          
+
             <li class="post-action">
-              
+
                 <a class="post-action-btn btn btn--default tooltip-big" href="https://ruevko.github.io/hexagonal/en/post/2020/03/daily-growth-openstreetmap-nodes/" data-tooltip="The daily growth of OSM nodes">
-              
+
                   <i class="fa fa-angle-left"></i>
                   <span class="hide-xs text-small icon-ml">Next post</span>
                 </a>
             </li>
             <li class="post-action">
-              
+
                 <a class="post-action-btn btn btn--disabled">
-              
+
                   <span class="hide-xs text-small icon-mr" style="margin-left: 1.5px;">Prev post</span>
                   <i class="fa fa-angle-right"></i>
                 </a>
             </li>
-          
+
         </ul>
       </nav>
     <ul class="post-actions post-action-share" >
-      
+
         <li class="post-action hide-lg hide-md">
           <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions">
             <i class="fa fa-share-alt"></i>
           </a>
         </li>
-        
+
           <li class="post-action hide-sm hide-xs">
             <a class="post-action-btn btn btn--default" href=
-            
+
               "https://www.facebook.com/sharer.php?t=This%20post%20was%20first%20published%20on%20the%20blog%20Hexagonal%20Gallery&amp;u=https://ruevko.github.io/hexagonal/en/post/2020/01/estimating-openstreetmap-nodes-country/" target="_blank"
               data-tooltip="Share with Facebook">
-            
+
               <i class="fab fa-facebook"></i>
             </a>
           </li>
-        
+
           <li class="post-action hide-sm hide-xs">
             <a class="post-action-btn btn btn--default" href=
-            
+
               "https://twitter.com/intent/tweet?text=This%20post%20was%20first%20published%20on%20the%20blog%20Hexagonal%20Gallery&amp;url=https://ruevko.github.io/hexagonal/en/post/2020/01/estimating-openstreetmap-nodes-country/" target="_blank"
               data-tooltip="Share with Twitter">
-            
+
               <i class="fab fa-twitter"></i>
             </a>
           </li>
-        
+
           <li class="post-action hide-sm hide-xs">
             <a class="post-action-btn btn btn--default" href=
-            
+
               "https://github.com/ruevko/hexagonal/blob/master/content/post/2020/01/%25!s%28%3cnil%3e%29"
               data-tooltip="View source on GitHub">
-            
+
               <i class="fab fa-github-alt"></i>
             </a>
           </li>
-        
+
           <li class="post-action hide-sm hide-xs">
             <a class="post-action-btn btn btn--default" href=
-            
+
               "https://t.me/share/url?text=This%20post%20was%20first%20published%20on%20the%20blog%20Hexagonal%20Gallery&amp;url=https://ruevko.github.io/hexagonal/en/post/2020/01/estimating-openstreetmap-nodes-country/" target="_blank"
               data-tooltip="Share with Telegram">
-            
+
               <i class="fab fa-telegram-plane"></i>
             </a>
           </li>
-        
+
           <li class="post-action hide-sm hide-xs">
             <a class="post-action-btn btn btn--default" href=
-            
+
               "https://api.whatsapp.com/send?text=This%20post%20was%20first%20published%20on%20the%20blog%20Hexagonal%20Gallery%20https://ruevko.github.io/hexagonal/en/post/2020/01/estimating-openstreetmap-nodes-country/" target="_blank"
               data-tooltip="Share with WhatsApp">
-            
+
               <i class="fab fa-whatsapp"></i>
             </a>
           </li>
-        
-      
-      
-      
+
+
+
+
       <li class="post-action">
         <a class="btn btn--default" href="#main" data-tooltip="Back to the top">
           <i class="fa fa-chevron-up"></i>
         </a>
       </li>
     </ul>
-  
+
 </div>
       </div>
       <div id="share-options-bar" class="share-options-bar" data-behavior="4">
   <i id="btn-close-shareoptions" class="fas fa-times"></i>
   <ul class="share-options">
-    
+
       <li class="share-option">
             <a class="share-option-btn" href=
-            
+
               "https://www.facebook.com/sharer.php?t=This%20post%20was%20first%20published%20on%20the%20blog%20Hexagonal%20Gallery&amp;u=https://ruevko.github.io/hexagonal/en/post/2020/01/estimating-openstreetmap-nodes-country/" target="_blank"
               ><span class="icon-mr">Share with Facebook</span>
-            
+
               <i class="fab fa-facebook"></i>
             </a>
       </li>
-    
+
       <li class="share-option">
             <a class="share-option-btn" href=
-            
+
               "https://twitter.com/intent/tweet?text=This%20post%20was%20first%20published%20on%20the%20blog%20Hexagonal%20Gallery&amp;url=https://ruevko.github.io/hexagonal/en/post/2020/01/estimating-openstreetmap-nodes-country/" target="_blank"
               ><span class="icon-mr">Share with Twitter</span>
-            
+
               <i class="fab fa-twitter"></i>
             </a>
       </li>
-    
+
       <li class="share-option">
             <a class="share-option-btn" href=
-            
+
               "https://github.com/ruevko/hexagonal/blob/master/content/post/2020/01/%25!s%28%3cnil%3e%29"
               ><span class="icon-mr">View source on GitHub</span>
-            
+
               <i class="fab fa-github-alt"></i>
             </a>
       </li>
-    
+
       <li class="share-option">
             <a class="share-option-btn" href=
-            
+
               "https://t.me/share/url?text=This%20post%20was%20first%20published%20on%20the%20blog%20Hexagonal%20Gallery&amp;url=https://ruevko.github.io/hexagonal/en/post/2020/01/estimating-openstreetmap-nodes-country/" target="_blank"
               ><span class="icon-mr">Share with Telegram</span>
-            
+
               <i class="fab fa-telegram-plane"></i>
             </a>
       </li>
-    
+
       <li class="share-option">
             <a class="share-option-btn" href=
-            
+
               "https://api.whatsapp.com/send?text=This%20post%20was%20first%20published%20on%20the%20blog%20Hexagonal%20Gallery%20https://ruevko.github.io/hexagonal/en/post/2020/01/estimating-openstreetmap-nodes-country/" target="_blank"
               ><span class="icon-mr">Share with WhatsApp</span>
-            
+
               <i class="fab fa-whatsapp"></i>
             </a>
       </li>
-    
+
   </ul>
 </div>
 <div id="share-options-mask" class="share-options-mask"></div>
@@ -790,37 +790,37 @@ countries with more nodes:</p>
     <div id="about-btn-close">
       <i class="fas fa-times"></i>
     </div>
-    
+
       <img id="about-card-picture" src="https://ruevko.github.io/hexagonal/logo.png"/>
-    
-    
+
+
     <h4 id="about-card-name">Hexagonal Gallery</h4>
-    
+
       <div id="about-card-bio">A blog by Rafael Castro, dealing with Cartography and Data Analysis</div>
-    
-    
+
+
       <div id="about-card-job">
         <i class="fas fa-graduation-cap"></i>
         <br/>
         Geógrafo
       </div>
-    
-    
+
+
       <div id="about-card-location">
         <i class="fas fa-home"></i>
         <br/>
         Ecuador
       </div>
-    
+
   </div>
 </div>
-    
-    
-  
-    <div id="cover" style="background-image:url('https://res.cloudinary.com/dodnzqhiz/image/upload/v1577918037/crv.png');"></div>
-  
 
-    
+
+
+    <div id="cover" style="background-image:url('https://res.cloudinary.com/dodnzqhiz/image/upload/v1577918037/crv.png');"></div>
+
+
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.7/js/jquery.fancybox.min.js" integrity="sha256-GEAnjcTqVP+vBp3SSc8bEDQqvWAZMiHyUSIorrWwH50=" crossorigin="anonymous"></script>
@@ -845,9 +845,9 @@ function updateMinWidth() {
 </script>
 
 
-  
-    
-  
+
+
+
 
 
 

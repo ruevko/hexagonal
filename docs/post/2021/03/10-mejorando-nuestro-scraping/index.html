@@ -21,56 +21,56 @@
 
 
 <meta property="og:image" content="
-  
+
     https://ruevko.github.io/hexagonal/post/2021/03/10-mejorando-nuestro-scraping_files/figure-html/parsing-bmark-1.png
-  
+
 ">
 
 
-  
+
     <meta property="article:published_time" content="2021-03-10T00:00:00">
-  
-  
+
+
     <meta property="article:modified_time" content="2021-03-10T00:00:00">
-  
-  
-  
-    
+
+
+
+
       <meta property="article:section" content="OpenStreetMap">
-    
-  
-  
-    
+
+
+
+
       <meta property="article:tag" content="benchmark">
-    
+
       <meta property="article:tag" content="web scraping">
-    
-  
+
+
 
     <title>
-      
+
         Mejorando nuestro Web Scraping | La Galería Hexagonal
-      
+
     </title>
 
     <link rel="icon" href="https://ruevko.github.io/hexagonal/favicon.png">
-    
-    
+
+
     <link rel="canonical" href="https://ruevko.github.io/hexagonal/post/2021/03/10-mejorando-nuestro-scraping/">
 
-    
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" integrity="sha256-+N4/V/SbAFiW1MPBCXnfnP9QSN3+Keu+NlB+0ev/YKQ=" crossorigin="anonymous" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/jquery.fancybox.min.css" integrity="sha256-vuXZ9LGmmwtjqFX1F+EKin1ThZMub58gKULUyf0qECk=" crossorigin="anonymous" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/helpers/jquery.fancybox-thumbs.min.css" integrity="sha256-SEa4XYAHihTcEP1f5gARTB2K26Uk8PsndQYHQC1f4jU=" crossorigin="anonymous" />
-    
-    
-    <link rel="stylesheet" href="https://ruevko.github.io/hexagonal/css/style-rpqj1h5cb5terj4l0gi1ixrzeditxx.min.css" />
-    
-    
 
-    
-      
-    
+
+    <link rel="stylesheet" href="https://ruevko.github.io/hexagonal/css/style-rpqj1h5cb5terj4l0gi1ixrzeditxx.min.css" />
+
+
+
+
+
+
   </head>
   <body>
     <div id="blog">
@@ -79,88 +79,88 @@
   <div class="header-title">
     <a class="header-title-link" href="https://ruevko.github.io/hexagonal/">La Galería Hexagonal</a>
   </div>
-  
-    
+
+
       <a class="header-right-icon "
          href="#footer">
-    
-    
+
+
       <i class="fa-lg fas fa-chevron-down"></i></a>
-    
-  
-  
+
+
+
 </header>
       <nav id="sidebar" data-behavior="4">
   <div class="sidebar-container">
-    
+
       <div class="sidebar-profile">
         <a href="https://ruevko.github.io/hexagonal/#about">
           <img class="sidebar-profile-picture" src="https://ruevko.github.io/hexagonal/logo.png"/>
         </a>
         <a class="sidebar-profile-name" href="https://ruevko.github.io/hexagonal/">La Galería Hexagonal</a>
       </div>
-    
+
     <ul class="sidebar-buttons">
-      
+
   <li class="sidebar-button">
-    
+
       <a class="sidebar-button-link " href="https://ruevko.github.io/hexagonal/archives">
-    
+
       <i class="sidebar-button-icon fas fa-globe-americas fa-lg"></i>
-      
+
       <span class="sidebar-button-desc">Archivo</span>
     </a>
   </li>
 
   <li class="sidebar-button">
-    
+
       <a class="sidebar-button-link " href="https://ruevko.github.io/hexagonal/categories">
-    
+
       <i class="sidebar-button-icon fas fa-map-marked-alt fa-lg"></i>
-      
+
       <span class="sidebar-button-desc">Categorías</span>
     </a>
   </li>
 
   <li class="sidebar-button">
-    
+
       <a class="sidebar-button-link " href="https://ruevko.github.io/hexagonal/tags">
-    
+
       <i class="sidebar-button-icon fas fa-map-marker-alt fa-lg"></i>
-      
+
       <span class="sidebar-button-desc">Etiquetas</span>
     </a>
   </li>
 
     </ul>
     <ul class="sidebar-buttons">
-      
+
   <li class="sidebar-button">
-    
+
       <a class="sidebar-button-link " href="https://github.com/ruevko/hexagonal" target="_blank" rel="noopener">
-    
+
       <i class="sidebar-button-icon fab fa-github-alt fa-lg"></i>
-      
+
       <span class="sidebar-button-desc">GitHub</span>
     </a>
   </li>
 
   <li class="sidebar-button">
-    
+
       <a class="sidebar-button-link " href="https://twitter.com/ruevko" target="_blank" rel="noopener">
-    
+
       <i class="sidebar-button-icon fab fa-twitter fa-lg"></i>
-      
+
       <span class="sidebar-button-desc">Twitter</span>
     </a>
   </li>
 
   <li class="sidebar-button">
-    
+
       <a class="sidebar-button-link " href="https://ruevko.github.io/hexagonal/index.xml">
-    
+
       <i class="sidebar-button-icon fas fa-rss fa-lg"></i>
-      
+
       <span class="sidebar-button-desc">RSS</span>
     </a>
   </li>
@@ -185,53 +185,53 @@
     </ul>
   </div>
 </nav>
-      
 
-      
+
+
 
       <div id="main" data-behavior="4"
         class="
                hasCoverMetaIn
                ">
         <article class="post" itemscope itemType="http://schema.org/BlogPosting">
-          
-          
+
+
             <div class="post-header main-content-wrap text-left">
-  
+
     <h1 class="post-title" itemprop="headline">
       Mejorando nuestro Web Scraping
     </h1>
-  
-  
+
+
   <div class="postShorten-meta post-meta">
-    
+
       <time itemprop="datePublished" datetime="2021-03-10T00:00:00Z">
-        
-  
-  
-  
-  
+
+
+
+
+
     10 de Marzo de 2021
-  
+
 
       </time>
-    
-    
-  
-  
+
+
+
+
     <span>en</span>
-    
+
       <a class="category-link" href="https://ruevko.github.io/hexagonal/categories/openstreetmap">OpenStreetMap</a>
-    
-  
+
+
 
   </div>
 
 </div>
-          
+
           <div class="post-content markdown" itemprop="articleBody">
             <div class="main-content-wrap">
-              
+
 <script src="https://ruevko.github.io/hexagonal/rmarkdown-libs/accessible-code-block/empty-anchor.js"></script>
 <style type="text/css">
 code.sourceCode > span { display: inline-block; line-height: 1.25; }
@@ -327,7 +327,7 @@ Nos interesa extraer de cualquiera de esas páginas (es decir, para cualquier d�
 de tipo <code>&lt;table&gt;</code>: una tabla con los elementos creados, modificados y eliminados un día
 específico. La siguiente captura de pantalla presenta la tabla correspondiente<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a> al primero de marzo de 2021.</p>
 <div class="figure"><span id="fig:screen"></span>
-<img src="https://res.cloudinary.com/dodnzqhiz/image/upload/v1615391078/2021post/dpn3dfjlsdgeycxixttu.png" alt="El tag `&lt;table&gt;` en una página de OSMstats"  />
+<img src="https://ruevko.github.io/hexagonal/post/2021/03/10-mejorando-nuestro-scraping_files/figure-html/dpn3dfjlsdgeycxixttu.png" alt="El tag `&lt;table&gt;` en una página de OSMstats"  />
 <p class="caption">
 Figure 1: El tag <code>&lt;table&gt;</code> en una página de OSMstats
 </p>
@@ -485,121 +485,121 @@ un documento HTML, como <code>a:hover { }</code> o <code>tr.odd { }</code>.<a hr
 </ol>
 </div>
 
-              
+
             </div>
           </div>
           <div id="post-footer" class="post-footer main-content-wrap">
-            
-              
-                
-                
+
+
+
+
                   <div class="post-footer-tags">
                     <span class="text-color-light text-small">Etiquetado en</span><br/>
-                    
+
   <a class="tag tag--primary tag--small" href="https://ruevko.github.io/hexagonal/tags/benchmark/">benchmark</a>
 
   <a class="tag tag--primary tag--small" href="https://ruevko.github.io/hexagonal/tags/web-scraping/">web scraping</a>
 
                   </div>
-                
-              
-            
+
+
+
             <div class="post-actions-wrap">
-  
+
       <nav >
         <ul class="post-actions post-action-nav">
-          
+
             <li class="post-action">
-              
+
                 <a class="post-action-btn btn btn--default tooltip-big" href="https://ruevko.github.io/hexagonal/post/2021/04/16-mapping-ecuador-contribuciones/" data-tooltip="Mapping Ecuador y las contribuciones a OSM, antes y después del terremoto 16A">
-              
+
                   <i class="fa fa-angle-left"></i>
                   <span class="hide-xs text-small icon-ml">Siguiente</span>
                 </a>
             </li>
             <li class="post-action">
-              
+
                 <a class="post-action-btn btn btn--default tooltip-big" href="https://ruevko.github.io/hexagonal/post/2020/12/28-cordones-coordenadas-tres-dimensiones/" data-tooltip="Cordones y Coordenadas, ahora en tres dimensiones">
-              
+
                   <span class="hide-xs text-small icon-mr" style="margin-left: 1.5px;">Anterior</span>
                   <i class="fa fa-angle-right"></i>
                 </a>
             </li>
-          
+
         </ul>
       </nav>
     <ul class="post-actions post-action-share" >
-      
+
         <li class="post-action hide-lg hide-md">
           <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions">
             <i class="fa fa-share-alt"></i>
           </a>
         </li>
-        
+
           <li class="post-action hide-sm hide-xs">
             <a class="post-action-btn btn btn--default" href=
-            
+
               "https://www.facebook.com/sharer.php?t=Este%20art%c3%adculo%20fue%20publicado%20en%20el%20blog%20La%20Galer%c3%ada%20Hexagonal&amp;u=https://ruevko.github.io/hexagonal/post/2021/03/10-mejorando-nuestro-scraping/" target="_blank"
               data-tooltip="Compartir en Facebook">
-            
+
               <i class="fab fa-facebook"></i>
             </a>
           </li>
-        
+
           <li class="post-action hide-sm hide-xs">
             <a class="post-action-btn btn btn--default" href=
-            
+
               "https://twitter.com/intent/tweet?text=Este%20art%c3%adculo%20fue%20publicado%20en%20el%20blog%20La%20Galer%c3%ada%20Hexagonal&amp;url=https://ruevko.github.io/hexagonal/post/2021/03/10-mejorando-nuestro-scraping/" target="_blank"
               data-tooltip="Compartir en Twitter">
-            
+
               <i class="fab fa-twitter"></i>
             </a>
           </li>
-        
+
           <li class="post-action hide-sm hide-xs">
             <a class="post-action-btn btn btn--default" href=
-            
+
               "https://github.com/ruevko/hexagonal/blob/master/content/post/2021/03/10-mejorando-nuestro-scraping.Rmd"
               data-tooltip="Ver código en GitHub">
-            
+
               <i class="fab fa-github-alt"></i>
             </a>
           </li>
-        
+
           <li class="post-action hide-sm hide-xs">
             <a class="post-action-btn btn btn--default" href=
-            
+
               "https://t.me/share/url?text=Este%20art%c3%adculo%20fue%20publicado%20en%20el%20blog%20La%20Galer%c3%ada%20Hexagonal&amp;url=https://ruevko.github.io/hexagonal/post/2021/03/10-mejorando-nuestro-scraping/" target="_blank"
               data-tooltip="Compartir en Telegram">
-            
+
               <i class="fab fa-telegram-plane"></i>
             </a>
           </li>
-        
+
           <li class="post-action hide-sm hide-xs">
             <a class="post-action-btn btn btn--default" href=
-            
+
               "https://api.whatsapp.com/send?text=Este%20art%c3%adculo%20fue%20publicado%20en%20el%20blog%20La%20Galer%c3%ada%20Hexagonal%20https://ruevko.github.io/hexagonal/post/2021/03/10-mejorando-nuestro-scraping/" target="_blank"
               data-tooltip="Compartir en WhatsApp">
-            
+
               <i class="fab fa-whatsapp"></i>
             </a>
           </li>
-        
-      
-      
-      
+
+
+
+
       <li class="post-action">
         <a class="btn btn--default" href="#main" data-tooltip="Regresar al inicio">
           <i class="fa fa-chevron-up"></i>
         </a>
       </li>
     </ul>
-  
+
 </div>
-            
-              
-            
+
+
+
           </div>
         </article>
         <footer id="footer" class="main-content-wrap">
@@ -610,161 +610,161 @@ un documento HTML, como <code>a:hover { }</code> o <code>tr.odd { }</code>.<a hr
     2022
     (CC BY&ndash;SA 4.0)
     <br>
-    
+
       by Rafael Castro <i class="fas fa-lg fa-crow"></i>
-    
+
   </span>
 </footer>
       </div>
       <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
         <div class="post-actions-wrap">
-  
+
       <nav >
         <ul class="post-actions post-action-nav">
-          
+
             <li class="post-action">
-              
+
                 <a class="post-action-btn btn btn--default tooltip-big" href="https://ruevko.github.io/hexagonal/post/2021/04/16-mapping-ecuador-contribuciones/" data-tooltip="Mapping Ecuador y las contribuciones a OSM, antes y después del terremoto 16A">
-              
+
                   <i class="fa fa-angle-left"></i>
                   <span class="hide-xs text-small icon-ml">Siguiente</span>
                 </a>
             </li>
             <li class="post-action">
-              
+
                 <a class="post-action-btn btn btn--default tooltip-big" href="https://ruevko.github.io/hexagonal/post/2020/12/28-cordones-coordenadas-tres-dimensiones/" data-tooltip="Cordones y Coordenadas, ahora en tres dimensiones">
-              
+
                   <span class="hide-xs text-small icon-mr" style="margin-left: 1.5px;">Anterior</span>
                   <i class="fa fa-angle-right"></i>
                 </a>
             </li>
-          
+
         </ul>
       </nav>
     <ul class="post-actions post-action-share" >
-      
+
         <li class="post-action hide-lg hide-md">
           <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions">
             <i class="fa fa-share-alt"></i>
           </a>
         </li>
-        
+
           <li class="post-action hide-sm hide-xs">
             <a class="post-action-btn btn btn--default" href=
-            
+
               "https://www.facebook.com/sharer.php?t=Este%20art%c3%adculo%20fue%20publicado%20en%20el%20blog%20La%20Galer%c3%ada%20Hexagonal&amp;u=https://ruevko.github.io/hexagonal/post/2021/03/10-mejorando-nuestro-scraping/" target="_blank"
               data-tooltip="Compartir en Facebook">
-            
+
               <i class="fab fa-facebook"></i>
             </a>
           </li>
-        
+
           <li class="post-action hide-sm hide-xs">
             <a class="post-action-btn btn btn--default" href=
-            
+
               "https://twitter.com/intent/tweet?text=Este%20art%c3%adculo%20fue%20publicado%20en%20el%20blog%20La%20Galer%c3%ada%20Hexagonal&amp;url=https://ruevko.github.io/hexagonal/post/2021/03/10-mejorando-nuestro-scraping/" target="_blank"
               data-tooltip="Compartir en Twitter">
-            
+
               <i class="fab fa-twitter"></i>
             </a>
           </li>
-        
+
           <li class="post-action hide-sm hide-xs">
             <a class="post-action-btn btn btn--default" href=
-            
+
               "https://github.com/ruevko/hexagonal/blob/master/content/post/2021/03/10-mejorando-nuestro-scraping.Rmd"
               data-tooltip="Ver código en GitHub">
-            
+
               <i class="fab fa-github-alt"></i>
             </a>
           </li>
-        
+
           <li class="post-action hide-sm hide-xs">
             <a class="post-action-btn btn btn--default" href=
-            
+
               "https://t.me/share/url?text=Este%20art%c3%adculo%20fue%20publicado%20en%20el%20blog%20La%20Galer%c3%ada%20Hexagonal&amp;url=https://ruevko.github.io/hexagonal/post/2021/03/10-mejorando-nuestro-scraping/" target="_blank"
               data-tooltip="Compartir en Telegram">
-            
+
               <i class="fab fa-telegram-plane"></i>
             </a>
           </li>
-        
+
           <li class="post-action hide-sm hide-xs">
             <a class="post-action-btn btn btn--default" href=
-            
+
               "https://api.whatsapp.com/send?text=Este%20art%c3%adculo%20fue%20publicado%20en%20el%20blog%20La%20Galer%c3%ada%20Hexagonal%20https://ruevko.github.io/hexagonal/post/2021/03/10-mejorando-nuestro-scraping/" target="_blank"
               data-tooltip="Compartir en WhatsApp">
-            
+
               <i class="fab fa-whatsapp"></i>
             </a>
           </li>
-        
-      
-      
-      
+
+
+
+
       <li class="post-action">
         <a class="btn btn--default" href="#main" data-tooltip="Regresar al inicio">
           <i class="fa fa-chevron-up"></i>
         </a>
       </li>
     </ul>
-  
+
 </div>
       </div>
       <div id="share-options-bar" class="share-options-bar" data-behavior="4">
   <i id="btn-close-shareoptions" class="fas fa-times"></i>
   <ul class="share-options">
-    
+
       <li class="share-option">
             <a class="share-option-btn" href=
-            
+
               "https://www.facebook.com/sharer.php?t=Este%20art%c3%adculo%20fue%20publicado%20en%20el%20blog%20La%20Galer%c3%ada%20Hexagonal&amp;u=https://ruevko.github.io/hexagonal/post/2021/03/10-mejorando-nuestro-scraping/" target="_blank"
               ><span class="icon-mr">Compartir en Facebook</span>
-            
+
               <i class="fab fa-facebook"></i>
             </a>
       </li>
-    
+
       <li class="share-option">
             <a class="share-option-btn" href=
-            
+
               "https://twitter.com/intent/tweet?text=Este%20art%c3%adculo%20fue%20publicado%20en%20el%20blog%20La%20Galer%c3%ada%20Hexagonal&amp;url=https://ruevko.github.io/hexagonal/post/2021/03/10-mejorando-nuestro-scraping/" target="_blank"
               ><span class="icon-mr">Compartir en Twitter</span>
-            
+
               <i class="fab fa-twitter"></i>
             </a>
       </li>
-    
+
       <li class="share-option">
             <a class="share-option-btn" href=
-            
+
               "https://github.com/ruevko/hexagonal/blob/master/content/post/2021/03/10-mejorando-nuestro-scraping.Rmd"
               ><span class="icon-mr">Ver código en GitHub</span>
-            
+
               <i class="fab fa-github-alt"></i>
             </a>
       </li>
-    
+
       <li class="share-option">
             <a class="share-option-btn" href=
-            
+
               "https://t.me/share/url?text=Este%20art%c3%adculo%20fue%20publicado%20en%20el%20blog%20La%20Galer%c3%ada%20Hexagonal&amp;url=https://ruevko.github.io/hexagonal/post/2021/03/10-mejorando-nuestro-scraping/" target="_blank"
               ><span class="icon-mr">Compartir en Telegram</span>
-            
+
               <i class="fab fa-telegram-plane"></i>
             </a>
       </li>
-    
+
       <li class="share-option">
             <a class="share-option-btn" href=
-            
+
               "https://api.whatsapp.com/send?text=Este%20art%c3%adculo%20fue%20publicado%20en%20el%20blog%20La%20Galer%c3%ada%20Hexagonal%20https://ruevko.github.io/hexagonal/post/2021/03/10-mejorando-nuestro-scraping/" target="_blank"
               ><span class="icon-mr">Compartir en WhatsApp</span>
-            
+
               <i class="fab fa-whatsapp"></i>
             </a>
       </li>
-    
+
   </ul>
 </div>
 <div id="share-options-mask" class="share-options-mask"></div>
@@ -774,37 +774,37 @@ un documento HTML, como <code>a:hover { }</code> o <code>tr.odd { }</code>.<a hr
     <div id="about-btn-close">
       <i class="fas fa-times"></i>
     </div>
-    
+
       <img id="about-card-picture" src="https://ruevko.github.io/hexagonal/logo.png"/>
-    
-    
+
+
     <h4 id="about-card-name">La Galería Hexagonal</h4>
-    
+
       <div id="about-card-bio">El blog de Rafael Castro, orientado a Cartografía y Análisis de Datos</div>
-    
-    
+
+
       <div id="about-card-job">
         <i class="fas fa-graduation-cap"></i>
         <br/>
         Geógrafo
       </div>
-    
-    
+
+
       <div id="about-card-location">
         <i class="fas fa-home"></i>
         <br/>
         Ecuador
       </div>
-    
+
   </div>
 </div>
-    
-    
-  
-    <div id="cover" style="background-image:url('https://res.cloudinary.com/dodnzqhiz/image/upload/v1577918037/crv.png');"></div>
-  
 
-    
+
+
+    <div id="cover" style="background-image:url('https://res.cloudinary.com/dodnzqhiz/image/upload/v1577918037/crv.png');"></div>
+
+
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.7/js/jquery.fancybox.min.js" integrity="sha256-GEAnjcTqVP+vBp3SSc8bEDQqvWAZMiHyUSIorrWwH50=" crossorigin="anonymous"></script>
@@ -829,9 +829,9 @@ function updateMinWidth() {
 </script>
 
 
-  
-    
-  
+
+
+
 
 
 
